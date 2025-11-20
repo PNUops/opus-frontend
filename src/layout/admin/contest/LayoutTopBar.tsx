@@ -12,7 +12,7 @@ const LayoutTopBar = () => {
   return (
     <div className="border-b px-8 py-2">
       <button onClick={() => navigate('/admin')}>
-        <MdArrowBackIos className="text-midGray inline text-2xl" />
+        <MdArrowBackIos className="text-midGray hover:text-mainGreen inline text-2xl transition-all" />
       </button>
       <Select
         onChange={(e) => {
