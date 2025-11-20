@@ -14,6 +14,7 @@ import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
 import AdminTabs from './AdminTabs';
 import FullContainerLayout from '@layout/FullContainerLayout';
+import AdminLayout from '@layout/admin/AdminLayout';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -37,6 +38,7 @@ const AppRoutes = () =>
         },
         {
           path: 'admin',
+          element: <AdminLayout />,
           children: [
             {
               element: <AdminPage />, // TODO: 레거시 페이지이므로 추후 제거 필요
