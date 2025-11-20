@@ -16,6 +16,7 @@ import AdminTabs from './AdminTabs';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
+import FullContainer from '@layout/FullContainer';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -42,7 +43,12 @@ const AppRoutes = () =>
           element: <AdminLayout />,
           children: [
             {
-              element: <AdminPage />, // TODO: 레거시 페이지이므로 추후 제거 필요
+              element: (
+                <FullContainer>
+                  <AdminPage />
+                  {/* // TODO: 레거시 페이지이므로 추후 제거 필요 */}
+                </FullContainer>
+              ),
               children: AdminTabs,
             },
             {
