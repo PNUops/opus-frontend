@@ -1,4 +1,4 @@
-import { createBrowserRouter, Link, Outlet, useRoutes } from 'react-router-dom';
+import { createBrowserRouter, Link, Navigate, Outlet, useRoutes } from 'react-router-dom';
 
 import MainLayout from '@layout/MainLayout';
 
@@ -48,6 +48,19 @@ const AppRoutes = () =>
             {
               path: 'contest/:contestId',
               element: <AdminContestLayout />,
+              children: [
+                { index: true, element: <Navigate to="projects" replace /> },
+                { path: 'projects', element: <div>프로젝트 관리</div> },
+                { path: 'sort', element: <div>정렬 관리</div> },
+                { path: 'awards', element: <div>수상 관리</div> },
+                { path: 'required-fields', element: <div>필수 항목 설정</div> },
+                { path: 'settings', element: <div>대회 관리</div> },
+                { path: 'departments', element: <div>분과 관리</div> },
+                { path: 'votes', element: <div>투표 관리</div> },
+                { path: 'notices', element: <div>공지 관리</div> },
+                { path: 'banners', element: <div>배너 관리</div> },
+                { path: 'statistics', element: <div>대회 통계</div> },
+              ],
             },
           ],
         },

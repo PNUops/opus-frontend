@@ -1,11 +1,17 @@
-import Select from '@components/Select';
-import { MdArrowBackIos } from 'react-icons/md';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import LayoutTopBar from './LayoutTopBar';
+import LayoutSideBar from './LayoutSideBar';
 
 const AdminContestLayout = () => {
   return (
     <>
-      <Outlet />
+      <LayoutTopBar />
+      <div className="flex">
+        <LayoutSideBar />
+        <div className="border-l">
+          <Outlet />
+        </div>
+      </div>
     </>
   );
 };
