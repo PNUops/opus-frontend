@@ -37,8 +37,16 @@ const AppRoutes = () =>
         },
         {
           path: 'admin',
-          element: <AdminPage />, // TODO: 관리자 페이지용 레이아웃 지정 필요
-          children: AdminTabs,
+          children: [
+            {
+              element: <AdminPage />, // TODO: 레거시 페이지이므로 추후 제거 필요
+              children: AdminTabs,
+            },
+            {
+              path: 'contest/:contestId',
+              // element: 대회 대시보드용 사이드바 레이아웃
+            },
+          ],
         },
       ],
     },
