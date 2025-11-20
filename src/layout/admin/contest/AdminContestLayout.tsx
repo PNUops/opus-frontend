@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import LayoutTopBar from './LayoutTopBar';
 import LayoutSideBar from './LayoutSideBar';
+import FullContainerLayout from '@layout/FullContainerLayout';
 
 const AdminContestLayout = () => {
   return (
@@ -10,6 +11,7 @@ const AdminContestLayout = () => {
         <LayoutSideBar />
         <div className="border-l">
           <Outlet />
+          <FullContainerLayout />
         </div>
       </div>
     </>
