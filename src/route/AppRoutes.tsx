@@ -49,7 +49,7 @@ const AppRoutes = () =>
                   {/* // TODO: 레거시 페이지이므로 추후 제거 필요 */}
                 </FullContainer>
               ),
-              children: AdminTabs,
+              children: [{ index: true, element: <Navigate to="ongoing" /> }, ...AdminTabs],
             },
             {
               path: 'contest/:contestId',
