@@ -15,6 +15,7 @@ import ContestPage from '@pages/contest/ContestPage';
 import AdminTabs from './AdminTabs';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
+import AdminContestLayout from '@layout/admin/AdminContestLayout';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -46,7 +47,7 @@ const AppRoutes = () =>
             },
             {
               path: 'contest/:contestId',
-              // element: 대회 대시보드용 사이드바 레이아웃
+              element: <AdminContestLayout />,
             },
           ],
         },
