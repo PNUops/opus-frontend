@@ -2,8 +2,9 @@ import { NavLink } from 'react-router-dom';
 import { cn } from 'utils/classname';
 
 const LayoutSideBar = () => {
+  const baseStyle = 'transition-all hover:text-mainGreen';
   const activeLinkStyle = 'font-semibold text-mainGreen';
-  const getLinkClass = ({ isActive }: { isActive: boolean }) => cn('transition-all', isActive && activeLinkStyle);
+  const getLinkClass = ({ isActive }: { isActive: boolean }) => cn(baseStyle, isActive && activeLinkStyle);
 
   return (
     <aside className="flex flex-col gap-6 p-8">
