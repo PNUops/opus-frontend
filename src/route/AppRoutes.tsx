@@ -1,4 +1,4 @@
-import { createBrowserRouter, useRoutes } from 'react-router-dom';
+import { createBrowserRouter, Link, Outlet, useRoutes } from 'react-router-dom';
 
 import MainLayout from '@layout/MainLayout';
 
@@ -13,6 +13,7 @@ import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback'
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
 import AdminTabs from './AdminTabs';
+import FullContainerLayout from '@layout/FullContainerLayout';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -20,20 +21,25 @@ const AppRoutes = () =>
       path: '/',
       element: <MainLayout />,
       children: [
-        { index: true, element: <MainPage /> },
-        { path: 'contest/:contestId', element: <ContestPage /> },
-        { path: 'signin', element: <SignInPage /> },
-        { path: 'signup', element: <SignUpPage /> },
-        { path: 'teams/view/:teamId', element: <ProjectViewerPage /> },
-        { path: 'teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
+        {
+          element: <FullContainerLayout />,
+          children: [
+            { index: true, element: <MainPage /> },
+            { path: 'contest/:contestId', element: <ContestPage /> },
+            { path: 'signin', element: <SignInPage /> },
+            { path: 'signup', element: <SignUpPage /> },
+            { path: 'teams/view/:teamId', element: <ProjectViewerPage /> },
+            { path: 'teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
+            { path: 'find', element: <FindPage /> },
+            { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
+            { path: 'notices/:noticeId', element: <NoticeDetail /> },
+          ],
+        },
         {
           path: 'admin',
-          element: <AdminPage />,
+          element: <AdminPage />, // TODO: 관리자 페이지용 레이아웃 지정 필요
           children: AdminTabs,
         },
-        { path: 'find', element: <FindPage /> },
-        { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
-        { path: 'notices/:noticeId', element: <NoticeDetail /> },
       ],
     },
   ]);
