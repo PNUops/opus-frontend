@@ -10,7 +10,6 @@ const AdminContestLayout = () => {
       <div className="flex">
         <LayoutSideBar />
         <div className="border-l">
-          <Outlet />
           <FullContainerLayout />
         </div>
       </div>
