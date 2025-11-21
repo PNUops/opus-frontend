@@ -37,7 +37,7 @@ const Header = () => {
 
         <div className="flex items-center justify-between gap-2 md:gap-4 lg:gap-8">
           {isAdmin && (
-            <Link to="/admin/ongoing" className="flex items-center gap-2 hover:cursor-pointer">
+            <Link to="/admin" className="flex items-center gap-2 hover:cursor-pointer">
               <BiCog className="text-mainGreen cursor-pointer text-sm" />
               <span className="text-exsm hidden text-nowrap lg:inline">관리자 페이지</span>
             </Link>

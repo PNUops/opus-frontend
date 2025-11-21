@@ -1,9 +1,9 @@
 import Header from './Header';
 import Footer from './Footer';
-import FullContainer from './FullContainer';
 import { Toaster } from '@components/Toaster';
 import useAuthInit from 'hooks/useAuthInit';
 import useScrollToTop from 'hooks/useScrollToTop';
+import { Outlet } from 'react-router-dom';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
@@ -14,7 +14,7 @@ const MainLayout = () => {
       <div className="flex min-h-screen flex-col">
         <Header />
         <div>
-          <FullContainer />
+          <Outlet />
         </div>
         <Footer />
       </div>
