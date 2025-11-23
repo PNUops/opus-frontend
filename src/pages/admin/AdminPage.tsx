@@ -1,19 +1,9 @@
-import { Outlet, Link, useParams, useResolvedPath, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import AdminTabs from '@route/AdminTabs';
-import useAuth from 'hooks/useAuth';
 
 const AdminPage = () => {
-  const { isAdmin } = useAuth();
   const adminTabs = AdminTabs;
   const { pathname } = useLocation();
-
-  if (!isAdmin) {
-    return (
-      <div className="w-full rounded bg-white p-6 text-center shadow-md">
-        <p className="text-mainRed text-xl">관리자 권한이 없습니다.</p>
-      </div>
-    );
-  }
 
   return (
     <>
