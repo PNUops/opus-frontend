@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ChevronDownIcon } from 'lucide-react';
+import { CiCalendar } from 'react-icons/ci';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { Button } from '@components/ui/button';
 import { Calendar } from '@components/ui/calendar';
@@ -9,71 +10,68 @@ import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover'
 
 interface DateTimePickerProps {
   label: string;
-  prevDate: Date;
-  onChange?: (date: Date) => void;
+  prevDate: string | Dayjs;
+  onChange: (date: Dayjs) => void;
 }
 
 export const DateTimePicker = ({ label, prevDate, onChange }: DateTimePickerProps) => {
   const [open, setOpen] = useState(false);
-  const [dateTime, setDateTime] = useState<Date>(new Date(prevDate));
-  const [timeInputValue, setTimeInputValue] = useState<string>(new Date(prevDate).toTimeString().slice(0, 8));
+  const [dateTime, setDateTime] = useState<Dayjs>(dayjs(prevDate));
+  const [timeInputValue, setTimeInputValue] = useState<string>(dayjs(prevDate).format('HH:mm:ss'));
 
   useEffect(() => {
-    const newDate = new Date(prevDate);
-    setDateTime(newDate);
-    setTimeInputValue(newDate.toTimeString().slice(0, 8));
+    const newDateTime = dayjs(prevDate);
+    setDateTime(newDateTime);
+    setTimeInputValue(newDateTime.format('HH:mm:ss'));
   }, [prevDate]);
 
   const handleDateChange = (date: Date | undefined) => {
     if (!date) return;
 
-    const newDateTime = new Date(dateTime);
-    newDateTime.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+    const newDateTime = dayjs(date).hour(dateTime.hour()).minute(dateTime.minute()).second(dateTime.second());
 
     setDateTime(newDateTime);
-    setTimeInputValue(newDateTime.toTimeString().slice(0, 8));
     setOpen(false);
 
-    onChange?.(newDateTime);
+    onChange(newDateTime);
   };
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeInputValue(e.target.value);
+    const { value } = e.target;
+    setTimeInputValue(value);
   };
 
   const handleTimeBlur = () => {
-    const timeValue = timeInputValue;
-    const timeParts = timeValue.split(':').map(Number);
+    const timeParts = timeInputValue.split(':').map(Number);
     const [hours, minutes, seconds = 0] = timeParts;
 
     if (isNaN(hours) || isNaN(minutes)) {
-      setTimeInputValue(dateTime.toTimeString().slice(0, 8));
+      setTimeInputValue(dateTime.format('HH:mm:ss'));
       return;
     }
 
-    const newDateTime = new Date(dateTime);
-    newDateTime.setHours(hours, minutes, seconds);
+    const newDateTime = dateTime.hour(hours).minute(minutes).second(seconds);
     setDateTime(newDateTime);
-    onChange?.(newDateTime);
+    onChange(newDateTime);
   };
 
   return (
-    <div className="flex items-center gap-3">
-      <Label htmlFor="time-picker" className="px-1 whitespace-nowrap">
+    <div className="flex flex-wrap items-center gap-3">
+      <Label htmlFor="time-picker" className="font-normal whitespace-nowrap">
         {label}
       </Label>
       <div className="flex items-center gap-2">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline" id="date-picker" className="w-[150px] justify-between font-normal">
-              {dateTime ? dateTime.toLocaleDateString() : '날짜 선택'}
-              <ChevronDownIcon className="ml-2 h-4 w-4" />
+              {dateTime ? dateTime.format('YYYY-MM-DD') : '날짜 선택'}
+              <CiCalendar size={18} />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={dateTime}
+              selected={dateTime.toDate()}
               captionLayout="dropdown"
               fromYear={2020}
               toYear={2030}
