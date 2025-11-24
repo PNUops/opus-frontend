@@ -7,6 +7,7 @@ export interface ContestResponseDto {
 export interface VoteTermDto {
   voteStartAt: string;
   voteEndAt: string;
+  votePerPerson: number;
 }
 
 export interface PatchAwardRequestDto {
