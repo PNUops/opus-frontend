@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useToast } from 'hooks/useToast';
 import { getVoteTerm, updateVoteTerm } from 'apis/contests';
-import { formatDateTime } from 'utils/time';
 import { VoteTermDto } from 'types/DTO';
 
 export const useGetVoteTerm = (contestId: number | undefined) => {
@@ -14,7 +13,7 @@ export const useGetVoteTerm = (contestId: number | undefined) => {
 };
 
 export const useIsVoteTerm = (contestId: number | undefined) => {
-  const { data: voteTermData, isLoading } = useGetVoteTerm(contestId);
+  const { data: voteTermData } = useGetVoteTerm(contestId);
 
   const isVoteTerm = useMemo(() => {
     if (!voteTermData) return false;
@@ -34,17 +33,13 @@ export const useUpdateVoteTerm = (contestId: number) => {
   const toast = useToast();
 
   return useMutation({
-    mutationFn: (payload: { voteStartAt: string; voteEndAt: string }) =>
-      updateVoteTerm(contestId, {
-        voteStartAt: formatDateTime(new Date(payload.voteStartAt)),
-        voteEndAt: formatDateTime(new Date(payload.voteEndAt)),
-      }),
+    mutationFn: (payload: VoteTermDto) => updateVoteTerm(contestId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['voteTerm', contestId] });
-      toast('투표 기간이 업데이트 되었어요', 'success');
+      toast('투표 설정이 업데이트 되었어요', 'success');
     },
-    onError: (err) => {
-      toast('투표 기간 업데이트에 실패했어요', 'error');
+    onError: () => {
+      toast('투표 설정 업데이트에 실패했어요', 'error');
     },
   });
 };
