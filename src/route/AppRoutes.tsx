@@ -7,7 +7,6 @@ import ProjectEditorPage from '@pages/project-editor/ProjectEditorPage';
 import ProjectViewerPage from '@pages/project-viewer/ProjectViewerPage';
 import SignInPage from '@pages/signin/SignInPage';
 import SignUpPage from '@pages/signup/SignUpPage';
-import AdminPage from '@pages/admin/AdminPage';
 import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
@@ -17,6 +16,7 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
+import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -45,8 +45,7 @@ const AppRoutes = () =>
             {
               element: (
                 <FullContainer>
-                  <AdminPage />
-                  {/* // TODO: 레거시 페이지이므로 추후 제거 필요 */}
+                  <AdminDashBoardPage />
                 </FullContainer>
               ),
               children: [{ index: true, element: <Navigate to="ongoing" /> }, ...AdminTabs],
