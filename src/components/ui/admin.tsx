@@ -3,6 +3,8 @@ import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { DialogClose, DialogContent } from './dialog';
+import Button from '@components/Button';
 
 export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
   return <div className="border-lightGray flex flex-col gap-0.5 rounded-xl border-2">{children}</div>;
@@ -59,5 +61,23 @@ export const AdminPopoverDeleteButton = ({ onDelete }: { onDelete: () => void })
       <FaRegTrashAlt size={16} className="mt-1 fill-red-500" />
       삭제
     </button>
+  );
+};
+
+export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; onDelete: () => void }) => {
+  return (
+    <DialogContent className="gap-6">
+      <h3 className="text-center text-lg font-semibold text-gray-800">{title}</h3>
+      <div className="flex justify-center gap-4">
+        <DialogClose asChild>
+          <Button className="border-lightGray text-midGray rounded-full border px-4 py-2 hover:bg-gray-100">
+            {'닫기'}
+          </Button>
+        </DialogClose>
+        <Button className="rounded-full bg-red-700 px-4 py-2" onClick={onDelete}>
+          {'삭제'}
+        </Button>
+      </div>
+    </DialogContent>
   );
 };
