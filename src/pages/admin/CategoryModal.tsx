@@ -3,7 +3,7 @@ import { FaRegEdit } from 'react-icons/fa';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
-import { DialogClose, DialogContent } from '@components/ui/dialog';
+import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminDeleteConfirmModal } from '@components/ui/admin';
 
 interface CategoryModalProps {
@@ -30,7 +30,7 @@ export const CategoryModal = ({ type, prevName, closeModal }: CategoryModalProps
       <div className="text-mainBlue mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
         <FaRegEdit size={20} />
       </div>
-      <h3 className="text-center text-lg font-semibold text-gray-800">{`${type === 'create' ? '추가' : '수정'}할 카테고리 이름을 입력하세요.`}</h3>
+      <DialogTitle>{`${type === 'create' ? '추가' : '수정'}할 카테고리 이름을 입력하세요.`}</DialogTitle>
       <Input
         type="text"
         value={categoryName}

@@ -3,7 +3,7 @@ import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import { DialogClose, DialogContent } from './dialog';
+import { DialogClose, DialogContent, DialogTitle } from './dialog';
 import Button from '@components/Button';
 
 export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
@@ -67,7 +67,7 @@ export const AdminPopoverDeleteButton = ({ onDelete }: { onDelete: () => void })
 export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; onDelete: () => void }) => {
   return (
     <DialogContent className="gap-6">
-      <h3 className="text-center text-lg font-semibold text-gray-800">{title}</h3>
+      <DialogTitle className="text-center text-lg font-semibold text-gray-800">{title}</DialogTitle>
       <div className="flex justify-center gap-4">
         <DialogClose asChild>
           <Button className="border-lightGray text-midGray rounded-full border px-4 py-2 hover:bg-gray-100">
