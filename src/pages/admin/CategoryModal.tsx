@@ -4,14 +4,15 @@ import Button from '@components/Button';
 import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
 import { DialogClose, DialogContent } from '@components/ui/dialog';
+import { AdminDeleteConfirmModal } from '@components/ui/admin';
 
 interface CategoryModalProps {
   type: 'create' | 'edit';
   prevName?: string;
-  onSubmit: (categoryName: string) => void;
+  closeModal: () => void;
 }
 
-export const CategoryModal = ({ type, prevName, onSubmit }: CategoryModalProps) => {
+export const CategoryModal = ({ type, prevName, closeModal }: CategoryModalProps) => {
   const [categoryName, setCategoryName] = useState<string>(prevName ?? '');
   const toast = useToast();
 
@@ -20,7 +21,8 @@ export const CategoryModal = ({ type, prevName, onSubmit }: CategoryModalProps) 
       toast('카테고리 이름을 입력해주세요.', 'error');
       return;
     }
-    onSubmit(categoryName);
+
+    closeModal();
   };
 
   return (
@@ -42,11 +44,9 @@ export const CategoryModal = ({ type, prevName, onSubmit }: CategoryModalProps) 
             {'닫기'}
           </Button>
         </DialogClose>
-        <DialogClose asChild>
-          <Button className="bg-mainBlue rounded-full px-5 py-3 hover:bg-blue-500" onClick={handleSubmit}>
-            {`${type === 'create' ? '추가' : '수정'}하기`}
-          </Button>
-        </DialogClose>
+        <Button className="bg-mainBlue rounded-full px-5 py-3 hover:bg-blue-500" onClick={handleSubmit}>
+          {`${type === 'create' ? '추가' : '수정'}하기`}
+        </Button>
       </div>
     </DialogContent>
   );
@@ -54,25 +54,9 @@ export const CategoryModal = ({ type, prevName, onSubmit }: CategoryModalProps) 
 
 interface CategoryDeleteConfirmModalProps {
   categoryName: string;
-  onSubmit: () => void;
+  closeModal: () => void;
 }
 
-export const CategoryDeleteConfirmModal = ({ categoryName, onSubmit }: CategoryDeleteConfirmModalProps) => {
-  return (
-    <DialogContent>
-      <h3 className="text-center text-lg font-semibold text-gray-800">{`${categoryName} 카테고리를 삭제하시겠습니까?`}</h3>
-      <div className="flex gap-4">
-        <DialogClose asChild>
-          <Button className="border-lightGray text-midGray rounded-full border px-5 py-3 hover:bg-gray-100">
-            {'닫기'}
-          </Button>
-        </DialogClose>
-        <DialogClose>
-          <Button className="rounded-full bg-red-700 px-5 py-3" onClick={onSubmit}>
-            {'삭제'}
-          </Button>
-        </DialogClose>
-      </div>
-    </DialogContent>
-  );
+export const CategoryDeleteConfirmModal = ({ categoryName, closeModal }: CategoryDeleteConfirmModalProps) => {
+  return <AdminDeleteConfirmModal title={`${categoryName} 카테고리를 삭제하시겠습니까?`} onDelete={closeModal} />;
 };
