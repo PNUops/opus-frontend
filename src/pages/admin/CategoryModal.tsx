@@ -5,23 +5,58 @@ import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { useMutation } from '@tanstack/react-query';
+import { deleteCategory, patchCategory, postCategory } from 'apis/category';
+import { CategoryDto } from 'types/DTO';
 
 interface CategoryModalProps {
   type: 'create' | 'edit';
-  prevName?: string;
+  prevData?: CategoryDto;
   closeModal: () => void;
 }
 
-export const CategoryModal = ({ type, prevName, closeModal }: CategoryModalProps) => {
-  const [categoryName, setCategoryName] = useState<string>(prevName ?? '');
+export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps) => {
+  const [categoryName, setCategoryName] = useState<string>(prevData?.categoryName ?? '');
   const toast = useToast();
 
-  const handleSubmit = () => {
+  const categoryCreate = useMutation({
+    mutationKey: ['categoryCreate'],
+    mutationFn: (categoryName: string) => postCategory(categoryName),
+  });
+  const categoryEdit = useMutation({
+    mutationKey: ['categoryEdit'],
+    mutationFn: ({ categoryId, categoryName }: Omit<CategoryDto, 'updatedAt'>) =>
+      patchCategory(categoryId, categoryName),
+  });
+
+  const handleSubmit = async () => {
     if (!categoryName) {
       toast('카테고리 이름을 입력해주세요.', 'error');
       return;
     }
 
+    if (type === 'create') {
+      await categoryCreate.mutateAsync(categoryName, {
+        onSuccess: () => {
+          toast('카테고리가 추가되었습니다.', 'success');
+        },
+        onError: () => {
+          toast('카테고리 추가에 실패했습니다.', 'error');
+        },
+      });
+    } else if (type === 'edit' && prevData) {
+      await categoryEdit.mutateAsync(
+        { categoryId: prevData.categoryId, categoryName },
+        {
+          onSuccess: () => {
+            toast('카테고리가 수정되었습니다.', 'success');
+          },
+          onError: () => {
+            toast('카테고리 수정에 실패했습니다.', 'error');
+          },
+        },
+      );
+    }
     closeModal();
   };
 
@@ -53,10 +88,31 @@ export const CategoryModal = ({ type, prevName, closeModal }: CategoryModalProps
 };
 
 interface CategoryDeleteConfirmModalProps {
-  categoryName: string;
+  category: CategoryDto;
   closeModal: () => void;
 }
 
-export const CategoryDeleteConfirmModal = ({ categoryName, closeModal }: CategoryDeleteConfirmModalProps) => {
-  return <AdminDeleteConfirmModal title={`${categoryName} 카테고리를 삭제하시겠습니까?`} onDelete={closeModal} />;
+export const CategoryDeleteConfirmModal = ({ category, closeModal }: CategoryDeleteConfirmModalProps) => {
+  const toast = useToast();
+
+  const categoryDelete = useMutation({
+    mutationKey: ['categoryDelete'],
+    mutationFn: (categoryId: number) => deleteCategory(categoryId),
+  });
+
+  const onDelete = () => {
+    categoryDelete.mutate(category.categoryId, {
+      onSuccess: () => {
+        toast('카테고리가 삭제되었습니다.', 'success');
+      },
+      onError: () => {
+        toast('카테고리 삭제에 실패했습니다.', 'error');
+      },
+    });
+    closeModal();
+  };
+
+  return (
+    <AdminDeleteConfirmModal title={`${category.categoryName} 카테고리를 삭제하시겠습니까?`} onDelete={closeModal} />
+  );
 };
