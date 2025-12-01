@@ -1,9 +1,14 @@
 import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
 import { SubmissionStatusResponseDto } from '../types/DTO/teams/submissionStatusDto';
 import { PatchAwardRequestDto, PatchCustomOrderRequestDto } from 'types/DTO';
-
 import apiClient from './apiClient';
-import { SortOption } from '@pages/admin/ProjectSortToggle';
+
+export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
+export const sortOptions: { label: string; value: SortOption }[] = [
+  { label: '랜덤', value: 'RANDOM' },
+  { label: '오름차순', value: 'ASC' },
+  { label: '수상 설정순', value: 'CUSTOM' },
+];
 
 export const getAllTeams = async (contestId: number): Promise<TeamListItemResponseDto[]> => {
   const res = await apiClient.get(`/contests/${contestId}/teams`);
