@@ -7,7 +7,7 @@ export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
 export const sortOptions: { label: string; value: SortOption }[] = [
   { label: '랜덤', value: 'RANDOM' },
   { label: '오름차순', value: 'ASC' },
-  { label: '수상 설정순', value: 'CUSTOM' },
+  { label: '직접 설정', value: 'CUSTOM' },
 ];
 
 export const getAllTeams = async (contestId: number): Promise<TeamListItemResponseDto[]> => {
