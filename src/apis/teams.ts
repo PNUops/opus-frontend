@@ -57,7 +57,7 @@ export const patchTeamAward = async (teamId: number, payload: PatchAwardRequestD
   return res.data;
 };
 
-export const patchCustomSortTeam = async (contestId: number, payload: PatchCustomOrderRequestDto) => {
+export const patchCustomSortTeam = async (payload: PatchCustomOrderRequestDto) => {
   const res = await apiClient.patch('/teams/sort/custom', payload);
   return res.data;
 };
