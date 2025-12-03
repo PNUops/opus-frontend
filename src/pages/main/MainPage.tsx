@@ -3,7 +3,7 @@ import { getNotices } from 'apis/notices';
 import { getAllContests } from 'apis/contests';
 import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
-import ContestBanner from './ContestBanner';
+import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
 import techweekBanner from 'styles/techweek-2025.webp';
 import defaultBanner from 'assets/basicThumbnail.jpg';
@@ -11,21 +11,18 @@ import { mockNotices } from '@mocks/data/notices';
 import { mockContestsResponse } from '@mocks/data/contests';
 
 const MainPage = () => {
-  // const { data: notices } = useQuery({
-  //   queryKey: ['notices'],
-  //   queryFn: getNotices,
-  // });
+  const { data: notices } = useQuery({
+    queryKey: ['notices'],
+    queryFn: getNotices,
+  });
 
-  // const { data: contests } = useQuery({
-  //   queryKey: ['contests'],
-  //   queryFn: getAllContests,
-  // });
-
-  const notices = mockNotices;
-  const contests = mockContestsResponse;
+  const { data: contests } = useQuery({
+    queryKey: ['contests'],
+    queryFn: getAllContests,
+  });
 
   return (
-    <div className="flex w-full flex-col gap-8 sm:w-[250px] sm:w-full sm:gap-12">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 sm:max-w-6xl sm:gap-12">
       <section className="flex flex-col gap-4">
         <div className="rounded-xl bg-gray-50 p-2 sm:p-4">
           {notices ? (

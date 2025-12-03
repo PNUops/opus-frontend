@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaChevronRight } from 'react-icons/fa';
-import { cn } from 'utils/classname'; // 기존에 있는 유틸 활용
+import { cn } from 'utils/classname';
 
 interface ContestBannerProps {
   contestId: number;
@@ -12,7 +12,7 @@ interface ContestBannerProps {
   className?: string;
 }
 
-const ContestBanner = ({ contestId, title, period, type, backgroundImage, status, className }: ContestBannerProps) => {
+const ContestBox = ({ contestId, title, period, type, backgroundImage, status, className }: ContestBannerProps) => {
   return (
     <Link
       to={`/contest/${contestId}`}
@@ -24,7 +24,7 @@ const ContestBanner = ({ contestId, title, period, type, backgroundImage, status
       <img
         src={backgroundImage}
         alt={title}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        className="absolute inset-0 h-full w-full object-cover blur-sm transition-transform duration-500 group-hover:scale-105"
       />
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
 
@@ -32,16 +32,16 @@ const ContestBanner = ({ contestId, title, period, type, backgroundImage, status
         <div className="flex flex-col gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
             <span className="rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold text-gray-900">{type}</span>
-            {/* {status && (
+            {status && (
               <span className="rounded-full bg-green-500 px-4 py-1.5 text-sm font-bold text-white">{status}</span>
-            )} */}
+            )}
           </div>
 
           <h2 className="text-2xl leading-tight font-bold sm:text-4xl">{title}</h2>
 
           <div className="flex items-center gap-2 text-base sm:text-lg">
             <FaCalendarAlt className="text-lg" />
-            <span>일시: {period}</span>
+            <span>{period}</span>
           </div>
         </div>
 
@@ -53,4 +53,4 @@ const ContestBanner = ({ contestId, title, period, type, backgroundImage, status
   );
 };
 
-export default ContestBanner;
+export default ContestBox;
