@@ -21,8 +21,8 @@ const CustomOrderSection = () => {
   const toast = useToast();
   const { user } = useAuth();
   const { contestId: contestIdParam } = useParams();
-  const contestId = contestIdParam ? Number(contestIdParam) : 0;
-  const { data: teamList, isLoading } = useTeamList(contestId);
+  const contestId = Number(contestIdParam);
+  const { data: teamList, isLoading, error } = useTeamList(contestId);
   const [localTeams, setLocalTeams] = useState<TeamListItemResponseDto[]>([]);
 
   const customSortMutation = useMutation({
@@ -56,13 +56,14 @@ const CustomOrderSection = () => {
   const handleSave = () => {
     customSortMutation.mutate({
       payload: {
-        contestId: contestIdParam ? Number(contestIdParam) : 0,
+        contestId: contestId,
         teamOrders: localTeams.map((team, i) => ({ teamId: team.teamId, itemOrder: i + 1 })),
       },
     });
   };
 
   if (isLoading) return <Spinner />;
+  if (error) return <span>팀 목록을 불러오지 못했습니다. 다시 시도해 주세요</span>;
 
   return (
     <div className="flex flex-col gap-6">
@@ -102,14 +103,8 @@ const CustomOrderSection = () => {
 
 const TeamRow = ({ team }: { team: TeamListItemResponseDto }) => {
   const { teamName, projectName, awardName, awardColor } = team;
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: team.teamId,
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: team.teamId });
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <>
