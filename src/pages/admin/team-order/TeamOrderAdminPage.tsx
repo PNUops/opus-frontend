@@ -1,7 +1,9 @@
+import Button from '@components/Button';
 import Select from '@components/Select';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSortStatus, patchSortTeam, sortOptions } from 'apis/teams';
 import { useToast } from 'hooks/useToast';
+import CustomOrderSection from './CustomOrderSection';
 
 const TeamOrderAdminPage = () => {
   const queryClient = useQueryClient();
@@ -22,10 +24,10 @@ const TeamOrderAdminPage = () => {
     },
   });
 
-  if (!error) return <span className="text-sm">정렬 설정을 불러오지 못했습니다. 다시 시도해 주세요</span>;
+  if (error) return <span className="text-sm">정렬 설정을 불러오지 못했습니다. 다시 시도해 주세요</span>;
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">정렬 관리</h1>
         <Select onChange={(e) => mutate(e.target.value)} disabled={isLoading || isPending}>
@@ -38,6 +40,7 @@ const TeamOrderAdminPage = () => {
           })}
         </Select>
       </div>
+      {currentSortOption === 'CUSTOM' && <CustomOrderSection />}
     </div>
   );
 };
