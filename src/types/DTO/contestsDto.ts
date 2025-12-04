@@ -20,3 +20,11 @@ export interface PatchCustomOrderRequestDto {
   contestId: number;
   teamOrders: TeamOrder[];
 }
+
+export interface ProjectsAdminResponseDto {
+  teamId: number;
+  teamName: string;
+  projectName: string;
+  divisionName: string;
+  isSubmitted: boolean;
+}

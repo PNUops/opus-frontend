@@ -17,6 +17,7 @@ import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
+import ProjectManagePage from '@pages/admin/ProjectManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -56,7 +57,7 @@ const AppRoutes = () =>
               children: [
                 { index: true, element: <Navigate to="projects" replace /> },
                 // 프로젝트
-                { path: 'projects', element: <div>프로젝트 관리</div> },
+                { path: 'projects', element: <ProjectManagePage /> },
                 { path: 'sort', element: <div>정렬 관리</div> },
                 { path: 'awards', element: <div>수상 관리</div> },
                 { path: 'required-fields', element: <div>필수 항목 설정</div> },

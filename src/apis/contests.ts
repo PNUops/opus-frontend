@@ -1,7 +1,10 @@
-import { ContestResponseDto, VoteTermDto } from 'types/DTO';
 import apiClient from './apiClient';
-import { mockContestsResponse } from 'mocks/data/contests';
+
+import { ContestResponseDto, VoteTermDto } from 'types/DTO';
+import { ProjectsAdminResponseDto } from 'types/DTO';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+
+import { mockProjectsAdminResponse } from '@mocks/data/contests';
 
 export const getAllContests = async (): Promise<ContestResponseDto[]> => {
   const res = await apiClient.get('/contests');
@@ -45,4 +48,10 @@ export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {
 export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) => {
   const res = await apiClient.put(`/contests/${contestId}/vote`, payload);
   return res.data;
+};
+
+export const getProjectsAdmin = async (contestId: number): Promise<ProjectsAdminResponseDto[]> => {
+  // const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/admin/contests/${contestId}/dashboard`);
+  // return res.data;
+  return mockProjectsAdminResponse;
 };
