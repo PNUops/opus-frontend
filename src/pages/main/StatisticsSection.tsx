@@ -16,20 +16,7 @@ const StatisticsSection = () => {
     likeCount: 8029,
   });
 
-  // TODO: API 연동 시 아래 코드를 활성화하고 getStatistics 함수 구현 필요
-  /*
-  const { data: serverData } = useQuery({
-    queryKey: ['statistics'],
-    queryFn: getStatistics, // API 함수 필요
-  });
-
-  useEffect(() => {
-    if (serverData) setData(serverData);
-  }, [serverData]);
-  */
-
-  // 숫자 포맷팅 (1000 -> 1,000)
-  const formatNumber = (num: number) => new Intl.NumberFormat().format(num);
+  // API 연동 시 별도 가공 없이 데이터 사용
 
   return (
     <section className="flex flex-col gap-4">
@@ -38,15 +25,14 @@ const StatisticsSection = () => {
       </div>
 
       <div className="flex w-full flex-col justify-around gap-8 rounded-2xl bg-white px-4 py-10 shadow-sm sm:flex-row sm:gap-0 sm:px-10">
-        <StatItem label="프로젝트 등록 수" value={`${formatNumber(data.projectCount)}개`} />
+        <StatItem label="프로젝트 등록 수" value={`${data.projectCount}개`} />
 
         <Divider />
 
-        <StatItem label="오늘 방문자 수" value={`${formatNumber(data.visitorCount)}명`} />
-
+        <StatItem label="오늘 방문자 수" value={`${data.visitorCount}명`} />
         <Divider />
 
-        <StatItem label="총 좋아요 수" value={`${formatNumber(data.likeCount)}개`} />
+        <StatItem label="총 좋아요 수" value={`${data.likeCount}개`} />
       </div>
     </section>
   );

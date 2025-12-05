@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getNotices } from 'apis/notices';
+import useContests from 'hooks/useContests';
 import { getAllContests } from 'apis/contests';
 import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
@@ -16,16 +17,13 @@ const MainPage = () => {
     queryFn: getNotices,
   });
 
-  const { data: contests } = useQuery({
-    queryKey: ['contests'],
-    queryFn: getAllContests,
-  });
+  const { data: contests } = useContests();
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 sm:max-w-6xl sm:gap-12">
+    <div className="mx-auto flex max-w-4xl flex-col gap-8">
       <section className="flex flex-col gap-4">
-        <div className="rounded-xl bg-gray-50 p-2 sm:p-4">
-          {notices ? (
+        <div className="rounded-xl bg-gray-50 p-2">
+          {notices && notices.length > 0 ? (
             <NoticeList notices={notices.slice(0, 3)} />
           ) : (
             <div className="py-4 text-center text-sm text-gray-500">공지사항을 불러오는 중...</div>

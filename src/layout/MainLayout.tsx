@@ -14,17 +14,10 @@ const MainLayout = () => {
 
   return (
     <>
-      <div className="flex min-h-screen flex-col">
+      <div>
         <Header />
-        <div className="flex w-full flex-1 items-start">
-          <div className="shrink-0 border-r border-gray-100">
-            <Sidebar />
-          </div>
-          <main className="min-w-0 flex-1 bg-white px-6 py-8 sm:px-10 lg:px-12">
-            <div className="mx-auto w-full max-w-[80vw]">
-              <Outlet />
-            </div>
-          </main>
+        <div>
+          <Outlet />
         </div>
 
         <Footer />
