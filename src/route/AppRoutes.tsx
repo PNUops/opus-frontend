@@ -17,6 +17,7 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
+import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -58,7 +59,7 @@ const AppRoutes = () =>
                 { index: true, element: <Navigate to="projects" replace /> },
                 // 프로젝트
                 { path: 'projects', element: <div>프로젝트 관리</div> },
-                { path: 'sort', element: <div>정렬 관리</div> },
+                { path: 'team-order', element: <TeamOrderAdminPage /> },
                 { path: 'awards', element: <div>수상 관리</div> },
                 { path: 'required-fields', element: <div>필수 항목 설정</div> },
                 // 대회
