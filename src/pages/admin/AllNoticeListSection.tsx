@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import {
   AdminCard,
   AdminCardTop,
@@ -9,19 +11,14 @@ import {
   AdminPopoverDeleteButton,
 } from '@components/ui/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
-import { useQuery } from '@tanstack/react-query';
-import { getNotices } from 'apis/notices';
-import dayjs from 'dayjs';
+import { noticeOption } from 'queries/notices';
 import { NoticeModal } from './NoticeModal';
 
 const AllNoticeListSection = () => {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
-  const { data: notices } = useQuery({
-    queryKey: ['notices'],
-    queryFn: getNotices,
-  });
+  const { data: notices } = useQuery(noticeOption());
 
   return (
     <AdminCard>

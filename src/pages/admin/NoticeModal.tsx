@@ -6,6 +6,7 @@ import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
 import { getNoticeDetail, patchNotice, postCreateNotice } from 'apis/notices';
 import { useToast } from 'hooks/useToast';
+import { noticeDetailOption } from 'queries/notices';
 
 interface NoticeModalProps {
   type: 'create' | 'edit';
@@ -18,11 +19,7 @@ export const NoticeModal = ({ type, noticeId }: NoticeModalProps) => {
   const [description, setDescription] = useState<string>('');
 
   const queryClient = useQueryClient();
-  const { data: notice } = useQuery({
-    queryKey: ['noticeDetail', noticeId],
-    queryFn: () => getNoticeDetail(noticeId ?? 0),
-    enabled: !!noticeId,
-  });
+  const { data: notice } = useQuery(noticeDetailOption(noticeId ?? 0));
   const upsertMutation = useMutation({
     mutationFn: () => {
       if (type === 'edit' && noticeId) {
