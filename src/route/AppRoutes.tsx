@@ -19,6 +19,7 @@ import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -65,7 +66,7 @@ const AppRoutes = () =>
                 { path: 'required-fields', element: <div>필수 항목 설정</div> },
                 // 대회
                 { path: 'settings', element: <div>대회 관리</div> },
-                { path: 'departments', element: <div>분과 관리</div> },
+                { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <div>투표 관리</div> },
                 { path: 'notices', element: <div>공지 관리</div> },
                 { path: 'banners', element: <div>배너 관리</div> },

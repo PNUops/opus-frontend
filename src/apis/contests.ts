@@ -1,10 +1,10 @@
 import apiClient from './apiClient';
 
 import { ContestResponseDto, VoteTermDto } from 'types/DTO';
-import { ProjectsAdminResponseDto } from 'types/DTO';
+import { ProjectsAdminResponseDto, TracksAdminResponseDto } from 'types/DTO';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
-import { mockProjectsAdminResponse } from '@mocks/data/contests';
+import { mockProjectsAdminResponse, mockTracksAdminResponse } from '@mocks/data/contests';
 
 export const getAllContests = async (): Promise<ContestResponseDto[]> => {
   const res = await apiClient.get('/contests');
@@ -54,4 +54,10 @@ export const getProjectsAdmin = async (contestId: number): Promise<ProjectsAdmin
   // const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/admin/contests/${contestId}/dashboard`);
   // return res.data;
   return mockProjectsAdminResponse;
+};
+
+export const getTracksAdmin = async (contestId: number): Promise<TracksAdminResponseDto[]> => {
+  // const res = await apiClient.get<TracksAdminResponseDto[]>(`/contests/${contestId}/tracks`);
+  // return res.data;
+  return mockTracksAdminResponse;
 };

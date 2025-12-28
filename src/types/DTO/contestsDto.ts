@@ -28,3 +28,8 @@ export interface ProjectsAdminResponseDto {
   trackName: string;
   isSubmitted: boolean;
 }
+export interface TracksAdminResponseDto {
+  trackId: number;
+  trackName: string;
+  updatedAt: string;
+}
