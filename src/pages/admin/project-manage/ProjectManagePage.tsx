@@ -6,29 +6,26 @@ import { twMerge } from 'tailwind-merge';
 import { useContestId } from 'hooks/useId';
 import { useState } from 'react';
 import {
-  AdminCardCreateButton,
   AdminCardRow,
   AdminPopoverMenu,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
+  AdminHeader,
 } from '@components/ui/admin';
 import { getColorClassForLabel } from 'utils/color';
 import useContestAdmin from 'hooks/useContestAdmin';
 
-const ManageTitle = () => {
+const ProjectManageHeader = () => {
   const navigate = useNavigate();
   const contestId = useContestId();
-
   const handleCreateProject = () => navigate(`/admin/contest/${contestId}/project/create`);
-
   return (
-    <div className="flex w-full items-center justify-between">
-      <div className="flex items-center gap-3">
-        <h2 className="text-2xl font-bold">프로젝트 관리</h2>
-        <h4 className="text-exsm text-midGray">팀명, 프로젝트명, 분과명, 제출 정보</h4>
-      </div>
-      <AdminCardCreateButton onClick={handleCreateProject}>+ 새 프로젝트</AdminCardCreateButton>
-    </div>
+    <AdminHeader
+      title="프로젝트 관리"
+      description="팀명, 프로젝트명, 분과명, 제출 여부"
+      onButtonClick={handleCreateProject}
+      buttonLabel="+ 새 프로젝트"
+    />
   );
 };
 
@@ -52,8 +49,8 @@ const DivisionTag = ({ name }: { name: string }) => {
   return <Tag className={colorClass}>{name}</Tag>;
 };
 
-type ProjectListProps = { projects: ProjectsAdminResponseDto[] };
-const ProjectList = ({ projects }: ProjectListProps) => {
+type ProjectManageListProps = { projects: ProjectsAdminResponseDto[] };
+const ProjectManageList = ({ projects }: ProjectManageListProps) => {
   const navigate = useNavigate();
   const handleDeleteTeam = (teamId: number) => {
     alert(`팀 ${teamId} 삭제 훅 호출`);
@@ -63,7 +60,7 @@ const ProjectList = ({ projects }: ProjectListProps) => {
   return (
     <div className="flex flex-col">
       {projects.map((proj) => (
-        <AdminCardRow key={proj.teamId} className="border-lightGray">
+        <AdminCardRow key={proj.teamId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
           <div className="flex w-full items-center gap-4 py-1">
             <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{proj.teamId}</p>
             <div className="flex min-w-0 flex-1 items-center gap-6">
@@ -101,13 +98,14 @@ const ProjectManagePage = () => {
   const { data: projectsAdmin } = useQuery({
     queryKey: ['projects', contestId],
     queryFn: () => getProjectsAdmin(contestId),
+    enabled: !!contestId,
   });
 
   return (
     <div className="flex w-full flex-col">
-      <ManageTitle />
+      <ProjectManageHeader />
       <div className="h-[35px]" />
-      <ProjectList projects={projectsAdmin ?? []} />
+      <ProjectManageList projects={projectsAdmin ?? []} />
     </div>
   );
 };
