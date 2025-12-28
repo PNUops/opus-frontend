@@ -25,6 +25,6 @@ export interface ProjectsAdminResponseDto {
   teamId: number;
   teamName: string;
   projectName: string;
-  divisionName: string;
+  trackName: string;
   isSubmitted: boolean;
 }
