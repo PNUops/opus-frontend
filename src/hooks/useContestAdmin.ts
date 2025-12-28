@@ -5,7 +5,7 @@ import { getAllContests, postAllContests, deleteContest } from 'apis/contests';
 import { getSortStatus, getAllTeams, deleteTeams } from 'apis/teams';
 import { useToast } from 'hooks/useToast';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
-import { SortOption } from '@pages/admin/ProjectSortToggle';
+import { SortOption } from 'apis/teams';
 
 type DeleteModalState = {
   type: 'contest' | 'team' | null;

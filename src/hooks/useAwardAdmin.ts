@@ -113,8 +113,7 @@ export const useAwardCustomSortAdmin = (contestId: number, data: TeamListItemRes
   }, [data]);
 
   const customSortMutation = useMutation({
-    mutationFn: ({ contestId, payload }: { contestId: number; payload: PatchCustomOrderRequestDto }) =>
-      patchCustomSortTeam(contestId, payload),
+    mutationFn: ({ payload }: { payload: PatchCustomOrderRequestDto }) => patchCustomSortTeam(payload),
     onSuccess: () => {
       toast('정렬이 저장되었어요', 'success');
       queryClient.invalidateQueries({ queryKey: ['teams', contestId, user?.id ?? 'guest'] });
@@ -146,7 +145,6 @@ export const useAwardCustomSortAdmin = (contestId: number, data: TeamListItemRes
     const teamOrders = rows.map((r, idx) => ({ teamId: r.teamId, itemOrder: idx + 1 }));
     customSortMutation.mutate(
       {
-        contestId,
         payload: { contestId, teamOrders },
       },
       {
