@@ -21,6 +21,7 @@ import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
+import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -63,7 +64,7 @@ const AppRoutes = () =>
                 { path: 'projects', element: <ProjectManagePage /> },
                 { path: 'sort', element: <div>정렬 관리</div> },
                 { path: 'team-order', element: <TeamOrderAdminPage /> },
-                { path: 'awards', element: <div>수상 관리</div> },
+                { path: 'awards', element: <AwardManagePage /> },
                 { path: 'required-fields', element: <div>필수 항목 설정</div> },
                 // 대회
                 { path: 'settings', element: <div>대회 관리</div> },
