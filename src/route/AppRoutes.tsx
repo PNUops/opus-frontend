@@ -20,6 +20,7 @@ import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
+import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -68,7 +69,7 @@ const AppRoutes = () =>
                 { path: 'settings', element: <div>대회 관리</div> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <div>투표 관리</div> },
-                { path: 'notices', element: <div>공지 관리</div> },
+                { path: 'notices', element: <NoticeManagePage /> },
                 { path: 'banners', element: <div>배너 관리</div> },
                 // 통계
                 { path: 'statistics', element: <div>대회 통계</div> },
