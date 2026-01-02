@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
-interface TeamSelectProps {
+interface TeamSelectorProps {
   teamList: TeamListItemResponseDto[];
   onChange: (teamId: number) => void;
 }
 
-const TeamSelect = ({ teamList, onChange }: TeamSelectProps) => {
-  const title = '팀 선택';
+const TeamSelector = ({ teamList, onChange }: TeamSelectorProps) => {
   const [selectedValue, setSelectedValue] = useState<string>('');
 
   const handleValueChange = (value: string) => {
@@ -18,8 +17,8 @@ const TeamSelect = ({ teamList, onChange }: TeamSelectProps) => {
   };
 
   return (
-    <div className="flex flex-1 items-center gap-4">
-      <h4 className="w-30 text-sm leading-none">{title}</h4>
+    <div className="flex w-full items-center gap-4">
+      <label className="w-30 flex-shrink-0 text-sm leading-none">수상 팀</label>
       <Select value={selectedValue} onValueChange={handleValueChange}>
         <SelectTrigger className="focus:outline:none focus:border-mainGreen w-full overflow-hidden border text-sm focus:ring-0">
           <SelectValue placeholder="수상팀을 선택해주세요." className="truncate" />
@@ -39,4 +38,4 @@ const TeamSelect = ({ teamList, onChange }: TeamSelectProps) => {
   );
 };
 
-export default TeamSelect;
+export default TeamSelector;
