@@ -1,3 +1,5 @@
+import { AwardDto } from './awardsDto';
+
 export interface ContestResponseDto {
   contestId: number;
   contestName: string;
@@ -9,10 +11,7 @@ export interface VoteTermDto {
   voteEndAt: string;
 }
 
-export interface PatchAwardRequestDto {
-  awardName: string | null;
-  awardColor: string | null;
-}
+export type PatchAwardRequestDto = AwardDto;
 
 export type TeamOrder = { teamId: number; itemOrder: number };
 
