@@ -7,4 +7,5 @@ const PALETTE = [
   'bg-indigo-50 border border-indigo-400 text-indigo-700',
   'bg-slate-100 border border-slate-400 text-slate-700',
 ] as const;
+
 export default PALETTE;
