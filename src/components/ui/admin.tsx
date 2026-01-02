@@ -3,6 +3,7 @@ import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Fragment } from 'react';
 
 export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
   return <div className="border-lightGray flex flex-col gap-0.5 rounded-xl border-2">{children}</div>;
@@ -79,6 +80,36 @@ export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: 
       {buttonLabel && onButtonClick && (
         <AdminCardCreateButton onClick={onButtonClick}>{buttonLabel}</AdminCardCreateButton>
       )}
+    </div>
+  );
+};
+
+interface AdminListLayoutProps<T> {
+  title: string;
+  description?: string;
+  buttonLabel: string;
+  onButtonClick: () => void;
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+}
+
+export const AdminListLayout = <T,>({
+  title,
+  description,
+  buttonLabel,
+  onButtonClick,
+  items,
+  renderItem,
+}: AdminListLayoutProps<T>) => {
+  return (
+    <div className="flex w-full flex-col">
+      <AdminHeader title={title} description={description} onButtonClick={onButtonClick} buttonLabel={buttonLabel} />
+      <div className="h-[35px]" />
+      <div className="flex flex-col gap-2">
+        {items.map((item, index) => (
+          <Fragment key={index}>{renderItem(item)}</Fragment>
+        ))}
+      </div>
     </div>
   );
 };
