@@ -38,3 +38,20 @@ export const getUserFromToken = (token: string): User | null => {
     return null;
   }
 };
+
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return true;
+
+    const payload = base64UrlDecode(parts[1]);
+    const parsed = JSON.parse(payload);
+
+    if (!parsed.exp) return false;
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    return parsed.exp < currentTime;
+  } catch (error) {
+    return true;
+  }
+};
