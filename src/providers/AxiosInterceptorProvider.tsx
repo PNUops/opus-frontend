@@ -30,14 +30,15 @@ const AxiosInterceptorProvider = ({ children }: AxiosInterceptorProviderProps) =
       (error) => Promise.reject(error),
     );
 
-    const responseInterceptor = apiClient.interceptors.response.use(
-      (response) => response,
-      createResponseErrorInterceptor(handleTokenExpired),
-    );
+    // 현재 불안정한 api 응답으로 인해 주석처리(401 에러가 자주 발생함)
+    // const responseInterceptor = apiClient.interceptors.response.use(
+    //   (response) => response,
+    //   createResponseErrorInterceptor(handleTokenExpired),
+    // );
 
     return () => {
       apiClient.interceptors.request.eject(requestInterceptor);
-      // apiClient.interceptors.response.eject(responseInterceptor); // 현재 불안정한 api 응답으로 인해 주석처리(401 에러가 자주 발생함)
+      // apiClient.interceptors.response.eject(responseInterceptor);
     };
   }, [handleTokenExpired]);
 
