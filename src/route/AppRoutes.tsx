@@ -17,6 +17,7 @@ import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
+import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -49,6 +50,14 @@ const AppRoutes = () =>
                 </FullContainer>
               ),
               children: [{ index: true, element: <Navigate to="ongoing" /> }, ...AdminTabs],
+            },
+            {
+              path: 'contest/create',
+              element: (
+                <FullContainer>
+                  <ContestCreatePage />
+                </FullContainer>
+              ),
             },
             {
               path: 'contest/:contestId',
