@@ -4,12 +4,6 @@ export interface ContestResponseDto {
   updatedAt: Date;
 }
 
-export interface VoteTermDto {
-  voteStartAt: string;
-  voteEndAt: string;
-  votePerPerson: number;
-}
-
 export interface PatchAwardRequestDto {
   awardName: string | null;
   awardColor: string | null;

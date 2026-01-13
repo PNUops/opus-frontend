@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useToast } from 'hooks/useToast';
-import { getVoteTerm, updateVoteTerm } from 'apis/contests';
+import { getVoteTerm, updateVoteTerm } from 'apis/votes';
 import { VoteTermDto } from 'types/DTO';
 
 export const useGetVoteTerm = (contestId: number | undefined) => {
