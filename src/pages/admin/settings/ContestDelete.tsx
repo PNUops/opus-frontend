@@ -43,7 +43,7 @@ const ContestDelete = () => {
         <Button
           disabled={isPending}
           onClick={handleDelete}
-          className="group flex items-center gap-1.5 border-2 border-red-500 px-3.5 py-2.5 text-sm text-red-500 transition-colors hover:bg-red-500 hover:text-white"
+          className="group flex items-center gap-1.5 border-2 border-red-500 px-3.5 py-2 text-sm text-red-500 transition-colors hover:bg-red-500 hover:text-white"
         >
           <FaRegTrashCan size={16} className="mt-0.5 fill-red-500 transition-all group-hover:fill-white" />
           삭제하기
