@@ -1,10 +1,10 @@
 import ContestDelete from './ContestDelete';
-import ContestNameEdit from './ContestNameEdit';
+import ContestEdit from './ContestEdit';
 
 const ContestSettingsPage = () => {
   return (
     <div className="flex flex-col gap-[70px]">
-      <ContestNameEdit />
+      <ContestEdit />
       <ContestDelete />
     </div>
   );
