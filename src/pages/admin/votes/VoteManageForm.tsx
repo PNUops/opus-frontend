@@ -9,6 +9,7 @@ import VotePerPersonSelector from './VotePerPersonSelector';
 import Button from '@components/Button';
 import { useParams } from 'react-router-dom';
 import { MAX_VOTE_PER_PERSON } from 'constants/contest';
+import { useQueryClient } from '@tanstack/react-query';
 
 const VoteManageForm = () => {
   const { contestId: contestIdParam } = useParams();
@@ -18,8 +19,9 @@ const VoteManageForm = () => {
     voteEndAt: dayjs().toISOString(),
     votePerPerson: 3,
   });
+  const queryClient = useQueryClient();
 
-  const { data: voteTermData, isLoading } = useGetVoteTerm(Number(contestIdParam ?? 0));
+  const { data: voteTermData } = useGetVoteTerm(Number(contestIdParam ?? 0));
   const updateVoteTerm = useUpdateVoteTerm(Number(contestIdParam ?? 0));
 
   useEffect(() => {
@@ -39,7 +41,15 @@ const VoteManageForm = () => {
       return;
     }
 
-    updateVoteTerm.mutate(form);
+    updateVoteTerm.mutate(form, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['voteTerm'] });
+        toast('투표 기간을 수정했습니다.', 'success');
+      },
+      onError: (error: any) => {
+        toast(error.response?.data?.message || '투표 기간 수정에 실패했습니다.', 'error');
+      },
+    });
   };
 
   return (
@@ -63,7 +73,7 @@ const VoteManageForm = () => {
       <div className="flex justify-end">
         <Button
           onClick={handleDateSave}
-          disabled={isLoading || updateVoteTerm.isPending}
+          disabled={updateVoteTerm.isPending}
           className="bg-mainBlue hover:bg-mainBlue/90 flex h-9 items-center justify-center rounded-md px-6 py-2 text-sm text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-400"
         >
           {'저장하기'}
