@@ -1,11 +1,11 @@
 import { AiOutlineNotification } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import { NoticeResponseDto } from 'types/DTO/notices/NoticeResponseDto';
 import { MdFiberNew } from 'react-icons/md';
 import dayjs from 'dayjs';
+import { NoticeListDto } from 'types/DTO/noticeDto';
 
 interface Props {
-  notices: NoticeResponseDto[];
+  notices: NoticeListDto[];
 }
 
 const NoticeList = ({ notices }: Props) => {

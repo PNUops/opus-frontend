@@ -1,0 +1,33 @@
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { IoIosArrowForward } from 'react-icons/io';
+import { AdminCard, AdminCardTop, AdminCardCreateButton, AdminCardRow } from '@components/ui/admin';
+import { getAllContests } from 'apis/contests';
+
+const ContentListSection = () => {
+  const { data: contests } = useQuery({ queryKey: ['contests'], queryFn: getAllContests });
+
+  return (
+    <AdminCard>
+      <AdminCardTop>
+        <h2 className="text-2xl font-bold">대회 목록</h2>
+        <AdminCardCreateButton>
+          <Link to={`/admin/contest/create`}>{'+ 새 대회'}</Link>
+        </AdminCardCreateButton>
+      </AdminCardTop>
+      <div className="flex max-h-[300px] flex-col gap-[15px] overflow-y-auto p-2.5">
+        {contests?.map((contest) => (
+          <AdminCardRow className="group rounded-lg hover:bg-blue-100">
+            <div>{contest.contestName}</div>
+            <Link to={`/admin/contest/${contest.contestId}`} className="flex items-center gap-2">
+              <div className="text-mainBlue hidden text-xs group-hover:block">대회 설정 페이지로 이동</div>
+              <IoIosArrowForward className="group-hover:fill-mainBlue fill-midGray" />
+            </Link>
+          </AdminCardRow>
+        ))}
+      </div>
+    </AdminCard>
+  );
+};
+
+export default ContentListSection;
