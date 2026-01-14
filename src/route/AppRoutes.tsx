@@ -11,7 +11,6 @@ import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
-import AdminTabs from './AdminTabs';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
@@ -43,12 +42,12 @@ const AppRoutes = () =>
           element: <AdminLayout />,
           children: [
             {
+              index: true,
               element: (
                 <FullContainer>
                   <AdminDashBoardPage />
                 </FullContainer>
               ),
-              children: [{ index: true, element: <Navigate to="ongoing" /> }, ...AdminTabs],
             },
             {
               path: 'contest/:contestId',
