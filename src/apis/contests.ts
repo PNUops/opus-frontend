@@ -2,6 +2,11 @@ import { ContestRequestDto, ContestResponseDto, VoteTermDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
+export const postContest = async (payload: ContestRequestDto) => {
+  const res = await apiClient.post('/contests', payload);
+  return res.data;
+};
+
 export const getAllContests = async (): Promise<ContestResponseDto[]> => {
   const res = await apiClient.get('/contests');
   return res.data.map((contest: ContestResponseDto) => ({

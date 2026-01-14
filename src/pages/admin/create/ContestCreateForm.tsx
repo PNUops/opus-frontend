@@ -2,15 +2,41 @@ import Input from '@components/Input';
 import CategorySelect from '../CategorySelect';
 import { useState } from 'react';
 import Button from '@components/Button';
+import { useMutation } from '@tanstack/react-query';
 import { useContestCreate } from './ContestCreateContext';
+import { postContest } from 'apis/contests';
+import { ContestRequestDto } from 'types/DTO';
+import { useToast } from 'hooks/useToast';
 
 const ContestCreateForm = () => {
   const [categoryId, setCategoryId] = useState<string>('1');
   const [contestName, setContestName] = useState<string>('');
   const { setCurrentStep } = useContestCreate();
+  const toast = useToast();
+
+  const createContest = useMutation({
+    mutationKey: ['createContest'],
+    mutationFn: (payload: ContestRequestDto) => postContest(payload),
+  });
 
   const handleCreateContest = () => {
-    setCurrentStep(2);
+    if (!contestName) return toast('대회 이름을 입력해주세요.', 'error');
+
+    createContest.mutate(
+      {
+        categoryId: Number(categoryId),
+        contestName,
+      },
+      {
+        onSuccess: () => {
+          toast('대회 생성이 완료되었습니다.', 'success');
+          setCurrentStep(2);
+        },
+        onError: () => {
+          toast('대회 생성에 실패했습니다.', 'error');
+        },
+      },
+    );
   };
 
   return (
