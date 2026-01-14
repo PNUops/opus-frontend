@@ -11,7 +11,7 @@ import { useToast } from 'hooks/useToast';
 const ContestCreateForm = () => {
   const [categoryId, setCategoryId] = useState<string>('1');
   const [contestName, setContestName] = useState<string>('');
-  const { setCurrentStep } = useContestCreate();
+  const { setCurrentStep, setContestId } = useContestCreate();
   const toast = useToast();
 
   const createContest = useMutation({
@@ -28,8 +28,9 @@ const ContestCreateForm = () => {
         contestName,
       },
       {
-        onSuccess: () => {
+        onSuccess: (res) => {
           toast('대회 생성이 완료되었습니다.', 'success');
+          setContestId(res.contestId);
           setCurrentStep(2);
         },
         onError: () => {
