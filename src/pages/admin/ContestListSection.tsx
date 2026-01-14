@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
 import { AdminCard, AdminCardTop, AdminCardCreateButton, AdminCardRow } from '@components/ui/admin';
-import { getAllContests } from 'apis/contests';
+import { contestOption } from 'queries/contests';
 
 const ContentListSection = () => {
-  const { data: contests } = useQuery({ queryKey: ['contests'], queryFn: getAllContests });
+  const { data: contests } = useQuery(contestOption());
 
   return (
     <AdminCard>
