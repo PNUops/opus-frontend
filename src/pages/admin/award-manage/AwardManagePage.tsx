@@ -18,7 +18,8 @@ const AwardManagePage = () => {
     <div className="flex w-full flex-col">
       <AdminHeader title="수상 관리" description="팀 | 프로젝트 | 수상 내역" />
       <div className="h-[35px]" />
-      <AwardEditForm contestId={contestId} />
+      <AwardEditForm contestId={contestId} viewAdmin={viewAdmin} />
+      <div className="h-[35px]" />
       <AwardList filterId={viewAdmin.selectedTeamId} teamList={teamList ?? []} />
     </div>
   );
@@ -35,22 +36,19 @@ const AwardList = ({ filterId = 0, teamList }: AwardListProps) => {
   return (
     <div className="flex w-full flex-col">
       {filteredTeamList.map((team, index) => (
-        <AdminCardRow key={team.teamId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
-          <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{index}</p>
-          <p className="text-darkGray w-[150px] flex-shrink-0 truncate font-medium">{team.teamName}</p>{' '}
-          <p className="flex-1 truncate text-gray-600">{team.projectName}</p>
-          {team.awards.filter((award) => award.awardName && award.awardColor).length > 0 && (
-            <div className="flex items-center gap-3">
-              {team.awards.map((award, index) => (
-                <AwardTag
-                  key={index}
-                  awardName={award.awardName ?? ''}
-                  awardColor={award.awardColor ?? ''}
-                  removable={true}
-                />
-              ))}
-            </div>
-          )}
+        <AdminCardRow key={team.teamId} className={twMerge('border-lightGray, px-0 py-1.5')}>
+          <div className="flex w-full items-center gap-4 rounded-lg border p-3">
+            <p className="w-10 flex-shrink-0 text-center text-sm">{index + 1}</p>
+            <p className="text-darkGray w-[150px] flex-shrink-0 truncate">{team.teamName}</p>{' '}
+            <p className="flex-1 truncate text-gray-600">{team.projectName}</p>
+            {team.awards.filter((award) => award.awardName && award.awardColor).length > 0 && (
+              <div className="flex items-center gap-3">
+                {team.awards.map((award, index) => (
+                  <AwardTag key={index} awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
+                ))}
+              </div>
+            )}
+          </div>
         </AdminCardRow>
       ))}
     </div>
