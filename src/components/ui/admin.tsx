@@ -87,10 +87,10 @@ export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: 
 interface AdminListLayoutProps<T> {
   title: string;
   description?: string;
-  buttonLabel: string;
-  onButtonClick: () => void;
+  buttonLabel?: string;
+  onButtonClick?: () => void;
   items: T[];
-  renderItem: (item: T) => React.ReactNode;
+  renderItem: (item: T, index?: number) => React.ReactNode;
 }
 
 export const AdminListLayout = <T,>({
@@ -107,7 +107,7 @@ export const AdminListLayout = <T,>({
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
         {items.map((item, index) => (
-          <Fragment key={index}>{renderItem(item)}</Fragment>
+          <Fragment key={index}>{renderItem(item, index)}</Fragment>
         ))}
       </div>
     </div>
