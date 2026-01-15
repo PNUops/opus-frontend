@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
 
 import AwardTag from '@components/AwardTag';
 import { AwardDto } from 'types/DTO/awardsDto';
 import { AWRD_PALETTE } from 'constants/palette';
+import useDebounce from 'hooks/useDebounce';
 
 interface AwardSelectorProps {
   awards: AwardDto[];
@@ -14,6 +15,7 @@ interface AwardSelectorProps {
 const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newAwardName, setNewAwardName] = useState('');
+  const debouncedAwardName = useDebounce(newAwardName, 300);
 
   return (
     <div className="flex w-full items-center gap-4">
@@ -69,12 +71,12 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
               />
             </div>
           </div>
-          {newAwardName && (
+          {debouncedAwardName && (
             <div className="flex flex-col items-start gap-3 p-4">
               <p className="text-midGray text-base font-medium">옵션을 선택하여 상훈을 추가하세요.</p>
               {AWRD_PALETTE.map((color) => (
                 <button key={color} type="button" onClick={() => alert(`${color}`)}>
-                  <AwardTag awardName={newAwardName} awardColor={color} />
+                  <AwardTag awardName={debouncedAwardName} awardColor={color} />
                 </button>
               ))}
             </div>
