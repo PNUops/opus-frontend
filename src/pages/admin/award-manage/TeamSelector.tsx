@@ -24,6 +24,9 @@ const TeamSelector = ({ teamList, onChange }: TeamSelectorProps) => {
           <SelectValue placeholder="수상팀을 선택해주세요." className="truncate" />
         </SelectTrigger>
         <SelectContent className="text-sm">
+          <SelectItem key={0} value={'0'} className="overflow-hidden">
+            <span className="block w-full truncate">전체 보기</span>
+          </SelectItem>
           {teamList.map((team) => {
             const selectText = `${team.teamId}. ${team.teamName} - ${team.projectName}`;
             return (
