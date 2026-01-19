@@ -18,6 +18,7 @@ import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import RequiredFieldsPage from '@pages/admin/RequiredFieldsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -52,6 +53,12 @@ const AppRoutes = () =>
               ),
               children: [{ index: true, element: <Navigate to="ongoing" /> }, ...AdminTabs],
             },
+            // TODO: 임시 테스트용 라우트 - 나중에 삭제
+            {
+              path: 'test',
+              element: <AdminContestLayout />,
+              children: [{ path: 'required-fields', element: <RequiredFieldsPage /> }],
+            },
             {
               path: 'contest/:contestId',
               element: <AdminContestLayout />,
@@ -61,7 +68,7 @@ const AppRoutes = () =>
                 { path: 'projects', element: <div>프로젝트 관리</div> },
                 { path: 'team-order', element: <TeamOrderAdminPage /> },
                 { path: 'awards', element: <div>수상 관리</div> },
-                { path: 'required-fields', element: <div>필수 항목 설정</div> },
+                { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
                 { path: 'settings', element: <div>대회 관리</div> },
                 { path: 'departments', element: <div>분과 관리</div> },
