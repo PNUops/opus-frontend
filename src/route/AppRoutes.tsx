@@ -22,6 +22,8 @@ import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
+import MyPageLayout from '@pages/account/MyPageLayout';
+import AccountManagePage from '@pages/account/AccountManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -43,6 +45,7 @@ const AppRoutes = () =>
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
           ],
         },
+        { path: 'myaccount', element: <MyPageLayout />, children: [{ index: true, element: <AccountManagePage /> }] },
         {
           path: 'admin',
           element: <AdminLayout />,
