@@ -145,7 +145,6 @@ const ProjectEditorPage = ({ mode }: ProjectEditorPageProps) => {
         }}
         isAdmin={isAdmin}
       />
-      s
       <div className="h-15" />
       <OverviewInput overview={formState.overview} setOverview={(value: string) => setField('overview', value)} />
       <div className="h-20" />
