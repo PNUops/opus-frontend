@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { AdminHeader } from '@components/ui/admin';
+import ConfirmModal from '@components/ConfirmModal';
 
 const AccountManagePage = () => {
   return (
@@ -43,8 +44,12 @@ const StudentIdSection = () => {
 };
 
 const DeleteAccountSection = () => {
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const handleDeleteAccount = () => {
     alert('탈퇴가 완료되었습니다.');
+    setShowConfirm(false);
+    /* TODO: 탈퇴하고 즉각 로그아웃 및 리다이렉트? */
   };
 
   return (
@@ -54,11 +59,18 @@ const DeleteAccountSection = () => {
         <p>SW프로젝트관리시스템 탈퇴하기</p>
         <button
           className="text-mainRed border-mainRed rounded-md border bg-white px-2 py-1"
-          onClick={handleDeleteAccount}
+          onClick={() => setShowConfirm(true)}
         >
           탈퇴하기
         </button>
       </div>
+      <ConfirmModal
+        isOpen={showConfirm}
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setShowConfirm(false)}
+        message="정말 탈퇴하시겠어요?"
+        description="삭제한 회원 정보는 복구할 수 없습니다."
+      />
     </div>
   );
 };
