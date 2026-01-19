@@ -4,10 +4,10 @@ import { FiX } from 'react-icons/fi';
 interface AwardTagProps {
   awardName: string;
   awardColor: string;
-  removable?: boolean;
+  onRemove?: () => void;
 }
 
-const AwardTag = ({ awardName, awardColor, removable }: AwardTagProps) => {
+const AwardTag = ({ awardName, awardColor, onRemove }: AwardTagProps) => {
   return (
     <span
       className="award-tag relative inline-flex max-w-full min-w-0 items-center justify-center overflow-hidden rounded-full border px-4 py-0.5 text-sm font-medium text-white"
@@ -25,11 +25,16 @@ const AwardTag = ({ awardName, awardColor, removable }: AwardTagProps) => {
       >
         {awardName}
       </span>
-      {removable && (
+      {onRemove && (
         <button
           type="button"
-          onClick={() => alert('삭제')}
-          className="ml-2 shrink-0 rounded-full bg-white/40 p-1 text-white outline-none hover:bg-white/50"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onRemove) {
+              onRemove();
+            }
+          }}
+          className="ml-2 shrink-0 rounded-full bg-white/40 p-1 text-white outline-none hover:bg-white/70"
         >
           <FiX size={15} className="hover:cursor-pointer" />
         </button>
