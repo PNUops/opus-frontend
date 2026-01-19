@@ -1,4 +1,4 @@
-import { AwardDto } from './awardsDto';
+import { AwardDto, TeamAwardDto, ContestAwardDto } from './awardsDto';
 
 export interface ContestResponseDto {
   contestId: number;
@@ -10,6 +10,8 @@ export interface VoteTermDto {
   voteStartAt: string;
   voteEndAt: string;
 }
+
+export type GetTeamAwardsResponseDto = TeamAwardDto[];
 
 export type PatchAwardRequestDto = AwardDto;
 
@@ -32,3 +34,7 @@ export interface TracksAdminResponseDto {
   trackName: string;
   updatedAt: string;
 }
+
+export type GetContestAwardsResponseDto = ContestAwardDto[];
+
+export type PatchContestAwardRequestDto = AwardDto;

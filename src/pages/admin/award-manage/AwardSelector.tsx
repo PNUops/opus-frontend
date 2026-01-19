@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover'
 import { deleteContestAward, getContestAwards, createContestAward } from 'apis/contests';
 import { getTeamAwards, updateTeamAward } from 'apis/teams';
 import AwardTag from '@components/AwardTag';
-import { AwardDto, TeamAwardDto } from 'types/DTO/awardsDto';
+import { AwardDto, ContestAwardDto, TeamAwardDto } from 'types/DTO/awardsDto';
 import { AWRD_PALETTE } from 'constants/palette';
 import useDebounce from 'hooks/useDebounce';
 import { deleteTeamAward } from 'apis/teams';
@@ -36,6 +36,7 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
   if (!contestAwards) return <></>;
 
   const teamAwardsList: TeamAwardDto[] = teamAwards ?? [];
+  const contestAwardsList: ContestAwardDto[] = contestAwards ?? [];
 
   const handleRemoveTeamAward = (awardId: number) => {
     deleteTeamAward(awardId);
@@ -144,21 +145,21 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
           ) : (
             <div className="flex flex-col items-start gap-3 p-4">
               <p className="text-midGray text-base font-medium">옵션 선택</p>
-              {contestAwards.map((tag) => (
+              {contestAwards.map((award) => (
                 <button
-                  key={tag.awardId}
+                  key={award.awardId}
                   type="button"
                   onClick={() => {
-                    toggleSelectAwardId(tag.awardId);
+                    toggleSelectAwardId(award.awardId);
                     setNewAwardName('');
                   }}
                 >
                   <AwardTag
-                    key={tag.awardId}
-                    awardName={tag.awardName}
-                    awardColor={tag.awardColor}
+                    key={award.awardId}
+                    awardName={award.awardName}
+                    awardColor={award.awardColor}
                     onRemove={() => {
-                      handleRemoveContestAward(tag.awardId);
+                      handleRemoveContestAward(award.awardId);
                     }}
                   />
                 </button>

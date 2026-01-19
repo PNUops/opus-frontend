@@ -9,3 +9,9 @@ export interface TeamAwardDto {
   awardColor: string;
   contestId: number;
 }
+
+export interface ContestAwardDto {
+  awardId: number;
+  awardName: string;
+  awardColor: string;
+}
