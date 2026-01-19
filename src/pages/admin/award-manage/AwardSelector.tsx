@@ -1,10 +1,13 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
-
+import { deleteContestAward, getContestAwards, createContestAward } from 'apis/contests';
+import { getTeamAwards, updateTeamAward } from 'apis/teams';
 import AwardTag from '@components/AwardTag';
-import { AwardDto } from 'types/DTO/awardsDto';
+import { AwardDto, TeamAwardDto } from 'types/DTO/awardsDto';
 import { AWRD_PALETTE } from 'constants/palette';
 import useDebounce from 'hooks/useDebounce';
+import { deleteTeamAward } from 'apis/teams';
 
 interface AwardSelectorProps {
   awards: AwardDto[];
@@ -13,9 +16,62 @@ interface AwardSelectorProps {
 }
 
 const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
+  const contestId = 1; // 임시 contestId
   const [isOpen, setIsOpen] = useState(false);
   const [newAwardName, setNewAwardName] = useState('');
-  const debouncedAwardName = useDebounce(newAwardName, 300);
+  const debouncedAwardName = useDebounce(newAwardName, 100);
+  const [selectedAwardIds, setSelectedAwardIds] = useState<number[]>([]);
+  const debouncedSelectedAwardIds = useDebounce<number[]>(selectedAwardIds, 1000);
+
+  const { data: teamAwards } = useQuery({
+    queryKey: ['teamAwards', contestId],
+    queryFn: () => getTeamAwards(contestId),
+  });
+
+  const { data: contestAwards } = useQuery({
+    queryKey: ['contestAwards', contestId],
+    queryFn: () => getContestAwards(contestId),
+  });
+
+  if (!contestAwards) return <></>;
+
+  const teamAwardsList: TeamAwardDto[] = teamAwards ?? [];
+
+  const handleRemoveTeamAward = (awardId: number) => {
+    deleteTeamAward(awardId);
+    // alert(`삭제 awardId: ${awardId}`);
+  };
+
+  const handleRemoveContestAward = (awardId: number) => {
+    deleteContestAward(contestId, awardId);
+    // alert(`삭제 awardId: ${awardId}`);
+  };
+
+  const handleAddTeamAward = (awardIds: number[]) => {
+    updateTeamAward(contestId, awardIds);
+    // alert(`추가 awardIds: ${awardIds}`);
+  };
+
+  const toggleSelectAwardId = (id: number) => {
+    setSelectedAwardIds((prev) => {
+      const exists = prev.includes(id);
+      if (exists) return prev.filter((x) => x !== id);
+      return [...prev, id];
+    });
+  };
+
+  useEffect(() => {
+    if (debouncedSelectedAwardIds && debouncedSelectedAwardIds.length > 0) {
+      handleAddTeamAward(debouncedSelectedAwardIds);
+      setSelectedAwardIds([]);
+    }
+    0;
+  }, [debouncedSelectedAwardIds]);
+
+  const handleAddContestAward = (awardName: string, awardColor: string) => {
+    createContestAward(contestId, { awardName, awardColor });
+    alert(`추가 awardName: ${awardName}, awardColor: ${awardColor}`);
+  };
 
   return (
     <div className="flex w-full items-center gap-4">
@@ -29,7 +85,7 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
       >
         <PopoverTrigger asChild>
           <div className="hover:bg-whiteGray flex min-h-[44px] flex-1 cursor-pointer items-center justify-between rounded-md p-2">
-            {awards && awards.length > 0 ? (
+            {awards.length > 0 ? (
               <div className="flex gap-3">
                 {awards.map((award, index) => (
                   <AwardTag key={index} awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
@@ -46,37 +102,65 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
           sideOffset={-44}
         >
           <div className="bg-whiteGray flex items-center gap-4 p-4">
-            {awards.filter((award) => award.awardName && award.awardColor).length > 0 && (
+            {teamAwardsList.filter((award) => award.awardName && award.awardColor).length > 0 && (
               <div className="flex items-center gap-3">
-                {awards.map((award, index) => (
+                {teamAwardsList.map((award, index) => (
                   <AwardTag
                     key={index}
                     awardName={award.awardName ?? ''}
                     awardColor={award.awardColor ?? ''}
-                    removable={true}
+                    onRemove={() => handleRemoveTeamAward(award.awardId)}
                   />
                 ))}
               </div>
             )}
             <div className="inline-grid min-w-[50px] items-center">
-              <span className="invisible col-start-1 row-start-1 px-1 whitespace-pre">
-                {newAwardName || '상훈 명칭 입력...'}
-              </span>
+              <span className="invisible col-start-1 row-start-1 px-1 whitespace-pre">{newAwardName}</span>
               <input
                 className="col-start-1 row-start-1 w-full bg-transparent outline-none"
                 value={newAwardName}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAwardName(e.target.value)}
-                placeholder={newAwardName ? '' : '상훈 명칭 입력...'}
+                placeholder={newAwardName ? '' : '추가 상훈 입력...'}
                 autoFocus
               />
             </div>
           </div>
-          {debouncedAwardName && (
+          {debouncedAwardName ? (
             <div className="flex flex-col items-start gap-3 p-4">
-              <p className="text-midGray text-base font-medium">옵션을 선택하여 상훈을 추가하세요.</p>
+              <p className="text-midGray text-base font-medium">옵션 선택</p>
               {AWRD_PALETTE.map((color) => (
-                <button key={color} type="button" onClick={() => alert(`${color}`)}>
+                <button
+                  key={color}
+                  type="button"
+                  onClick={() => {
+                    handleAddContestAward(newAwardName, color);
+                    setNewAwardName('');
+                  }}
+                >
                   <AwardTag awardName={debouncedAwardName} awardColor={color} />
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-start gap-3 p-4">
+              <p className="text-midGray text-base font-medium">옵션 선택</p>
+              {contestAwards.map((tag) => (
+                <button
+                  key={tag.awardId}
+                  type="button"
+                  onClick={() => {
+                    toggleSelectAwardId(tag.awardId);
+                    setNewAwardName('');
+                  }}
+                >
+                  <AwardTag
+                    key={tag.awardId}
+                    awardName={tag.awardName}
+                    awardColor={tag.awardColor}
+                    onRemove={() => {
+                      handleRemoveContestAward(tag.awardId);
+                    }}
+                  />
                 </button>
               ))}
             </div>
