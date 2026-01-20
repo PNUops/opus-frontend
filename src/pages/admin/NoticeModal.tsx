@@ -7,13 +7,15 @@ import TextArea from '@components/TextArea';
 import { getNoticeDetail, patchNotice, postCreateNotice } from 'apis/notices';
 import { useToast } from 'hooks/useToast';
 import { noticeDetailOption } from 'queries/notices';
+import { NoticeRequestDto } from 'types/DTO/noticeDto';
 
 interface NoticeModalProps {
   type: 'create' | 'edit';
   noticeId?: number;
+  closeModal: () => void;
 }
 
-export const NoticeModal = ({ type, noticeId }: NoticeModalProps) => {
+export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) => {
   const toast = useToast();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -21,18 +23,13 @@ export const NoticeModal = ({ type, noticeId }: NoticeModalProps) => {
   const queryClient = useQueryClient();
   const { data: notice } = useQuery(noticeDetailOption(noticeId ?? 0));
   const upsertMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: (payload: NoticeRequestDto) => {
       if (type === 'edit' && noticeId) {
-        return patchNotice(noticeId, { title, description });
+        return patchNotice(noticeId, payload);
       } else {
-        return postCreateNotice({ title, description });
+        return postCreateNotice(payload);
       }
     },
-    onSuccess: () => {
-      toast(`공지사항이 작성 되었어요.`, 'success');
-      queryClient.invalidateQueries({ queryKey: ['notices'] });
-    },
-    onError: () => toast(`공지사항 작성에 실패했어요.`, 'error'),
   });
 
   useEffect(() => {
@@ -42,7 +39,21 @@ export const NoticeModal = ({ type, noticeId }: NoticeModalProps) => {
     }
   }, [notice]);
 
-  const handleSave = () => upsertMutation.mutate();
+  const handleSave = async () => {
+    await upsertMutation.mutateAsync(
+      { title, description },
+      {
+        onSuccess: () => {
+          toast(`공지사항이 작성 되었어요.`, 'success');
+          queryClient.invalidateQueries({ queryKey: ['notices'] });
+        },
+        onError: () => {
+          toast(`공지사항 작성에 실패했어요.`, 'error');
+        },
+      },
+    );
+    closeModal();
+  };
 
   return (
     <DialogContent className="w-[500px]">
