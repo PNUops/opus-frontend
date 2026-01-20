@@ -24,6 +24,7 @@ import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
 import MyPageLayout from '@pages/account/MyPageLayout';
 import AccountManagePage from '@pages/account/AccountManagePage';
+import NoticeCreateTab from '@pages/admin/NoticeManageTab/NoticeCreateTab';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -65,6 +66,8 @@ const AppRoutes = () =>
                 { index: true, element: <Navigate to="projects" replace /> },
                 // 프로젝트
                 { path: 'projects', element: <ProjectManagePage /> },
+                // 프로젝트 생성
+                { path: 'projects/create', element: <ProjectEditorPage mode="create" /> },
                 { path: 'sort', element: <div>정렬 관리</div> },
                 { path: 'team-order', element: <TeamOrderAdminPage /> },
                 { path: 'awards', element: <AwardManagePage /> },
@@ -74,6 +77,7 @@ const AppRoutes = () =>
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <div>투표 관리</div> },
                 { path: 'notices', element: <NoticeManagePage /> },
+                { path: 'notices/create', element: <NoticeCreateTab /> },
                 { path: 'banners', element: <div>배너 관리</div> },
                 // 통계
                 { path: 'statistics', element: <div>대회 통계</div> },
