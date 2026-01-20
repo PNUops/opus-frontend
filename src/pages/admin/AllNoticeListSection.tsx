@@ -12,7 +12,7 @@ import {
 } from '@components/ui/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { noticeOption } from 'queries/notices';
-import { NoticeModal } from './NoticeModal';
+import { NoticeDeleteConfirmModal, NoticeModal } from './NoticeModal';
 
 const AllNoticeListSection = () => {
   const [createOpen, setCreateOpen] = useState<boolean>(false);
@@ -47,6 +47,7 @@ const AllNoticeListSection = () => {
               </Dialog>
               <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
                 <AdminPopoverDeleteButton onDelete={() => setDeleteOpen(false)} />
+                <NoticeDeleteConfirmModal noticeId={notice.noticeId} closeModal={() => setDeleteOpen(false)} />
               </Dialog>
             </AdminPopoverMenu>
           </AdminCardRow>

@@ -4,10 +4,11 @@ import { DialogClose, DialogContent } from '@components/ui/dialog';
 import Input from '@components/Input';
 import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
-import { getNoticeDetail, patchNotice, postCreateNotice } from 'apis/notices';
+import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notices';
 import { useToast } from 'hooks/useToast';
 import { noticeDetailOption } from 'queries/notices';
 import { NoticeRequestDto } from 'types/DTO/noticeDto';
+import { AdminDeleteConfirmModal } from '@components/ui/admin';
 
 interface NoticeModalProps {
   type: 'create' | 'edit';
@@ -84,4 +85,32 @@ export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) =>
       </div>
     </DialogContent>
   );
+};
+
+interface NoticeDeleteConfirmModalProps {
+  noticeId: number;
+  closeModal: () => void;
+}
+
+export const NoticeDeleteConfirmModal = ({ noticeId, closeModal }: NoticeDeleteConfirmModalProps) => {
+  const toast = useToast();
+
+  const noticeDelete = useMutation({
+    mutationKey: ['noticeDelete'],
+    mutationFn: (noticeId: number) => deleteNotice(noticeId),
+  });
+
+  const onDelete = async () => {
+    await noticeDelete.mutateAsync(noticeId, {
+      onSuccess: () => {
+        toast('공지사항이 삭제되었습니다.', 'success');
+      },
+      onError: () => {
+        toast('공지사항 삭제에 실패했습니다.', 'error');
+      },
+    });
+    closeModal();
+  };
+
+  return <AdminDeleteConfirmModal title={'공지사항을 삭제하시겠습니까?'} onDelete={onDelete} />;
 };
