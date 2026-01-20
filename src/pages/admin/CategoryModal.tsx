@@ -100,8 +100,8 @@ export const CategoryDeleteConfirmModal = ({ category, closeModal }: CategoryDel
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
   });
 
-  const onDelete = () => {
-    categoryDelete.mutate(category.categoryId, {
+  const onDelete = async () => {
+    await categoryDelete.mutateAsync(category.categoryId, {
       onSuccess: () => {
         toast('카테고리가 삭제되었습니다.', 'success');
       },
@@ -113,6 +113,6 @@ export const CategoryDeleteConfirmModal = ({ category, closeModal }: CategoryDel
   };
 
   return (
-    <AdminDeleteConfirmModal title={`${category.categoryName} 카테고리를 삭제하시겠습니까?`} onDelete={closeModal} />
+    <AdminDeleteConfirmModal title={`${category.categoryName} 카테고리를 삭제하시겠습니까?`} onDelete={onDelete} />
   );
 };
