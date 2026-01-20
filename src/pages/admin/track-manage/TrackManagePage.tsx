@@ -1,42 +1,65 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
+  AdminHeader,
   AdminCardRow,
   AdminPopoverMenu,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
-  AdminListLayout,
 } from '@components/ui/admin';
-import { getTracksAdmin } from 'apis/contests';
-import { TracksAdminResponseDto } from 'types/DTO';
+import { Dialog, DialogTrigger } from '@components/ui/dialog';
+import { getContestTracks } from 'apis/contests';
+import { TrackDeleteConfirmModal, TrackModal } from './TrackModal';
 
 const TrackManagePage = () => {
   const contestId = 1; // TODO: 현재 선택된 공모전 ID로 변경 필요
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
   const { data: tracks } = useQuery({
     queryKey: ['tracks', contestId],
-    queryFn: () => getTracksAdmin(contestId),
+    queryFn: () => getContestTracks(contestId),
     enabled: !!contestId,
   });
 
   return (
-    <AdminListLayout<TracksAdminResponseDto>
-      title="분과 관리"
-      buttonLabel="+ 새 분과"
-      onButtonClick={() => alert('분과 생성')}
-      items={tracks ?? []}
-      renderItem={(track) => (
-        <AdminCardRow key={track.trackId} className="even:bg-slate-50">
-          <div className="flex w-full items-center gap-4 py-1">
-            <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{track.trackId}</p>
-            <p className="flex-1 font-medium">{track.trackName}</p>
-            <AdminPopoverMenu>
-              <AdminPopoverEditButton onEdit={() => {}} />
-              <AdminPopoverDeleteButton onDelete={() => {}} />
-            </AdminPopoverMenu>
-          </div>
-        </AdminCardRow>
-      )}
-    />
+    <div className="flex w-full flex-col">
+      <Dialog>
+        <DialogTrigger asChild>
+          <AdminHeader title="분과 관리" onButtonClick={() => alert('분과 생성')} buttonLabel="+ 새 분과" />
+        </DialogTrigger>
+        <TrackModal type="create" onSubmit={() => {}} />
+      </Dialog>
+      <div className="h-[35px]" />
+      <div className="flex flex-col gap-2">
+        {(tracks ?? []).map((track, index) => (
+          <AdminCardRow key={track.trackId} className="even:bg-slate-50">
+            <div className="flex w-full items-center gap-4 py-1">
+              <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
+              <p className="flex-1 font-medium">{track.trackName}</p>
+              <AdminPopoverMenu>
+                <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                  <AdminPopoverEditButton
+                    onEdit={() => {
+                      setEditOpen(true);
+                    }}
+                  />
+                  <TrackModal type="edit" prevName={track.trackName} onSubmit={() => {}} />
+                </Dialog>
+                <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+                  <AdminPopoverDeleteButton
+                    onDelete={() => {
+                      setDeleteOpen(true);
+                    }}
+                  />
+                  <TrackDeleteConfirmModal trackName={track.trackName} onSubmit={() => {}} />
+                </Dialog>
+              </AdminPopoverMenu>
+            </div>
+          </AdminCardRow>
+        ))}
+      </div>
+    </div>
   );
 };
 
