@@ -29,10 +29,17 @@ export interface ProjectsAdminResponseDto {
   trackName: string;
   isSubmitted: boolean;
 }
-export interface TracksAdminResponseDto {
+
+export interface ContestTrackDto {
   trackId: number;
   trackName: string;
   updatedAt: string;
+}
+
+export type GetContestTracksResponseDto = ContestTrackDto[];
+
+export interface PostContestTrackRequestDto {
+  trackName: string;
 }
 
 export type GetContestAwardsResponseDto = ContestAwardDto[];
