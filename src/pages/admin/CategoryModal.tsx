@@ -5,7 +5,7 @@ import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminDeleteConfirmModal } from '@components/ui/admin';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, patchCategory, postCategory } from 'apis/category';
 import { CategoryDto } from 'types/DTO';
 
@@ -18,6 +18,7 @@ interface CategoryModalProps {
 export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps) => {
   const [categoryName, setCategoryName] = useState<string>(prevData?.categoryName ?? '');
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const categoryCreate = useMutation({
     mutationKey: ['categoryCreate'],
@@ -38,6 +39,7 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
     if (type === 'create') {
       await categoryCreate.mutateAsync(categoryName, {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['category'] });
           toast('카테고리가 추가되었습니다.', 'success');
         },
         onError: () => {
@@ -49,6 +51,7 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
         { categoryId: prevData.categoryId, categoryName },
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['category'] });
             toast('카테고리가 수정되었습니다.', 'success');
           },
           onError: () => {
@@ -94,6 +97,7 @@ interface CategoryDeleteConfirmModalProps {
 
 export const CategoryDeleteConfirmModal = ({ category, closeModal }: CategoryDeleteConfirmModalProps) => {
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const categoryDelete = useMutation({
     mutationKey: ['categoryDelete'],
@@ -103,6 +107,7 @@ export const CategoryDeleteConfirmModal = ({ category, closeModal }: CategoryDel
   const onDelete = async () => {
     await categoryDelete.mutateAsync(category.categoryId, {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['category'] });
         toast('카테고리가 삭제되었습니다.', 'success');
       },
       onError: () => {
