@@ -65,7 +65,7 @@ const ProjectManagePage = () => {
       />
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
-        {!projectsAdmin ? (
+        {!projectsAdmin || projectsAdmin.length === 0 ? (
           <div className="bg-whiteGray text-midGray rounded-md p-4 text-center">아직 등록된 프로젝트가 없어요.</div>
         ) : (
           projectsAdmin.map((proj, index) => (
