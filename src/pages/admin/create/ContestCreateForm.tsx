@@ -9,7 +9,7 @@ import { ContestRequestDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
 
 const ContestCreateForm = () => {
-  const [categoryId, setCategoryId] = useState<string>('1');
+  const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
   const { setCurrentStep, setContestId } = useContestCreate();
   const toast = useToast();
