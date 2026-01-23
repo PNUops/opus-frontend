@@ -30,3 +30,23 @@ export const deleteNotice = async (noticeId: number) => {
   const { data } = await apiClient.delete(`/notices/${noticeId}`);
   return data;
 };
+
+export const getContestNotices = async (contestId: number): Promise<NoticeResponseDto[]> => {
+  const res = await apiClient.get(`/contests/${contestId}/notices`);
+  return res.data;
+};
+
+export const createContestNotice = async (contestId: number, payload: NoticeRequestDto) => {
+  const res = await apiClient.post(`/contests/${contestId}/notices`, payload);
+  return res.data;
+};
+
+export const updateContestNotice = async (contestId: number, noticeId: number, payload: NoticeRequestDto) => {
+  const res = await apiClient.patch(`/contests/${contestId}/notices/${noticeId}`, payload);
+  return res.data;
+};
+
+export const deleteContestNotice = async (contestId: number, noticeId: number) => {
+  const res = await apiClient.delete(`/contests/${contestId}/notices/${noticeId}`);
+  return res.data;
+};
