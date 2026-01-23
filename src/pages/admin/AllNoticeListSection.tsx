@@ -46,7 +46,7 @@ const AllNoticeListSection = () => {
                 <NoticeModal type="edit" noticeId={notice.noticeId} closeModal={() => setEditOpen(false)} />
               </Dialog>
               <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-                <AdminPopoverDeleteButton onDelete={() => setDeleteOpen(false)} />
+                <AdminPopoverDeleteButton onDelete={() => setDeleteOpen(true)} />
                 <NoticeDeleteConfirmModal noticeId={notice.noticeId} closeModal={() => setDeleteOpen(false)} />
               </Dialog>
             </AdminPopoverMenu>
