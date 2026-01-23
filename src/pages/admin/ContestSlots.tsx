@@ -7,7 +7,7 @@ import { useToast } from 'hooks/useToast';
 import { contestOption } from 'queries/contests';
 
 interface ContestSlotsProps {
-  contests: ContestResponseDto[];
+  contests?: ContestResponseDto[];
   selectedContest?: ContestResponseDto;
 }
 

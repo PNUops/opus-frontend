@@ -11,11 +11,13 @@ import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
+import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
+import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -50,6 +52,14 @@ const AppRoutes = () =>
               ),
             },
             {
+              path: 'contest/create',
+              element: (
+                <FullContainer>
+                  <ContestCreatePage />
+                </FullContainer>
+              ),
+            },
+            {
               path: 'contest/:contestId',
               element: <AdminContestLayout />,
               children: [
@@ -60,7 +70,7 @@ const AppRoutes = () =>
                 { path: 'awards', element: <div>수상 관리</div> },
                 { path: 'required-fields', element: <div>필수 항목 설정</div> },
                 // 대회
-                { path: 'settings', element: <div>대회 관리</div> },
+                { path: 'settings', element: <ContestSettingsPage /> },
                 { path: 'departments', element: <div>분과 관리</div> },
                 { path: 'votes', element: <div>투표 관리</div> },
                 { path: 'notices', element: <div>공지 관리</div> },

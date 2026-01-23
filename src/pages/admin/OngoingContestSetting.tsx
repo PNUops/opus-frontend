@@ -10,8 +10,8 @@ const OngoingContestSetting = () => {
   const { data: contests } = useQuery(contestOption());
 
   useEffect(() => {
-    if (contests) setSelectedContest(contests[0]);
-  }, [contests]);
+    if (!selectedContest && contests) setSelectedContest(contests[0]);
+  }, [contests, selectedContest]);
 
   const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const contest = contests?.find((contest) => contest.contestName === e.target.value);
@@ -36,7 +36,7 @@ const OngoingContestSetting = () => {
           <IoIosArrowDown className="text-mainGreen pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-lg" />
         </div>
         <div className="flex flex-wrap gap-5">
-          {contests && <ContestSlots contests={contests} selectedContest={selectedContest} />}
+          <ContestSlots contests={contests} selectedContest={selectedContest} />
         </div>
       </div>
     </div>
