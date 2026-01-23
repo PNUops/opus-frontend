@@ -17,7 +17,7 @@ const ContentListSection = () => {
       </AdminCardTop>
       <div className="flex max-h-[300px] flex-col gap-[15px] overflow-y-auto p-2.5">
         {contests?.map((contest) => (
-          <AdminCardRow className="group rounded-lg hover:bg-blue-100">
+          <AdminCardRow key={contest.contestId} className="group rounded-lg hover:bg-blue-100">
             <div className="flex items-center gap-2.5">
               <div>{contest.contestName}</div>
               <div className="bg-lightGray text-midGray rounded-3xl px-2.5 py-0.5 text-[14px]">
