@@ -1,6 +1,6 @@
 import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
 import { SubmissionStatusResponseDto } from '../types/DTO/teams/submissionStatusDto';
-import { PatchAwardRequestDto, PatchCustomOrderRequestDto } from 'types/DTO';
+import { PatchAwardRequestDto, PatchCustomOrderRequestDto, GetTeamAwardsResponseDto } from 'types/DTO';
 import apiClient from './apiClient';
 
 export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
@@ -37,8 +37,8 @@ export const getThumbnailTeams = async (teamId: number) => {
   }
 };
 
-export const deleteTeams = async (teamId_: number) => {
-  const res = await apiClient.delete(`/teams/${teamId_}`);
+export const deleteTeam = async (teamId: number) => {
+  const res = await apiClient.delete(`/teams/${teamId}`);
   return res.data;
 };
 
@@ -52,12 +52,24 @@ export const getSortStatus = async (): Promise<SortOption> => {
   return res.data.currentMode as SortOption;
 };
 
-export const patchTeamAward = async (teamId: number, payload: PatchAwardRequestDto) => {
+export const patchCustomSortTeam = async (payload: PatchCustomOrderRequestDto) => {
+  const res = await apiClient.patch('/teams/sort/custom', payload);
+  return res.data;
+};
+
+export const getTeamAwards = async (teamId: number): Promise<GetTeamAwardsResponseDto> => {
+  const res = await apiClient.get(`admin/teams/${teamId}/award`);
+  return res.data;
+};
+
+// TODO
+export const deleteTeamAward = async (teamId: number) => {
+  const payload: PatchAwardRequestDto = { awardName: null, awardColor: null };
   const res = await apiClient.patch(`admin/teams/${teamId}/award`, payload);
   return res.data;
 };
 
-export const patchCustomSortTeam = async (payload: PatchCustomOrderRequestDto) => {
-  const res = await apiClient.patch('/teams/sort/custom', payload);
+export const updateTeamAward = async (teamId: number, awardIds: number[]) => {
+  const res = await apiClient.patch(`admin/teams/${teamId}/award`, awardIds);
   return res.data;
 };
