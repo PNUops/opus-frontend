@@ -34,7 +34,7 @@ const AllNoticeListSection = () => {
       </AdminCardTop>
       <div>
         {notices?.map((notice) => (
-          <AdminCardRow key={notice.noticeId} className="border-midGray not-last:border-b">
+          <AdminCardRow key={notice.noticeId} className="border-b-lightGray not-last:border-b">
             <div className="flex gap-5">
               <div>{notice.noticeId}</div>
               <div>{dayjs(notice.createdAt).format('YYYY년 MM월 DD일 HH:mm')}</div>
