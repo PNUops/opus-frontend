@@ -7,17 +7,23 @@ import { useContestCreate } from './ContestCreateContext';
 import { postContest } from 'apis/contests';
 import { ContestRequestDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 
 const ContestCreateForm = () => {
   const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
   const { setCurrentStep, setContestId } = useContestCreate();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const createContest = useMutation({
     mutationKey: ['createContest'],
     mutationFn: (payload: ContestRequestDto) => postContest(payload),
   });
+
+  const handleCancel = () => {
+    navigate(-1);
+  };
 
   const handleCreateContest = () => {
     if (!contestName) return toast('대회 이름을 입력해주세요.', 'error');
@@ -65,7 +71,9 @@ const ContestCreateForm = () => {
         </div>
       </div>
       <div className="flex items-center justify-center gap-6">
-        <Button className="rounded-3xl border border-red-400 px-6 py-2 text-red-400">취소하기</Button>
+        <Button className="rounded-3xl border border-red-400 px-6 py-2 text-red-400" onClick={handleCancel}>
+          취소하기
+        </Button>
         <Button
           className="disabled:border-midGray disabled:bg-whiteGray disabled:text-midGray border-mainGreen text-mainGreen rounded-3xl border px-6 py-2"
           onClick={handleCreateContest}
