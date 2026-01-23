@@ -12,7 +12,7 @@ export const admin_sections = [
     title: '대회',
     links: [
       { to: 'settings', label: '대회 관리' },
-      { to: 'departments', label: '분과 관리' },
+      { to: 'tracks', label: '분과 관리' },
       { to: 'votes', label: '투표 관리' },
       { to: 'notices', label: '공지 관리' },
       { to: 'banners', label: '배너 관리' },
