@@ -32,32 +32,36 @@ const TrackManagePage = () => {
       </Dialog>
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
-        {(tracks ?? []).map((track, index) => (
-          <AdminCardRow key={track.trackId} className="even:bg-slate-50">
-            <div className="flex w-full items-center gap-4 py-1">
-              <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
-              <p className="flex-1 font-medium">{track.trackName}</p>
-              <AdminPopoverMenu>
-                <Dialog open={editOpen} onOpenChange={setEditOpen}>
-                  <AdminPopoverEditButton
-                    onEdit={() => {
-                      setEditOpen(true);
-                    }}
-                  />
-                  <TrackModal type="edit" prevName={track.trackName} onSubmit={() => {}} />
-                </Dialog>
-                <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-                  <AdminPopoverDeleteButton
-                    onDelete={() => {
-                      setDeleteOpen(true);
-                    }}
-                  />
-                  <TrackDeleteConfirmModal trackName={track.trackName} onSubmit={() => {}} />
-                </Dialog>
-              </AdminPopoverMenu>
-            </div>
-          </AdminCardRow>
-        ))}
+        {!tracks || tracks.length === 0 ? (
+          <div className="bg-whiteGray text-midGray rounded-md p-4 text-center">아직 등록된 분과가 없어요.</div>
+        ) : (
+          tracks.map((track, index) => (
+            <AdminCardRow key={track.trackId} className="even:bg-slate-50">
+              <div className="flex w-full items-center gap-4 py-1">
+                <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
+                <p className="flex-1 font-medium">{track.trackName}</p>
+                <AdminPopoverMenu>
+                  <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                    <AdminPopoverEditButton
+                      onEdit={() => {
+                        setEditOpen(true);
+                      }}
+                    />
+                    <TrackModal type="edit" prevName={track.trackName} onSubmit={() => {}} />
+                  </Dialog>
+                  <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+                    <AdminPopoverDeleteButton
+                      onDelete={() => {
+                        setDeleteOpen(true);
+                      }}
+                    />
+                    <TrackDeleteConfirmModal trackName={track.trackName} onSubmit={() => {}} />
+                  </Dialog>
+                </AdminPopoverMenu>
+              </div>
+            </AdminCardRow>
+          ))
+        )}
       </div>
     </div>
   );
