@@ -17,7 +17,7 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
-import SidebarLayout from '@layout/admin/contest/SidebarLayout';
+import SidebarLayout from '@layout/SidebarLayout';
 
 const AppRoutes = () =>
   createBrowserRouter([
