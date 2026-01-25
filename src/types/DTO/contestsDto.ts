@@ -1,6 +1,9 @@
 export interface ContestResponseDto {
   contestId: number;
   contestName: string;
+  categoryId: number;
+  categoryName: string;
+  isCurrent: boolean;
   updatedAt: Date;
 }
 
