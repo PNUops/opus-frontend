@@ -6,6 +6,13 @@ export interface ContestResponseDto {
   isCurrent: boolean;
   updatedAt: Date;
 }
+export interface CurrentContestResponseDto {
+  contestId: number;
+  categoryName: string;
+  contestName: string;
+  voteStartAt: Date;
+  voteEndAt: Date;
+}
 
 export interface VoteTermDto {
   voteStartAt: string;
