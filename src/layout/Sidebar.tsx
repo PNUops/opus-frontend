@@ -49,7 +49,7 @@ const CategoryItem = ({ category, isExpanded, onToggle }: CategoryItemProps) => 
       onClick={onToggle}
       className={cn(
         'flex w-full items-center justify-between px-5 py-4 text-left transition-all',
-        isExpanded ? 'bg-mainGreen text-white' : 'bg-white text-gray-800 hover:bg-gray-50'
+        isExpanded ? 'bg-mainGreen text-white' : 'hover:bg-whiteGray bg-white',
       )}
     >
       <span className="text-lg font-medium">{category.categoryName}</span>
@@ -72,7 +72,7 @@ const ContestList = ({ contests }: ContestListProps) => (
       <Link
         key={contest.contestId}
         to={`/contest/${contest.contestId}`}
-        className="hover:text-mainGreen w-full bg-gray-50 px-6 py-3 text-left text-lg transition-all"
+        className="hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-lg transition-all"
       >
         {contest.contestName}
       </Link>
