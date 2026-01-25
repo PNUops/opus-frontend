@@ -1,5 +1,9 @@
 export interface ProjectDetailsEditDto {
   contestId: number;
+  contestName: string;
+  divisionId: number;
+  divisionName: string;
+  teamId: number;
   teamName: string;
   projectName: string;
   professorName: string;
