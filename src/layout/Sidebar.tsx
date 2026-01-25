@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import useContests from 'hooks/useContests';
 import { ContestResponseDto } from 'types/DTO/contestsDto';
 import { cn } from 'utils/classname';
@@ -66,19 +66,20 @@ interface ContestListProps {
   contests: ContestResponseDto[];
 }
 
-const ContestList = ({ contests }: ContestListProps) => (
-  <div className="flex flex-col bg-white">
-    {contests.map((contest) => (
-      <Link
-        key={contest.contestId}
-        to={`/contest/${contest.contestId}`}
-        className="hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-lg transition-all"
-      >
-        {contest.contestName}
-      </Link>
-    ))}
-  </div>
-);
+const ContestList = ({ contests }: ContestListProps) => {
+  const baseStyle = 'hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-lg transition-all';
+  const getLinkClass = ({ isActive }: { isActive: boolean }) =>
+    cn(baseStyle, isActive && 'text-mainGreen font-semibold');
+  return (
+    <div className="flex flex-col bg-white">
+      {contests.map((contest) => (
+        <NavLink key={contest.contestId} to={`/contest/${contest.contestId}`} className={getLinkClass}>
+          {contest.contestName}
+        </NavLink>
+      ))}
+    </div>
+  );
+};
 
 const groupContestsByCategory = (contests: ContestResponseDto[]): Category[] => {
   const categoryMap = new Map<number, Category>();
