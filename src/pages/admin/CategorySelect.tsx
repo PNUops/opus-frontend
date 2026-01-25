@@ -1,4 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
+import { useQuery } from '@tanstack/react-query';
+import { categoryOption } from 'queries/category';
+import { useEffect } from 'react';
 
 interface CategorySelectProps {
   categoryId: string;
@@ -7,7 +10,11 @@ interface CategorySelectProps {
 }
 
 const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
-  // TODO: API 연결
+  const { data: categorys } = useQuery(categoryOption());
+
+  useEffect(() => {
+    if (categorys) onChange(categorys[0].categoryId.toString());
+  }, [categorys]);
 
   return (
     <Select onValueChange={onChange} value={categoryId}>
@@ -15,9 +22,11 @@ const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelect
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="1">해커톤</SelectItem>
-        <SelectItem value="2">졸업과제</SelectItem>
-        <SelectItem value="3">자유대회</SelectItem>
+        {categorys?.map((category) => (
+          <SelectItem key={category.categoryId} value={`${category.categoryId}`}>
+            {category.categoryName}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

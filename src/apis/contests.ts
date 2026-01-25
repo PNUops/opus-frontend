@@ -2,6 +2,11 @@ import { ContestRequestDto, ContestResponseDto, VoteTermDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
+export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
+  const res = await apiClient.post('/contests', payload);
+  return res.data;
+};
+
 export const getAllContests = async (): Promise<ContestResponseDto[]> => {
   const res = await apiClient.get('/contests');
   return res.data.map((contest: ContestResponseDto) => ({
@@ -38,6 +43,13 @@ export const patchChangeOngoingContest = async (contestId: number, isCurrent: bo
 
 export const getContestTeams = async (contestId: number): Promise<TeamListItemResponseDto[]> => {
   const res = await apiClient.get(`/contests/${contestId}/teams`);
+  return res.data;
+};
+
+export const postBulkAddTeams = async (contestId: number, formData: FormData) => {
+  const res = await apiClient.post(`/contests/${contestId}/teams/bulk`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return res.data;
 };
 
