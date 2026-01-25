@@ -1,15 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { getNotices } from 'apis/notices';
-import useContests from 'hooks/useContests';
-import { getAllContests } from 'apis/contests';
 import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
-import techweekBanner from 'styles/techweek-2025.webp';
-import defaultBanner from 'assets/basicThumbnail.jpg';
-import { mockNotices } from '@mocks/data/notices';
-import { mockContestsResponse } from '@mocks/data/contests';
+import useCurrentContests from 'hooks/useCurrentContests';
+import dayjs from 'dayjs';
 
 const MainPage = () => {
   const { data: notices } = useQuery({
@@ -17,7 +13,7 @@ const MainPage = () => {
     queryFn: getNotices,
   });
 
-  const { data: contests } = useContests();
+  const { data: currentContests } = useCurrentContests();
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8">
@@ -36,33 +32,21 @@ const MainPage = () => {
         <h2 className="text-xl font-bold sm:text-2xl">현재 진행 중인 대회</h2>
 
         <div className="flex flex-col gap-5">
-          {contests && contests.length > 0 ? (
-            contests.slice(0, 2).map((contest, index) => {
-              const isTechWeek = contest.contestName.toLowerCase().includes('techweek');
-              const bannerImage = isTechWeek ? techweekBanner : defaultBanner;
-              const type = isTechWeek ? '캡스톤' : '해커톤';
-              const status = '신청접수';
-
+          {currentContests && currentContests.length > 0 ? (
+            currentContests.map((contest) => {
               return (
                 <ContestBanner
                   key={contest.contestId}
                   contestId={contest.contestId}
                   title={contest.contestName}
-                  period="2025.09.30 - 2025.10.01"
-                  type={type}
-                  status={status}
-                  backgroundImage={bannerImage}
+                  period={`${dayjs(contest.voteStartAt).format('MM월 DD일')} ~ ${dayjs(contest.voteEndAt).format('MM월 DD일')}`}
+                  status="진행중"
+                  type={contest.categoryName}
                 />
               );
             })
           ) : (
-            <ContestBanner
-              contestId={0}
-              title="등록된 대회가 없습니다."
-              period="-"
-              type="안내"
-              backgroundImage={defaultBanner}
-            />
+            <ContestBanner title="진행중인 대회가 없습니다." type="안내" />
           )}
         </div>
       </section>
