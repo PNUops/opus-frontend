@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { FaCalendarAlt, FaChevronRight } from 'react-icons/fa';
 import { cn } from 'utils/classname';
 import defaultBanner from 'assets/basicThumbnail.jpg';
+import { API_BASE_URL } from '@constants/index';
 
 interface ContestBannerProps {
   contestId?: number;
@@ -13,9 +14,7 @@ interface ContestBannerProps {
 }
 
 const ContestBox = ({ contestId, title, period, type, status, className }: ContestBannerProps) => {
-  const backgroundImage = contestId
-    ? `${import.meta.env.VITE_API_BASE_URL}/api/contests/${contestId}/image/banner`
-    : defaultBanner;
+  const backgroundImage = contestId ? `${API_BASE_URL}/api/contests/${contestId}/image/banner` : defaultBanner;
   return (
     <Link
       to={contestId ? `/contest/${contestId}` : '#'}
