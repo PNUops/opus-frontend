@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getAllContests, postAllContests, deleteContest } from 'apis/contests';
-import { getSortStatus, getAllTeams, deleteTeams } from 'apis/teams';
+import { getSortStatus, getAllTeams, deleteTeam } from 'apis/teams';
 import { useToast } from 'hooks/useToast';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 import { SortOption } from 'apis/teams';
@@ -135,7 +135,7 @@ const useContestAdmin = () => {
 
   const handleDeleteTeam = async (teamId: number) => {
     try {
-      await deleteTeams(teamId);
+      await deleteTeam(teamId);
       await queryClient.invalidateQueries({ queryKey: ['teams'] });
       toast('팀이 삭제되었습니다.', 'success');
     } catch (error: any) {

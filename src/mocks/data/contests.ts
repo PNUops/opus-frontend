@@ -1,5 +1,5 @@
 import { ContestResponseDto } from 'types/DTO';
-import { ProjectsAdminResponseDto } from 'types/DTO';
+import { ProjectsAdminResponseDto, GetContestTracksResponseDto, GetContestAwardsResponseDto } from 'types/DTO';
 
 export const mockContestsResponse: ContestResponseDto[] = [
   {
@@ -29,35 +29,86 @@ export const mockProjectsAdminResponse: ProjectsAdminResponseDto[] = [
     teamId: 1,
     teamName: '슈퍼팀',
     projectName: 'AI 프로젝트',
-    divisionName: 'AI 트랙',
+    trackName: '1 트랙',
     isSubmitted: true,
   },
   {
     teamId: 2,
     teamName: 'OPS A',
     projectName: 'AI 기반 문제추천',
-    divisionName: 'AI 트랙',
+    trackName: '2 트랙',
     isSubmitted: true,
   },
   {
     teamId: 3,
     teamName: 'OPS B',
     projectName: '수어 번역기',
-    divisionName: '웹 개발 트랙',
+    trackName: '웹 개발 트랙',
     isSubmitted: false,
   },
   {
     teamId: 4,
     teamName: 'OPS C',
     projectName: 'AI 면접 분석기',
-    divisionName: 'AI 트랙',
+    trackName: '3 트랙',
     isSubmitted: true,
   },
   {
     teamId: 5,
     teamName: 'OPS D',
     projectName: '헬스 자세 교정 AI',
-    divisionName: 'AI 트랙',
+    trackName: '1 트랙',
     isSubmitted: false,
+  },
+];
+
+export const mockTracksAdminResponse: GetContestTracksResponseDto = [
+  {
+    trackId: 1,
+    trackName: '1 트랙',
+    updatedAt: '25.07.07 16:45',
+  },
+  {
+    trackId: 2,
+    trackName: '2 트랙',
+    updatedAt: '25.07.07 16:45',
+  },
+  {
+    trackId: 3,
+    trackName: '웹 개발 트랙',
+    updatedAt: '25.07.07 16:45',
+  },
+  {
+    trackId: 4,
+    trackName: '모바일 개발 트랙',
+    updatedAt: '25.07.07 16:45',
+  },
+  {
+    trackId: 5,
+    trackName: 'AI 트랙',
+    updatedAt: '25.07.07 16:45',
+  },
+];
+
+export const mockContestAwardsResponse: GetContestAwardsResponseDto = [
+  {
+    awardId: 1,
+    awardName: '우수상',
+    awardColor: '#BBBEEE',
+  },
+  {
+    awardId: 2,
+    awardName: '장려상',
+    awardColor: '#ABBDDD',
+  },
+  {
+    awardId: 3,
+    awardName: '최우수상',
+    awardColor: '#FFD700',
+  },
+  {
+    awardId: 4,
+    awardName: '대상',
+    awardColor: '#FF5733',
   },
 ];
