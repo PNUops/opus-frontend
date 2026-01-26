@@ -7,6 +7,7 @@ import {
   AdminCardRow,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
+  AdminNoData,
 } from '@components/ui/admin';
 import { CategoryModal, CategoryDeleteConfirmModal } from './CategoryModal';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
@@ -47,6 +48,7 @@ const ContestCategorySection = () => {
             </AdminPopoverMenu>
           </AdminCardRow>
         ))}
+        {categories?.length === 0 && <AdminNoData />}
       </div>
     </AdminCard>
   );

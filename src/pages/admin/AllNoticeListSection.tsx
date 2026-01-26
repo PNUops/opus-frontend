@@ -9,6 +9,7 @@ import {
   AdminPopoverMenu,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
+  AdminNoData,
 } from '@components/ui/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { noticeOption } from 'queries/notices';
@@ -52,6 +53,7 @@ const AllNoticeListSection = () => {
             </AdminPopoverMenu>
           </AdminCardRow>
         ))}
+        {notices?.length === 0 && <AdminNoData />}
       </div>
     </AdminCard>
   );

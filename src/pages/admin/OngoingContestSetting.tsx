@@ -33,7 +33,7 @@ const OngoingContestSetting = () => {
               </option>
             ))}
           </select>
-          <IoIosArrowDown className="text-mainGreen pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-lg" />
+          <IoIosArrowDown className="text-mainGreen pointer-events-none absolute top-1/2 right-7 -translate-y-1/2 text-lg" />
         </div>
         <div className="flex flex-wrap gap-5">
           <ContestSlots contests={contests} selectedContest={selectedContest} />

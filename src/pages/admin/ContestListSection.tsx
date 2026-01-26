@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
-import { AdminCard, AdminCardTop, AdminCardCreateButton, AdminCardRow } from '@components/ui/admin';
+import { AdminCard, AdminCardTop, AdminCardCreateButton, AdminCardRow, AdminNoData } from '@components/ui/admin';
 import { contestOption } from 'queries/contests';
 
 const ContentListSection = () => {
@@ -30,6 +30,7 @@ const ContentListSection = () => {
             </Link>
           </AdminCardRow>
         ))}
+        {contests?.length === 0 && <AdminNoData />}
       </div>
     </AdminCard>
   );

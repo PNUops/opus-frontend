@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { DialogClose, DialogContent, DialogTitle } from './dialog';
 import Button from '@components/Button';
+import { cn } from '@components/lib/utils';
 
 export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
   return <div className="border-lightGray flex flex-col gap-0.5 rounded-xl border-2">{children}</div>;
@@ -79,5 +80,11 @@ export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; on
         </Button>
       </div>
     </DialogContent>
+  );
+};
+
+export const AdminNoData = ({ style }: React.ComponentProps<'div'>) => {
+  return (
+    <div className={cn('text-midGray my-10 flex items-center justify-center font-bold', style)}>데이터가 없습니다.</div>
   );
 };
