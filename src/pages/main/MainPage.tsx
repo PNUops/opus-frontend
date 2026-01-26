@@ -5,14 +5,11 @@ import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
 import { currentContestOption } from 'queries/contests';
+import { noticeOption } from 'queries/notices';
 import dayjs from 'dayjs';
 
 const MainPage = () => {
-  const { data: notices } = useQuery({
-    queryKey: ['notices'],
-    queryFn: getNotices,
-  });
-
+  const { data: notices } = useQuery(noticeOption());
   const { data: currentContests } = useQuery(currentContestOption());
 
   return (
