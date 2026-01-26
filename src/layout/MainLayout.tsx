@@ -5,6 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { Toaster } from '@components/Toaster';
 import useAuthInit from 'hooks/useAuthInit';
 import useScrollToTop from 'hooks/useScrollToTop';
+import AxiosInterceptorProvider from 'providers/AxiosInterceptorProvider';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
@@ -13,17 +14,16 @@ const MainLayout = () => {
   if (!isAuthInit) return <></>;
 
   return (
-    <>
+    <AxiosInterceptorProvider>
       <div>
         <Header />
         <div>
           <Outlet />
         </div>
-
         <Footer />
       </div>
       <Toaster />
-    </>
+    </AxiosInterceptorProvider>
   );
 };
 
