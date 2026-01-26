@@ -2,6 +2,7 @@ import apiClient from './apiClient';
 
 import {
   ContestResponseDto,
+  CurrentContestResponseDto,
   VoteTermDto,
   GetContestAwardsResponseDto,
   PatchContestAwardRequestDto,
@@ -34,8 +35,8 @@ export const patchContest = async (contestId: number, contestName: string) => {
   return res.data;
 };
 
-export const getCurrentContestTeams = async (): Promise<TeamListItemResponseDto[]> => {
-  const res = await apiClient.get('/contests/current/teams');
+export const getCurrentContest = async (): Promise<CurrentContestResponseDto[]> => {
+  const res = await apiClient.get('/contests/current');
   return res.data;
 };
 
