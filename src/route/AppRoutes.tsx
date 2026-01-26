@@ -17,6 +17,7 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
+import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 
 const AppRoutes = () =>
@@ -26,10 +27,15 @@ const AppRoutes = () =>
       element: <MainLayout />,
       children: [
         {
-          element: <FullContainerLayout />,
+          element: <SidebarLayout />,
           children: [
             { index: true, element: <MainPage /> },
             { path: 'contest/:contestId', element: <ContestPage /> },
+          ],
+        },
+        {
+          element: <FullContainerLayout />,
+          children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
             { path: 'teams/view/:teamId', element: <ProjectViewerPage /> },
