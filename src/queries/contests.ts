@@ -1,13 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 import { getCurrentContest } from 'apis/contests';
 
-const useCurrentContests = () => {
-  return useQuery({
+export const currentContestOption = () => {
+  return queryOptions({
     queryKey: ['currentContests'],
     queryFn: getCurrentContest,
     staleTime: Infinity,
     gcTime: Infinity,
   });
 };
-
-export default useCurrentContests;

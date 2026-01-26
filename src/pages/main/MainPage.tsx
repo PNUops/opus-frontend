@@ -4,7 +4,7 @@ import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
-import useCurrentContests from 'hooks/useCurrentContests';
+import { currentContestOption } from 'queries/contests';
 import dayjs from 'dayjs';
 
 const MainPage = () => {
@@ -13,7 +13,7 @@ const MainPage = () => {
     queryFn: getNotices,
   });
 
-  const { data: currentContests } = useCurrentContests();
+  const { data: currentContests } = useQuery(currentContestOption());
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8">
