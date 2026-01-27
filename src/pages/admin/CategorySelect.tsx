@@ -1,7 +1,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { useQuery } from '@tanstack/react-query';
-import { categoryOption } from 'queries/category';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { categoryOption } from 'queries/category';
+import { contestOption } from 'queries/contests';
 
 interface CategorySelectProps {
   categoryId: string;
@@ -10,11 +12,19 @@ interface CategorySelectProps {
 }
 
 const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
+  const { contestId: contestIdParam } = useParams();
+  const { data: contests } = useQuery(contestOption());
   const { data: categorys } = useQuery(categoryOption());
 
   useEffect(() => {
-    if (categorys) onChange(categorys[0].categoryId.toString());
-  }, [categorys]);
+    if (categorys && contests) {
+      if (!contestIdParam) onChange(categorys[0].categoryId.toString());
+      else {
+        const currentId = contests.find((contest) => contest.contestId === Number(contestIdParam))?.categoryId;
+        if (currentId) onChange(String(currentId));
+      }
+    }
+  }, [contests, categorys, contestIdParam]);
 
   return (
     <Select onValueChange={onChange} value={categoryId}>
