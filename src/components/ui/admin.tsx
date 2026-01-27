@@ -1,7 +1,6 @@
 import { VscKebabVertical } from 'react-icons/vsc';
 import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { DialogClose, DialogContent, DialogTitle } from './dialog';
 import Button from '@components/Button';
@@ -24,7 +23,7 @@ export const AdminCardCreateButton = ({ children, ...props }: React.ComponentPro
 };
 
 export const AdminCardRow = ({ children, className }: React.ComponentProps<'div'>) => {
-  return <div className={twMerge('flex items-center justify-between px-5 py-3', className)}>{children}</div>;
+  return <div className={cn('flex items-center justify-between px-5 py-3', className)}>{children}</div>;
 };
 
 export const AdminPopoverMenu = ({ children, ...props }: React.ComponentProps<'div'>) => {
