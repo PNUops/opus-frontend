@@ -37,7 +37,7 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
     }
 
     if (type === 'create') {
-      await categoryCreate.mutateAsync(categoryName, {
+      await categoryCreate.mutateAsync(categoryName.trim(), {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['category'] });
           toast('카테고리가 추가되었습니다.', 'success');
@@ -48,7 +48,7 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
       });
     } else if (type === 'edit' && prevData) {
       await categoryEdit.mutateAsync(
-        { categoryId: prevData.categoryId, categoryName },
+        { categoryId: prevData.categoryId, categoryName: categoryName.trim() },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['category'] });
