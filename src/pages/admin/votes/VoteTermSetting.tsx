@@ -9,26 +9,21 @@ import { useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { voteTermOption } from 'queries/votes';
 import { putVoteTerm } from 'apis/votes';
+import { VOTETERM_TIME_FORMAT } from 'constants/votes';
 
 const VoteTermSetting = () => {
   const { contestId: contestIdParam } = useParams();
   const [voteTerm, setVoteTerm] = useState<VoteTermDto>({
-    voteStartAt: dayjs().toISOString(),
-    voteEndAt: dayjs().toISOString(),
+    voteStartAt: dayjs().format(VOTETERM_TIME_FORMAT),
+    voteEndAt: dayjs().format(VOTETERM_TIME_FORMAT),
   });
   const queryClient = useQueryClient();
   const toast = useToast();
 
   const { data: voteTermData } = useQuery(voteTermOption(Number(contestIdParam ?? 0)));
   const updateVoteTerm = useMutation({
+    mutationKey: ['updateVoteTerm'],
     mutationFn: (payload: VoteTermDto) => putVoteTerm(Number(contestIdParam), payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['voteTerm', Number(contestIdParam)] });
-      toast('투표 설정이 업데이트 되었어요', 'success');
-    },
-    onError: () => {
-      toast('투표 설정 업데이트에 실패했어요', 'error');
-    },
   });
 
   useEffect(() => {
