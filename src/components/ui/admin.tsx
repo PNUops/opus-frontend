@@ -82,8 +82,10 @@ export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; on
   );
 };
 
-export const AdminNoData = ({ style }: React.ComponentProps<'div'>) => {
+export const AdminNoData = ({ className }: React.ComponentProps<'div'>) => {
   return (
-    <div className={cn('text-midGray my-10 flex items-center justify-center font-bold', style)}>데이터가 없습니다.</div>
+    <div className={cn('text-midGray my-10 flex items-center justify-center font-bold', className)}>
+      데이터가 없습니다.
+    </div>
   );
 };
