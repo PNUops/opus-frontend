@@ -12,7 +12,7 @@ import { ContestRequestDto } from 'types/DTO';
 const ContestEdit = () => {
   const { contestId: contestIdParam } = useParams();
   const prevName = useContestName();
-  const [categoryId, setCategoryId] = useState<string>('1');
+  const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -40,7 +40,6 @@ const ContestEdit = () => {
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({ queryKey: ['contests'] });
-          await queryClient.invalidateQueries({ queryKey: ['teams'] });
           toast('대회가 수정되었습니다.', 'success');
         },
         onError: (error: any) => {
