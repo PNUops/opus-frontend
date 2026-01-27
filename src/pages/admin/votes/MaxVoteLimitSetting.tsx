@@ -45,6 +45,10 @@ const MaxVoteLimitSetting = () => {
   };
 
   const handleDataSave = () => {
+    if (maxVotesLimit === 0) {
+      return toast('투표권 수를 0으로 설정할 수 없습니다.', 'error');
+    }
+
     updateMaxVoteLimit.mutate(
       { maxVotesLimit },
       {
