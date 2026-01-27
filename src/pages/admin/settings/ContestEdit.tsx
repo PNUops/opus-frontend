@@ -35,7 +35,7 @@ const ContestEdit = () => {
     editContestName(
       {
         categoryId: Number(categoryId),
-        contestName,
+        contestName: contestName.trim(),
       },
       {
         onSuccess: async () => {
