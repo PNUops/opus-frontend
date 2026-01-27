@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { FiPlus, FiMinus } from 'react-icons/fi';
 import Input from '@components/Input';
 import { Label } from '@components/ui/label';
-import { MAX_VOTE_PER_PERSON } from 'constants/contest';
+import { MAX_VOTE_PER_PERSON } from 'constants/votes';
 import Button from '@components/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -60,10 +60,10 @@ const MaxVoteLimitSetting = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-end gap-2">
         <h2 className="text-2xl font-bold">투표권 수</h2>
-        <p className="text-midGray text-xs">{`최대 ${MAX_VOTE_PER_PERSON}까지 설정 가능합니다.`}</p>
+        <p className="text-midGray text-xs">{`최대 ${MAX_VOTE_PER_PERSON}개까지 설정 가능합니다.`}</p>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 pl-2">
         <div className="flex flex-wrap items-center gap-10">
