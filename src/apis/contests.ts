@@ -22,7 +22,6 @@ export const postAllContests = async (contestName: string) => {
 
 export const deleteContest = async (contestId: number) => {
   const res = await apiClient.delete(`/contests/${contestId}`);
-  console.log(res);
   return res.data;
 };
 
