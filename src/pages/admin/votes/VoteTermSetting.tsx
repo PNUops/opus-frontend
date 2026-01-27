@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { MoveUp } from 'lucide-react';
 import { VoteTermDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
-import { useGetVoteTerm, useUpdateVoteTerm } from 'hooks/useVoteTerm';
 import VoteRangeSelector from './VoteRangeSelector';
 import Button from '@components/Button';
 import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { voteTermOption } from 'queries/votes';
+import { putVoteTerm } from 'apis/votes';
 
 const VoteTermSetting = () => {
   const { contestId: contestIdParam } = useParams();
@@ -18,8 +19,17 @@ const VoteTermSetting = () => {
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const { data: voteTermData } = useGetVoteTerm(Number(contestIdParam ?? 0));
-  const updateVoteTerm = useUpdateVoteTerm(Number(contestIdParam ?? 0));
+  const { data: voteTermData } = useQuery(voteTermOption(Number(contestIdParam ?? 0)));
+  const updateVoteTerm = useMutation({
+    mutationFn: (payload: VoteTermDto) => putVoteTerm(Number(contestIdParam), payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['voteTerm', Number(contestIdParam)] });
+      toast('투표 설정이 업데이트 되었어요', 'success');
+    },
+    onError: () => {
+      toast('투표 설정 업데이트에 실패했어요', 'error');
+    },
+  });
 
   useEffect(() => {
     if (voteTermData) {
@@ -47,7 +57,7 @@ const VoteTermSetting = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-end gap-2">
         <h2 className="text-2xl font-bold">투표 기간</h2>
         <p className="text-midGray text-xs">

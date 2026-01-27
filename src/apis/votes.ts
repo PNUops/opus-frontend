@@ -6,7 +6,7 @@ export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {
   return res.data;
 };
 
-export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) => {
+export const putVoteTerm = async (contestId: number, payload: VoteTermDto) => {
   const res = await apiClient.put(`/contests/${contestId}/vote`, payload);
   return res.data;
 };
