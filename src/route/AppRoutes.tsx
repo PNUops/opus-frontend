@@ -19,6 +19,7 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import BannerManagePage from '@pages/admin/BannerManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -73,7 +74,7 @@ const AppRoutes = () =>
                 { path: 'departments', element: <div>분과 관리</div> },
                 { path: 'votes', element: <div>투표 관리</div> },
                 { path: 'notices', element: <div>공지 관리</div> },
-                { path: 'banners', element: <div>배너 관리</div> },
+                { path: 'banners', element: <BannerManagePage /> },
                 // 통계
                 { path: 'statistics', element: <div>대회 통계</div> },
               ],
