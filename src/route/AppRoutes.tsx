@@ -19,6 +19,7 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import NotFoundPage from '@pages/common/NotFoundPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -80,6 +81,7 @@ const AppRoutes = () =>
             },
           ],
         },
+        { path: '*', element: <NotFoundPage /> },
       ],
     },
   ]);
