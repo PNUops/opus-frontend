@@ -33,7 +33,7 @@ const AllNoticeListSection = () => {
           <NoticeModal type="create" closeModal={() => setCreateOpen(false)} />
         </Dialog>
       </AdminCardTop>
-      <div>
+      <div className="max-h-[300px] overflow-y-auto">
         {notices?.map((notice) => (
           <AdminCardRow key={notice.noticeId} className="border-b-lightGray not-last:border-b">
             <div className="flex gap-10">
