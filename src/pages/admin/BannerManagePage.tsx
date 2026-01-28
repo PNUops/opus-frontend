@@ -2,14 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@components/ui/button';
 import { useToast } from 'hooks/useToast';
 import { MdOutlineFileUpload, MdImage } from 'react-icons/md';
-import { useMutation } from '@tanstack/react-query';
 import { getAccessToken } from 'utils/token';
 import { API_BASE_URL } from '@constants/index';
 import { useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { isTokenExpired, getUserFromToken } from 'utils/token';
-import { useQuery } from '@tanstack/react-query';
-import { getBannerUrl, deleteBanner, postBanner } from 'apis/contests';
+import useBanner from 'hooks/useBanner';
 
 interface BannerManagePageProps {
   contestId?: number;
@@ -27,51 +25,19 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
 
   const { isSignedIn, isAdmin } = useAuth();
 
-  const mutation = useMutation({
-    mutationFn: (formData: FormData) => {
-      if (!contestId) throw new Error('contestId is required');
-      return postBanner(contestId!, formData);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: () => {
-      if (!contestId) throw new Error('contestId is required');
-      return deleteBanner(contestId!);
-    },
-  });
-
-  const prevBlobUrlRef = useRef<string | null>(null);
-
-  const { data: bannerBlobUrl, refetch: refetchBanner } = useQuery({
-    queryKey: ['banner', contestId],
-    queryFn: () => getBannerUrl(contestId!),
-    enabled: !!contestId,
-  });
+  // useBanner hook centralizes banner fetch/upload/delete + blob handling
+  const {
+    currentBanner: fetchedBanner,
+    refetch: refetchBanner,
+    uploadFile,
+    isUploading,
+    removeBanner,
+    isDeleting,
+  } = useBanner(contestId);
 
   useEffect(() => {
-    if (!bannerBlobUrl) {
-      if (prevBlobUrlRef.current) {
-        URL.revokeObjectURL(prevBlobUrlRef.current);
-        prevBlobUrlRef.current = null;
-      }
-      setCurrentBanner(null);
-      return;
-    }
-
-    if (prevBlobUrlRef.current) {
-      URL.revokeObjectURL(prevBlobUrlRef.current);
-    }
-    prevBlobUrlRef.current = bannerBlobUrl;
-    setCurrentBanner(bannerBlobUrl);
-
-    return () => {
-      if (prevBlobUrlRef.current) {
-        URL.revokeObjectURL(prevBlobUrlRef.current);
-        prevBlobUrlRef.current = null;
-      }
-    };
-  }, [bannerBlobUrl]);
+    setCurrentBanner(fetchedBanner ?? null);
+  }, [fetchedBanner]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -127,7 +93,6 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
       return;
     }
 
-    // check token validity/roles before sending
     const token = getAccessToken();
     if (!token || isTokenExpired(token as string)) {
       toast('세션이 만료되었거나 로그인 정보가 없습니다. 다시 로그인해주세요.', 'error');
@@ -145,16 +110,15 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
 
     console.log('isSignedIn, isAdmin, token:', isSignedIn, isAdmin, token);
 
-    mutation.mutate(formData, {
-      onSuccess: (res: any) => {
+    uploadFile(newBannerFile as File)
+      .then((res: any) => {
         console.log('banner upload success', res);
         toast('배너가 등록되었습니다', 'success');
-        // after successful upload, refetch banner
         refetchBanner();
         setNewBannerFile(null);
         setNewBannerPreview(null);
-      },
-      onError: (err: any) => {
+      })
+      .catch((err: any) => {
         console.error('banner upload error', err);
         const status = err?.response?.status;
         if (status === 400) toast('이미지 파일이 없습니다', 'error');
@@ -162,8 +126,7 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
         else if (status === 403) toast('권한이 없습니다', 'error');
         else if (status === 404) toast('대회를 찾을 수 없습니다', 'error');
         else toast('서버 오류가 발생했습니다', 'error');
-      },
-    });
+      });
   };
 
   const handleDelete = () => {
@@ -174,27 +137,21 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
 
     if (!window.confirm('정말로 배너를 삭제하시겠습니까?')) return;
 
-    deleteMutation.mutate(undefined, {
-      onSuccess: (res: any) => {
-        console.log('banner delete success', res);
+    removeBanner()
+      .then(() => {
+        console.log('banner delete success');
         toast('배너가 삭제되었습니다', 'success');
-        // revoke any existing blob url and clear
-        if (prevBlobUrlRef.current) {
-          URL.revokeObjectURL(prevBlobUrlRef.current);
-          prevBlobUrlRef.current = null;
-        }
         setCurrentBanner(null);
         refetchBanner();
-      },
-      onError: (err: any) => {
+      })
+      .catch((err: any) => {
         console.error('banner delete error', err);
         const status = err?.response?.status;
         if (status === 401) toast('권한이 없습니다 (로그인 필요)', 'error');
         else if (status === 403) toast('권한이 없습니다', 'error');
         else if (status === 404) toast('대회를 찾을 수 없습니다', 'error');
         else toast('서버 오류가 발생했습니다', 'error');
-      },
-    });
+      });
   };
 
   return (
@@ -258,17 +215,17 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
             <Button
               className="bg-mainBlue hover:bg-blue-600"
               onClick={handleSubmit}
-              disabled={!newBannerFile || !contestId || mutation.isLoading || !isSignedIn || !isAdmin}
+              disabled={!newBannerFile || !contestId || isUploading || !isSignedIn || !isAdmin}
             >
-              {mutation.isLoading ? '업로드 중...' : '수정하기'}
+              {isUploading ? '업로드 중...' : '수정하기'}
             </Button>
 
             <Button
               className="bg-mainRed hover:bg-red-600"
               onClick={handleDelete}
-              disabled={!currentBanner || deleteMutation.isLoading || !isSignedIn || !isAdmin}
+              disabled={!currentBanner || isDeleting || !isSignedIn || !isAdmin}
             >
-              {deleteMutation.isLoading ? '삭제 중...' : '삭제하기'}
+              {isDeleting ? '삭제 중...' : '삭제하기'}
             </Button>
           </div>
         </div>

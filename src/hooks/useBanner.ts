@@ -1,0 +1,64 @@
+import { useEffect, useRef } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getBannerUrl, postBanner, deleteBanner } from 'apis/contests';
+
+export default function useBanner(contestId?: number) {
+  const qc = useQueryClient();
+  const prevBlobRef = useRef<string | null>(null);
+
+  const { data: blobUrl, isLoading, refetch } = useQuery({
+    queryKey: ['banner', contestId],
+    queryFn: () => getBannerUrl(contestId!),
+    enabled: !!contestId,
+  });
+
+  useEffect(() => {
+    if (!blobUrl) {
+      if (prevBlobRef.current) {
+        URL.revokeObjectURL(prevBlobRef.current);
+        prevBlobRef.current = null;
+      }
+      return;
+    }
+
+    if (prevBlobRef.current) URL.revokeObjectURL(prevBlobRef.current);
+    prevBlobRef.current = blobUrl;
+
+    return () => {
+      if (prevBlobRef.current) {
+        URL.revokeObjectURL(prevBlobRef.current);
+        prevBlobRef.current = null;
+      }
+    };
+  }, [blobUrl]);
+
+  const uploadMutation = useMutation({
+    mutationFn: (formData: FormData) => postBanner(contestId!, formData),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['banner', contestId] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteBanner(contestId!),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['banner', contestId] }),
+  });
+
+  const uploadFile = async (file: File) => {
+    const fd = new FormData();
+    fd.append('image', file);
+    return uploadMutation.mutateAsync(fd);
+  };
+
+  const removeBanner = async () => deleteMutation.mutateAsync();
+
+  return {
+    currentBanner: blobUrl ?? null,
+    isLoading,
+    refetch,
+
+    uploadFile,
+    isUploading: uploadMutation.isLoading,
+
+    removeBanner,
+    isDeleting: deleteMutation.isLoading,
+  };
+}
