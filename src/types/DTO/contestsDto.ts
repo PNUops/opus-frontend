@@ -9,6 +9,21 @@ export interface VoteTermDto {
   voteEndAt: string;
 }
 
+export interface VoteStatisticsDto {
+  totalVotes: number;
+  totalVoters: number;
+  averageVotesPerVoter: number;
+}
+
+export interface RankingDto {
+  rank: number;
+  teamId: number;
+  teamName: string;
+  projectName: string;
+  trackName: string;
+  likeCount: number;
+}
+
 export interface PatchAwardRequestDto {
   awardName: string | null;
   awardColor: string | null;

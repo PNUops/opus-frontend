@@ -17,6 +17,7 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
+import ContestStatisticsPage from '@pages/admin/ContestStatisticsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -68,7 +69,7 @@ const AppRoutes = () =>
                 { path: 'notices', element: <div>공지 관리</div> },
                 { path: 'banners', element: <div>배너 관리</div> },
                 // 통계
-                { path: 'statistics', element: <div>대회 통계</div> },
+                { path: 'statistics', element: <ContestStatisticsPage /> },
               ],
             },
           ],

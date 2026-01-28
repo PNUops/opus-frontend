@@ -1,4 +1,4 @@
-import { ContestResponseDto, VoteTermDto } from 'types/DTO';
+import { ContestResponseDto, VoteTermDto, VoteStatisticsDto, RankingDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { mockContestsResponse } from 'mocks/data/contests';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
@@ -44,5 +44,17 @@ export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {
 
 export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) => {
   const res = await apiClient.put(`/contests/${contestId}/vote`, payload);
+  return res.data;
+};
+
+// 투표 통계 조회
+export const getVoteStatistics = async (contestId: number): Promise<VoteStatisticsDto> => {
+  const res = await apiClient.get(`/admin/contests/${contestId}/votes/statistics`);
+  return res.data;
+};
+
+// 좋아요 순위 조회
+export const getLikeRanking = async (contestId: number): Promise<RankingDto[]> => {
+  const res = await apiClient.get(`/admin/contests/${contestId}/ranking`);
   return res.data;
 };
