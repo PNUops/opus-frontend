@@ -17,18 +17,18 @@ interface DateTimePickerProps {
 export const DateTimePicker = ({ label, prevDate, onChange }: DateTimePickerProps) => {
   const [open, setOpen] = useState(false);
   const [dateTime, setDateTime] = useState<Dayjs>(dayjs(prevDate));
-  const [timeInputValue, setTimeInputValue] = useState<string>(dayjs(prevDate).format('HH:mm:ss'));
+  const [timeInputValue, setTimeInputValue] = useState<string>(dayjs(prevDate).format('HH:mm'));
 
   useEffect(() => {
     const newDateTime = dayjs(prevDate);
     setDateTime(newDateTime);
-    setTimeInputValue(newDateTime.format('HH:mm:ss'));
+    setTimeInputValue(newDateTime.format('HH:mm'));
   }, [prevDate]);
 
   const handleDateChange = (date: Date | undefined) => {
     if (!date) return;
 
-    const newDateTime = dayjs(date).hour(dateTime.hour()).minute(dateTime.minute()).second(dateTime.second());
+    const newDateTime = dayjs(date).hour(dateTime.hour()).minute(dateTime.minute());
 
     setDateTime(newDateTime);
     setOpen(false);
@@ -43,14 +43,14 @@ export const DateTimePicker = ({ label, prevDate, onChange }: DateTimePickerProp
 
   const handleTimeBlur = () => {
     const timeParts = timeInputValue.split(':').map(Number);
-    const [hours, minutes, seconds = 0] = timeParts;
+    const [hours, minutes] = timeParts;
 
     if (isNaN(hours) || isNaN(minutes)) {
-      setTimeInputValue(dateTime.format('HH:mm:ss'));
+      setTimeInputValue(dateTime.format('HH:mm'));
       return;
     }
 
-    const newDateTime = dateTime.hour(hours).minute(minutes).second(seconds);
+    const newDateTime = dateTime.hour(hours).minute(minutes);
     setDateTime(newDateTime);
     onChange(newDateTime);
   };
@@ -81,7 +81,6 @@ export const DateTimePicker = ({ label, prevDate, onChange }: DateTimePickerProp
         </Popover>
         <Input
           type="time"
-          step="1"
           id="time-picker"
           value={timeInputValue}
           onChange={handleTimeChange}
