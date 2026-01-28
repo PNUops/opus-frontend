@@ -12,7 +12,7 @@ import { useToast } from 'hooks/useToast';
 
 const MaxVoteLimitSetting = () => {
   const { contestId: contestIdParam } = useParams();
-  const [maxVotesLimit, setMaxVotesLimit] = useState<number>(3);
+  const [maxVotesLimit, setMaxVotesLimit] = useState<number>(0);
   const queryClient = useQueryClient();
   const toast = useToast();
 
@@ -33,8 +33,10 @@ const MaxVoteLimitSetting = () => {
   }, [maxVotesLimitData]);
 
   const onButtonClick = (type: 'plus' | 'minus') => {
-    if (type === 'plus' && maxVotesLimit < MAX_VOTE_PER_PERSON) setMaxVotesLimit((prev) => prev + 1);
-    else if (type === 'minus' && maxVotesLimit > 0) setMaxVotesLimit((prev) => prev - 1);
+    if (type === 'plus') {
+      if (maxVotesLimit < MAX_VOTE_PER_PERSON) setMaxVotesLimit((prev) => prev + 1);
+      else toast('10개 이상으로 설정할 수 없습니다.', 'error');
+    } else if (type === 'minus' && maxVotesLimit > 0) setMaxVotesLimit((prev) => prev - 1);
   };
 
   const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
