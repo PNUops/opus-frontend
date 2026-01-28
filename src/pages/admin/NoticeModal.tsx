@@ -45,6 +45,8 @@ export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) =>
       { title, description },
       {
         onSuccess: () => {
+          setTitle('');
+          setDescription('');
           queryClient.invalidateQueries({ queryKey: ['notices'] });
           toast(`공지사항이 작성 되었습니다.`, 'success');
         },
@@ -58,7 +60,7 @@ export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) =>
 
   return (
     <DialogContent className="w-[500px]">
-      <DialogTitle className="text-2xl font-bold">공지사항 작성</DialogTitle>
+      <DialogTitle className="text-2xl font-bold">{`공지사항 ${type === 'create' ? '추가' : '수정'}`}</DialogTitle>
       <div className="grid grid-cols-[max-content_1fr] gap-x-8 gap-y-4">
         <label htmlFor="title" className="m-2">
           제목
@@ -80,7 +82,7 @@ export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) =>
           <RoundedButton className="min-w-28">취소</RoundedButton>
         </DialogClose>
         <RoundedButton className="min-w-28" onClick={handleSave}>
-          저장
+          {type === 'create' ? '추가' : '저장'}
         </RoundedButton>
       </div>
     </DialogContent>

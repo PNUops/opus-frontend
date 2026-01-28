@@ -41,6 +41,7 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['category'] });
           toast('카테고리가 추가되었습니다.', 'success');
+          setCategoryName('');
         },
         onError: () => {
           toast('카테고리 추가에 실패했습니다.', 'error');
