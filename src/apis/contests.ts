@@ -45,29 +45,3 @@ export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) =>
   const res = await apiClient.put(`/contests/${contestId}/vote`, payload);
   return res.data;
 };
-
-export const postBanner = async (contestId: number, formData: FormData) => {
-  // Ensure the request is sent as multipart/form-data
-  const response = await apiClient.post(`/contests/${contestId}/image/banner`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
-  return response;
-};
-
-export const getBannerUrl = async (contestId: number): Promise<string | null> => {
-  try {
-    // Request the image as blob and return an Object URL so the browser doesn't need to call the protected endpoint again
-    const res = await apiClient.get(`/contests/${contestId}/image/banner`, { responseType: 'blob' });
-    const blob = res.data as Blob;
-    const objUrl = URL.createObjectURL(blob);
-    return objUrl;
-  } catch (error: any) {
-    if (error?.response?.status === 404) return null;
-    throw error;
-  }
-};
-
-export const deleteBanner = async (contestId: number) => {
-  const res = await apiClient.delete(`/contests/${contestId}/image/banner`);
-  return res;
-};

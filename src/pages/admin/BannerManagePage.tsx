@@ -2,30 +2,24 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@components/ui/button';
 import { useToast } from 'hooks/useToast';
 import { MdOutlineFileUpload, MdImage } from 'react-icons/md';
-import { getAccessToken } from 'utils/token';
-import { API_BASE_URL } from '@constants/index';
 import { useParams } from 'react-router-dom';
-import useAuth from 'hooks/useAuth';
-import { isTokenExpired, getUserFromToken } from 'utils/token';
 import useBanner from 'hooks/useBanner';
 
-interface BannerManagePageProps {
-  contestId?: number;
-}
-
-const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) => {
-  const { contestId: paramContestId } = useParams<{ contestId?: string }>();
-  const contestId = propContestId ?? (paramContestId ? Number(paramContestId) : undefined);
+const BannerManagePage = () => {
+  const { contestId: paramContestId } = useParams<{ contestId: string }>();
+  const contestId = paramContestId ? Number(paramContestId) : undefined;
 
   const toast = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [currentBanner, setCurrentBanner] = useState<string | null>(null);
   const [newBannerFile, setNewBannerFile] = useState<File | null>(null);
   const [newBannerPreview, setNewBannerPreview] = useState<string | null>(null);
 
-  const { isSignedIn, isAdmin } = useAuth();
+  useEffect(() => {
+    return () => {
+      if (newBannerPreview) URL.revokeObjectURL(newBannerPreview);
+    };
+  }, [newBannerPreview]);
 
-  // useBanner hook centralizes banner fetch/upload/delete + blob handling
   const {
     currentBanner: fetchedBanner,
     refetch: refetchBanner,
@@ -34,10 +28,6 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
     removeBanner,
     isDeleting,
   } = useBanner(contestId);
-
-  useEffect(() => {
-    setCurrentBanner(fetchedBanner ?? null);
-  }, [fetchedBanner]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -55,6 +45,7 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
     }
 
     setNewBannerFile(file);
+    if (newBannerPreview) URL.revokeObjectURL(newBannerPreview);
     setNewBannerPreview(URL.createObjectURL(file));
   };
 
@@ -75,6 +66,7 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
     }
 
     setNewBannerFile(file);
+    if (newBannerPreview) URL.revokeObjectURL(newBannerPreview);
     setNewBannerPreview(URL.createObjectURL(file));
   };
 
@@ -93,29 +85,13 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
       return;
     }
 
-    const token = getAccessToken();
-    if (!token || isTokenExpired(token as string)) {
-      toast('세션이 만료되었거나 로그인 정보가 없습니다. 다시 로그인해주세요.', 'error');
-      return;
-    }
-
-    const decoded = getUserFromToken(token as string);
-    if (!decoded || !decoded.roles?.includes('ROLE_관리자')) {
-      toast('관리자 권한이 필요합니다.', 'error');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('image', newBannerFile);
-
-    console.log('isSignedIn, isAdmin, token:', isSignedIn, isAdmin, token);
-
-    uploadFile(newBannerFile as File)
+    uploadFile(newBannerFile)
       .then((res: any) => {
         console.log('banner upload success', res);
         toast('배너가 등록되었습니다', 'success');
         refetchBanner();
         setNewBannerFile(null);
+        if (newBannerPreview) URL.revokeObjectURL(newBannerPreview);
         setNewBannerPreview(null);
       })
       .catch((err: any) => {
@@ -141,7 +117,6 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
       .then(() => {
         console.log('banner delete success');
         toast('배너가 삭제되었습니다', 'success');
-        setCurrentBanner(null);
         refetchBanner();
       })
       .catch((err: any) => {
@@ -159,8 +134,8 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
       <section>
         <h2 className="mb-4 text-lg font-bold">현재 배너</h2>
         <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-          {currentBanner ? (
-            <img src={currentBanner} alt="현재 배너" className="h-auto w-full object-cover" />
+          {fetchedBanner ? (
+            <img src={fetchedBanner} alt="현재 배너" className="h-auto w-full object-cover" />
           ) : (
             <div className="flex h-48 flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
               <div className="rounded-full bg-gray-200 p-4 shadow-sm">
@@ -198,37 +173,18 @@ const BannerManagePage = ({ contestId: propContestId }: BannerManagePageProps) =
           />
         </div>
       </section>
-      <div className="flex justify-end">
-        <div className="flex items-center gap-4">
-          {!isSignedIn ? (
-            <p className="text-sm text-red-500">
-              로그인이 필요합니다.{' '}
-              <a href="/signin" className="underline">
-                로그인하러 가기
-              </a>
-            </p>
-          ) : !isAdmin ? (
-            <p className="text-sm text-red-500">관리자 권한이 필요합니다</p>
-          ) : null}
+      <div className="flex justify-end gap-3">
+        <Button
+          className="bg-mainBlue hover:bg-blue-600"
+          onClick={handleSubmit}
+          disabled={!newBannerFile || !contestId || isUploading}
+        >
+          {isUploading ? '업로드 중...' : '수정하기'}
+        </Button>
 
-          <div className="flex items-center gap-3">
-            <Button
-              className="bg-mainBlue hover:bg-blue-600"
-              onClick={handleSubmit}
-              disabled={!newBannerFile || !contestId || isUploading || !isSignedIn || !isAdmin}
-            >
-              {isUploading ? '업로드 중...' : '수정하기'}
-            </Button>
-
-            <Button
-              className="bg-mainRed hover:bg-red-600"
-              onClick={handleDelete}
-              disabled={!currentBanner || isDeleting || !isSignedIn || !isAdmin}
-            >
-              {isDeleting ? '삭제 중...' : '삭제하기'}
-            </Button>
-          </div>
-        </div>
+        <Button className="bg-mainRed hover:bg-red-600" onClick={handleDelete} disabled={!fetchedBanner || isDeleting}>
+          {isDeleting ? '삭제 중...' : '삭제하기'}
+        </Button>
       </div>
     </div>
   );

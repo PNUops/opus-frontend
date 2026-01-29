@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getBannerUrl, postBanner, deleteBanner } from 'apis/contests';
+import { getBannerUrl, postBanner, deleteBanner } from 'apis/banner';
 
 export default function useBanner(contestId?: number) {
   const qc = useQueryClient();
@@ -56,9 +56,9 @@ export default function useBanner(contestId?: number) {
     refetch,
 
     uploadFile,
-    isUploading: uploadMutation.isLoading,
+    isUploading: uploadMutation.isPending,
 
     removeBanner,
-    isDeleting: deleteMutation.isLoading,
+    isDeleting: deleteMutation.isPending,
   };
 }
