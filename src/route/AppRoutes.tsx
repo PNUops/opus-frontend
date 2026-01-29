@@ -17,7 +17,7 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
-import ContestStatisticsPage from '@pages/admin/ContestStatisticsPage';
+import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([

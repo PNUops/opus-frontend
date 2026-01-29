@@ -25,3 +25,10 @@ export const formatDateTime = (data: Date): string => {
     pad(data.getSeconds())
   );
 };
+
+export const formatDateTimeKorean = (data: Date): string => {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${data.getFullYear()}년 ${pad(data.getMonth() + 1)}월 ${pad(data.getDate())}일 ${pad(
+    data.getHours(),
+  )}:${pad(data.getMinutes())}`;
+};
