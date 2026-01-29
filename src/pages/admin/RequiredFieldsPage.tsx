@@ -40,10 +40,15 @@ const RequiredFieldsPage: React.FC = () => {
     setFields((prev) => prev.map((f) => ({ ...f, required: value })));
   };
 
+  const handleLoadTemplate = async () => {
+    setSaving(true);
+    // TODO: 대회 팀 상세보기 템플릿 조회 API 연동 필요
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
-      // TODO: call API to persist settings. For now just show toast.
+      // TODO: 대회 팀 상세보기 템플릿 수정 API 연동 필요
       await new Promise((r) => setTimeout(r, 400));
       toast('설정이 저장되었습니다', 'success');
     } catch (e) {

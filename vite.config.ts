@@ -13,5 +13,4 @@ export default defineConfig({
     minify: 'esbuild',
     cssMinify: 'esbuild',
   },
-  
 });
