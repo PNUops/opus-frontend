@@ -15,24 +15,22 @@ interface RequiredFieldsProps {
 const RequiredFields: React.FC<RequiredFieldsProps> = ({ fields, onToggle, className = '' }) => {
   return (
     <div className={className}>
-      <table className="w-full table-fixed border-collapse text-sm">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-4 text-left font-medium text-gray-600">필드명</th>
-            <th className="w-36 px-6 py-4 text-right font-medium text-gray-600">필수</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="w-full text-sm">
+        <div className="flex justify-between bg-gray-100 px-7 py-5 font-medium">
+          <div>필드명</div>
+          <div className="w-16 text-center">필수</div>
+        </div>
+        <div>
           {fields.map((f, idx) => (
-            <tr key={f.label} className={`border-t hover:bg-gray-50 ${f.required ? 'bg-white' : 'bg-white'}`}>
-              <td className="px-6 py-4 align-middle">{f.label}</td>
-              <td className="px-6 py-4 text-right align-middle">
+            <div key={f.label} className={`flex justify-between border-t px-7 py-5 hover:bg-gray-50`}>
+              <div className="">{f.label}</div>
+              <div className="flex w-16 justify-center">
                 <Checkbox checked={f.required} onChange={() => onToggle(idx)} ariaLabel={`${f.label} 필수 여부`} />
-              </td>
-            </tr>
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 };
