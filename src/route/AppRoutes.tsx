@@ -19,6 +19,8 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
+import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -67,9 +69,9 @@ const AppRoutes = () =>
                 { index: true, element: <Navigate to="projects" replace /> },
                 // 프로젝트
                 { path: 'projects', element: <div>프로젝트 관리</div> },
-                { path: 'sort', element: <div>정렬 관리</div> },
+                { path: 'team-order', element: <TeamOrderAdminPage /> },
                 { path: 'awards', element: <div>수상 관리</div> },
-                { path: 'required-fields', element: <div>필수 항목 설정</div> },
+                { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
                 { path: 'settings', element: <ContestSettingsPage /> },
                 { path: 'departments', element: <div>분과 관리</div> },

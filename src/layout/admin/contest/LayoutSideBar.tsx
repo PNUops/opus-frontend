@@ -32,7 +32,7 @@ const sections = [
     title: '프로젝트',
     links: [
       { to: 'projects', label: '프로젝트 관리' },
-      { to: 'sort', label: '정렬 관리' },
+      { to: 'team-order', label: '정렬 관리' },
       { to: 'awards', label: '수상 관리' },
       { to: 'required-fields', label: '필수 항목 설정' },
     ],
