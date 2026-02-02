@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { defaultRequiredFields } from 'constants/requiredFields';
 import { RequiredFieldsDto, RequiredFieldsType } from 'types/DTO/requiredFieldsDto';
 import { useToast } from './useToast';
 import { getRequiredFields, putRequiredFields } from 'apis/requiredFields';
 
-export const useRequiredFields = () => {
-  const { contestId } = useParams();
+export const useRequiredFields = (contestId?: string) => {
   const [fieldsSetting, setFieldsSetting] = useState<RequiredFieldsDto>(defaultRequiredFields);
   const toast = useToast();
   const queryClient = useQueryClient();
