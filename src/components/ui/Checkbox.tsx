@@ -1,4 +1,4 @@
-import React from 'react';
+import { FaCheck } from 'react-icons/fa';
 
 interface CheckboxProps {
   checked: boolean;
@@ -7,16 +7,25 @@ interface CheckboxProps {
   ariaLabel?: string;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ checked, onChange, disabled = false, ariaLabel }) => {
+const Checkbox = ({ checked, onChange, disabled = false, ariaLabel }: CheckboxProps) => {
   return (
-    <input
-      aria-label={ariaLabel}
-      type="checkbox"
-      checked={checked}
-      onChange={(e) => onChange?.(e.target.checked)}
-      disabled={disabled}
-      className={`text-mainBlue accent-mainBlue h-5 w-5 rounded border-gray-300 focus:ring-0 disabled:opacity-50`}
-    />
+    <div className="w-fit">
+      <input
+        id={ariaLabel}
+        aria-label={ariaLabel}
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange?.(e.target.checked)}
+        disabled={disabled}
+        className="peer sr-only"
+      />
+      <label
+        htmlFor={ariaLabel}
+        className="border-mainBlue peer-checked:bg-mainBlue flex h-5.5 w-5.5 items-center justify-center rounded-sm border p-1 hover:cursor-pointer"
+      >
+        {checked && <FaCheck fill="white" size={14} />}
+      </label>
+    </div>
   );
 };
 
