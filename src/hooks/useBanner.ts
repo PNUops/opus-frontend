@@ -4,31 +4,20 @@ import { getBannerUrl, postBanner, deleteBanner } from 'apis/banner';
 
 export default function useBanner(contestId?: number) {
   const qc = useQueryClient();
-  const prevBlobRef = useRef<string | null>(null);
 
-  const { data: blobUrl, isLoading, refetch } = useQuery({
+  const {
+    data: blobUrl,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['banner', contestId],
     queryFn: () => getBannerUrl(contestId!),
     enabled: !!contestId,
   });
 
   useEffect(() => {
-    if (!blobUrl) {
-      if (prevBlobRef.current) {
-        URL.revokeObjectURL(prevBlobRef.current);
-        prevBlobRef.current = null;
-      }
-      return;
-    }
-
-    if (prevBlobRef.current) URL.revokeObjectURL(prevBlobRef.current);
-    prevBlobRef.current = blobUrl;
-
     return () => {
-      if (prevBlobRef.current) {
-        URL.revokeObjectURL(prevBlobRef.current);
-        prevBlobRef.current = null;
-      }
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
     };
   }, [blobUrl]);
 
