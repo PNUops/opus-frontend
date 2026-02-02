@@ -19,7 +19,7 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
-import BannerManagePage from '@pages/admin/BannerManagePage';
+import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
