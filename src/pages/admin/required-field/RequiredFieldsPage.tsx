@@ -2,9 +2,11 @@ import React from 'react';
 import RequiredFields from '@pages/admin/required-field/RequiredFields';
 import { Button } from '@components/ui/button';
 import { useRequiredFields } from 'hooks/useRequiredFields';
+import { useParams } from 'react-router-dom';
 
 const RequiredFieldsPage: React.FC = () => {
-  const { fieldsSetting, isLoading, toggleField, handleSave } = useRequiredFields();
+  const { contestId } = useParams();
+  const { fieldsSetting, isLoading, toggleField, handleSave } = useRequiredFields(contestId);
 
   return (
     <div className="flex flex-col gap-8">
