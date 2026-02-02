@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RequiredFields from '@components/RequiredFields';
+import RequiredFields from '@pages/admin/required-field/RequiredFields';
 import { Button } from '@components/ui/button';
 import { useToast } from 'hooks/useToast';
 

@@ -18,7 +18,7 @@ import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
-import RequiredFieldsPage from '@pages/admin/RequiredFieldsPage';
+import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
