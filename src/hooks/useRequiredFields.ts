@@ -5,19 +5,19 @@ import { RequiredFieldsDto, RequiredFieldsType } from 'types/DTO/requiredFieldsD
 import { useToast } from './useToast';
 import { getRequiredFields, putRequiredFields } from 'apis/requiredFields';
 
-export const useRequiredFields = (contestId?: string) => {
+export const useRequiredFields = (contestId: number) => {
   const [fieldsSetting, setFieldsSetting] = useState<RequiredFieldsDto>(defaultRequiredFields);
   const toast = useToast();
   const queryClient = useQueryClient();
 
   const { data: requiredFields } = useQuery({
     queryKey: ['requiredFields', contestId],
-    queryFn: () => getRequiredFields(Number(contestId ?? 0)),
+    queryFn: () => getRequiredFields(contestId),
     enabled: !!contestId,
   });
   const updateRequiredFields = useMutation({
     mutationKey: [`updateRequiredFields`],
-    mutationFn: (payload: RequiredFieldsDto) => putRequiredFields(Number(contestId ?? 0), payload),
+    mutationFn: (payload: RequiredFieldsDto) => putRequiredFields(contestId, payload),
   });
 
   useEffect(() => {
