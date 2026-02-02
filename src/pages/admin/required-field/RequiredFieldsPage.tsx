@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 const RequiredFieldsPage: React.FC = () => {
   const { contestId } = useParams();
-  const { fieldsSetting, isLoading, toggleField, handleSave } = useRequiredFields(contestId);
+  const { fieldsSetting, isLoading, toggleField, handleSave } = useRequiredFields(Number(contestId ?? 0));
 
   return (
     <div className="flex flex-col gap-8">
