@@ -6,10 +6,12 @@ import { FiX } from 'react-icons/fi';
 import { useToast } from 'hooks/useToast';
 import { postBanner } from 'apis/banner';
 import Button from '@components/Button';
+import { cn } from '@components/lib/utils';
 
 const BannerUploadSection = () => {
   const { contestId } = useParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [newBannerFile, setNewBannerFile] = useState<File | null>(null);
   const [newBannerPreview, setNewBannerPreview] = useState<string | null>(null);
   const toast = useToast();
@@ -49,14 +51,26 @@ const BannerUploadSection = () => {
     setFileAndPreview(file);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    setFileAndPreview(file);
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    setFileAndPreview(file);
   };
 
   const handleRemoveFile = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -89,8 +103,15 @@ const BannerUploadSection = () => {
     <section className="flex flex-col gap-5">
       <h2 className="text-lg font-bold">신규 배너 등록</h2>
       <div
-        className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-gray-300 p-10 transition-colors hover:border-gray-400"
+        className={cn(
+          'hover:border-mainBlue flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-gray-300 p-10 transition-colors hover:bg-blue-50',
+          {
+            'border-mainBlue bg-blue-50': isDragging,
+          },
+        )}
         onDrop={handleDrop}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onClick={() => fileInputRef.current?.click()}
       >
