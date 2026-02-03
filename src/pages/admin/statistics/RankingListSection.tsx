@@ -1,39 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getLikeRanking } from 'apis/contests';
-import { defaultRankFilter } from 'constants/statistics';
-import { useMemo, useState } from 'react';
+import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
+import { Fragment, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { RankingDto } from 'types/DTO/contestsDto';
-
-const trackBadgeClass = (track?: string) => {
-  switch (track) {
-    case '분과 A':
-      return 'bg-yellow-400 text-white';
-    case '분과 B':
-      return 'bg-sky-400 text-white';
-    case '분과 C':
-      return 'bg-rose-300 text-white';
-    case '분과 D':
-      return 'bg-emerald-400 text-white';
-    default:
-      return 'bg-gray-200 text-gray-700';
-  }
-};
-
-const trackHeaderBg = (track?: string) => {
-  switch (track) {
-    case '분과 A':
-      return 'bg-yellow-50';
-    case '분과 B':
-      return 'bg-sky-50';
-    case '분과 C':
-      return 'bg-rose-50';
-    case '분과 D':
-      return 'bg-emerald-50';
-    default:
-      return 'bg-gray-50';
-  }
-};
 
 const RankingListSection = () => {
   const { contestId } = useParams();
@@ -49,6 +19,15 @@ const RankingListSection = () => {
     if (!likeRanking) return defaultRankFilter;
     const uniq = Array.from(new Set(likeRanking.map((r) => r.trackName)));
     return [...defaultRankFilter, ...uniq];
+  }, [likeRanking]);
+
+  const trackColors = useMemo(() => {
+    if (!likeRanking) return {};
+    const uniq = Array.from(new Set(likeRanking.map((r) => r.trackName)));
+    return uniq.reduce<Record<string, string>>((acc, track, i) => {
+      acc[track] = trackPresetColors[i];
+      return acc;
+    }, {});
   }, [likeRanking]);
 
   const rankingList = useMemo(() => {
@@ -87,20 +66,16 @@ const RankingListSection = () => {
         </div>
       </div>
       {Array.isArray(rankingList) ? (
-        <RankingList list={rankingList} />
+        <RankingList list={rankingList} trackColors={trackColors} />
       ) : (
         <div className="mb-4">
           {Object.entries(rankingList).map(([track, list]) => (
-            <>
-              <div className={`${trackHeaderBg(track)} rounded p-4`}>
-                <span
-                  className={`inline-flex items-center justify-center rounded-full px-3 py-[6px] text-xs ${trackBadgeClass(track)}`}
-                >
-                  {track}
-                </span>
+            <Fragment key={track}>
+              <div className={`${trackColors[track]} rounded px-4 py-2 backdrop-brightness-80`}>
+                <span className={`${trackColors[track]} inline-flex font-semibold text-white`}>{track}</span>
               </div>
-              <RankingList list={list} />
-            </>
+              <RankingList list={list} trackColors={trackColors} />
+            </Fragment>
           ))}
         </div>
       )}
@@ -113,14 +88,20 @@ const RankingListSection = () => {
   );
 };
 
-const RankingList = ({ list }: { list: RankingDto[] }) => {
+export interface RankingListProps {
+  list: RankingDto[];
+  trackColors: Record<string, string>;
+}
+
+const RankingList = ({ list, trackColors }: RankingListProps) => {
   return (
-    <div className="rounded-lg border border-gray-100 bg-white">
-      <ul>
-        {list.map((item) => (
+    <ul>
+      {list.map((item) => {
+        console.log(trackColors[item.trackName]);
+        return (
           <li
             key={item.teamId}
-            className="flex items-center justify-between border-b border-gray-200 px-6 py-4 last:border-b-0"
+            className="flex items-center justify-between border-b border-gray-200 px-5 py-3 last:border-b-0"
           >
             <div className="flex items-center gap-6">
               <div className="w-8 text-center text-sm text-gray-700">{item.rank}</div>
@@ -128,9 +109,7 @@ const RankingList = ({ list }: { list: RankingDto[] }) => {
               <div className="min-w-[240px] text-sm text-gray-700">{item.projectName}</div>
               <div>
                 <span
-                  className={`inline-flex items-center justify-center rounded-full px-3 py-[6px] text-xs ${trackBadgeClass(
-                    item.trackName,
-                  )}`}
+                  className={`${trackColors[item.trackName]} inline-flex items-center justify-center rounded-full px-3 py-[6px] text-xs text-white`}
                 >
                   {item.trackName}
                 </span>
@@ -147,9 +126,9 @@ const RankingList = ({ list }: { list: RankingDto[] }) => {
               </div>
             </div>
           </li>
-        ))}
-      </ul>
-    </div>
+        );
+      })}
+    </ul>
   );
 };
 
