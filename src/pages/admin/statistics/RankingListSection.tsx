@@ -1,8 +1,9 @@
+import { useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { FaHeart } from 'react-icons/fa';
 import { getLikeRanking } from 'apis/contests';
 import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
-import { Fragment, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import type { RankingDto } from 'types/DTO/contestsDto';
 
 const RankingListSection = () => {
@@ -44,9 +45,9 @@ const RankingListSection = () => {
   }, [likeRanking, selectedFilter]);
 
   return (
-    <section>
+    <section className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-end gap-4">
           <h2 className="text-2xl font-bold">투표 순위</h2>
           <p className="text-sm text-gray-500">순위, 팀명, 프로젝트명, 분과</p>
         </div>
@@ -68,18 +69,16 @@ const RankingListSection = () => {
       {Array.isArray(rankingList) ? (
         <RankingList list={rankingList} trackColors={trackColors} />
       ) : (
-        <div className="mb-4">
-          {Object.entries(rankingList).map(([track, list]) => (
-            <Fragment key={track}>
-              <div className={`${trackColors[track]} rounded px-4 py-2 backdrop-brightness-80`}>
-                <span className={`${trackColors[track]} inline-flex font-semibold text-white`}>{track}</span>
-              </div>
-              <RankingList list={list} trackColors={trackColors} />
-            </Fragment>
-          ))}
-        </div>
+        Object.entries(rankingList).map(([track, list]) => (
+          <div className="border-lightGray border-b" key={track}>
+            <div className={`${trackColors[track]} rounded px-4 py-2 backdrop-brightness-80`}>
+              <span className={`${trackColors[track]} inline-flex font-semibold text-white`}>{track}</span>
+            </div>
+            <RankingList list={list} trackColors={trackColors} />
+          </div>
+        ))
       )}
-      {!rankingList.length && (
+      {rankingList.length === 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
           랭킹 데이터가 없습니다.
         </div>
@@ -101,7 +100,7 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
         return (
           <li
             key={item.teamId}
-            className="flex items-center justify-between border-b border-gray-200 px-5 py-3 last:border-b-0"
+            className="border-lightGray flex items-center justify-between border-b px-5 py-3 last:border-b-0"
           >
             <div className="flex items-center gap-6">
               <div className="w-8 text-center text-sm text-gray-700">{item.rank}</div>
@@ -115,15 +114,9 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
                 </span>
               </div>
             </div>
-
-            <div className="flex items-center gap-2 text-red-500">
-              <svg className="h-5 w-5 fill-current text-red-500" viewBox="0 0 24 24">
-                <path d="M12 21s-7-4.35-9.17-6.22C1.78 12.85 2 9.5 4.5 7.5 6.03 6 8.1 6 9.5 6 10.9 6 12 7 12 7s1.1-1 2.5-1c1.4 0 3.47 0 5 1 2.5 2 2.72 5.35 1.67 7.28C19 16.65 12 21 12 21z" />
-              </svg>
-              <div className="text-sm font-semibold text-gray-800">
-                {item.likeCount.toLocaleString()}
-                <span className="ml-1 text-sm text-gray-500">개</span>
-              </div>
+            <div className="flex items-center gap-2">
+              <FaHeart className="fill-red-400" />
+              <div className="text-sm font-semibold text-red-400">{`${item.likeCount.toLocaleString()}개`}</div>
             </div>
           </li>
         );
