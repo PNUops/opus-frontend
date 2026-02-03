@@ -5,6 +5,7 @@ import { FaHeart } from 'react-icons/fa';
 import { getLikeRanking } from 'apis/contests';
 import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
 import type { RankingDto } from 'types/DTO/contestsDto';
+import Select from '@components/Select';
 
 const RankingListSection = () => {
   const { contestId } = useParams();
@@ -52,18 +53,13 @@ const RankingListSection = () => {
           <p className="text-sm text-gray-500">순위, 팀명, 프로젝트명, 분과</p>
         </div>
         <div>
-          <select
-            value={selectedFilter}
-            onChange={(e) => setSelectedFilter(e.target.value)}
-            className="ml-4 rounded border border-gray-200 bg-white px-3 py-2 text-sm"
-            aria-label="분과 필터"
-          >
-            {filters.map((d) => (
-              <option key={d} value={d}>
-                {d}
+          <Select value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)} aria-label="분과 필터">
+            {filters.map((filter) => (
+              <option key={filter} value={filter}>
+                {filter}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
       {Array.isArray(rankingList) ? (
@@ -95,32 +91,29 @@ export interface RankingListProps {
 const RankingList = ({ list, trackColors }: RankingListProps) => {
   return (
     <ul>
-      {list.map((item) => {
-        console.log(trackColors[item.trackName]);
-        return (
-          <li
-            key={item.teamId}
-            className="border-lightGray flex items-center justify-between border-b px-5 py-3 last:border-b-0"
-          >
-            <div className="flex items-center gap-6">
-              <div className="w-8 text-center text-sm text-gray-700">{item.rank}</div>
-              <div className="min-w-[110px] text-sm text-gray-800">{item.teamName}</div>
-              <div className="min-w-[240px] text-sm text-gray-700">{item.projectName}</div>
-              <div>
-                <span
-                  className={`${trackColors[item.trackName]} inline-flex items-center justify-center rounded-full px-3 py-[6px] text-xs text-white`}
-                >
-                  {item.trackName}
-                </span>
-              </div>
+      {list.map((item) => (
+        <li
+          key={item.teamId}
+          className="border-lightGray flex items-center justify-between border-b px-5 py-3 last:border-b-0"
+        >
+          <div className="flex items-center gap-6">
+            <div className="w-8 text-center text-sm text-gray-700">{item.rank}</div>
+            <div className="min-w-[110px] text-sm text-gray-800">{item.teamName}</div>
+            <div className="min-w-[240px] text-sm text-gray-700">{item.projectName}</div>
+            <div>
+              <span
+                className={`${trackColors[item.trackName]} inline-flex items-center justify-center rounded-full px-3 py-[6px] text-xs text-white`}
+              >
+                {item.trackName}
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <FaHeart className="fill-red-400" />
-              <div className="text-sm font-semibold text-red-400">{`${item.likeCount.toLocaleString()}개`}</div>
-            </div>
-          </li>
-        );
-      })}
+          </div>
+          <div className="flex items-center gap-2">
+            <FaHeart className="fill-red-400" />
+            <div className="text-sm font-semibold text-red-400">{`${item.likeCount.toLocaleString()}개`}</div>
+          </div>
+        </li>
+      ))}
     </ul>
   );
 };
