@@ -4,8 +4,6 @@ import { http, HttpResponse } from 'msw';
 
 const base = import.meta.env.VITE_API_BASE_URL ?? '';
 
-import { mockVoteStatistics, mockLikeRanking } from '@mocks/data/statistics';
-
 export const contestsHandler = [
   http.get(`${base}/api/contests`, () => {
     return HttpResponse.json(mockContestsResponse);
