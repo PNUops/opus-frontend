@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { FaHeart } from 'react-icons/fa';
-import { getLikeRanking } from 'apis/contests';
+import { getVoteRanking } from 'apis/statistics';
 import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
-import type { RankingDto } from 'types/DTO/contestsDto';
 import Select from '@components/Select';
+import { VoteRankingDto } from 'types/DTO';
 
 const RankingListSection = () => {
   const { contestId } = useParams();
@@ -13,7 +13,7 @@ const RankingListSection = () => {
 
   const { data: likeRanking } = useQuery({
     queryKey: ['likeRanking', contestId],
-    queryFn: () => getLikeRanking(Number(contestId ?? 0)),
+    queryFn: () => getVoteRanking(Number(contestId ?? 0)),
     enabled: !!contestId,
   });
 
@@ -36,7 +36,7 @@ const RankingListSection = () => {
     if (!likeRanking || likeRanking.length === 0) return [];
     if (selectedFilter === '전체') return likeRanking;
     else if (selectedFilter === '분과별 묶어보기') {
-      return likeRanking.reduce<Record<string, RankingDto[]>>((acc, item) => {
+      return likeRanking.reduce<Record<string, VoteRankingDto[]>>((acc, item) => {
         const key = item.trackName;
         if (!acc[key]) acc[key] = [];
         acc[key].push(item);
@@ -84,7 +84,7 @@ const RankingListSection = () => {
 };
 
 export interface RankingListProps {
-  list: RankingDto[];
+  list: VoteRankingDto[];
   trackColors: Record<string, string>;
 }
 
@@ -93,7 +93,7 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
     <ul>
       {list.map((item) => (
         <li
-          key={item.teamId}
+          key={item.teamName}
           className="border-lightGray flex items-center justify-between border-b px-5 py-3 last:border-b-0"
         >
           <div className="flex items-center gap-6">

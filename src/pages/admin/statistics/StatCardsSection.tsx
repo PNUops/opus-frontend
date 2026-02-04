@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { getVoteStatistics } from 'apis/contests';
-import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { useMemo } from 'react';
+import { getVoteStats } from 'apis/statistics';
 
 const StatCardsSection = () => {
   const { contestId } = useParams();
 
   const { data: voteStats } = useQuery({
     queryKey: ['voteStatistics', Number(contestId ?? 0)],
-    queryFn: () => getVoteStatistics(Number(contestId ?? 0)),
+    queryFn: () => getVoteStats(Number(contestId ?? 0)),
     enabled: !!contestId,
   });
 

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+import { getVoteLog } from 'apis/statistics';
 import dayjs from 'dayjs';
-import { getVoteLog } from 'apis/voteLog';
-import type { VoteLogItemDto } from 'types/DTO/voteLogDto';
 
 const VoteLogTable = () => {
   const {
@@ -40,7 +39,7 @@ const VoteLogTable = () => {
         <p className="text-midGray">투표 시각, 투표 대상 팀, 투표자 명, 투표자 이메일</p>
       </div>
       <div className="max-h-[400px] overflow-y-auto">
-        {voteLogs.map((v: VoteLogItemDto, idx: number) => (
+        {voteLogs.map((v, idx) => (
           <div
             key={`${v.votedAt}-${v.teamName}-${idx}`}
             className="flex border-b last:border-b-0 [&>div]:px-5 [&>div]:py-4"

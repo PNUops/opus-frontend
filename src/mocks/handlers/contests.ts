@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 
 const base = import.meta.env.VITE_API_BASE_URL ?? '';
 
-import { mockVoteStatistics, mockLikeRanking } from '@mocks/data/voteStats';
+import { mockVoteStatistics, mockLikeRanking } from '@mocks/data/statistics';
 
 export const contestsHandler = [
   http.get(`${base}/api/contests`, () => {
@@ -13,13 +13,4 @@ export const contestsHandler = [
   http.get(`${base}/api/contests/:contestId/teams`, () => {
     return HttpResponse.json(mockTeamsMain);
   }),
-
-  http.get(`${base}/api/admin/contests/:contestId/votes/statistics`, () => {
-    return HttpResponse.json(mockVoteStatistics);
-  }),
-
-  http.get(`${base}/api/admin/contests/:contestId/ranking`, () => {
-    return HttpResponse.json(mockLikeRanking);
-  }),
 ];
-  
