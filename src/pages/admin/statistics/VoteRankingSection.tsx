@@ -7,7 +7,7 @@ import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
 import Select from '@components/Select';
 import { VoteRankingDto } from 'types/DTO';
 
-const RankingListSection = () => {
+const VoteRankingSection = () => {
   const { contestId } = useParams();
   const [selectedFilter, setSelectedFilter] = useState<string>(defaultRankFilter[0]);
 
@@ -118,4 +118,4 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
   );
 };
 
-export default RankingListSection;
+export default VoteRankingSection;
