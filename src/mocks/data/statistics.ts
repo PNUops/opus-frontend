@@ -1,17 +1,44 @@
 import { VoteLogItemDto, VoteRankingDto, VoteStatsDto } from 'types/DTO';
 
-export const mockLikeRanking: VoteRankingDto[] = [
-  { rank: 1, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 A', likeCount: 999 },
-  { rank: 1, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 A', likeCount: 999 },
-  { rank: 1, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 B', likeCount: 999 },
-  { rank: 1, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 B', likeCount: 999 },
-  { rank: 1, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 D', likeCount: 999 },
-  { rank: 2, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 C', likeCount: 989 },
-  { rank: 3, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 C', likeCount: 979 },
-  { rank: 4, teamName: 'ByteBusters', projectName: 'MediConnect', trackName: '분과 D', likeCount: 969 },
+export const mockVoteRanking: VoteRankingDto[] = [
+  {
+    rank: 1,
+    teamName: '팀 A',
+    projectName: 'AI 번역기',
+    trackName: 'AI 트랙',
+    likeCount: 150,
+  },
+  {
+    rank: 2,
+    teamName: '팀 B',
+    projectName: '헬스 분석기',
+    trackName: '헬스케어 트랙',
+    likeCount: 120,
+  },
+  {
+    rank: 2,
+    teamName: '팀 C',
+    projectName: '노인 케어봇',
+    trackName: 'AI 트랙',
+    likeCount: 120,
+  },
+  {
+    rank: 3,
+    teamName: '팀 D',
+    projectName: '감정 분석기',
+    trackName: 'AI 트랙',
+    likeCount: 85,
+  },
+  {
+    rank: 4,
+    teamName: '팀 E',
+    projectName: '헬스 분석기2',
+    trackName: '헬스케어 트랙',
+    likeCount: 110,
+  },
 ];
 
-export const mockVoteStatistics: VoteStatsDto = {
+export const mockVoteStats: VoteStatsDto = {
   totalVotes: 366, // 총 좋아요 수
   totalVoters: 249, // 좋아요한 사람
   averageVotesPerVoter: 1.5, // 1인당 평균
