@@ -1,10 +1,9 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { getVoteLog } from 'apis/voteLog';
-import { formatDateTimeKorean } from 'utils/time';
 import type { VoteLogItemDto } from 'types/DTO/voteLogDto';
 
-const VoteLogTable: React.FC = () => {
+const VoteLogTable = () => {
   const {
     data: voteLogs,
     isLoading,
@@ -35,30 +34,25 @@ const VoteLogTable: React.FC = () => {
   }
 
   return (
-    <div className="mt-6 overflow-hidden rounded-lg border border-gray-200 bg-white text-sm">
-      <div className="w-full overflow-x-auto">
-        <table className="w-full table-auto text-left">
-          <thead>
-            <tr className="border-b">
-              <th className="px-6 py-4 text-sm text-gray-500">투표 시각</th>
-              <th className="px-6 py-4 text-sm text-gray-500">투표받은 팀</th>
-              <th className="px-6 py-4 text-sm text-gray-500">투표자 명</th>
-              <th className="px-6 py-4 text-sm text-gray-500">메일 주소</th>
-            </tr>
-          </thead>
-          <tbody>
-            {voteLogs.map((v: VoteLogItemDto, idx: number) => (
-              <tr key={`${v.votedAt}-${v.teamName}-${idx}`} className="border-b last:border-b-0">
-                <td className="px-6 py-4">{formatDateTimeKorean(new Date(v.votedAt))}</td>
-                <td className="px-6 py-4">{v.teamName}</td>
-                <td className="px-6 py-4">{v.voterName}</td>
-                <td className="px-6 py-4">{v.voterEmail ?? '-'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <section className="flex flex-col gap-5">
+      <div className="flex items-end gap-4">
+        <h2 className="text-2xl font-bold">투표 순위</h2>
+        <p className="text-midGray">투표 시각, 투표 대상 팀, 투표자 명, 투표자 이메일</p>
       </div>
-    </div>
+      <div className="max-h-[400px] overflow-y-auto">
+        {voteLogs.map((v: VoteLogItemDto, idx: number) => (
+          <div
+            key={`${v.votedAt}-${v.teamName}-${idx}`}
+            className="flex border-b last:border-b-0 [&>div]:px-5 [&>div]:py-4"
+          >
+            <div className="flex-1/3">{dayjs(v.votedAt).format('YYYY년 MM월 DD일 HH:mm')}</div>
+            <div className="flex-1/6">{v.teamName}</div>
+            <div className="flex-1/6">{v.voterName}</div>
+            <div className="flex-1/3">{v.voterEmail ?? '-'}</div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 };
 
