@@ -22,17 +22,17 @@ const StatCardsSection = () => {
   }, [voteStats]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <section className="flex flex-col gap-5">
       <h2 className="text-2xl font-bold">{`투표 집계`}</h2>
       <div className="border-lightGray grid grid-cols-1 gap-4 rounded-lg border p-4 sm:grid-cols-3">
         {statsItemList.map((item) => (
-          <div className="bg-whiteGray flex flex-col gap-1 rounded-sm p-6 shadow-sm">
+          <div key={item.title} className="bg-whiteGray flex flex-col gap-1 rounded-sm p-6 shadow-sm">
             <p className="text-sm font-semibold text-gray-500">{item.title}</p>
             <p className={`text-mainGreen text-3xl font-extrabold`}>{item.value}</p>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
