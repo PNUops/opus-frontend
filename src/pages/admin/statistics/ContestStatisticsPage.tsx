@@ -4,7 +4,7 @@ import VoteLogTable from './VoteLogTable';
 
 const ContestStatisticsPage = () => {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-[70px]">
       <RankingListSection />
       <StatCardsSection />
       <VoteLogTable />
