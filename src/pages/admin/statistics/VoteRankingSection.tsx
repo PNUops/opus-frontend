@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FaHeart } from 'react-icons/fa';
+import { FaVoteYea } from 'react-icons/fa';
 import { getVoteRanking } from 'apis/statistics';
 import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
 import Select from '@components/Select';
@@ -50,7 +50,7 @@ const VoteRankingSection = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-end gap-4">
           <h2 className="text-2xl font-bold">투표 순위</h2>
-          <p className="text-midGray">순위, 팀명, 프로젝트명, 분과</p>
+          <p className="text-midGray">순위, 팀명, 프로젝트명, 분과, 투표 수</p>
         </div>
         <div>
           <Select value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)} aria-label="분과 필터">
@@ -108,9 +108,9 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <FaHeart className="fill-red-400" />
-            <div className="text-sm font-semibold text-red-400">{`${item.likeCount.toLocaleString()}개`}</div>
+          <div className="flex items-center gap-1.5">
+            <FaVoteYea className="fill-mainGreen mt-0.5" size={22} />
+            <div className="text-mainGreen text-sm font-semibold">{`${item.likeCount.toLocaleString()}개`}</div>
           </div>
         </li>
       ))}
