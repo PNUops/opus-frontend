@@ -1,8 +1,3 @@
-export const statsModes = {
-  vote: '투표',
-  like: '좋아요',
-};
-
 export const defaultRankFilter = ['전체', '분과별 묶어보기'];
 
 // 최대 10개까지만 분과 커버 가능

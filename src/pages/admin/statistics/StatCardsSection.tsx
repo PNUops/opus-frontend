@@ -1,14 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getVoteStatistics } from 'apis/contests';
-import { statsModes } from 'constants/statistics';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-interface StatCardsSectionProps {
-  mode: 'vote' | 'like';
-}
-
-const StatCardsSection = ({ mode }: StatCardsSectionProps) => {
+const StatCardsSection = () => {
   const { contestId } = useParams();
 
   const { data: voteStats } = useQuery({
@@ -20,15 +15,15 @@ const StatCardsSection = ({ mode }: StatCardsSectionProps) => {
   const statsItemList = useMemo(() => {
     if (!voteStats) return [];
     return [
-      { title: `총 ${statsModes[mode]} 수`, value: `${voteStats.totalVotes}개` },
-      { title: `총 ${statsModes[mode]} 인원`, value: `${voteStats.totalVoters}명` },
+      { title: `총 투표 수`, value: `${voteStats.totalVotes}개` },
+      { title: `총 투표 인원`, value: `${voteStats.totalVoters}명` },
       { title: `1인당 평균`, value: `${voteStats.averageVotesPerVoter}개` },
     ];
   }, [voteStats]);
 
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-2xl font-bold">{`${statsModes[mode]} 집계`}</h2>
+      <h2 className="text-2xl font-bold">{`투표 집계`}</h2>
       <div className="border-lightGray grid grid-cols-1 gap-4 rounded-lg border p-4 sm:grid-cols-3">
         {statsItemList.map((item) => (
           <div className="bg-whiteGray flex flex-col gap-1 rounded-sm p-6 shadow-sm">
