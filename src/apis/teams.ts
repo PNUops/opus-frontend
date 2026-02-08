@@ -2,6 +2,7 @@ import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
 import { SubmissionStatusResponseDto } from '../types/DTO/teams/submissionStatusDto';
 import { PatchAwardRequestDto, PatchCustomOrderRequestDto, GetTeamAwardsResponseDto } from 'types/DTO';
 import apiClient from './apiClient';
+import { API_BASE_URL } from '@constants/index';
 
 export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
 export const sortOptions: { label: string; value: SortOption }[] = [
@@ -21,12 +22,11 @@ export const getSubmissionStatus = async (): Promise<SubmissionStatusResponseDto
 };
 
 export const getThumbnailTeams = async (teamId: number) => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://swpms.pnu.app';
   try {
     const response = await apiClient.get(`/teams/${teamId}/image/thumbnail`);
 
     if (response.status === 200) {
-      return `${baseUrl}/api/teams/${teamId}/image/thumbnail`;
+      return `${API_BASE_URL}/api/teams/${teamId}/image/thumbnail`;
     } else if (response.status === 202) {
       return null;
     }
