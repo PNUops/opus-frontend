@@ -10,11 +10,11 @@ interface CategorySelectProps {
 }
 
 const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
-  const { data: categorys } = useQuery(categoryOption());
+  const { data: categories } = useQuery(categoryOption());
 
   useEffect(() => {
-    if (categorys) onChange(categorys[0].categoryId.toString());
-  }, [categorys]);
+    if (categories) onChange(categories[0].categoryId.toString());
+  }, [categories]);
 
   return (
     <Select onValueChange={onChange} value={categoryId}>
@@ -22,7 +22,7 @@ const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelect
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {categorys?.map((category) => (
+        {categories?.map((category) => (
           <SelectItem key={category.categoryId} value={`${category.categoryId}`}>
             {category.categoryName}
           </SelectItem>
