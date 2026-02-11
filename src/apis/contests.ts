@@ -1,4 +1,4 @@
-import { ContestResponseDto, CurrentContestResponseDto, VoteTermDto } from 'types/DTO';
+import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto, VoteTermDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
@@ -21,13 +21,18 @@ export const deleteContest = async (contestId: number) => {
   return res.data;
 };
 
-export const patchContest = async (contestId: number, contestName: string) => {
-  const res = await apiClient.patch(`/contests/${contestId}`, { contestName });
+export const patchContest = async (contestId: number, payload: ContestRequestDto) => {
+  const res = await apiClient.patch(`/contests/${contestId}`, payload);
   return res.data;
 };
 
 export const getCurrentContest = async (): Promise<CurrentContestResponseDto[]> => {
   const res = await apiClient.get('/contests/current');
+  return res.data;
+};
+
+export const patchChangeOngoingContest = async (contestId: number, isCurrent: boolean) => {
+  const res = await apiClient.patch(`/contests/${contestId}/current`, { isCurrent });
   return res.data;
 };
 
