@@ -18,7 +18,9 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
+import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import NotFoundPage from '@pages/common/NotFoundPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -27,10 +29,15 @@ const AppRoutes = () =>
       element: <MainLayout />,
       children: [
         {
-          element: <FullContainerLayout />,
+          element: <SidebarLayout />,
           children: [
             { index: true, element: <MainPage /> },
             { path: 'contest/:contestId', element: <ContestPage /> },
+          ],
+        },
+        {
+          element: <FullContainerLayout />,
+          children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
             { path: 'teams/view/:teamId', element: <ProjectViewerPage /> },
@@ -82,6 +89,7 @@ const AppRoutes = () =>
             },
           ],
         },
+        { path: '*', element: <NotFoundPage /> },
       ],
     },
   ]);

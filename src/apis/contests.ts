@@ -1,4 +1,4 @@
-import { ContestRequestDto, ContestResponseDto, VoteTermDto } from 'types/DTO';
+import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto, VoteTermDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
@@ -26,8 +26,8 @@ export const patchContest = async (contestId: number, payload: ContestRequestDto
   return res.data;
 };
 
-export const getCurrentContestTeams = async (): Promise<TeamListItemResponseDto[]> => {
-  const res = await apiClient.get('/contests/current/teams');
+export const getCurrentContest = async (): Promise<CurrentContestResponseDto[]> => {
+  const res = await apiClient.get('/contests/current');
   return res.data;
 };
 
