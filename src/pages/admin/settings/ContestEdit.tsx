@@ -62,7 +62,7 @@ const ContestEdit = () => {
           <Input
             value={contestName}
             onChange={(e) => setContestName(e.target.value)}
-            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-[16px] focus:outline-1"
+            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-base focus:outline-1"
             placeholder="대회 이름을 입력해주세요."
           />
         </div>
