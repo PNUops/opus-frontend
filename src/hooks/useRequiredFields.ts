@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { defaultRequiredFields } from 'constants/requiredFields';
-import { RequiredFieldsDto, RequiredFieldsType } from 'types/DTO/requiredFieldsDto';
+import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 import { useToast } from './useToast';
 import { getRequiredFields, putRequiredFields } from 'apis/requiredFields';
 
@@ -26,7 +26,7 @@ export const useRequiredFields = (contestId: number) => {
     }
   }, [requiredFields]);
 
-  const toggleField = (key: string, value: RequiredFieldsType) => {
+  const toggleField = (key: string, value: boolean) => {
     setFieldsSetting((prev) => ({ ...prev, [key]: value }));
   };
 

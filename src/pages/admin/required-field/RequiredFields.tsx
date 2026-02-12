@@ -1,12 +1,12 @@
 import React from 'react';
 import Checkbox from '@components/ui/Checkbox';
-import { RequiredFieldsDto, RequiredFieldsType } from 'types/DTO/requiredFieldsDto';
+import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 import { labelByField } from 'constants/requiredFields';
 import { cn } from 'utils/classname';
 
 interface RequiredFieldsProps {
   fields: RequiredFieldsDto;
-  onToggle: (key: string, value: RequiredFieldsType) => void;
+  onToggle: (key: string, value: boolean) => void;
   className?: string;
 }
 
@@ -25,7 +25,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({ fields, onToggle, class
               <div className="flex w-16 justify-center">
                 <Checkbox
                   checked={value === 'REQUIRED'}
-                  onChange={(checked) => onToggle(key, checked ? 'REQUIRED' : 'OPTIONAL')}
+                  onChange={(checked) => onToggle(key, checked)}
                   ariaLabel={`${labelByField[key]} 필수 여부`}
                 />
               </div>

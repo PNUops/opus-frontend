@@ -1,18 +1,18 @@
 import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 
 export const defaultRequiredFields: RequiredFieldsDto = {
-  division: 'OPTIONAL',
-  projectName: 'OPTIONAL',
-  teamName: 'OPTIONAL',
-  leader: 'OPTIONAL',
-  teamMembers: 'OPTIONAL',
-  professor: 'OPTIONAL',
-  githubPath: 'OPTIONAL',
-  youtubePath: 'OPTIONAL',
-  productionPath: 'OPTIONAL',
-  overview: 'OPTIONAL',
-  poster: 'OPTIONAL',
-  images: 'OPTIONAL',
+  division: false,
+  projectName: false,
+  teamName: false,
+  leader: false,
+  teamMembers: false,
+  professor: false,
+  githubPath: false,
+  youtubePath: false,
+  productionPath: false,
+  overview: false,
+  poster: false,
+  images: false,
 };
 
 export const labelByField: Record<string, string> = {
