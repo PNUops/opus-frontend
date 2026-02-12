@@ -1,16 +1,14 @@
-export type RequiredFieldsType = 'REQUIRED' | 'OPTIONAL';
-
 export interface RequiredFieldsDto {
-  division: RequiredFieldsType;
-  projectName: RequiredFieldsType;
-  teamName: RequiredFieldsType;
-  leader: RequiredFieldsType;
-  teamMembers: RequiredFieldsType;
-  professor: RequiredFieldsType;
-  githubPath: RequiredFieldsType;
-  youtubePath: RequiredFieldsType;
-  productionPath: RequiredFieldsType;
-  overview: RequiredFieldsType;
-  poster: RequiredFieldsType;
-  images: RequiredFieldsType;
+  division: boolean;
+  projectName: boolean;
+  teamName: boolean;
+  leader: boolean;
+  teamMembers: boolean;
+  professor: boolean;
+  githubPath: boolean;
+  youtubePath: boolean;
+  productionPath: boolean;
+  overview: boolean;
+  poster: boolean;
+  images: boolean;
 }
