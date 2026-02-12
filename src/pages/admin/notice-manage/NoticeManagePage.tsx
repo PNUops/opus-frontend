@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useContestId } from 'hooks/useId'; // contestId를 가져오는 커스텀 훅 가정
+import { useContestIdOrRedirect } from 'hooks/useId'; // contestId를 가져오는 커스텀 훅 가정
 import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
 import ConfirmModal from '@components/ConfirmModal';
@@ -19,7 +19,7 @@ import { getContestNotices, deleteContestNotice } from 'apis/notices';
 const NoticeManagePage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const contestId = 1; // TODO: 실제 contestId 연동 필요
+  const contestId = useContestIdOrRedirect();
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
   const { data: notices } = useQuery({
@@ -44,7 +44,7 @@ const NoticeManagePage = () => {
         title="공지 관리"
         description="공지사항의 제목과 작성 일시를 관리합니다."
         buttonLabel="+ 새 공지"
-        onButtonClick={() => navigate(`/admin/contest/${contestId}/notice/create`)}
+        onButtonClick={() => navigate(`/admin/contest/${contestId}/notices/create`)}
       />
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
@@ -65,7 +65,9 @@ const NoticeManagePage = () => {
                 </div>
                 <div className="flex w-10 flex-shrink-0 justify-end">
                   <AdminPopoverMenu>
-                    <AdminPopoverEditButton onEdit={() => navigate(`/admin/notice/edit/${notice.noticeId}`)} />
+                    <AdminPopoverEditButton
+                      onEdit={() => navigate(`/admin/contest/${contestId}/notices/${notice.noticeId}/edit`)}
+                    />
                     <AdminPopoverDeleteButton
                       onDelete={() => {
                         handleDeleteNotice(notice.noticeId);

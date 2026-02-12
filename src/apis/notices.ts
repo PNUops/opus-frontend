@@ -26,8 +26,13 @@ export const deleteNotice = async (noticeId: number) => {
   return data;
 };
 
-export const getContestNotices = async (contestId: number): Promise<NoticeResponseDto[]> => {
+export const getContestNotices = async (contestId: number): Promise<NoticeListDto[]> => {
   const res = await apiClient.get(`/contests/${contestId}/notices`);
+  return res.data;
+};
+
+export const getContestNoticeDetail = async (contestId: number, noticeId: number): Promise<NoticeDetailDto> => {
+  const res = await apiClient.get(`/contests/${contestId}/notices/${noticeId}`);
   return res.data;
 };
 

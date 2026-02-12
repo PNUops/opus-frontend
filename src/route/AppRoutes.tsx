@@ -93,7 +93,8 @@ const AppRoutes = () =>
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <div>투표 관리</div> },
                 { path: 'notices', element: <NoticeManagePage /> },
-                { path: 'notices/create', element: <NoticeCreateTab /> },
+                { path: 'notices/create', element: <NoticeCreateTab mode="create" /> },
+                { path: 'notices/:noticeId/edit', element: <NoticeCreateTab mode="edit" /> },
                 { path: 'banners', element: <div>배너 관리</div> },
                 // 통계
                 { path: 'statistics', element: <div>대회 통계</div> },
