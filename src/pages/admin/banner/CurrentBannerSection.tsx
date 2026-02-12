@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { MdImage } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import Button from '@components/Button';
@@ -7,10 +7,14 @@ import { API_BASE_URL } from '@constants/index';
 import { deleteBanner } from 'apis/banner';
 import { useToast } from 'hooks/useToast';
 
-const CurrentBannerSection = () => {
+interface CurrentBannerSectionProps {
+  bannerVersion: number;
+  onBannerUpdate: () => void;
+}
+
+const CurrentBannerSection = ({ bannerVersion, onBannerUpdate }: CurrentBannerSectionProps) => {
   const { contestId } = useParams();
   const toast = useToast();
-  const queryClient = useQueryClient();
   const [bannerURL, setBannerURL] = useState<string | null>(null);
 
   const deleteMutation = useMutation({
@@ -19,8 +23,8 @@ const CurrentBannerSection = () => {
   });
 
   useEffect(() => {
-    if (contestId) setBannerURL(`${API_BASE_URL}/api/contests/${contestId}/image/banner`);
-  }, [contestId]);
+    if (contestId) setBannerURL(`${API_BASE_URL}/api/contests/${contestId}/image/banner?v=${bannerVersion}`);
+  }, [contestId, bannerVersion]);
 
   const handleImageError = () => {
     setBannerURL(null);
@@ -31,8 +35,8 @@ const CurrentBannerSection = () => {
 
     deleteMutation.mutate(undefined, {
       onSuccess: () => {
+        onBannerUpdate();
         toast('배너가 삭제되었습니다', 'success');
-        queryClient.invalidateQueries({ queryKey: ['banner', Number(contestId ?? 0)] });
       },
       onError: (error: any) => {
         toast(error.response?.data?.message || '배너 삭제에 실패했습니다.', 'error');

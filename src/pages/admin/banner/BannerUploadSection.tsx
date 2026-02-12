@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { FiX } from 'react-icons/fi';
 import { useToast } from 'hooks/useToast';
@@ -8,14 +8,17 @@ import { postBanner } from 'apis/banner';
 import Button from '@components/Button';
 import { cn } from '@components/lib/utils';
 
-const BannerUploadSection = () => {
+interface BannerUploadSectionProps {
+  onBannerUpdate: () => void;
+}
+
+const BannerUploadSection = ({ onBannerUpdate }: BannerUploadSectionProps) => {
   const { contestId } = useParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [newBannerFile, setNewBannerFile] = useState<File | null>(null);
   const [newBannerPreview, setNewBannerPreview] = useState<string | null>(null);
   const toast = useToast();
-  const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
     mutationKey: ['banner', Number(contestId ?? 0)],
@@ -84,13 +87,13 @@ const BannerUploadSection = () => {
     if (!newBannerFile) return toast('배너 이미지를 등록해주세요.', 'error');
 
     const formData = new FormData();
-    formData.append('file', newBannerFile);
+    formData.append('image', newBannerFile);
 
     uploadMutation.mutate(formData, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['banner', Number(contestId)] });
+      onSuccess: async () => {
         setNewBannerFile(null);
         setNewBannerPreview(null);
+        onBannerUpdate();
         toast('배너가 등록되었습니다', 'success');
       },
       onError: (error: any) => {
