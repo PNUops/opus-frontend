@@ -11,6 +11,7 @@ import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
+import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
@@ -25,6 +26,8 @@ import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
 import MyPageLayout from '@pages/account/MyPageLayout';
 import AccountManagePage from '@pages/account/AccountManagePage';
 import NoticeCreateTab from '@pages/admin/NoticeManageTab/NoticeCreateTab';
+import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
+import NotFoundPage from '@pages/common/NotFoundPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -57,12 +60,20 @@ const AppRoutes = () =>
           element: <AdminLayout />,
           children: [
             {
+              index: true,
               element: (
                 <FullContainer>
                   <AdminDashBoardPage />
                 </FullContainer>
               ),
-              children: [{ index: true, element: <Navigate to="ongoing" /> }],
+            },
+            {
+              path: 'contest/create',
+              element: (
+                <FullContainer>
+                  <ContestCreatePage />
+                </FullContainer>
+              ),
             },
             {
               path: 'contest/:contestId',
@@ -90,6 +101,7 @@ const AppRoutes = () =>
             },
           ],
         },
+        { path: '*', element: <NotFoundPage /> },
       ],
     },
   ]);

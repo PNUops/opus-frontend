@@ -1,19 +1,14 @@
+import { NoticeDetailDto, NoticeListDto, NoticeRequestDto } from 'types/DTO/noticeDto';
 import apiClient from './apiClient';
-import { NoticeResponseDto } from 'types/DTO/notices/NoticeResponseDto';
-import { NoticeDetailDto } from '../types/DTO/notices/NoticeDetailDto';
-import { NoticeRequestDto } from 'types/DTO/notices/NoticeRequestDto';
 
-export const getNotices = async (): Promise<NoticeResponseDto[]> => {
+export const getNotices = async (): Promise<NoticeListDto[]> => {
   const { data } = await apiClient.get('/notices');
-  return data.map((notice: NoticeResponseDto) => ({
-    ...notice,
-    createdAt: new Date(notice.createdAt),
-  }));
+  return data;
 };
 
 export const getNoticeDetail = async (noticeId: number): Promise<NoticeDetailDto> => {
   const { data } = await apiClient.get(`/notices/${noticeId}`);
-  return { ...data, updatedAt: new Date(data.updatedAt), createdAt: new Date(data.createdAt) };
+  return data;
 };
 
 export const postCreateNotice = async (request: NoticeRequestDto) => {

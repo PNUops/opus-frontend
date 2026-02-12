@@ -7,43 +7,48 @@ import {
   AdminCardRow,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
+  AdminNoData,
 } from '@components/ui/admin';
 import { CategoryModal, CategoryDeleteConfirmModal } from './CategoryModal';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
-
-const temp = ['해커톤', '캡스톤', '자유대회'];
+import { useQuery } from '@tanstack/react-query';
+import { categoryOption } from 'queries/category';
 
 const ContestCategorySection = () => {
+  const [createOpen, setCreateOpen] = useState<boolean>(false);
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+
+  const { data: categories } = useQuery(categoryOption());
 
   return (
     <AdminCard>
       <AdminCardTop>
         <h2 className="text-2xl font-bold">대회 카테고리</h2>
-        <Dialog>
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <AdminCardCreateButton>+ 새 카테고리</AdminCardCreateButton>
           </DialogTrigger>
-          <CategoryModal type="create" onSubmit={() => {}} />
+          <CategoryModal type="create" closeModal={() => setCreateOpen(false)} />
         </Dialog>
       </AdminCardTop>
       <div className="flex max-h-[300px] flex-col gap-2.5 overflow-y-auto px-2.5">
-        {temp.map((item) => (
-          <AdminCardRow key={item}>
-            <div className="text-midGray font-semibold">{item}</div>
+        {categories?.map((category) => (
+          <AdminCardRow key={category.categoryId}>
+            <div className="text-midGray font-semibold">{category.categoryName}</div>
             <AdminPopoverMenu>
               <Dialog open={editOpen} onOpenChange={setEditOpen}>
                 <AdminPopoverEditButton onEdit={() => setEditOpen(true)} />
-                <CategoryModal type="edit" prevName={item} onSubmit={() => {}} />
+                <CategoryModal type="edit" prevData={category} closeModal={() => setEditOpen(false)} />
               </Dialog>
               <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-                <AdminPopoverDeleteButton onDelete={() => setDeleteOpen(false)} />
-                <CategoryDeleteConfirmModal categoryName={item} onSubmit={() => {}} />
+                <AdminPopoverDeleteButton onDelete={() => setDeleteOpen(true)} />
+                <CategoryDeleteConfirmModal category={category} closeModal={() => setDeleteOpen(false)} />
               </Dialog>
             </AdminPopoverMenu>
           </AdminCardRow>
         ))}
+        {categories?.length === 0 && <AdminNoData />}
       </div>
     </AdminCard>
   );

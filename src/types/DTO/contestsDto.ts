@@ -16,6 +16,11 @@ export interface CurrentContestResponseDto {
   voteEndAt: Date;
 }
 
+export interface ContestRequestDto {
+  contestName: string;
+  categoryId: number;
+}
+
 export interface VoteTermDto {
   voteStartAt: string;
   voteEndAt: string;

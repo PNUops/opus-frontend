@@ -1,9 +1,11 @@
 import { VscKebabVertical } from 'react-icons/vsc';
 import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Fragment } from 'react';
+import { DialogClose, DialogContent, DialogTitle } from './dialog';
+import Button from '@components/Button';
+import { cn } from '@components/lib/utils';
 
 export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
   return <div className="border-lightGray flex flex-col gap-0.5 rounded-xl border-2">{children}</div>;
@@ -22,7 +24,7 @@ export const AdminCardCreateButton = ({ children, ...props }: React.ComponentPro
 };
 
 export const AdminCardRow = ({ children, className }: React.ComponentProps<'div'>) => {
-  return <div className={twMerge('flex items-center justify-between px-5 py-3', className)}>{children}</div>;
+  return <div className={cn('flex items-center justify-between px-5 py-3', className)}>{children}</div>;
 };
 
 export const AdminPopoverMenu = ({ children, ...props }: React.ComponentProps<'div'>) => {
@@ -110,6 +112,32 @@ export const AdminListLayout = <T,>({
           <Fragment key={index}>{renderItem(item, index)}</Fragment>
         ))}
       </div>
+    </div>
+  );
+};
+
+export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; onDelete: () => void }) => {
+  return (
+    <DialogContent className="gap-6">
+      <DialogTitle className="text-center text-lg font-semibold text-gray-800">{title}</DialogTitle>
+      <div className="flex justify-center gap-4">
+        <DialogClose asChild>
+          <Button className="border-lightGray text-midGray rounded-full border px-4 py-2 hover:bg-gray-100">
+            {'닫기'}
+          </Button>
+        </DialogClose>
+        <Button className="rounded-full bg-red-700 px-4 py-2" onClick={onDelete}>
+          {'삭제'}
+        </Button>
+      </div>
+    </DialogContent>
+  );
+};
+
+export const AdminNoData = ({ className }: React.ComponentProps<'div'>) => {
+  return (
+    <div className={cn('text-midGray my-10 flex items-center justify-center font-bold', className)}>
+      데이터가 없습니다.
     </div>
   );
 };
