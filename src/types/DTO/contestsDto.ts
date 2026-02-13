@@ -19,11 +19,6 @@ export interface ContestRequestDto {
   categoryId: number;
 }
 
-export interface VoteTermDto {
-  voteStartAt: string;
-  voteEndAt: string;
-}
-
 export interface PatchAwardRequestDto {
   awardName: string | null;
   awardColor: string | null;

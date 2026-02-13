@@ -11,6 +11,7 @@ import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
+import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
@@ -80,7 +81,7 @@ const AppRoutes = () =>
                 // 대회
                 { path: 'settings', element: <ContestSettingsPage /> },
                 { path: 'departments', element: <div>분과 관리</div> },
-                { path: 'votes', element: <div>투표 관리</div> },
+                { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <div>공지 관리</div> },
                 { path: 'banners', element: <div>배너 관리</div> },
                 // 통계

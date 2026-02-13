@@ -1,4 +1,4 @@
-import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto, VoteTermDto } from 'types/DTO';
+import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
@@ -49,15 +49,5 @@ export const postBulkAddTeams = async (contestId: number, formData: FormData) =>
   const res = await apiClient.post(`/contests/${contestId}/teams/bulk`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
-  return res.data;
-};
-
-export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {
-  const res = await apiClient.get(`/contests/${contestId}/vote`);
-  return res.data;
-};
-
-export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) => {
-  const res = await apiClient.put(`/contests/${contestId}/vote`, payload);
   return res.data;
 };
