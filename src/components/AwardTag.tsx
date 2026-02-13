@@ -4,18 +4,20 @@ import { FiX } from 'react-icons/fi';
 interface AwardTagProps {
   awardName: string;
   awardColor: string;
+  onClick?: () => void;
   onRemove?: () => void;
 }
 
-const AwardTag = ({ awardName, awardColor, onRemove }: AwardTagProps) => {
+const AwardTag = ({ awardName, awardColor, onClick, onRemove }: AwardTagProps) => {
   return (
     <span
-      className="award-tag relative inline-flex max-w-full min-w-0 items-center justify-center overflow-hidden rounded-full border px-4 py-0.5 text-sm font-medium text-white"
+      className={`award-tag relative inline-flex max-w-full min-w-0 items-center justify-center overflow-hidden rounded-full border px-4 py-0.5 text-sm font-medium text-white ${onClick ? 'hover:cursor-pointer hover:brightness-90' : ''}`}
       style={{
         backgroundColor: awardColor,
         borderColor: awardColor,
         boxShadow: `0 0 6px 2px ${awardColor}50, 0 0 4px 4px ${awardColor}20`,
       }}
+      onClick={onClick}
     >
       <span className="award-shimmer" />
       <FaAward className="relative z-10 mr-1 shrink-0" />
