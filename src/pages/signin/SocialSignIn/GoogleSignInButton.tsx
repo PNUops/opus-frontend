@@ -1,9 +1,10 @@
 import googleIconUrl from '@assets/google-icon.svg';
+import { API_BASE_URL } from '@constants/index';
 
 import { useToast } from 'hooks/useToast';
 
 const GoogleSignInButton = () => {
-  const GOOGLE_REDIRECT_URL = `${import.meta.env.VITE_API_BASE_URL}/api/oauth/google`;
+  const GOOGLE_REDIRECT_URL = `${API_BASE_URL}/api/oauth/google`;
 
   const toast = useToast();
 

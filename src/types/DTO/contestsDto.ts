@@ -1,7 +1,22 @@
 export interface ContestResponseDto {
   contestId: number;
   contestName: string;
+  categoryId: number;
+  categoryName: string;
+  isCurrent: boolean;
   updatedAt: Date;
+}
+export interface CurrentContestResponseDto {
+  contestId: number;
+  categoryName: string;
+  contestName: string;
+  voteStartAt: Date;
+  voteEndAt: Date;
+}
+
+export interface ContestRequestDto {
+  contestName: string;
+  categoryId: number;
 }
 
 export interface PatchAwardRequestDto {

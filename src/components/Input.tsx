@@ -1,12 +1,12 @@
 import { InputHTMLAttributes } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { cn } from 'utils/classname';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = ({ className = '', ...props }: Props) => {
   return (
     <input
-      className={twMerge(
+      className={cn(
         `border-lightGray focus:outline-mainGreen w-full rounded-lg border p-3 text-lg focus:outline-2`,
         className,
       )}
