@@ -2,15 +2,48 @@ import Input from '@components/Input';
 import CategorySelect from '../CategorySelect';
 import { useState } from 'react';
 import Button from '@components/Button';
+import { useMutation } from '@tanstack/react-query';
 import { useContestCreate } from './ContestCreateContext';
+import { postContest } from 'apis/contests';
+import { ContestRequestDto } from 'types/DTO';
+import { useToast } from 'hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 
 const ContestCreateForm = () => {
-  const [categoryId, setCategoryId] = useState<string>('1');
+  const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
-  const { setCurrentStep } = useContestCreate();
+  const { setCurrentStep, setContestId } = useContestCreate();
+  const toast = useToast();
+  const navigate = useNavigate();
+
+  const createContest = useMutation({
+    mutationKey: ['createContest'],
+    mutationFn: (payload: ContestRequestDto) => postContest(payload),
+  });
+
+  const handleCancel = () => {
+    navigate(-1);
+  };
 
   const handleCreateContest = () => {
-    setCurrentStep(2);
+    if (!contestName) return toast('대회 이름을 입력해주세요.', 'error');
+
+    createContest.mutate(
+      {
+        categoryId: Number(categoryId),
+        contestName,
+      },
+      {
+        onSuccess: (res) => {
+          toast('대회 생성이 완료되었습니다.', 'success');
+          setContestId(res.contestId);
+          setCurrentStep(2);
+        },
+        onError: () => {
+          toast('대회 생성에 실패했습니다.', 'error');
+        },
+      },
+    );
   };
 
   return (
@@ -38,7 +71,9 @@ const ContestCreateForm = () => {
         </div>
       </div>
       <div className="flex items-center justify-center gap-6">
-        <Button className="rounded-3xl border border-red-400 px-6 py-2 text-red-400">취소하기</Button>
+        <Button className="rounded-3xl border border-red-400 px-6 py-2 text-red-400" onClick={handleCancel}>
+          취소하기
+        </Button>
         <Button
           className="disabled:border-midGray disabled:bg-whiteGray disabled:text-midGray border-mainGreen text-mainGreen rounded-3xl border px-6 py-2"
           onClick={handleCreateContest}
