@@ -1,10 +1,24 @@
 import apiClient from './apiClient';
 
+export const getBanner = async (contestId: number): Promise<Blob> => {
+  const response = await apiClient.get(`/contests/${contestId}/image/banner`, {
+    responseType: 'blob',
+  });
+
+  if (response.status === 202) {
+    const error = new Error('배너 이미지 처리 중입니다.');
+    (error as any).response = response;
+    throw error;
+  }
+
+  return response.data;
+};
+
 export const postBanner = async (contestId: number, formData: FormData) => {
-  const response = await apiClient.post(`/contests/${contestId}/image/banner`, formData, {
+  const res = await apiClient.post(`/contests/${contestId}/image/banner`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
-  return response;
+  return res;
 };
 
 export const deleteBanner = async (contestId: number) => {
