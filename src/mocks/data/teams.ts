@@ -168,3 +168,18 @@ export const mockTeamLeaderMessage = {
   projectName: 'team1 Project',
   isSubmitted: false,
 };
+
+export const mockTeamAwards = [
+  {
+    awardId: 1,
+    awardName: '대상',
+    awardColor: '#FFD700',
+    contestId: 5,
+  },
+  {
+    awardId: 3,
+    awardName: '최우수상',
+    awardColor: '#C0C0C0',
+    contestId: 5,
+  },
+];
