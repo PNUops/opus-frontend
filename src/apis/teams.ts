@@ -58,18 +58,17 @@ export const patchCustomSortTeam = async (payload: PatchCustomOrderRequestDto) =
 };
 
 export const getTeamAwards = async (teamId: number): Promise<GetTeamAwardsResponseDto> => {
-  const res = await apiClient.get(`admin/teams/${teamId}/award`);
+  const res = await apiClient.get(`admin/teams/${teamId}/awards`);
   return res.data;
 };
 
-// TODO
 export const deleteTeamAward = async (teamId: number) => {
   const payload: PatchAwardRequestDto = { awardName: null, awardColor: null };
-  const res = await apiClient.patch(`admin/teams/${teamId}/award`, payload);
+  const res = await apiClient.patch(`admin/teams/${teamId}/awards`, payload);
   return res.data;
 };
 
 export const updateTeamAward = async (teamId: number, awardIds: number[]) => {
-  const res = await apiClient.patch(`admin/teams/${teamId}/award`, awardIds);
+  const res = await apiClient.patch(`admin/teams/${teamId}/awards`, awardIds);
   return res.data;
 };
