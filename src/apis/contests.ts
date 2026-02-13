@@ -62,7 +62,7 @@ export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) =>
 };
 
 export const getProjectsAdmin = async (contestId: number): Promise<ProjectsAdminResponseDto[]> => {
-  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/admin/contests/${contestId}/dashboard`);
+  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/admin/contests/${contestId}/submissions`);
   return res.data;
 };
 
