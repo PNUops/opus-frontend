@@ -33,8 +33,6 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
     queryFn: () => getContestAwards(contestId),
   });
 
-  if (!contestAwards) return <></>;
-
   const teamAwardsList: TeamAwardDto[] = teamAwards ?? [];
   const contestAwardsList: ContestAwardDto[] = contestAwards ?? [];
 
@@ -66,7 +64,6 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
       handleAddTeamAward(debouncedSelectedAwardIds);
       setSelectedAwardIds([]);
     }
-    0;
   }, [debouncedSelectedAwardIds]);
 
   const handleAddContestAward = (awardName: string, awardColor: string) => {
@@ -130,40 +127,36 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
             <div className="flex flex-col items-start gap-3 p-4">
               <p className="text-midGray text-base font-medium">옵션 선택</p>
               {AWRD_PALETTE.map((color) => (
-                <button
+                <AwardTag
                   key={color}
-                  type="button"
+                  awardName={debouncedAwardName}
+                  awardColor={color}
                   onClick={() => {
                     handleAddContestAward(newAwardName, color);
                     setNewAwardName('');
                   }}
-                >
-                  <AwardTag awardName={debouncedAwardName} awardColor={color} />
-                </button>
+                />
               ))}
             </div>
           ) : (
             <div className="flex flex-col items-start gap-3 p-4">
               <p className="text-midGray text-base font-medium">옵션 선택</p>
-              {contestAwards.map((award) => (
-                <button
-                  key={award.awardId}
-                  type="button"
-                  onClick={() => {
-                    toggleSelectAwardId(award.awardId);
-                    setNewAwardName('');
-                  }}
-                >
+              {contestAwards &&
+                contestAwards.map((award) => (
                   <AwardTag
                     key={award.awardId}
                     awardName={award.awardName}
                     awardColor={award.awardColor}
+                    onClick={() => {
+                      toggleSelectAwardId(award.awardId);
+                      setNewAwardName('');
+                      alert('선택 awardId: ' + award.awardId);
+                    }}
                     onRemove={() => {
                       handleRemoveContestAward(award.awardId);
                     }}
                   />
-                </button>
-              ))}
+                ))}
             </div>
           )}
         </PopoverContent>

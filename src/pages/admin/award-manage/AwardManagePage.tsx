@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAwardViewAdmin } from 'hooks/useAwardAdmin';
-
+import { useContestIdOrRedirect } from 'hooks/useId';
 import useTeamList from 'hooks/useTeamList';
 import { AdminCardRow, AdminHeader } from '@components/ui/admin';
 import AwardTag from '@components/AwardTag';
@@ -10,7 +10,7 @@ import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 import { twMerge } from 'tailwind-merge';
 
 const AwardManagePage = () => {
-  const contestId = 1; // TODO: 현재 선택된 공모전 ID로 변경 필요
+  const contestId = useContestIdOrRedirect();
   const viewAdmin = useAwardViewAdmin(contestId);
   const { data: teamList, isLoading, error } = useTeamList(contestId);
 
@@ -18,7 +18,11 @@ const AwardManagePage = () => {
     <div className="flex w-full flex-col">
       <AdminHeader title="수상 관리" description="팀 | 프로젝트 | 수상 내역" />
       <div className="h-[35px]" />
-      <AwardEditForm contestId={contestId} viewAdmin={viewAdmin} />
+      {teamList && teamList.length === 0 ? (
+        <div className="bg-whiteGray text-midGray rounded-md p-4 text-center">아직 등록된 팀이 없어요.</div>
+      ) : (
+        <AwardEditForm contestId={contestId} viewAdmin={viewAdmin} />
+      )}
       <div className="h-[35px]" />
       <AwardList filterId={viewAdmin.selectedTeamId} teamList={teamList ?? []} />
     </div>
