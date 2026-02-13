@@ -15,6 +15,7 @@ import {
 } from '@components/ui/admin';
 import { getColorClassForLabel } from 'utils/color';
 import { useToast } from 'hooks/useToast';
+import { useContestIdOrRedirect } from 'hooks/useId';
 
 type SubmissionTagProps = { isSubmitted: boolean };
 const SubmissionTag = ({ isSubmitted }: SubmissionTagProps) => {
@@ -33,8 +34,7 @@ const ProjectManagePage = () => {
   const toast = useToast();
 
   const navigate = useNavigate();
-  const contestId = 1; // TODO: 현재 선택된 공모전 ID로 변경 필요
-  // const contestId = useContestId();
+  const contestId = useContestIdOrRedirect();
   const handleCreateProject = () => navigate(`/admin/contest/${contestId}/projects/create`);
   const handleDeleteTeam = (teamId: number) => {
     deleteTeamMutation(teamId);
