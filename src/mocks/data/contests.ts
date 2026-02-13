@@ -3,21 +3,33 @@ import { ProjectsAdminResponseDto, GetContestTracksResponseDto, GetContestAwards
 
 export const mockContestsResponse: ContestResponseDto[] = [
   {
+    categoryId: 1,
+    categoryName: '해커톤',
+    isCurrent: true,
     contestId: 1,
     contestName: '제6회PNU창의융합SW해커톤',
     updatedAt: new Date('2025-06-28T14:30:00Z'),
   },
   {
+    categoryId: 1,
+    categoryName: '해커톤',
+    isCurrent: false,
     contestId: 2,
     contestName: '제5회PNU창의융합SW해커톤',
     updatedAt: new Date('2025-06-20T09:15:45Z'),
   },
   {
+    categoryId: 1,
+    categoryName: '해커톤',
+    isCurrent: false,
     contestId: 3,
     contestName: '제4회PNU창의융합SW해커톤',
     updatedAt: new Date('2025-06-20T09:15:45Z'),
   },
   {
+    categoryId: 1,
+    categoryName: '해커톤',
+    isCurrent: false,
     contestId: 4,
     contestName: '제3회PNU창의융합SW해커톤',
     updatedAt: new Date('2025-06-20T09:15:45Z'),
