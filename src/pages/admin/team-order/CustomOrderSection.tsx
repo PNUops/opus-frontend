@@ -102,10 +102,11 @@ const CustomOrderSection = () => {
 };
 
 const TeamRow = ({ team }: { team: TeamListItemResponseDto }) => {
-  const { teamName, projectName, awardName, awardColor } = team;
+  const { teamName, projectName, awards } = team;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: team.teamId });
   const style = { transform: CSS.Transform.toString(transform), transition };
 
+  // TODO: API 개발 완료 시 테스트 필요
   return (
     <>
       <span
@@ -120,7 +121,13 @@ const TeamRow = ({ team }: { team: TeamListItemResponseDto }) => {
       >
         <span className="break-all">{teamName}</span>
         <span className="break-all">{projectName}</span>
-        {awardColor && awardName ? <AwardTag awardColor={awardColor} awardName={awardName} /> : <span />}
+        {awards.length > 0 ? (
+          awards.map((award) => (
+            <AwardTag key={award.awardName} awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
+          ))
+        ) : (
+          <span />
+        )}
         <PiDotsSixVerticalBold className="text-midGray ml-auto text-lg opacity-0 group-hover:opacity-100" />
       </span>
     </>
