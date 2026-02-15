@@ -1,13 +1,37 @@
-export const mockTeamDetail = {
-  teamId: 1,
-  name: 'AI Revolution',
-  description: 'AI 기반 자동화 시스템 개발 프로젝트',
-  participants: ['참가자1', '참가자2', '참가자3'],
-  filePath: ['/files/project1/design.pdf', '/files/project1/demo.mp4'],
-  githubPath: 'https://github.com/example/ai-revolution',
-  youtubePath: 'https://youtube.com/watch?v=abc123',
+import { ProjectDetailsResponseDto } from '../../types/DTO/projectViewerDto';
+
+export const mockTeamDetail: ProjectDetailsResponseDto = {
+  contestId: 1,
+  contestName: '2026 소프트웨어 캡스톤 디자인',
+  trackId: 3,
+  trackName: 'AI & 데이터',
+  teamId: 101,
+  teamName: '팀 노바',
+  leaderId: 1001,
+  projectName: '외국인 정착 지원 플랫폼',
+  overview: '외국인의 한국 정착을 돕기 위해 맞춤형 가이드, 정착 로드맵, 커뮤니티 기능을 제공하는 플랫폼입니다.',
+  professorName: '김민수 교수',
+  leaderName: '홍지연',
+  teamMembers: [
+    {
+      teamMemberId: 1001,
+      teamMemberName: '홍지연',
+    },
+    {
+      teamMemberId: 1002,
+      teamMemberName: '이동혁',
+    },
+    {
+      teamMemberId: 1003,
+      teamMemberName: '박민지',
+    },
+  ],
+  previewIds: [501, 502, 503],
+  productionPath: 'https://forink.app',
+  githubPath: 'https://github.com/forink/platform',
+  youTubePath: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   isLiked: true,
-  viewCount: 1523,
+  isVoted: false,
 };
 
 export const mockTeams = [
