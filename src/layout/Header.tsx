@@ -44,10 +44,7 @@ const Header = () => {
             </Link>
           )}
           {user?.name && (
-            <Link
-              to="/myaccount"
-              className="hover:bg-whiteGray flex items-center gap-2 rounded-full p-3 hover:cursor-pointer"
-            >
+            <Link to="/me" className="hover:bg-whiteGray flex items-center gap-2 rounded-full p-3 hover:cursor-pointer">
               <CgProfile className="text-mainGreen cursor-pointer text-sm" />
               <span className="text-exsm hidden text-nowrap lg:inline">나의 계정</span>
             </Link>
