@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
 import { getThumbnailTeams } from '../../apis/teams';
 import AwardTag from '@components/AwardTag';
+import { AwardDto } from 'types/DTO/awardsDto';
 
 interface TeamCardProps {
   teamId: number;
   teamName: string;
   projectName: string;
   isLiked: boolean;
-  awardName: string | null;
-  awardColor: string | null;
+  awards: AwardDto[];
   isVoteTerm?: boolean;
 }
 
-const TeamCard = ({ teamId, teamName, projectName, isLiked, awardName, awardColor, isVoteTerm }: TeamCardProps) => {
+const TeamCard = ({ teamId, teamName, projectName, isLiked, awards, isVoteTerm }: TeamCardProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(basicThumbnail);
 
   useEffect(() => {
@@ -35,11 +35,14 @@ const TeamCard = ({ teamId, teamName, projectName, isLiked, awardName, awardColo
 
         <div className="absolute top-2 right-0 left-0 w-full px-2">
           <div className="flex w-full min-w-0 items-center gap-2">
-            {awardName && awardColor && (
-              <div className="w-0 max-w-full min-w-0 flex-auto">
-                <AwardTag awardName={awardName} awardColor={awardColor} />
-              </div>
-            )}
+            {/* TODO: API 개발 완료 시 테스트 필요. 특히 수상 몇개 표시할 것인지 논의 필요 */}
+            {awards.length > 0 &&
+              awards.map((award) => (
+                <div key={award.awardName} className="w-0 max-w-full min-w-0 flex-auto">
+                  <AwardTag awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
+                </div>
+              ))}
+
             {isVoteTerm && isLiked && (
               <FaHeart color="red" size="clamp(1.5rem, 2vw, 1.8rem)" className="flex-shrink-0" />
             )}
