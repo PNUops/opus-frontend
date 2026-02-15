@@ -4,7 +4,7 @@ import TextArea from '@components/TextArea';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createContestNotice, getContestNoticeDetail, updateContestNotice } from 'apis/notices';
 import useGoBack from 'hooks/useGoBack';
-import { useContestIdOrRedirect, useNoticeIdOrRedirect } from 'hooks/useId';
+import { useContestIdOrRedirect, useNoticeId } from 'hooks/useId';
 import { useToast } from 'hooks/useToast';
 import { useEffect, useState } from 'react';
 
@@ -18,7 +18,7 @@ const NoticeCreateTab = ({ mode }: NoticeCreateTabProps) => {
   const { goBack } = useGoBack();
   const toast = useToast();
   const contestId = useContestIdOrRedirect();
-  const noticeId = useNoticeIdOrRedirect();
+  const noticeId = useNoticeId();
 
   const isCreateMode = mode === 'create';
 
@@ -27,7 +27,7 @@ const NoticeCreateTab = ({ mode }: NoticeCreateTabProps) => {
 
   const { data: noticeDetail, isLoading: isNoticeLoading } = useQuery({
     queryKey: ['noticeDetail', noticeId],
-    queryFn: () => getContestNoticeDetail(contestId, noticeId),
+    queryFn: () => getContestNoticeDetail(contestId, Number(noticeId)),
     enabled: !isCreateMode && !!noticeId,
   });
 

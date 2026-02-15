@@ -36,5 +36,3 @@ export const useNoticeId = createNumericIdHook('noticeId');
 export const useTeamIdOrRedirect = createNumericIdOrRedirectHook(useTeamId, '/');
 
 export const useContestIdOrRedirect = createNumericIdOrRedirectHook(useContestId, '/');
-
-export const useNoticeIdOrRedirect = createNumericIdOrRedirectHook(useNoticeId, '/notices');
