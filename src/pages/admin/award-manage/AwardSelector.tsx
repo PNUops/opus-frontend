@@ -33,7 +33,7 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
     queryFn: () => getContestAwards(contestId),
   });
 
-  const teamAwardsList: TeamAwardDto[] = teamAwards ?? [];
+  const teamAwardsList: TeamAwardDto[] = Array.isArray(teamAwards) ? teamAwards : [];
   const contestAwardsList: ContestAwardDto[] = contestAwards ?? [];
 
   const handleRemoveTeamAward = (awardId: number) => {
@@ -71,6 +71,8 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
     alert(`추가 awardName: ${awardName}, awardColor: ${awardColor}`);
   };
 
+  const filteredTeamAwardsList = teamAwardsList.filter((award) => award.awardName && award.awardColor);
+
   return (
     <div className="flex w-full items-center gap-4">
       <label className="w-30 flex-shrink-0 text-sm leading-none">상훈 명칭</label>
@@ -100,9 +102,9 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
           sideOffset={-44}
         >
           <div className="bg-whiteGray flex items-center gap-4 p-4">
-            {teamAwardsList.filter((award) => award.awardName && award.awardColor).length > 0 && (
+            {filteredTeamAwardsList.length > 0 && (
               <div className="flex items-center gap-3">
-                {teamAwardsList.map((award, index) => (
+                {filteredTeamAwardsList.map((award, index) => (
                   <AwardTag
                     key={index}
                     awardName={award.awardName ?? ''}
