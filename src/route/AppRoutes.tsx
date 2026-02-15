@@ -23,8 +23,7 @@ import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
-import MyPageLayout from '@pages/account/MyPageLayout';
-import AccountManagePage from '@pages/account/AccountManagePage';
+import MyPage from '@pages/me/MyPage';
 import NoticeCreateTab from '@pages/admin/NoticeManageTab/NoticeCreateTab';
 import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
@@ -47,14 +46,14 @@ const AppRoutes = () =>
           children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
-            { path: 'teams/view/:teamId', element: <ProjectViewerPage /> },
-            { path: 'teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
+            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectViewerPage /> },
+            { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
+            { path: 'me', element: <MyPage /> },
           ],
         },
-        { path: 'myaccount', element: <MyPageLayout />, children: [{ index: true, element: <AccountManagePage /> }] },
         {
           path: 'admin',
           element: <AdminLayout />,
