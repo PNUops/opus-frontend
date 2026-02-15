@@ -5,15 +5,23 @@ import { useState, useRef } from 'react';
 import { cn } from 'utils/classname';
 import { useToast } from 'hooks/useToast';
 import { useContestCreate } from './ContestCreateContext';
+import { useMutation } from '@tanstack/react-query';
+import { postBulkAddTeams } from 'apis/contests';
 
 const XLSX_MIME_TYPE = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`;
 
 const ContestTeamInsert = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const { contestId, setCurrentStep } = useContestCreate();
   const inputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
-  const { setCurrentStep } = useContestCreate();
+
+  const bulkAddTeams = useMutation({
+    mutationKey: ['bulkAddTeams'],
+    mutationFn: (payload: { contestId: number; formData: FormData }) =>
+      postBulkAddTeams(payload.contestId, payload.formData),
+  });
 
   const handleFileChange = (selectedFile: File | null) => {
     if (selectedFile) {
@@ -63,8 +71,26 @@ const ContestTeamInsert = () => {
   };
 
   const handleUpload = () => {
-    if (!file) return;
-    setCurrentStep(3);
+    if (!file || !contestId) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    bulkAddTeams.mutate(
+      {
+        contestId: Number(contestId),
+        formData,
+      },
+      {
+        onSuccess: () => {
+          toast('팀 설정이 완료되었습니다.', 'success');
+          setCurrentStep(3);
+        },
+        onError: (error: any) => {
+          toast(error.response?.data?.message || '팀 설정에 실패했습니다.', 'error');
+        },
+      },
+    );
   };
 
   return (

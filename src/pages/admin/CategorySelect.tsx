@@ -1,4 +1,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { categoryOption } from 'queries/category';
+import { contestOption } from 'queries/contests';
 
 interface CategorySelectProps {
   categoryId: string;
@@ -7,7 +12,19 @@ interface CategorySelectProps {
 }
 
 const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
-  // TODO: API 연결
+  const { contestId: contestIdParam } = useParams();
+  const { data: contests } = useQuery(contestOption());
+  const { data: categorys } = useQuery(categoryOption());
+
+  useEffect(() => {
+    if (categorys && contests) {
+      if (!contestIdParam) onChange(categorys[0].categoryId.toString());
+      else {
+        const currentId = contests.find((contest) => contest.contestId === Number(contestIdParam))?.categoryId;
+        if (currentId) onChange(String(currentId));
+      }
+    }
+  }, [contests, categorys, contestIdParam]);
 
   return (
     <Select onValueChange={onChange} value={categoryId}>
@@ -15,9 +32,11 @@ const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelect
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="1">해커톤</SelectItem>
-        <SelectItem value="2">졸업과제</SelectItem>
-        <SelectItem value="3">자유대회</SelectItem>
+        {categorys?.map((category) => (
+          <SelectItem key={category.categoryId} value={`${category.categoryId}`}>
+            {category.categoryName}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

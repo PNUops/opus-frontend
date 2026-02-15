@@ -11,6 +11,7 @@ import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
+import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
