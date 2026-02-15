@@ -33,6 +33,8 @@ export const useNoticeId = createNumericIdHook('noticeId');
 
 /* NULL 허용하지 않고 리다이렉트 */
 
+export const useTeamIdOrRedirect = createNumericIdOrRedirectHook(useTeamId, '/');
+
 export const useContestIdOrRedirect = createNumericIdOrRedirectHook(useContestId, '/');
 
 export const useNoticeIdOrRedirect = createNumericIdOrRedirectHook(useNoticeId, '/notices');
