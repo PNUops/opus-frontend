@@ -75,7 +75,7 @@ const ProjectManagePage = () => {
                   <AdminPopoverMenu>
                     <AdminPopoverEditButton
                       onEdit={() => {
-                        navigate(`/teams/edit/${proj.teamId}`);
+                        navigate(`/contest/${contestId}/teams/edit/${proj.teamId}`);
                         close();
                       }}
                     />
