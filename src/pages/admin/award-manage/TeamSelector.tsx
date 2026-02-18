@@ -23,7 +23,7 @@ const TeamSelector = ({ teamList, onChange }: TeamSelectorProps) => {
         <SelectTrigger className="focus:outline:none focus:border-mainGreen w-full overflow-hidden border text-sm focus:ring-0">
           <SelectValue placeholder="수상팀을 선택해주세요." className="truncate" />
         </SelectTrigger>
-        <SelectContent className="text-sm">
+        <SelectContent className="max-h-72 text-sm">
           <SelectItem key={0} value={'0'} className="overflow-hidden">
             <span className="block w-full truncate">전체 보기</span>
           </SelectItem>
