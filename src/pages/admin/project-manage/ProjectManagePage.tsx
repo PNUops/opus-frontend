@@ -17,18 +17,6 @@ import { getColorClassForLabel } from 'utils/color';
 import { useToast } from 'hooks/useToast';
 import { useContestIdOrRedirect } from 'hooks/useId';
 
-type SubmissionTagProps = { isSubmitted: boolean };
-const SubmissionTag = ({ isSubmitted }: SubmissionTagProps) => {
-  const label = isSubmitted ? '제출' : '미제출';
-  const colorClass = isSubmitted ? 'bg-blue-300' : 'bg-midGray';
-  return <Tag className={colorClass}>{label}</Tag>;
-};
-
-const DivisionTag = ({ name }: { name: string }) => {
-  const colorClass = getColorClassForLabel(name);
-  return <Tag className={colorClass}>{name}</Tag>;
-};
-
 const ProjectManagePage = () => {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -112,3 +100,15 @@ const ProjectManagePage = () => {
 };
 
 export default ProjectManagePage;
+
+type SubmissionTagProps = { isSubmitted: boolean };
+const SubmissionTag = ({ isSubmitted }: SubmissionTagProps) => {
+  const label = isSubmitted ? '제출' : '미제출';
+  const colorClass = isSubmitted ? 'bg-blue-300' : 'bg-midGray';
+  return <Tag className={colorClass}>{label}</Tag>;
+};
+
+const DivisionTag = ({ name }: { name: string }) => {
+  const colorClass = getColorClassForLabel(name);
+  return <Tag className={colorClass}>{name}</Tag>;
+};
