@@ -10,10 +10,10 @@ export interface ProjectDetailsResponseDto {
   leaderId: number;
   teamName: string;
   projectName: string;
-  overview: string;
   professorName: string | null;
   leaderName: string;
-  teamMembers: TeamMember[]; // WARN: 백엔드 측에서 필드명 바꿀 수도 있음 주의
+  teamMembers: TeamMember[];
+  overview: string;
   previewIds: number[];
   productionPath: string | null;
   githubPath: string;
