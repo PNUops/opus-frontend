@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@constants/index';
+import { API_BASE_URL } from '@constants/env';
 import apiClient from './apiClient';
 import {
   ProjectDetailsResponseDto,

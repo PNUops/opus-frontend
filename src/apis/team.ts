@@ -2,7 +2,7 @@ import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
 import { SubmissionStatusResponseDto } from '../types/DTO/teams/submissionStatusDto';
 import { PatchAwardRequestDto, PatchCustomOrderRequestDto, GetTeamAwardsResponseDto } from 'types/DTO';
 import apiClient from './apiClient';
-import { API_BASE_URL } from '@constants/index';
+import { API_BASE_URL } from '@constants/env';
 
 export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
 export const sortOptions: { label: string; value: SortOption }[] = [
