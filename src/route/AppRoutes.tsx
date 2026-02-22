@@ -24,7 +24,10 @@ import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
 import MyPage from '@pages/me/MyPage';
 import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
+import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
+import VoteManagePage from '@pages/admin/votes/VoteManagePage';
+import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -86,11 +89,11 @@ const AppRoutes = () =>
                 { path: 'awards', element: <AwardManagePage /> },
                 { path: 'required-fields', element: <div>필수 항목 설정</div> },
                 // 대회
-                { path: 'settings', element: <div>대회 관리</div> },
+                { path: 'settings', element: <ContestSettingsPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
-                { path: 'votes', element: <div>투표 관리</div> },
+                { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },
-                { path: 'banners', element: <div>배너 관리</div> },
+                { path: 'banners', element: <BannerManagePage /> },
                 // 통계
                 { path: 'statistics', element: <div>대회 통계</div> },
               ],
