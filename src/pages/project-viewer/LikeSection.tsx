@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 interface LikeSectionProps {
   contestId: number;
   teamId: number;
-  isLiked: boolean;
+  isLiked: boolean | null;
 }
 
 const LikeSection = ({ contestId, teamId, isLiked }: LikeSectionProps) => {

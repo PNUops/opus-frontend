@@ -1,14 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from 'hooks/useToast';
-import { getSortStatus, patchSortTeam } from 'apis/teams';
-
-export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
-
-const sortOptions: { label: string; value: SortOption }[] = [
-  { label: '랜덤', value: 'RANDOM' },
-  { label: '오름차순', value: 'ASC' },
-  { label: '수상 설정순', value: 'CUSTOM' },
-];
+import { getSortStatus, patchSortTeam, SortOption, sortOptions } from 'apis/team';
 
 const ProjectSortToggle = () => {
   const queryClient = useQueryClient();
@@ -21,7 +13,7 @@ const ProjectSortToggle = () => {
     onSuccess: (_, mode) => {
       queryClient.invalidateQueries({ queryKey: ['sortStatus'] });
       queryClient.invalidateQueries({ queryKey: ['teams'] });
-      const label = sortOptions.find(option => option.value === mode)?.label;
+      const label = sortOptions.find((option) => option.value === mode)?.label;
       toast(`프로젝트가 ${label} 정렬로 변경되었어요`, 'success');
     },
     onError: () => {

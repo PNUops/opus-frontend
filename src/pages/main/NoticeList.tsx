@@ -1,17 +1,17 @@
 import { AiOutlineNotification } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import { NoticeResponseDto } from 'types/DTO/notices/NoticeResponseDto';
 import { MdFiberNew } from 'react-icons/md';
 import dayjs from 'dayjs';
+import { NoticeListDto } from 'types/DTO/noticeDto';
 
 interface Props {
-  notices: NoticeResponseDto[];
+  notices: NoticeListDto[];
 }
 
 const NoticeList = ({ notices }: Props) => {
   return (
-    <div className="rounded-lg bg-white p-4 shadow">
-      <ul>
+    <div className="w-full">
+      <ul className="flex flex-col gap-1">
         {notices && notices.length === 0 && (
           <li className="text-midGray py-2 text-center text-sm">등록된 공지사항이 없습니다.</li>
         )}
@@ -19,21 +19,25 @@ const NoticeList = ({ notices }: Props) => {
           const showNewIcon = dayjs(notice.createdAt).isAfter(dayjs().subtract(3, 'day'));
 
           return (
-            <Link
-              to={`/notices/${notice.noticeId}`}
-              key={notice.noticeId}
-              className="hover:bg-lightGray flex items-center justify-between rounded px-2 py-1 transition"
-            >
-              <AiOutlineNotification className="mr-2" />
-              <div className="flex flex-1 items-center gap-1 truncate">
-                <div className="truncate text-[clamp(0.75rem,2vw,1rem)]">{notice.title} </div>
-                {showNewIcon && <MdFiberNew className="text-mainRed shrink-0 text-[clamp(1rem,2vw,1.5rem)]" />}
-              </div>
-
-              <span className="text-midGray ml-2 truncate text-right text-xs">
-                {dayjs(notice.createdAt).format('YYYY년 MM월 DD일 HH:mm')}
-              </span>
-            </Link>
+            <li key={notice.noticeId}>
+              <Link
+                to={`/notices/${notice.noticeId}`}
+                className="group flex items-center justify-between rounded-md px-2 py-2 transition-colors hover:bg-black/5"
+              >
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <AiOutlineNotification className="text-midGray shrink-0 text-lg group-hover:text-black" />
+                  <div className="flex min-w-0 items-center gap-1">
+                    <span className="truncate text-sm font-medium text-gray-700 group-hover:text-black sm:text-base">
+                      {notice.title}
+                    </span>
+                    {showNewIcon && <MdFiberNew className="text-mainRed shrink-0 text-xl" />}
+                  </div>
+                </div>
+                <span className="text-midGray ml-4 shrink-0 text-xs whitespace-nowrap sm:text-sm">
+                  {dayjs(notice.createdAt).format('YYYY-MM-DD HH:mm')}
+                </span>
+              </Link>
+            </li>
           );
         })}
       </ul>

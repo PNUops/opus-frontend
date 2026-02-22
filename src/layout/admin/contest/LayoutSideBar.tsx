@@ -32,7 +32,7 @@ const sections = [
     title: '프로젝트',
     links: [
       { to: 'projects', label: '프로젝트 관리' },
-      { to: 'sort', label: '정렬 관리' },
+      { to: 'team-order', label: '정렬 관리' },
       { to: 'awards', label: '수상 관리' },
       { to: 'required-fields', label: '필수 항목 설정' },
     ],
@@ -41,7 +41,7 @@ const sections = [
     title: '대회',
     links: [
       { to: 'settings', label: '대회 관리' },
-      { to: 'departments', label: '분과 관리' },
+      { to: 'tracks', label: '분과 관리' },
       { to: 'votes', label: '투표 관리' },
       { to: 'notices', label: '공지 관리' },
       { to: 'banners', label: '배너 관리' },
