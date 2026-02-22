@@ -33,9 +33,6 @@ const Header = () => {
             alt="부산대학교 SW프로젝트관리시스템 로고 (작은 버전)"
           />
         </Link>
-
-        <HeaderMenu />
-
         <div className="flex items-center justify-between gap-2 md:gap-4 lg:gap-8">
           {isAdmin && (
             <Link to="/admin" className="flex items-center gap-2 hover:cursor-pointer">
