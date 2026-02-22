@@ -3,8 +3,10 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { FaVoteYea } from 'react-icons/fa';
 import { getVoteRanking } from 'apis/statistics';
-import { defaultRankFilter, trackPresetColors } from 'constants/statistics';
+import { defaultRankFilter } from 'constants/statistics';
+import { getColorClassForLabel } from 'utils/color';
 import Select from '@components/Select';
+import Tag from '@components/Tag';
 import { VoteRankingDto } from 'types/DTO';
 
 const VoteRankingSection = () => {
@@ -21,15 +23,6 @@ const VoteRankingSection = () => {
     if (!likeRanking) return defaultRankFilter;
     const uniq = Array.from(new Set(likeRanking.map((r) => r.trackName)));
     return [...defaultRankFilter, ...uniq];
-  }, [likeRanking]);
-
-  const trackColors = useMemo(() => {
-    if (!likeRanking) return {};
-    const uniq = Array.from(new Set(likeRanking.map((r) => r.trackName)));
-    return uniq.reduce<Record<string, string>>((acc, track, i) => {
-      acc[track] = trackPresetColors[i];
-      return acc;
-    }, {});
   }, [likeRanking]);
 
   const rankingList = useMemo(() => {
@@ -63,16 +56,19 @@ const VoteRankingSection = () => {
         </div>
       </div>
       {Array.isArray(rankingList) ? (
-        <RankingList list={rankingList} trackColors={trackColors} />
+        <RankingList list={rankingList} />
       ) : (
-        Object.entries(rankingList).map(([track, list]) => (
-          <div className="border-lightGray border-b" key={track}>
-            <div className={`${trackColors[track]} rounded px-4 py-2 backdrop-brightness-80`}>
-              <span className={`${trackColors[track]} inline-flex font-semibold text-white`}>{track}</span>
+        Object.entries(rankingList).map(([track, list]) => {
+          const trackColorClass = useMemo(() => getColorClassForLabel(track), [track]);
+          return (
+            <div className="border-lightGray border-b" key={track}>
+              <div className={`${trackColorClass} rounded px-4 py-2 backdrop-brightness-80`}>
+                <span className={'inline-flex font-semibold'}>{track}</span>
+              </div>
+              <RankingList list={list} />
             </div>
-            <RankingList list={list} trackColors={trackColors} />
-          </div>
-        ))
+          );
+        })
       )}
       {rankingList.length === 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
@@ -85,10 +81,9 @@ const VoteRankingSection = () => {
 
 export interface RankingListProps {
   list: VoteRankingDto[];
-  trackColors: Record<string, string>;
 }
 
-const RankingList = ({ list, trackColors }: RankingListProps) => {
+const RankingList = ({ list }: RankingListProps) => {
   return (
     <ul>
       {list.map((item) => (
@@ -101,11 +96,7 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
             <div className="min-w-[110px] text-sm text-gray-800">{item.teamName}</div>
             <div className="min-w-[240px] text-sm text-gray-700">{item.projectName}</div>
             <div>
-              <span
-                className={`${trackColors[item.trackName]} inline-flex items-center justify-center rounded-full px-3 py-[6px] text-xs text-white`}
-              >
-                {item.trackName}
-              </span>
+              <TrackTag name={item.trackName} />
             </div>
           </div>
           <div className="flex items-center gap-1.5">
@@ -119,3 +110,9 @@ const RankingList = ({ list, trackColors }: RankingListProps) => {
 };
 
 export default VoteRankingSection;
+
+// TODO: 추후 feature/track 폴더로 분과 태그 컴포넌트 관리
+const TrackTag = ({ name }: { name: string }) => {
+  const colorClass = getColorClassForLabel(name);
+  return <Tag className={colorClass}>{name}</Tag>;
+};
