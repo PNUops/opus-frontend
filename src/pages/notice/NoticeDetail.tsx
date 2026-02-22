@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getNoticeDetail } from 'apis/notices';
+import { getNoticeDetail } from 'apis/notice';
 import { AiOutlineNotification } from 'react-icons/ai';
 import { useEffect } from 'react';
 import NoticeDetailSkeleton from './NoticeDetailSkeleton';

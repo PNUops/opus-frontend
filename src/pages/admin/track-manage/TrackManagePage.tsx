@@ -9,7 +9,7 @@ import {
   AdminPopoverDeleteButton,
 } from '@components/ui/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
-import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from 'apis/contests';
+import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from 'apis/track';
 import { TrackDeleteConfirmModal, TrackModal } from './TrackModal';
 import { useContestIdOrRedirect } from 'hooks/useId';
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { getProjectsAdmin } from 'apis/contests';
-import { deleteTeam } from 'apis/teams';
+import { getProjectsAdmin } from 'apis/contest';
+import { deleteTeam } from 'apis/team';
 import ConfirmModal from '@components/ConfirmModal';
 import { twMerge } from 'tailwind-merge';
 import Tag from '@components/Tag';

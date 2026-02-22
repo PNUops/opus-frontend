@@ -8,7 +8,7 @@ import Button from '@components/Button';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { voteTermOption } from 'queries/votes';
-import { putVoteTerm } from 'apis/votes';
+import { putVoteTerm } from 'apis/vote';
 import { VOTETERM_TIME_FORMAT } from 'constants/votes';
 
 const VoteTermSetting = () => {

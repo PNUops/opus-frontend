@@ -6,7 +6,7 @@ import { MAX_VOTE_PER_PERSON } from 'constants/votes';
 import Button from '@components/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { getMaxVoteLimit, patchMaxVoteLimit } from 'apis/votes';
+import { getMaxVoteLimit, patchMaxVoteLimit } from 'apis/vote';
 import { VoteMaxVotesLimitDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
 

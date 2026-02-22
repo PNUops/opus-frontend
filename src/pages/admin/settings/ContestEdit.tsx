@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import Button from '@components/Button';
 import Input from '@components/Input';
-import { patchContest } from 'apis/contests';
+import { patchContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import useContestName from 'hooks/useContestName';
 import CategorySelect from '../CategorySelect';

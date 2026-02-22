@@ -2,11 +2,12 @@ import { FaHeart } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
-import { getThumbnailTeams } from '../../apis/teams';
+import { getThumbnailTeams } from '../../apis/team';
 import AwardTag from '@components/AwardTag';
 import { AwardDto } from 'types/DTO/awardsDto';
 
 interface TeamCardProps {
+  contestId: number;
   teamId: number;
   teamName: string;
   projectName: string;
@@ -15,7 +16,7 @@ interface TeamCardProps {
   isVoteTerm?: boolean;
 }
 
-const TeamCard = ({ teamId, teamName, projectName, isLiked, awards, isVoteTerm }: TeamCardProps) => {
+const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, isVoteTerm }: TeamCardProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(basicThumbnail);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const TeamCard = ({ teamId, teamName, projectName, isLiked, awards, isVoteTerm }
   }, [teamId]);
 
   return (
-    <Link to={`/teams/view/${teamId}`} className="flex aspect-[7/8] w-full flex-col">
+    <Link to={`/contest/${contestId}/teams/view/${teamId}`} className="flex aspect-[7/8] w-full flex-col">
       <div className="border-lightGray relative aspect-[3/2] flex-shrink-0 cursor-pointer overflow-hidden rounded-md border transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
         <img src={thumbnailUrl ?? basicThumbnail} alt="썸네일" className="h-full w-full object-contain" />
 

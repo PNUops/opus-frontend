@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getNoticeDetail, getNotices } from 'apis/notices';
+import { getNoticeDetail, getNotices } from 'apis/notice';
 
 export const noticeOption = () => {
   return queryOptions({

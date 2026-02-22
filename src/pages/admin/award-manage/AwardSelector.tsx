@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
-import { deleteContestAward, getContestAwards, createContestAward } from 'apis/contests';
-import { getTeamAwards, updateTeamAward } from 'apis/teams';
+import { deleteContestAward, getContestAwards, createContestAward } from 'apis/award';
+import { getTeamAwards, updateTeamAward } from 'apis/team';
 import AwardTag from '@components/AwardTag';
 import { AwardDto, ContestAwardDto, TeamAwardDto } from 'types/DTO/awardsDto';
 import { AWRD_PALETTE } from 'constants/palette';
 import useDebounce from 'hooks/useDebounce';
-import { deleteTeamAward } from 'apis/teams';
+import { deleteTeamAward } from 'apis/team';
 
 interface AwardSelectorProps {
   awards: AwardDto[];

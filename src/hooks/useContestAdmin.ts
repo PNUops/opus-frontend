@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getAllContests, postAllContests, deleteContest } from 'apis/contests';
-import { getSortStatus, getAllTeams, deleteTeam } from 'apis/teams';
+import { getAllContests, postAllContests, deleteContest } from 'apis/contest';
+import { getSortStatus, getAllTeams, deleteTeam } from 'apis/team';
 import { useToast } from 'hooks/useToast';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
-import { SortOption } from 'apis/teams';
+import { SortOption } from 'apis/team';
 
 type DeleteModalState = {
   type: 'contest' | 'team' | null;

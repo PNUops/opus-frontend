@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import Button from '@components/Button';
-import { deleteContest } from 'apis/contests';
+import { deleteContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import useContestName from 'hooks/useContestName';
 import { useState } from 'react';

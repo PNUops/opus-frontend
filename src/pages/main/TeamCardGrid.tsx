@@ -23,6 +23,7 @@ const TeamCardGrid = ({ teams, isLoading, isError }: Props) => {
       {teams?.map((team) => (
         <TeamCard
           key={team.teamId}
+          contestId={contestIdNumber}
           teamId={team.teamId}
           teamName={team.teamName}
           projectName={team.projectName}

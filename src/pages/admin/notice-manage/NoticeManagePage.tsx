@@ -14,7 +14,7 @@ import {
   AdminPopoverDeleteButton,
 } from '@components/ui/admin';
 
-import { getContestNotices, deleteContestNotice } from 'apis/notices';
+import { getContestNotices, deleteContestNotice } from 'apis/notice';
 
 const NoticeManagePage = () => {
   const queryClient = useQueryClient();

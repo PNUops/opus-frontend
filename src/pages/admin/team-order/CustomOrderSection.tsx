@@ -10,7 +10,7 @@ import { PiDotsSixVerticalBold } from 'react-icons/pi';
 import { cn } from 'utils/classname';
 import Spinner from '@components/Spinner';
 import { useMutation } from '@tanstack/react-query';
-import { patchCustomSortTeam } from 'apis/teams';
+import { patchCustomSortTeam } from 'apis/team';
 import queryClient from 'stores/queryClient';
 import { PatchCustomOrderRequestDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
