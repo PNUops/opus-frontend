@@ -43,7 +43,7 @@ const VoteRankingSection = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-end gap-4">
           <h2 className="text-2xl font-bold">투표 순위</h2>
-          <p className="text-midGray">순위, 팀명, 프로젝트명, 분과, 투표 수</p>
+          <p className="text-midGray">순위 | 팀 | 프로젝트 | 분과 | 투표수</p>
         </div>
         <div>
           <Select value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)} aria-label="분과 필터">
