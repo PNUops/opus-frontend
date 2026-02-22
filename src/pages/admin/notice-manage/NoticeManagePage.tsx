@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { useContestIdOrRedirect } from 'hooks/useId'; // contestId를 가져오는 커스텀 훅 가정
+import { useQuery } from '@tanstack/react-query';
+import { useContestIdOrRedirect } from 'hooks/useId';
 import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
-import ConfirmModal from '@components/ConfirmModal';
 import Tag from '@components/Tag';
 import {
   AdminHeader,
@@ -13,30 +11,18 @@ import {
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
 } from '@components/ui/admin';
-
-import { getContestNotices, deleteContestNotice } from 'apis/notice';
+import { Dialog } from '@components/ui/dialog';
+import { contestNoticeOption } from 'queries/notices';
+import { ContestNoticeModal, ContestNoticeDeleteConfirmModal } from './ContestNoticeModal';
 
 const NoticeManagePage = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const contestId = useContestIdOrRedirect();
-  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [createOpen, setCreateOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
+  const [selectedNoticeId, setSelectedNoticeId] = useState<number | null>(null);
 
-  const { data: notices } = useQuery({
-    queryKey: ['notices', contestId],
-    queryFn: () => getContestNotices(contestId),
-    enabled: !!contestId,
-  });
-
-  const { mutate: deleteNoticeMutation } = useMutation({
-    mutationFn: (noticeId: number) => deleteContestNotice(contestId, noticeId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notices', contestId] }),
-    onError: () => {},
-  });
-
-  const handleDeleteNotice = (noticeId: number) => {
-    deleteNoticeMutation(noticeId);
-  };
+  const { data: notices } = useQuery(contestNoticeOption(contestId));
 
   return (
     <div className="flex w-full flex-col">
@@ -44,7 +30,7 @@ const NoticeManagePage = () => {
         title="공지 관리"
         description="공지사항의 제목과 작성 일시를 관리합니다."
         buttonLabel="+ 새 공지"
-        onButtonClick={() => navigate(`/admin/contest/${contestId}/notices/create`)}
+        onButtonClick={() => setCreateOpen(true)}
       />
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
@@ -66,28 +52,54 @@ const NoticeManagePage = () => {
                 <div className="flex w-10 flex-shrink-0 justify-end">
                   <AdminPopoverMenu>
                     <AdminPopoverEditButton
-                      onEdit={() => navigate(`/admin/contest/${contestId}/notices/${notice.noticeId}/edit`)}
+                      onEdit={() => {
+                        setSelectedNoticeId(notice.noticeId);
+                        setEditOpen(true);
+                      }}
                     />
                     <AdminPopoverDeleteButton
                       onDelete={() => {
-                        handleDeleteNotice(notice.noticeId);
+                        setSelectedNoticeId(notice.noticeId);
+                        setDeleteOpen(true);
                       }}
                     />
                   </AdminPopoverMenu>
                 </div>
-                <ConfirmModal
-                  isOpen={deleteTarget !== null}
-                  onConfirm={() => {
-                    if (deleteTarget !== null) handleDeleteNotice(deleteTarget);
-                    setDeleteTarget(null);
-                  }}
-                  onCancel={() => setDeleteTarget(null)}
-                />
               </div>
             </AdminCardRow>
           ))
         )}
       </div>
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        {contestId && (
+          <ContestNoticeModal
+            type="create"
+            contestId={contestId}
+            isOpen={createOpen}
+            closeModal={() => setCreateOpen(false)}
+          />
+        )}
+      </Dialog>
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        {contestId && selectedNoticeId !== null && (
+          <ContestNoticeModal
+            type="edit"
+            contestId={contestId}
+            noticeId={selectedNoticeId}
+            isOpen={editOpen}
+            closeModal={() => setEditOpen(false)}
+          />
+        )}
+      </Dialog>
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        {contestId && selectedNoticeId !== null && (
+          <ContestNoticeDeleteConfirmModal
+            contestId={contestId}
+            noticeId={selectedNoticeId}
+            closeModal={() => setDeleteOpen(false)}
+          />
+        )}
+      </Dialog>
     </div>
   );
 };
