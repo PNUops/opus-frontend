@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getNotices } from 'apis/notices';
+import { getNotices } from 'apis/notice';
 import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';

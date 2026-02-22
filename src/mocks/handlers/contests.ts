@@ -1,6 +1,6 @@
-import { API_BASE_URL } from '@constants/index';
+import { API_BASE_URL } from '@constants/env';
 import { mockContestsResponse } from '@mocks/data/contests';
-import { mockTeamsMain } from '@mocks/data/teams';
+import { mockTeams } from '@mocks/data/teams';
 import { http, HttpResponse } from 'msw';
 
 export const contestsHandler = [
@@ -8,6 +8,6 @@ export const contestsHandler = [
     return HttpResponse.json(mockContestsResponse);
   }),
   http.get(`${API_BASE_URL}/api/contests/:contestId/teams`, () => {
-    return HttpResponse.json(mockTeamsMain);
+    return HttpResponse.json(mockTeams);
   }),
 ];

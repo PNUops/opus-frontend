@@ -6,9 +6,11 @@ export interface TeamMember {
 export interface ProjectDetailsResponseDto {
   contestId: number;
   contestName: string;
+  trackId: number;
+  trackName: string;
   teamId: number;
-  leaderId: number;
   teamName: string;
+  leaderId: number;
   projectName: string;
   professorName: string | null;
   leaderName: string;
@@ -18,7 +20,8 @@ export interface ProjectDetailsResponseDto {
   productionPath: string | null;
   githubPath: string;
   youTubePath: string;
-  isLiked: boolean;
+  isLiked: boolean | null;
+  isVoted: boolean | null;
 }
 
 export type PreviewResult =

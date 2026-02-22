@@ -2,6 +2,7 @@ import { VscKebabVertical } from 'react-icons/vsc';
 import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Fragment } from 'react';
 import { DialogClose, DialogContent, DialogTitle } from './dialog';
 import Button from '@components/Button';
 import { cn } from '@components/lib/utils';
@@ -61,6 +62,57 @@ export const AdminPopoverDeleteButton = ({ onDelete }: { onDelete: () => void })
       <FaRegTrashAlt size={16} className="mt-1 fill-red-500" />
       삭제
     </button>
+  );
+};
+
+interface AdminHeaderProps {
+  title: string;
+  description?: string;
+  buttonLabel?: string;
+  onButtonClick?: () => void;
+}
+
+export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: AdminHeaderProps) => {
+  return (
+    <div className="flex w-full items-center justify-between">
+      <div className="flex items-center gap-3">
+        <h2 className="text-2xl font-bold">{title}</h2>
+        <h4 className="text-exsm text-midGray">{description}</h4>
+      </div>
+      {buttonLabel && onButtonClick && (
+        <AdminCardCreateButton onClick={onButtonClick}>{buttonLabel}</AdminCardCreateButton>
+      )}
+    </div>
+  );
+};
+
+interface AdminListLayoutProps<T> {
+  title: string;
+  description?: string;
+  buttonLabel?: string;
+  onButtonClick?: () => void;
+  items: T[];
+  renderItem: (item: T, index?: number) => React.ReactNode;
+}
+
+export const AdminListLayout = <T,>({
+  title,
+  description,
+  buttonLabel,
+  onButtonClick,
+  items,
+  renderItem,
+}: AdminListLayoutProps<T>) => {
+  return (
+    <div className="flex w-full flex-col">
+      <AdminHeader title={title} description={description} onButtonClick={onButtonClick} buttonLabel={buttonLabel} />
+      <div className="h-[35px]" />
+      <div className="flex flex-col gap-2">
+        {items.map((item, index) => (
+          <Fragment key={index}>{renderItem(item, index)}</Fragment>
+        ))}
+      </div>
+    </div>
   );
 };
 

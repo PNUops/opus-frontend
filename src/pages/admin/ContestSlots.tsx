@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ContestResponseDto } from 'types/DTO';
 import { cn } from '@components/lib/utils';
 import { TiDeleteOutline } from 'react-icons/ti';
-import { patchChangeOngoingContest } from 'apis/contests';
+import { patchChangeOngoingContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import { contestOption } from 'queries/contests';
 

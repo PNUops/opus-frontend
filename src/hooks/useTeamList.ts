@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getContestTeams } from '../apis/contests';
+import { getContestTeams } from '../apis/contest';
 import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
 import useAuth from './useAuth';
 

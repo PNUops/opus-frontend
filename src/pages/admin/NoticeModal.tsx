@@ -4,7 +4,7 @@ import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
 import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
-import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notices';
+import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notice';
 import { useToast } from 'hooks/useToast';
 import { noticeDetailOption } from 'queries/notices';
 import { NoticeRequestDto } from 'types/DTO/noticeDto';
@@ -13,10 +13,11 @@ import { AdminDeleteConfirmModal } from '@components/ui/admin';
 interface NoticeModalProps {
   type: 'create' | 'edit';
   noticeId?: number;
+  isOpen?: boolean;
   closeModal: () => void;
 }
 
-export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) => {
+export const NoticeModal = ({ type, noticeId, isOpen, closeModal }: NoticeModalProps) => {
   const toast = useToast();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -34,11 +35,11 @@ export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) =>
   });
 
   useEffect(() => {
-    if (notice) {
+    if (type === 'edit' && isOpen && notice) {
       setTitle(notice.title || '');
       setDescription(notice.description || '');
     }
-  }, [notice]);
+  }, [type, isOpen, notice]);
 
   const handleSave = async () => {
     await upsertMutation.mutateAsync(
@@ -48,10 +49,13 @@ export const NoticeModal = ({ type, noticeId, closeModal }: NoticeModalProps) =>
           setTitle('');
           setDescription('');
           queryClient.invalidateQueries({ queryKey: ['notices'] });
-          toast(`공지사항이 작성 되었습니다.`, 'success');
+          if (type === 'edit' && noticeId) {
+            queryClient.invalidateQueries({ queryKey: ['noticeDetail', noticeId] });
+          }
+          toast(`공지사항이 ${type === 'create' ? '작성' : '수정'} 되었어요.`, 'success');
         },
         onError: () => {
-          toast(`공지사항 작성에 실패했습니다.`, 'error');
+          toast(`공지사항 ${type === 'create' ? '작성' : '수정'}에 실패했어요.`, 'error');
         },
       },
     );
@@ -107,10 +111,10 @@ export const NoticeDeleteConfirmModal = ({ noticeId, closeModal }: NoticeDeleteC
     await noticeDelete.mutateAsync(noticeId, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['notices'] });
-        toast('공지사항이 삭제되었습니다.', 'success');
+        toast('공지사항이 삭제되었어요.', 'success');
       },
       onError: () => {
-        toast('공지사항 삭제에 실패했습니다.', 'error');
+        toast('공지사항 삭제에 실패했어요.', 'error');
       },
     });
     closeModal();

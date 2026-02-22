@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getVoteTerm } from 'apis/votes';
+import { getVoteTerm } from 'apis/vote';
 
 export const voteTermOption = (contestId: number) => {
   return queryOptions({

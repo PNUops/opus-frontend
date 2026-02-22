@@ -1,31 +1,67 @@
 import Input from '@components/Input';
 import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postCreateNotice } from 'apis/notices';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { createContestNotice, getContestNoticeDetail, updateContestNotice } from 'apis/notice';
 import useGoBack from 'hooks/useGoBack';
+import { useContestIdOrRedirect, useNoticeId } from 'hooks/useId';
 import { useToast } from 'hooks/useToast';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const NoticeCreateTab = () => {
+type NoticePageType = 'edit' | 'create';
+
+interface NoticeCreateTabProps {
+  mode: NoticePageType;
+}
+
+const NoticeCreateTab = ({ mode }: NoticeCreateTabProps) => {
   const { goBack } = useGoBack();
   const toast = useToast();
+  const contestId = useContestIdOrRedirect();
+  const noticeId = useNoticeId();
+
+  const isCreateMode = mode === 'create';
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const queryClient = useQueryClient();
-  const createMutation = useMutation({
-    mutationFn: () => postCreateNotice({ title, description }),
-    onSuccess: () => {
-      toast(`공지사항이 작성 되었어요.`, 'success');
-      queryClient.invalidateQueries({ queryKey: ['notices'] });
-      goBack();
-    },
-    onError: () => toast(`공지사항 작성에 실패했어요.`, 'error'),
+  const { data: noticeDetail, isLoading: isNoticeLoading } = useQuery({
+    queryKey: ['noticeDetail', noticeId],
+    queryFn: () => getContestNoticeDetail(contestId, Number(noticeId)),
+    enabled: !isCreateMode && !!noticeId,
   });
 
-  const handleSave = () => createMutation.mutate();
+  useEffect(() => {
+    if (!isCreateMode && noticeDetail) {
+      setTitle(noticeDetail.title);
+      setDescription(noticeDetail.description);
+    }
+  }, [isCreateMode, noticeDetail]);
+
+  const queryClient = useQueryClient();
+  const createMutation = useMutation({
+    mutationFn: () => createContestNotice(contestId, { title, description }),
+    onSuccess: () => {
+      toast(`공지사항이 작성 되었어요.`, 'success');
+      queryClient.invalidateQueries({ queryKey: ['notices', contestId] });
+      goBack();
+    },
+    onError: (error: any) => toast(error?.message?.data.message || `공지사항 작성에 실패했어요.`, 'error'),
+  });
+  const updateMutation = useMutation({
+    mutationFn: () => updateContestNotice(contestId, Number(noticeId), { title, description }),
+    onSuccess: () => {
+      toast(`공지사항이 수정 되었어요.`, 'success');
+      queryClient.invalidateQueries({ queryKey: ['notices', contestId] });
+      goBack();
+    },
+    onError: (error: any) => toast(error?.message?.data.message || `공지사항 수정에 실패했어요.`, 'error'),
+  });
+
+  const handleSave = () => {
+    if (!isCreateMode && !noticeId) return;
+    isCreateMode ? createMutation.mutate() : updateMutation.mutate();
+  };
 
   return (
     <section className="flex flex-col gap-8">
