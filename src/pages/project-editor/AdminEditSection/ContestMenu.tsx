@@ -5,7 +5,7 @@ import { useOutsideClick } from 'hooks/useOutsideClick';
 import { useToast } from 'hooks/useToast';
 import { CURRENT_CONTEST_ID } from 'constants/contest';
 
-import { getAllContests } from 'apis/contests';
+import { getAllContests } from 'apis/contest';
 import { ContestResponseDto } from 'types/DTO';
 
 import { EditorMenuSkeleton } from '../EditorSkeleton';

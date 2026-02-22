@@ -1,5 +1,6 @@
-import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto } from 'types/DTO';
 import apiClient from './apiClient';
+
+import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto, ProjectsAdminResponseDto } from 'types/DTO';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
 export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
@@ -49,5 +50,10 @@ export const postBulkAddTeams = async (contestId: number, formData: FormData) =>
   const res = await apiClient.post(`/contests/${contestId}/teams/bulk`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+  return res.data;
+};
+
+export const getProjectsAdmin = async (contestId: number): Promise<ProjectsAdminResponseDto[]> => {
+  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/admin/contests/${contestId}/submissions`);
   return res.data;
 };

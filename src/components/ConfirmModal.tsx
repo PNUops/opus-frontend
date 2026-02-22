@@ -1,14 +1,23 @@
 import { RxCross2 } from 'react-icons/rx';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-interface CommentConfirmModalProps {
+interface ConfirmModalProps {
   isOpen: boolean;
   onConfirm: () => void;
   onCancel: () => void;
   message?: string;
+  description?: string;
+  icon?: React.ReactNode;
 }
 
-const CommentConfirmModal = ({ isOpen, onConfirm, onCancel, message }: CommentConfirmModalProps) => {
+const ConfirmModal = ({
+  isOpen,
+  onConfirm,
+  onCancel,
+  message = '정말 삭제하시겠어요?',
+  description,
+  icon = <FaRegTrashAlt size={24} />,
+}: ConfirmModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -28,10 +37,10 @@ const CommentConfirmModal = ({ isOpen, onConfirm, onCancel, message }: CommentCo
           <RxCross2 size={20} />
         </button>
         <div className="text-mainRed mx-auto my-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-          <FaRegTrashAlt size={24} />
+          {icon}
         </div>
-        <h3 className="text-center text-lg font-semibold text-gray-800">정말 삭제하시겠어요?</h3>
-        <p className="text-exsm mt-2 text-center text-gray-400">{message}</p>
+        <h3 className="text-center text-lg font-semibold text-gray-800">{message}</h3>
+        <p className="text-exsm mt-2 text-center text-gray-400">{description}</p>
         <div className="mt-6 flex justify-center gap-3">
           <button
             onClick={onCancel}
@@ -51,4 +60,4 @@ const CommentConfirmModal = ({ isOpen, onConfirm, onCancel, message }: CommentCo
   );
 };
 
-export default CommentConfirmModal;
+export default ConfirmModal;

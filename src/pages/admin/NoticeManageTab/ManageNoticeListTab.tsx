@@ -1,7 +1,7 @@
 import Button from '@components/Button';
 import Table from '@components/Table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteNotice, getNotices } from 'apis/notices';
+import { deleteNotice, getNotices } from 'apis/notice';
 import { useToast } from 'hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';

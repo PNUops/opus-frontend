@@ -1,5 +1,5 @@
 import googleIconUrl from '@assets/google-icon.svg';
-import { API_BASE_URL } from '@constants/index';
+import { API_BASE_URL } from '@constants/env';
 
 import { useToast } from 'hooks/useToast';
 

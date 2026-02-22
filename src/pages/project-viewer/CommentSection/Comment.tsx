@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import CommentConfirmModal from './CommentConfirmModal';
+import ConfirmModal from '../../../components/ConfirmModal';
 import { RiPencilFill } from 'react-icons/ri';
 import { IoRemoveCircle } from 'react-icons/io5';
 import { CommentDeleteRequestDto, CommentDto, CommentEditRequestDto } from 'types/DTO/projectViewerDto';
@@ -135,11 +135,11 @@ const Comment = ({ comment }: CommentProps) => {
           {description}
         </div>
       )}
-      <CommentConfirmModal
+      <ConfirmModal
         isOpen={showConfirm}
         onConfirm={() => handleDeleteComment({ commentId, teamId: teamId ?? -1 })}
         onCancel={() => setShowConfirm(false)}
-        message="삭제한 댓글은 복구할 수 없습니다."
+        description="삭제한 댓글은 복구할 수 없습니다."
       />
     </div>
   );
