@@ -1,6 +1,11 @@
-import { ContestResponseDto, CurrentContestResponseDto, VoteTermDto } from 'types/DTO';
+import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto } from 'types/DTO';
 import apiClient from './apiClient';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+
+export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
+  const res = await apiClient.post('/contests', payload);
+  return res.data;
+};
 
 export const getAllContests = async (): Promise<ContestResponseDto[]> => {
   const res = await apiClient.get('/contests');
@@ -17,12 +22,11 @@ export const postAllContests = async (contestName: string) => {
 
 export const deleteContest = async (contestId: number) => {
   const res = await apiClient.delete(`/contests/${contestId}`);
-  console.log(res);
   return res.data;
 };
 
-export const patchContest = async (contestId: number, contestName: string) => {
-  const res = await apiClient.patch(`/contests/${contestId}`, { contestName });
+export const patchContest = async (contestId: number, payload: ContestRequestDto) => {
+  const res = await apiClient.patch(`/contests/${contestId}`, payload);
   return res.data;
 };
 
@@ -31,17 +35,19 @@ export const getCurrentContest = async (): Promise<CurrentContestResponseDto[]> 
   return res.data;
 };
 
+export const patchChangeOngoingContest = async (contestId: number, isCurrent: boolean) => {
+  const res = await apiClient.patch(`/contests/${contestId}/current`, { isCurrent });
+  return res.data;
+};
+
 export const getContestTeams = async (contestId: number): Promise<TeamListItemResponseDto[]> => {
   const res = await apiClient.get(`/contests/${contestId}/teams`);
   return res.data;
 };
 
-export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {
-  const res = await apiClient.get(`/contests/${contestId}/vote`);
-  return res.data;
-};
-
-export const updateVoteTerm = async (contestId: number, payload: VoteTermDto) => {
-  const res = await apiClient.put(`/contests/${contestId}/vote`, payload);
+export const postBulkAddTeams = async (contestId: number, formData: FormData) => {
+  const res = await apiClient.post(`/contests/${contestId}/teams/bulk`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return res.data;
 };

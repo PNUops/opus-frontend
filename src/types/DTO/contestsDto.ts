@@ -14,9 +14,9 @@ export interface CurrentContestResponseDto {
   voteEndAt: Date;
 }
 
-export interface VoteTermDto {
-  voteStartAt: string;
-  voteEndAt: string;
+export interface ContestRequestDto {
+  contestName: string;
+  categoryId: number;
 }
 
 export interface PatchAwardRequestDto {

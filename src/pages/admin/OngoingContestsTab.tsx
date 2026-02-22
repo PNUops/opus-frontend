@@ -1,7 +1,6 @@
 import ProjectSubmissionTable from '@pages/admin/ProjectSubmissionTable';
 import VoteRate from '@pages/admin/VoteRate';
 import ProjectSortToggle from './ProjectSortToggle';
-import VoteTermSelector from './VoteTermSelector';
 import { useQuery } from '@tanstack/react-query';
 import { getDashboard } from 'apis/dashboard';
 import { getRanking } from 'apis/ranking';
@@ -36,7 +35,6 @@ const OngoingContestsTab = () => {
     <>
       <div className="flex flex-col gap-12">
         <div className="border-lightGray rounded-xl border p-8">
-          <VoteTermSelector />
           <div className="my-6 border-t border-gray-200"></div>
           <ProjectSortToggle />
         </div>
