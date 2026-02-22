@@ -16,7 +16,7 @@ const AwardManagePage = () => {
 
   return (
     <div className="flex w-full flex-col">
-      <AdminHeader title="수상 관리" description="팀 | 프로젝트 | 수상 내역" />
+      <AdminHeader title="수상 관리" description="팀을 선택한 후 수상을 설정해 주세요." />
       <div className="h-[35px]" />
       {teamList && teamList.length === 0 ? (
         <div className="bg-whiteGray text-midGray rounded-md p-4 text-center">아직 등록된 팀이 없어요.</div>
