@@ -1,15 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
+import { useContestIdOrRedirect } from 'hooks/useId';
 import { getVoteLog } from 'apis/statistics';
 import dayjs from 'dayjs';
 
 const VoteLogTable = () => {
+  const contestId = useContestIdOrRedirect();
   const {
     data: voteLogs,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['voteLog'],
-    queryFn: () => getVoteLog(),
+    queryKey: ['voteLog', contestId],
+    queryFn: () => getVoteLog(contestId),
   });
 
   if (isLoading) {
@@ -35,8 +37,8 @@ const VoteLogTable = () => {
   return (
     <section className="flex flex-col gap-5">
       <div className="flex items-end gap-4">
-        <h2 className="text-2xl font-bold">투표 순위</h2>
-        <p className="text-midGray">투표 시각, 투표 대상 팀, 투표자 명, 투표자 이메일</p>
+        <h2 className="text-2xl font-bold">투표 로그</h2>
+        <p className="text-midGray">투표 시각 | 투표 대상 팀 | 투표자 이름 | 투표자 이메일</p>
       </div>
       <div className="max-h-[400px] overflow-y-auto">
         {voteLogs.map((v, idx) => (
