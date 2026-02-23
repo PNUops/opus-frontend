@@ -6,6 +6,7 @@ import { Toaster } from '@components/Toaster';
 import useAuthInit from 'hooks/useAuthInit';
 import useScrollToTop from 'hooks/useScrollToTop';
 import AxiosInterceptorProvider from 'providers/AxiosInterceptorProvider';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
@@ -23,6 +24,7 @@ const MainLayout = () => {
         <Footer />
       </div>
       <Toaster />
+      <ReactQueryDevtools />
     </AxiosInterceptorProvider>
   );
 };
