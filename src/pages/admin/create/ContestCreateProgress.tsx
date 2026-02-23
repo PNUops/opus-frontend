@@ -2,7 +2,7 @@ import { cn } from '@components/lib/utils';
 import { FaCheck } from 'react-icons/fa';
 import { useContestCreate } from './ContestCreateContext';
 
-const steps = ['대회 생성', '대회 참여자 설정', '필수 항목 설정'];
+const steps = ['대회 생성', '필수 항목 설정'];
 
 const ContestCreateProgress = () => {
   const { currentStep } = useContestCreate();
