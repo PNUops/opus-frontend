@@ -8,6 +8,7 @@ import { getColorClassForLabel } from 'utils/color';
 import Select from '@components/Select';
 import Tag from '@components/Tag';
 import { VoteRankingDto } from 'types/DTO';
+import { AdminNoData } from '@components/ui/admin';
 
 const VoteRankingSection = () => {
   const { contestId } = useParams();
@@ -72,7 +73,7 @@ const VoteRankingSection = () => {
       )}
       {rankingList.length === 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
-          랭킹 데이터가 없습니다.
+          <AdminNoData />
         </div>
       )}
     </section>
