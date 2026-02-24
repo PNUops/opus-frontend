@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 import useAuth from 'hooks/useAuth';
-import { useContestId, useTeamId } from 'hooks/useId';
+import { useContestIdOrRedirect, useTeamIdOrRedirect } from './useId';
 import { useToast } from 'hooks/useToast';
 
 import { getProjectDetails, getPreviewImages } from 'apis/projectViewer';
@@ -30,18 +30,25 @@ import {
 import { isValidGithubUrl, isValidYoutubeUrl, isValidProjectUrl } from '@pages/project-editor/urlValidators';
 
 type ProjectMode = 'create' | 'edit';
-
 interface ProjectFormState {
   contestId: number | null;
+  contestName: string;
+  trackId: number | null;
+  trackName: string;
+  teamId: number | null;
   teamName: string;
   projectName: string;
-  professorName: string;
+  previewIds: number[];
+  professorName: string | null;
+  leaderId: number | null;
   leaderName: string;
   teamMembers: TeamMember[];
+  overview: string;
   productionUrl: string | null;
   githubUrl: string;
   youtubeUrl: string;
-  overview: string;
+  isLiked: boolean | null;
+  isVoted: boolean | null;
 }
 
 interface ProjectImageState {
@@ -54,7 +61,7 @@ interface ProjectImageState {
 type ProjectFormAction =
   | { type: 'INIT_FROM_PROJECT'; payload: ProjectDetailsResponseDto }
   | { type: 'SET_CONTEST_ID'; payload: number | null }
-  | { type: 'SET_FIELD'; field: keyof ProjectFormState; value: any }
+  | { type: 'SET_FIELD'; field: keyof ProjectFormState; value: ProjectFormState[keyof ProjectFormState] }
   | { type: 'SET_TEAM_MEMBERS'; payload: TeamMember[] }
   | { type: 'ADD_MEMBER'; payload: TeamMember }
   | { type: 'REMOVE_MEMBER'; payload: { memberId: number } };
@@ -72,17 +79,24 @@ const projectFormReducer = (state: ProjectFormState, action: ProjectFormAction):
     case 'INIT_FROM_PROJECT': {
       const p = action.payload;
       return {
-        ...state,
         contestId: p.contestId,
+        contestName: p.contestName,
+        trackId: p.trackId,
+        trackName: p.trackName,
+        teamId: p.teamId,
         teamName: p.teamName,
         projectName: p.projectName,
-        professorName: p.professorName ?? '',
+        previewIds: p.previewIds,
+        professorName: p.professorName,
+        leaderId: p.leaderId,
         leaderName: p.leaderName,
         teamMembers: p.teamMembers,
+        overview: p.overview,
+        productionUrl: p.productionPath,
         githubUrl: p.githubPath,
         youtubeUrl: p.youTubePath,
-        productionUrl: p.productionPath,
-        overview: p.overview,
+        isLiked: p.isLiked,
+        isVoted: p.isVoted,
       };
     }
 
@@ -181,8 +195,8 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
   const { user, isAdmin, isLeader, isMember } = useAuth();
   const memberId = user?.id ?? null;
 
-  const teamId = useTeamId();
-  const initialContestId = useContestId();
+  const contestId = useContestIdOrRedirect();
+  const teamId = useTeamIdOrRedirect();
 
   const isEditMode = mode === 'edit';
   const isCreateMode = mode === 'create';
@@ -194,16 +208,24 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
   const [isSaved, setIsSaved] = useState(false);
 
   const [formState, dispatchForm] = useReducer(projectFormReducer, {
-    contestId: initialContestId ?? null,
+    contestId,
+    contestName: '',
+    trackId: null,
+    trackName: '',
+    teamId,
     teamName: '',
     projectName: '',
-    professorName: '',
+    previewIds: [],
+    professorName: null,
+    leaderId: null,
     leaderName: '',
     teamMembers: [],
+    overview: '',
+    productionUrl: null,
     githubUrl: '',
     youtubeUrl: '',
-    productionUrl: null,
-    overview: '',
+    isLiked: null,
+    isVoted: null,
   });
 
   const [imageState, dispatchImage] = useReducer(projectImageReducer, {
@@ -311,7 +333,7 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
         }
       });
     };
-  }, []);
+  }, [imageState]);
 
   const isContributorOfThisTeam =
     isEditMode &&
@@ -436,15 +458,11 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
 
     try {
       await patchProjectDetails(teamId, {
-        contestId: isAdmin
-          ? formState.contestId !== null
-            ? formState.contestId
-            : projectData.contestId
-          : projectData.contestId,
+        contestId: isAdmin ? (formState.contestId ?? projectData.contestId) : projectData.contestId,
+        trackId: isAdmin ? (formState.trackId ?? projectData.trackId) : projectData.trackId,
         teamName: isAdmin ? formState.teamName : projectData.teamName,
         projectName: formState.projectName,
-        professorName: formState.professorName,
-        leaderName: isAdmin ? formState.leaderName : projectData.leaderName,
+        professorName: formState.professorName ?? '',
         overview: formState.overview,
         productionPath: formState.productionUrl,
         githubPath: formState.githubUrl,
@@ -505,7 +523,7 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
       ]);
 
       toast('수정이 완료되었어요', 'success');
-      navigate(`/teams/view/${teamId}`);
+      navigate(`/contest/${contestId}/teams/view/${teamId}`);
     } catch (err: any) {
       toast(err?.response?.data?.message || '저장 중 오류가 발생했어요', 'error');
     }
@@ -521,10 +539,10 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
     try {
       const response = await createProjectDetails({
         contestId: formState.contestId!,
+        trackId: formState.trackId!,
         projectName: formState.projectName,
         teamName: formState.teamName,
-        professorName: formState.professorName,
-        leaderName: formState.leaderName,
+        professorName: formState.professorName ?? '',
         githubPath: formState.githubUrl,
         youTubePath: formState.youtubeUrl,
         productionPath: formState.productionUrl,
@@ -570,7 +588,7 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
       ]);
 
       toast('생성이 완료되었어요', 'success');
-      navigate(`/teams/view/${createdTeamId}`);
+      navigate(`/contest/${contestId}/teams/view/${createdTeamId}`);
     } catch (err: any) {
       toast(err?.response?.data?.message || '생성 도중 실패했어요', 'error');
       navigate(`/admin/contest`);

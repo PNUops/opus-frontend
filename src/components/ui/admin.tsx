@@ -1,10 +1,11 @@
 import { VscKebabVertical } from 'react-icons/vsc';
 import { LuPencil } from 'react-icons/lu';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { twMerge } from 'tailwind-merge';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Fragment } from 'react';
 import { DialogClose, DialogContent, DialogTitle } from './dialog';
 import Button from '@components/Button';
+import { cn } from '@components/lib/utils';
 
 export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
   return <div className="border-lightGray flex flex-col gap-0.5 rounded-xl border-2">{children}</div>;
@@ -23,7 +24,7 @@ export const AdminCardCreateButton = ({ children, ...props }: React.ComponentPro
 };
 
 export const AdminCardRow = ({ children, className }: React.ComponentProps<'div'>) => {
-  return <div className={twMerge('flex items-center justify-between px-5 py-3', className)}>{children}</div>;
+  return <div className={cn('flex items-center justify-between px-5 py-3', className)}>{children}</div>;
 };
 
 export const AdminPopoverMenu = ({ children, ...props }: React.ComponentProps<'div'>) => {
@@ -64,6 +65,57 @@ export const AdminPopoverDeleteButton = ({ onDelete }: { onDelete: () => void })
   );
 };
 
+interface AdminHeaderProps {
+  title: string;
+  description?: string;
+  buttonLabel?: string;
+  onButtonClick?: () => void;
+}
+
+export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: AdminHeaderProps) => {
+  return (
+    <div className="flex w-full items-center justify-between">
+      <div className="flex items-center gap-3">
+        <h2 className="text-2xl font-bold">{title}</h2>
+        <h4 className="text-exsm text-midGray">{description}</h4>
+      </div>
+      {buttonLabel && onButtonClick && (
+        <AdminCardCreateButton onClick={onButtonClick}>{buttonLabel}</AdminCardCreateButton>
+      )}
+    </div>
+  );
+};
+
+interface AdminListLayoutProps<T> {
+  title: string;
+  description?: string;
+  buttonLabel?: string;
+  onButtonClick?: () => void;
+  items: T[];
+  renderItem: (item: T, index?: number) => React.ReactNode;
+}
+
+export const AdminListLayout = <T,>({
+  title,
+  description,
+  buttonLabel,
+  onButtonClick,
+  items,
+  renderItem,
+}: AdminListLayoutProps<T>) => {
+  return (
+    <div className="flex w-full flex-col">
+      <AdminHeader title={title} description={description} onButtonClick={onButtonClick} buttonLabel={buttonLabel} />
+      <div className="h-[35px]" />
+      <div className="flex flex-col gap-2">
+        {items.map((item, index) => (
+          <Fragment key={index}>{renderItem(item, index)}</Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; onDelete: () => void }) => {
   return (
     <DialogContent className="gap-6">
@@ -79,5 +131,13 @@ export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; on
         </Button>
       </div>
     </DialogContent>
+  );
+};
+
+export const AdminNoData = ({ className }: React.ComponentProps<'div'>) => {
+  return (
+    <div className={cn('text-midGray my-10 flex items-center justify-center font-bold', className)}>
+      데이터가 없습니다.
+    </div>
   );
 };

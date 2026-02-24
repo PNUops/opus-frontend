@@ -69,7 +69,8 @@ const ProjectEditorPage = ({ mode }: ProjectEditorPageProps) => {
             setProjectName={(value: string) => setField('projectName', value)}
             teamName={formState.teamName}
             setTeamName={(value: string) => setField('teamName', value)}
-            professorName={formState.professorName}
+            /* TODO: DTO 따로 정의해서 하나의 인자로 넘기기 */
+            professorName={formState.professorName ?? ''}
             setProfessorName={(value: string) => setField('professorName', value)}
             leaderName={formState.leaderName}
             setLeaderName={(value: string) => setField('leaderName', value)}
@@ -83,7 +84,8 @@ const ProjectEditorPage = ({ mode }: ProjectEditorPageProps) => {
           projectName={formState.projectName}
           setProjectName={(value: string) => setField('projectName', value)}
           teamName={formState.teamName}
-          professorName={formState.professorName}
+          /* TODO: DTO 따로 정의해서 하나의 인자로 넘기기 */
+          professorName={formState.professorName ?? ''}
           setProfessorName={(value: string) => setField('professorName', value)}
           leaderName={formState.leaderName}
           teamMembers={formState.teamMembers} // WARN: 백엔드 측에서 필드명 바꿀 수도 있음 주의
@@ -145,7 +147,6 @@ const ProjectEditorPage = ({ mode }: ProjectEditorPageProps) => {
         }}
         isAdmin={isAdmin}
       />
-      s
       <div className="h-15" />
       <OverviewInput overview={formState.overview} setOverview={(value: string) => setField('overview', value)} />
       <div className="h-20" />

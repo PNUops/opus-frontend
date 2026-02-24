@@ -1,6 +1,7 @@
 import logo from 'assets/logo.svg';
 import useAuth from 'hooks/useAuth';
 import { BiCog } from 'react-icons/bi';
+import { CgProfile } from 'react-icons/cg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useToast } from 'hooks/useToast';
@@ -43,9 +44,10 @@ const Header = () => {
             </Link>
           )}
           {user?.name && (
-            <div className="text-exsm text-nowrap max-md:hidden">
-              <span className="text-mainGreen text-sm leading-none">{user.name}</span> 님 환영합니다!
-            </div>
+            <Link to="/me" className="hover:bg-whiteGray flex items-center gap-2 rounded-full p-3 hover:cursor-pointer">
+              <CgProfile className="text-mainGreen cursor-pointer text-sm" />
+              <span className="text-exsm hidden text-nowrap lg:inline">나의 계정</span>
+            </Link>
           )}
           <button
             onClick={isSignedIn ? handleLogout : () => navigate('/signin')}

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import Button from '@components/Button';
 import Input from '@components/Input';
-import { patchContest } from 'apis/contests';
+import { patchContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import useContestName from 'hooks/useContestName';
 import CategorySelect from '../CategorySelect';
@@ -12,7 +12,7 @@ import { ContestRequestDto } from 'types/DTO';
 const ContestEdit = () => {
   const { contestId: contestIdParam } = useParams();
   const prevName = useContestName();
-  const [categoryId, setCategoryId] = useState<string>('1');
+  const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -35,12 +35,11 @@ const ContestEdit = () => {
     editContestName(
       {
         categoryId: Number(categoryId),
-        contestName,
+        contestName: contestName.trim(),
       },
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({ queryKey: ['contests'] });
-          await queryClient.invalidateQueries({ queryKey: ['teams'] });
           toast('대회가 수정되었습니다.', 'success');
         },
         onError: (error: any) => {
@@ -63,7 +62,7 @@ const ContestEdit = () => {
           <Input
             value={contestName}
             onChange={(e) => setContestName(e.target.value)}
-            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-[16px] focus:outline-1"
+            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-base focus:outline-1"
             placeholder="대회 이름을 입력해주세요."
           />
         </div>

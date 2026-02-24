@@ -6,7 +6,7 @@ import { cn } from 'utils/classname';
 import { useToast } from 'hooks/useToast';
 import { useContestCreate } from './ContestCreateContext';
 import { useMutation } from '@tanstack/react-query';
-import { postBulkAddTeams } from 'apis/contests';
+import { postBulkAddTeams } from 'apis/contest';
 
 const XLSX_MIME_TYPE = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`;
 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Button from '@components/Button';
 import { useMutation } from '@tanstack/react-query';
 import { useContestCreate } from './ContestCreateContext';
-import { postContest } from 'apis/contests';
+import { postContest } from 'apis/contest';
 import { ContestRequestDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
 import { useNavigate } from 'react-router-dom';

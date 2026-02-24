@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from 'hooks/useToast';
-import { getSortStatus, patchSortTeam, SortOption, sortOptions } from 'apis/teams';
+import { getSortStatus, patchSortTeam, SortOption, sortOptions } from 'apis/team';
 
 const ProjectSortToggle = () => {
   const queryClient = useQueryClient();

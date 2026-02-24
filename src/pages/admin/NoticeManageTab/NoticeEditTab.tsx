@@ -2,7 +2,7 @@ import Input from '@components/Input';
 import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getNoticeDetail, patchNotice } from 'apis/notices';
+import { getNoticeDetail, patchNotice } from 'apis/notice';
 import useGoBack from 'hooks/useGoBack';
 import { useToast } from 'hooks/useToast';
 import { useEffect, useState } from 'react';

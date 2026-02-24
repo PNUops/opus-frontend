@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ContestResponseDto } from 'types/DTO';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@components/lib/utils';
 import { TiDeleteOutline } from 'react-icons/ti';
-import { patchChangeOngoingContest } from 'apis/contests';
+import { patchChangeOngoingContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import { contestOption } from 'queries/contests';
 
 interface ContestSlotsProps {
-  contests: ContestResponseDto[];
+  contests?: ContestResponseDto[];
   selectedContest?: ContestResponseDto;
 }
 
@@ -91,13 +91,14 @@ const slotStyle = {
 };
 
 const OngoingContestSlot = ({ type, text, onClick, onDelete }: OngoingContestSlotProps) => (
-  <div
-    className={twMerge('flex items-center gap-2.5 rounded-md px-3.5 py-2.5 text-sm', slotStyle[type])}
-    onClick={onClick}
-  >
+  <div className={cn('flex items-center gap-2.5 rounded-md px-3.5 py-2.5 text-sm', slotStyle[type])} onClick={onClick}>
     <span>{text}</span>
     {type === 'occupied' && (
-      <TiDeleteOutline className="mt-0.5 fill-white hover:cursor-pointer" size={20} onClick={onDelete} />
+      <TiDeleteOutline
+        className="mt-0.5 fill-white hover:cursor-pointer hover:fill-red-600"
+        size={20}
+        onClick={onDelete}
+      />
     )}
   </div>
 );
