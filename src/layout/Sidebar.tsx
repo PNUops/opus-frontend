@@ -56,7 +56,7 @@ const CategoryItem = ({ category, isExpanded, onToggle }: CategoryItemProps) => 
       onClick={onToggle}
       className={cn(
         'flex w-full items-center justify-between px-5 py-4 text-left transition-all',
-        isExpanded ? 'bg-mainGreen text-white' : 'hover:bg-whiteGray bg-white text-neutral-800',
+        isExpanded ? 'bg-mainGreen text-white' : 'hover:bg-whiteGray bg-white text-neutral-700',
       )}
     >
       <span className="text-base font-medium">{category.categoryName}</span>
@@ -73,7 +73,7 @@ interface ContestListProps {
 
 const ContestList = ({ contests }: ContestListProps) => {
   const baseStyle =
-    'hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-base transition-all text-neutral-800';
+    'hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-base transition-all text-neutral-700';
   const getLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(baseStyle, isActive && 'text-mainGreen font-semibold');
   return (
