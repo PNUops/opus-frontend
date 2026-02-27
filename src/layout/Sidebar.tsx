@@ -5,7 +5,11 @@ import useContests from 'hooks/useContests';
 import { ContestResponseDto } from 'types/DTO/contestsDto';
 import { cn } from 'utils/classname';
 
-const Sidebar = () => {
+interface SidebarProps {
+  variant?: 'desktop' | 'mobile';
+}
+
+const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
   const { data: contests } = useContests();
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
 
@@ -15,8 +19,13 @@ const Sidebar = () => {
     setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
   };
 
+  const containerClassName =
+    variant === 'desktop'
+      ? 'min-w-sidebar hidden bg-white lg:block'
+      : 'h-full w-full bg-white';
+
   return (
-    <aside className="min-w-sidebar hidden bg-white lg:block">
+    <aside className={containerClassName}>
       <nav className="flex flex-col">
         {categories.map((category) => (
           <CategoryItem
