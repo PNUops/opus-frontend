@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useToast } from 'hooks/useToast';
 import { useSidebar } from './SidebarContext';
+import Button from '@components/Button';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -24,24 +25,23 @@ const Header = () => {
 
   return (
     <header className="border-lightGray lg:h-header md:h-header xs:h-8 z-20 flex w-full min-w-[350px] items-center justify-between border-b bg-white px-4 py-2 sm:h-20">
-      <div className="relative mx-auto flex w-full items-center justify-between gap-4 px-4 sm:px-8 sm:pt-4 md:gap-8 lg:gap-16 lg:px-16">
+      <div className="mx-auto flex w-full items-center justify-between gap-4 px-4 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
         <div className="flex items-center gap-2">
           {isSidebarRoute && (
-            <button
-              type="button"
+            <Button
               onClick={toggle}
-              className="flex h-9 w-9 items-center justify-center lg:hidden"
+              className="flex h-9 w-9 items-center justify-center p-0 text-black lg:hidden"
               aria-label="메뉴 열기"
             >
               <HiMenu className="h-5 w-5" />
-            </button>
+            </Button>
           )}
-          <Link to="/" className="max-sm:hidden sm:-translate-y-1.5 md:-translate-y-[7px] lg:-translate-y-2">
-            <img className="w-auto sm:h-8 md:h-9 lg:h-10" src="/Logo.svg" alt="부산대학교 SW프로젝트관리시스템 로고" />
+          <Link to="/" className="max-sm:hidden">
+            <img className="w-auto sm:h-6 md:h-7 lg:h-8" src="/Logo.svg" alt="부산대학교 SW프로젝트관리시스템 로고" />
           </Link>
           <Link to="/" className="items-center sm:hidden">
             <img
-              className="h-8 w-auto"
+              className="h-7 w-auto"
               src="/swOpsLogo-sm.png"
               alt="부산대학교 SW프로젝트관리시스템 로고 (작은 버전)"
             />
@@ -49,24 +49,32 @@ const Header = () => {
         </div>
 
         <div className="flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
-          {isAdmin && (
-            <Link to="/admin" className="flex items-center gap-2 hover:cursor-pointer">
-              <BiCog className="text-mainGreen cursor-pointer text-sm" />
-              <span className="text-exsm hidden text-nowrap lg:inline">관리자 페이지</span>
-            </Link>
-          )}
-          {user?.name && (
-            <Link to="/me" className="hover:bg-whiteGray flex items-center gap-2 rounded-full p-3 hover:cursor-pointer">
-              <CgProfile className="text-mainGreen cursor-pointer text-sm" />
-              <span className="text-exsm hidden text-nowrap lg:inline">나의 계정</span>
-            </Link>
-          )}
-          <button
+          <div className="flex items-center gap-0.5 md:gap-1">
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="hover:bg-whiteGray flex items-center gap-2 rounded-full px-4 py-2 hover:cursor-pointer"
+              >
+                <BiCog className="text-mainGreen h-5 w-5 cursor-pointer" />
+                <span className="hidden text-sm text-nowrap lg:inline">관리자 페이지</span>
+              </Link>
+            )}
+            {user?.name && (
+              <Link
+                to="/me"
+                className="hover:bg-whiteGray flex items-center gap-2 rounded-full px-4 py-2 hover:cursor-pointer"
+              >
+                <CgProfile className="text-mainGreen h-5 w-5 cursor-pointer" />
+                <span className="hidden text-sm text-nowrap lg:inline">내 계정</span>
+              </Link>
+            )}
+          </div>
+          <Button
             onClick={isSignedIn ? handleLogout : () => navigate('/signin')}
-            className="text-exsm border-lightGray rounded-full border px-4 py-2 text-nowrap hover:cursor-pointer"
+            className="border-lightGray rounded-full border text-sm text-nowrap text-black hover:cursor-pointer"
           >
             {isSignedIn ? '로그아웃' : '로그인 / 회원가입'}
-          </button>
+          </Button>
         </div>
       </div>
     </header>
