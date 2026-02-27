@@ -5,6 +5,7 @@ interface Submission {
   projectName: string;
   isSubmitted?: boolean;
   likeCount?: number;
+  trackName?: string;
 }
 
 interface Props {
@@ -43,6 +44,13 @@ const TableBody = ({ submissions, type }: Props) => {
             {item.teamName}
           </td>
           <td className="w-[50%] min-w-[80px] overflow-hidden border-r border-b border-gray-300 p-2 py-3 pl-4 text-sm text-ellipsis whitespace-nowrap">
+            {type === 'vote' && item.trackName ? (
+              <div className="mb-2 inline-block">
+                <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+                  {item.trackName}
+                </span>
+              </div>
+            ) : null}
             {item.projectName}
           </td>
           {type === 'vote' ? (

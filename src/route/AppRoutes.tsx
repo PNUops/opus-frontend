@@ -28,6 +28,7 @@ import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
+import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -95,7 +96,7 @@ const AppRoutes = () =>
                 { path: 'notices', element: <NoticeManagePage /> },
                 { path: 'banners', element: <BannerManagePage /> },
                 // 통계
-                { path: 'statistics', element: <div>대회 통계</div> },
+                { path: 'statistics', element: <ContestStatisticsPage /> },
               ],
             },
           ],
