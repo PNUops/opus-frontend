@@ -64,7 +64,7 @@ const ProjectManagePage = () => {
                   <p className="text-darkGray w-[150px] flex-shrink-0 truncate font-medium">{proj.teamName}</p>
                   <p className="flex-1 truncate text-gray-600">{proj.projectName}</p>
                   <div className="flex w-[100px] flex-shrink-0 justify-center">
-                    <DivisionTag name={proj.trackName} />
+                    <TrackTag name={proj.trackName} />
                   </div>
                 </div>
 
@@ -108,7 +108,7 @@ const SubmissionTag = ({ isSubmitted }: SubmissionTagProps) => {
   return <Tag className={colorClass}>{label}</Tag>;
 };
 
-const DivisionTag = ({ name }: { name: string }) => {
+const TrackTag = ({ name }: { name: string }) => {
   const colorClass = getColorClassForLabel(name);
   return <Tag className={colorClass}>{name}</Tag>;
 };
