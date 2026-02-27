@@ -7,7 +7,7 @@ export const getVoteRanking = async (contestId: number): Promise<VoteRankingDto[
 };
 
 export const getVoteStats = async (contestId: number): Promise<VoteStatsDto> => {
-  const res = await apiClient.get(`/contests/${contestId}/votes-stats`);
+  const res = await apiClient.get(`/contests/${contestId}/votes/statistics`);
   return res.data;
 };
 

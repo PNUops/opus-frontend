@@ -8,7 +8,7 @@ export const statisticsHandlers = [
     return HttpResponse.json(mockVoteRanking);
   }),
 
-  http.get(`${base}/api/admin/contests/:contestId/votes-stats`, () => {
+  http.get(`${base}/api/admin/contests/:contestId/statistics`, () => {
     return HttpResponse.json(mockVoteStats);
   }),
 
