@@ -4,15 +4,15 @@ import { mockVoteRanking, mockVoteStats, mockVoteLogs } from '@mocks/data/statis
 const base = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export const statisticsHandlers = [
-  http.get(`${base}/api/admin/contests/:contestId/ranking`, () => {
+  http.get(`${base}/api/contests/:contestId/ranking`, () => {
     return HttpResponse.json(mockVoteRanking);
   }),
 
-  http.get(`${base}/api/admin/contests/:contestId/statistics`, () => {
+  http.get(`${base}/api/contests/:contestId/votes/statistics`, () => {
     return HttpResponse.json(mockVoteStats);
   }),
 
-  http.get(`${base}/api/admin/vote-log`, () => {
+  http.get(`${base}/api/contests/:contestId/vote-log`, () => {
     return HttpResponse.json(mockVoteLogs);
   }),
 ];

@@ -1,4 +1,4 @@
-import { VoteLogItemDto, VoteRankingDto, VoteStatsDto } from 'types/DTO';
+import { PaginationResponseDto, VoteLogItemDto, VoteRankingDto, VoteStatsDto } from 'types/DTO';
 
 export const mockVoteRanking: VoteRankingDto[] = [
   {
@@ -44,40 +44,41 @@ export const mockVoteStats: VoteStatsDto = {
   averageVotesPerVoter: 1.5, // 1인당 평균
 };
 
-export const mockVoteLogs: VoteLogItemDto[] = [
-  {
-    votedAt: '2025-07-15T16:02:00.000Z',
-    teamId: 11,
-    teamName: '구름',
-    voterName: '홍지연',
-    voterEmail: 'aaa@pusan.ac.kr',
-  },
-  {
-    votedAt: '2025-07-15T16:02:00.000Z',
-    teamId: 11,
-    teamName: '구름',
-    voterName: '홍지연',
-    voterEmail: 'aaa@pusan.ac.kr',
-  },
-  {
-    votedAt: '2025-07-15T16:02:00.000Z',
-    teamId: 12,
-    teamName: '운동',
-    voterName: '홍지연',
-    voterEmail: 'bbb@pusan.ac.kr',
-  },
-  {
-    votedAt: '2025-07-15T16:05:00.000Z',
-    teamId: 13,
-    teamName: '바다',
-    voterName: '김철수',
-    voterEmail: 'ccc@pusan.ac.kr',
-  },
-  {
-    votedAt: '2025-07-15T16:10:00.000Z',
-    teamId: 14,
-    teamName: '하늘',
-    voterName: '이영희',
-    voterEmail: 'ddd@pusan.ac.kr',
-  },
-];
+export const mockVoteLogs: PaginationResponseDto<VoteLogItemDto> = {
+  content: [
+    {
+      votedAt: '2025-07-15T16:02:00.000Z',
+      teamName: '구름',
+      voterName: '홍지연',
+      voterEmail: 'aaa@pusan.ac.kr',
+    },
+    {
+      votedAt: '2025-07-15T16:02:00.000Z',
+      teamName: '구름',
+      voterName: '홍지연',
+      voterEmail: 'aaa@pusan.ac.kr',
+    },
+    {
+      votedAt: '2025-07-15T16:02:00.000Z',
+      teamName: '운동',
+      voterName: '홍지연',
+      voterEmail: 'bbb@pusan.ac.kr',
+    },
+    {
+      votedAt: '2025-07-15T16:05:00.000Z',
+      teamName: '바다',
+      voterName: '김철수',
+      voterEmail: 'ccc@pusan.ac.kr',
+    },
+    {
+      votedAt: '2025-07-15T16:10:00.000Z',
+      teamName: '하늘',
+      voterName: '이영희',
+      voterEmail: 'ddd@pusan.ac.kr',
+    },
+  ],
+  first: true,
+  last: true,
+  totalElements: 5,
+  totalPages: 2,
+};

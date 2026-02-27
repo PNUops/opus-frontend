@@ -12,11 +12,9 @@ export interface VoteStatsDto {
   averageVotesPerVoter: number;
 }
 
-// 추후 수정 필요할 수 있음
 export interface VoteLogItemDto {
-  votedAt: string;
-  teamId?: number;
   teamName: string;
   voterName: string;
-  voterEmail?: string;
+  voterEmail: string;
+  votedAt: string;
 }
