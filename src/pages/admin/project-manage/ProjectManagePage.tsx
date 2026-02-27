@@ -61,10 +61,12 @@ const ProjectManagePage = () => {
               <div className="flex w-full items-center gap-4 py-1">
                 <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
                 <div className="flex min-w-0 flex-1 items-center gap-6">
-                  <p className="text-darkGray w-[150px] flex-shrink-0 truncate font-medium">{proj.teamName}</p>
-                  <p className="flex-1 truncate text-gray-600">{proj.projectName}</p>
+                  <p className="text-darkGray w-[150px] flex-shrink-0 truncate font-medium">
+                    {proj.teamName ?? '미지정'}
+                  </p>
+                  <p className="flex-1 truncate text-gray-600">{proj.projectName ?? '미지정'}</p>
                   <div className="flex w-[100px] flex-shrink-0 justify-center">
-                    <TrackTag name={proj.trackName} />
+                    <TrackTag name={proj.trackName ?? '미지정'} />
                   </div>
                 </div>
 
