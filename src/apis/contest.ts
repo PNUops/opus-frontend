@@ -54,6 +54,6 @@ export const postBulkAddTeams = async (contestId: number, formData: FormData) =>
 };
 
 export const getProjectsAdmin = async (contestId: number): Promise<ProjectsAdminResponseDto[]> => {
-  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/admin/contests/${contestId}/submissions`);
+  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/contests/${contestId}/submissions`);
   return res.data;
 };
