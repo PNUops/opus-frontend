@@ -25,7 +25,6 @@ import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
 import MyPage from '@pages/me/MyPage';
 import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
-import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
