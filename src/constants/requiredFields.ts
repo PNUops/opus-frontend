@@ -1,7 +1,7 @@
 import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 
 export const defaultRequiredFields: RequiredFieldsDto = {
-  division: false,
+  track: false,
   projectName: false,
   teamName: false,
   leader: false,
@@ -16,7 +16,7 @@ export const defaultRequiredFields: RequiredFieldsDto = {
 };
 
 export const labelByField: Record<string, string> = {
-  division: '분과',
+  track: '분과',
   projectName: '프로젝트명',
   teamName: '팀명',
   leader: '팀장',

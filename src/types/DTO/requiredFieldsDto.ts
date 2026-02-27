@@ -1,5 +1,5 @@
 export interface RequiredFieldsDto {
-  division: boolean;
+  track: boolean;
   projectName: boolean;
   teamName: boolean;
   leader: boolean;
