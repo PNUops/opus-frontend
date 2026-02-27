@@ -14,17 +14,17 @@ interface CategorySelectProps {
 const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
   const { contestId: contestIdParam } = useParams();
   const { data: contests } = useQuery(contestOption());
-  const { data: categorys } = useQuery(categoryOption());
+  const { data: categories } = useQuery(categoryOption());
 
   useEffect(() => {
-    if (categorys && contests) {
-      if (!contestIdParam) onChange(categorys[0].categoryId.toString());
+    if (categories && contests) {
+      if (!contestIdParam) onChange(categories[0].categoryId.toString());
       else {
         const currentId = contests.find((contest) => contest.contestId === Number(contestIdParam))?.categoryId;
         if (currentId) onChange(String(currentId));
       }
     }
-  }, [contests, categorys, contestIdParam]);
+  }, [contests, categories, contestIdParam]);
 
   return (
     <Select onValueChange={onChange} value={categoryId}>
@@ -32,7 +32,7 @@ const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelect
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {categorys?.map((category) => (
+        {categories?.map((category) => (
           <SelectItem key={category.categoryId} value={`${category.categoryId}`}>
             {category.categoryName}
           </SelectItem>

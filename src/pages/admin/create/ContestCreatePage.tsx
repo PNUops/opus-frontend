@@ -12,8 +12,8 @@ const ContestCreateContent = () => {
       <ContestCreateProgress />
       <div className="border-t pt-8">
         {currentStep === 1 && <ContestCreateForm />}
-        {currentStep === 2 && <ContestTeamInsert />}
-        {currentStep === 3 && <ContestRequiredSetting />}
+        {/* {currentStep === 2 && <ContestTeamInsert />} */}
+        {currentStep === 2 && <ContestRequiredSetting />}
       </div>
     </div>
   );
