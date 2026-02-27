@@ -19,6 +19,7 @@ import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
 import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
@@ -28,6 +29,7 @@ import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
+import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -87,7 +89,7 @@ const AppRoutes = () =>
                 { path: 'sort', element: <div>정렬 관리</div> },
                 { path: 'team-order', element: <TeamOrderAdminPage /> },
                 { path: 'awards', element: <AwardManagePage /> },
-                { path: 'required-fields', element: <div>필수 항목 설정</div> },
+                { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
                 { path: 'settings', element: <ContestSettingsPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
@@ -95,7 +97,7 @@ const AppRoutes = () =>
                 { path: 'notices', element: <NoticeManagePage /> },
                 { path: 'banners', element: <BannerManagePage /> },
                 // 통계
-                { path: 'statistics', element: <div>대회 통계</div> },
+                { path: 'statistics', element: <ContestStatisticsPage /> },
               ],
             },
           ],

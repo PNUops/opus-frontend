@@ -1,9 +1,13 @@
+import { Outlet } from 'react-router-dom';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import Header from './Header';
 import Footer from './Footer';
-import { Outlet } from 'react-router-dom';
-import { Toaster } from '@components/Toaster';
+
 import useAuthInit from 'hooks/useAuthInit';
 import useScrollToTop from 'hooks/useScrollToTop';
+
+import { Toaster } from '@components/Toaster';
 import AxiosInterceptorProvider from 'providers/AxiosInterceptorProvider';
 import { SidebarProvider } from './SidebarContext';
 
@@ -25,6 +29,7 @@ const MainLayout = () => {
         </div>
       </SidebarProvider>
       <Toaster />
+      <ReactQueryDevtools />
     </AxiosInterceptorProvider>
   );
 };
