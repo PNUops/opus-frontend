@@ -1,3 +1,4 @@
+export * from './commonDto';
 export * from './signInDto';
 export * from './signUpDto';
 export * from './dashboardDto';
