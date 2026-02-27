@@ -14,30 +14,30 @@ const VoteRankingSection = () => {
   const { contestId } = useParams();
   const [selectedFilter, setSelectedFilter] = useState<string>(defaultRankFilter[0]);
 
-  const { data: likeRanking } = useQuery({
-    queryKey: ['likeRanking', contestId],
+  const { data: voteRanking } = useQuery({
+    queryKey: ['voteRanking', contestId],
     queryFn: () => getVoteRanking(Number(contestId ?? 0)),
     enabled: !!contestId,
   });
 
   const filters = useMemo(() => {
-    if (!likeRanking) return defaultRankFilter;
-    const uniq = Array.from(new Set(likeRanking.map((r) => r.trackName)));
+    if (!voteRanking) return defaultRankFilter;
+    const uniq = Array.from(new Set(voteRanking.map((r) => r.trackName)));
     return [...defaultRankFilter, ...uniq];
-  }, [likeRanking]);
+  }, [voteRanking]);
 
   const rankingList = useMemo(() => {
-    if (!likeRanking || likeRanking.length === 0) return [];
-    if (selectedFilter === '전체') return likeRanking;
+    if (!voteRanking || voteRanking.length === 0) return [];
+    if (selectedFilter === '전체') return voteRanking;
     else if (selectedFilter === '분과별 묶어보기') {
-      return likeRanking.reduce<Record<string, VoteRankingDto[]>>((acc, item) => {
+      return voteRanking.reduce<Record<string, VoteRankingDto[]>>((acc, item) => {
         const key = item.trackName;
         if (!acc[key]) acc[key] = [];
         acc[key].push(item);
         return acc;
       }, {});
-    } else return likeRanking.filter((r) => r.trackName === selectedFilter);
-  }, [likeRanking, selectedFilter]);
+    } else return voteRanking.filter((r) => r.trackName === selectedFilter);
+  }, [voteRanking, selectedFilter]);
 
   return (
     <section className="flex flex-col gap-5">
@@ -96,13 +96,11 @@ const RankingList = ({ list }: RankingListProps) => {
             <div className="w-8 text-center text-sm text-gray-700">{item.rank}</div>
             <div className="min-w-[110px] text-sm text-gray-800">{item.teamName}</div>
             <div className="min-w-[240px] text-sm text-gray-700">{item.projectName}</div>
-            <div>
-              <TrackTag name={item.trackName} />
-            </div>
+            <div>{item.trackName && <TrackTag name={item.trackName} />}</div>
           </div>
           <div className="flex items-center gap-1.5">
             <FaVoteYea className="fill-mainGreen mt-0.5" size={22} />
-            <div className="text-mainGreen text-sm font-semibold">{`${item.likeCount.toLocaleString()}개`}</div>
+            <div className="text-mainGreen text-sm font-semibold">{`${item.voteCount.toLocaleString()}개`}</div>
           </div>
         </li>
       ))}

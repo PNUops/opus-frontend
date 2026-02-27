@@ -3,7 +3,7 @@ export interface VoteRankingDto {
   teamName: string;
   projectName: string;
   trackName: string;
-  likeCount: number;
+  voteCount: number;
 }
 
 export interface VoteStatsDto {
