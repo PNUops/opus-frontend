@@ -24,8 +24,8 @@ const Header = () => {
   const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
 
   return (
-    <header className="border-lightGray lg:h-header md:h-header xs:h-8 z-20 flex w-full min-w-[350px] items-center justify-between border-b bg-white px-4 py-2 sm:h-20">
-      <div className="mx-auto flex w-full items-center justify-between gap-4 px-4 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
+    <header className="border-lightGray lg:h-header md:h-header xs:h-8 shadow-b-lg z-20 flex w-full min-w-[350px] items-center justify-between border-b bg-white px-3 py-2 sm:h-20">
+      <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
         <div className="flex items-center gap-2">
           {isSidebarRoute && (
             <Button
