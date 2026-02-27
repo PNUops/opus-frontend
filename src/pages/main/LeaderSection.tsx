@@ -1,6 +1,6 @@
 import LeaderMessage from '@pages/main/LeaderMessage';
 import useAuth from '../../hooks/useAuth';
-import { getSubmissionStatus } from '../../apis/teams';
+import { getSubmissionStatus } from '../../apis/team';
 import { useQuery } from '@tanstack/react-query';
 import { SubmissionStatusResponseDto } from '../../types/DTO/teams/submissionStatusDto';
 import { Link } from 'react-router-dom';

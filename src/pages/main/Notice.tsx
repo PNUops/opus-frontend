@@ -1,7 +1,7 @@
 // import banner from '@assets/banner.svg';
 import NoticeList from '@pages/main/NoticeList';
 import { useQuery } from '@tanstack/react-query';
-import { getNotices } from '../../apis/notices';
+import { getNotices } from '../../apis/notice';
 import NoticeListSkeleton from '@pages/main/NoticeListSkeleton';
 
 // techweek

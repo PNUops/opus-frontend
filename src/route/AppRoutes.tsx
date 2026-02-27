@@ -7,18 +7,29 @@ import ProjectEditorPage from '@pages/project-editor/ProjectEditorPage';
 import ProjectViewerPage from '@pages/project-viewer/ProjectViewerPage';
 import SignInPage from '@pages/signin/SignInPage';
 import SignUpPage from '@pages/signup/SignUpPage';
-import AdminPage from '@pages/admin/AdminPage';
 import FindPage from '@pages/find/FindPage';
 import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
-import AdminTabs from './AdminTabs';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
+import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
+import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
+import SidebarLayout from '@layout/SidebarLayout';
 import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
 import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
+import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
+import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
+import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
+import MyPage from '@pages/me/MyPage';
+import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
+import BannerManagePage from '@pages/admin/banner/BannerManagePage';
+import NotFoundPage from '@pages/common/NotFoundPage';
+import VoteManagePage from '@pages/admin/votes/VoteManagePage';
+import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
+import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -27,17 +38,23 @@ const AppRoutes = () =>
       element: <MainLayout />,
       children: [
         {
-          element: <FullContainerLayout />,
+          element: <SidebarLayout />,
           children: [
             { index: true, element: <MainPage /> },
             { path: 'contest/:contestId', element: <ContestPage /> },
+          ],
+        },
+        {
+          element: <FullContainerLayout />,
+          children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
-            { path: 'teams/view/:teamId', element: <ProjectViewerPage /> },
-            { path: 'teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
+            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectViewerPage /> },
+            { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
+            { path: 'me', element: <MyPage /> },
           ],
         },
         {
@@ -45,13 +62,20 @@ const AppRoutes = () =>
           element: <AdminLayout />,
           children: [
             {
+              index: true,
               element: (
                 <FullContainer>
-                  <AdminPage />
-                  {/* // TODO: 레거시 페이지이므로 추후 제거 필요 */}
+                  <AdminDashBoardPage />
                 </FullContainer>
               ),
-              children: [{ index: true, element: <Navigate to="ongoing" /> }, ...AdminTabs],
+            },
+            {
+              path: 'contest/create',
+              element: (
+                <FullContainer>
+                  <ContestCreatePage />
+                </FullContainer>
+              ),
             },
             {
               path: 'contest/:contestId',
@@ -59,22 +83,26 @@ const AppRoutes = () =>
               children: [
                 { index: true, element: <Navigate to="projects" replace /> },
                 // 프로젝트
-                { path: 'projects', element: <div>프로젝트 관리</div> },
+                { path: 'projects', element: <ProjectManagePage /> },
+                // 프로젝트 생성
+                { path: 'projects/create', element: <ProjectEditorPage mode="create" /> },
+                { path: 'sort', element: <div>정렬 관리</div> },
                 { path: 'team-order', element: <TeamOrderAdminPage /> },
-                { path: 'awards', element: <div>수상 관리</div> },
+                { path: 'awards', element: <AwardManagePage /> },
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
-                { path: 'settings', element: <div>대회 관리</div> },
-                { path: 'departments', element: <div>분과 관리</div> },
-                { path: 'votes', element: <div>투표 관리</div> },
-                { path: 'notices', element: <div>공지 관리</div> },
-                { path: 'banners', element: <div>배너 관리</div> },
+                { path: 'settings', element: <ContestSettingsPage /> },
+                { path: 'tracks', element: <TrackManagePage /> },
+                { path: 'votes', element: <VoteManagePage /> },
+                { path: 'notices', element: <NoticeManagePage /> },
+                { path: 'banners', element: <BannerManagePage /> },
                 // 통계
-                { path: 'statistics', element: <div>대회 통계</div> },
+                { path: 'statistics', element: <ContestStatisticsPage /> },
               ],
             },
           ],
         },
+        { path: '*', element: <NotFoundPage /> },
       ],
     },
   ]);

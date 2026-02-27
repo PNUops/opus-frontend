@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@constants/env';
 import apiClient from './apiClient';
 import { ProjectDetailsEditDto, PreviewDeleteRequestDto, TeamMemberCreateRequestDto } from 'types/DTO/projectEditorDto';
 
@@ -12,21 +13,16 @@ export type ThumbnailResult =
   | { status: 'error'; code: 'THUMBNAIL_NOTFOUND' | 'THUMBNAIL_ERR_ETC' };
 
 export const getThumbnail = async (teamId: number): Promise<ThumbnailResult> => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://swpms.pnu.app';
-  const url = `${baseUrl}/api/teams/${teamId}/image/thumbnail`;
-
   try {
     const response = await apiClient.get(`/teams/${teamId}/image/thumbnail`);
 
-    if (response.status === 200 || response.status === 204) {
-      return { status: 'success', url };
-    }
-
-    if (response.status === 202) {
+    if (response.status === 200) {
+      return { status: 'success', url: `${API_BASE_URL}/api/teams/${teamId}/image/thumbnail` };
+    } else if (response.status === 202) {
       return { status: 'processing', code: 'THUMBNAIL_PROCESSING' };
+    } else {
+      return { status: 'success', url: `${API_BASE_URL}/api/teams/${teamId}/image/thumbnail` };
     }
-
-    return { status: 'error', code: 'THUMBNAIL_ERR_ETC' };
   } catch (error: any) {
     if (error.response?.status === 404) {
       return { status: 'error', code: 'THUMBNAIL_NOTFOUND' };
