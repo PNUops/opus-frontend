@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { CURRENT_CONTEST_ID } from 'constants/contest';
 
 import IntroSection from './IntroSection';
 import UrlInput from './UrlInput';
@@ -60,8 +59,9 @@ const ProjectEditorPage = ({ mode }: ProjectEditorPageProps) => {
         </p>
       </div>
       <div className="h-10" />
-      {isAdmin && formState.contestId !== CURRENT_CONTEST_ID && (
+      {isContributorOfThisTeam && isAdmin && (
         <>
+          {/* 관리자, 팀장 뷰 구분 */}
           <AdminEditSection
             contestId={formState.contestId}
             setContestId={setContestId}
@@ -78,18 +78,6 @@ const ProjectEditorPage = ({ mode }: ProjectEditorPageProps) => {
           <div className="h-15" />
           <MembersInput teamMembers={formState.teamMembers} onMemberAdd={onMemberAdd} onMemberRemove={onMemberRemove} />
         </>
-      )}
-      {(isContributorOfThisTeam || (isAdmin && formState.contestId === CURRENT_CONTEST_ID)) && (
-        <IntroSection
-          projectName={formState.projectName}
-          setProjectName={(value: string) => setField('projectName', value)}
-          teamName={formState.teamName}
-          /* TODO: DTO 따로 정의해서 하나의 인자로 넘기기 */
-          professorName={formState.professorName ?? ''}
-          setProfessorName={(value: string) => setField('professorName', value)}
-          leaderName={formState.leaderName}
-          teamMembers={formState.teamMembers} // WARN: 백엔드 측에서 필드명 바꿀 수도 있음 주의
-        />
       )}
       <div className="h-15" />
       <UrlInput

@@ -1,12 +1,15 @@
+import { Outlet } from 'react-router-dom';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import Header from './Header';
 import Footer from './Footer';
-import Sidebar from './Sidebar';
-import { Outlet } from 'react-router-dom';
-import { Toaster } from '@components/Toaster';
+
 import useAuthInit from 'hooks/useAuthInit';
 import useScrollToTop from 'hooks/useScrollToTop';
+
+import { Toaster } from '@components/Toaster';
 import AxiosInterceptorProvider from 'providers/AxiosInterceptorProvider';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { SidebarProvider } from './SidebarContext';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
@@ -16,13 +19,15 @@ const MainLayout = () => {
 
   return (
     <AxiosInterceptorProvider>
-      <div>
-        <Header />
+      <SidebarProvider>
         <div>
-          <Outlet />
+          <Header />
+          <div>
+            <Outlet />
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </SidebarProvider>
       <Toaster />
       <ReactQueryDevtools />
     </AxiosInterceptorProvider>

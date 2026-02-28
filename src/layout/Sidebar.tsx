@@ -5,7 +5,11 @@ import useContests from 'hooks/useContests';
 import { ContestResponseDto } from 'types/DTO/contestsDto';
 import { cn } from 'utils/classname';
 
-const Sidebar = () => {
+interface SidebarProps {
+  variant?: 'desktop' | 'mobile';
+}
+
+const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
   const { data: contests } = useContests();
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
 
@@ -15,8 +19,11 @@ const Sidebar = () => {
     setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
   };
 
+  const containerClassName =
+    variant === 'desktop' ? 'min-w-sidebar hidden bg-white lg:block' : 'h-full w-full bg-white';
+
   return (
-    <aside className="min-w-sidebar hidden bg-white lg:block">
+    <aside className={containerClassName}>
       <nav className="flex flex-col">
         {categories.map((category) => (
           <CategoryItem
@@ -49,16 +56,14 @@ const CategoryItem = ({ category, isExpanded, onToggle }: CategoryItemProps) => 
       onClick={onToggle}
       className={cn(
         'flex w-full items-center justify-between px-5 py-4 text-left transition-all',
-        isExpanded ? 'bg-mainGreen text-white' : 'hover:bg-whiteGray bg-white',
+        isExpanded ? 'bg-mainGreen text-white' : 'hover:bg-whiteGray bg-white text-neutral-700',
       )}
     >
-      <span className="text-lg font-medium">{category.categoryName}</span>
+      <span className="text-base font-medium">{category.categoryName}</span>
       {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
     </button>
 
     {isExpanded && <ContestList contests={category.contests} />}
-
-    <div className="border-b border-gray-200" />
   </div>
 );
 
@@ -67,7 +72,8 @@ interface ContestListProps {
 }
 
 const ContestList = ({ contests }: ContestListProps) => {
-  const baseStyle = 'hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-lg transition-all';
+  const baseStyle =
+    'hover:text-mainGreen bg-whiteGray w-full px-6 py-3 text-left text-base transition-all text-neutral-700';
   const getLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(baseStyle, isActive && 'text-mainGreen font-semibold');
   return (

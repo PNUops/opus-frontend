@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useOutsideClick } from 'hooks/useOutsideClick';
 
 import { useToast } from 'hooks/useToast';
-import { CURRENT_CONTEST_ID } from 'constants/contest';
 
 import { getAllContests } from 'apis/contest';
 import { ContestResponseDto } from 'types/DTO';
@@ -50,12 +49,7 @@ const ContestMenu = ({ value, onChange }: ContestMenuProps) => {
       <button
         className="border-lightGray focus:ring-subGreen focus:border-mainGreen flex w-full items-center justify-between rounded border px-5 py-3 text-left duration-150 hover:cursor-pointer focus:outline-none"
         onClick={() => {
-          if (selectedContest?.contestId == CURRENT_CONTEST_ID) {
-            toast('현재 진행 중인 대회의 프로젝트의 소속을 변경할 수 없습니다.', 'info');
-          }
-          if (selectedContest?.contestId !== CURRENT_CONTEST_ID) {
-            setIsOpen((prev) => !prev);
-          }
+          setIsOpen((prev) => !prev);
         }}
       >
         <span className={selectedContest ? '' : 'text-midGray'}>
@@ -76,10 +70,6 @@ const ContestMenu = ({ value, onChange }: ContestMenuProps) => {
                 contests.contestId === value ? 'bg-whiteGray text-mainGreen' : 'hover:bg-whiteGray'
               }`}
               onClick={() => {
-                if (contests.contestId === CURRENT_CONTEST_ID) {
-                  toast('현재 진행 중인 대회로 소속을 변경할 수 없어요', 'info');
-                  return;
-                }
                 onChange(contests.contestId);
                 setIsOpen(false);
               }}

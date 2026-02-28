@@ -6,9 +6,9 @@ export const getGoogleOAuthLogin = async () => {
   return response.data;
 };
 
-export const getGoogleOAuthCallback = async (code: string): Promise<SignInResponseDto> => {
+export const getGoogleOAuthCallback = async (code: string, state: string): Promise<SignInResponseDto> => {
   const response = await apiClient.get('/oauth/google/callback', {
-    params: { code },
+    params: { code, state },
   });
   return response.data;
 };

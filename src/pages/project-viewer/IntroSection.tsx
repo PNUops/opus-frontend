@@ -47,7 +47,7 @@ const UrlButton = ({ url }: { url: string }) => {
 
 const IntroSection = ({ data, isEditor }: IntroSectionProps) => {
   const navigate = useNavigate();
-  const { teamId, teamName, projectName, productionPath } = data;
+  const { contestId, teamId, teamName, projectName, productionPath } = data;
 
   return (
     <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between">
@@ -59,7 +59,7 @@ const IntroSection = ({ data, isEditor }: IntroSectionProps) => {
         {isEditor && (
           <div className="flex">
             <button
-              onClick={() => navigate(`/teams/edit/${teamId}`)}
+              onClick={() => navigate(`/contest/${contestId}/teams/edit/${teamId}`)}
               className="border-midGray text-exsm text-midGray hover:text-mainGreen hover:border-mainGreen flex h-10 w-auto items-center justify-center gap-2 rounded-full border px-5 transition-colors duration-200 hover:cursor-pointer hover:bg-[#D1F3E1]/60"
             >
               <span className="whitespace-nowrap">수정하기</span>

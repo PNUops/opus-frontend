@@ -12,10 +12,10 @@ export interface ProjectDetailsResponseDto {
   teamName: string;
   leaderId: number;
   projectName: string;
-  overview: string;
   professorName: string | null;
   leaderName: string;
   teamMembers: TeamMember[];
+  overview: string;
   previewIds: number[];
   productionPath: string | null;
   githubPath: string;
