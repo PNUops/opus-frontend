@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 interface LikeSectionProps {
   contestId: number;
   teamId: number;
-  isLiked: boolean;
+  isLiked: boolean | null;
 }
 
 const LikeSection = ({ contestId, teamId, isLiked }: LikeSectionProps) => {
@@ -87,8 +87,10 @@ const LikeAbuseToolTip = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex justify-center">
       <Tooltip open={showTooltip}>
-        <TooltipTrigger className="z-50 rounded-lg bg-white p-2" onClick={handleConfirm}>
-          {children}
+        <TooltipTrigger asChild>
+          <div className="z-50 rounded-lg bg-white p-2" onClick={handleConfirm}>
+            {children}
+          </div>
         </TooltipTrigger>
         <TooltipContent className="max-w-3xs duration-400">
           <div className="flex flex-col gap-2 p-2 text-base">
@@ -120,7 +122,7 @@ const LikeCountToolTip = ({
 }) => {
   return (
     <Tooltip open={isOpen && likeCount !== null}>
-      <TooltipTrigger className="z-50 rounded-lg bg-white p-2">{children}</TooltipTrigger>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent className="max-w-3xs duration-100">
         <div className="flex flex-col gap-2 p-2 text-base">
           <p className="break-keep">

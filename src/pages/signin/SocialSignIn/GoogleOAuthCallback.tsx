@@ -8,13 +8,14 @@ import { getGoogleOAuthCallback } from 'apis/oauth';
 const GoogleOAuthCallback = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams.get('code');
+  const state = searchParams.get('state');
 
   const toast = useToast();
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
   const googleSignInMutation = useMutation({
-    mutationFn: (code: string) => getGoogleOAuthCallback(code),
+    mutationFn: ({ code, state }: { code: string; state: string }) => getGoogleOAuthCallback(code, state),
     onSuccess: (data) => {
       signIn(data.token);
       toast('구글 로그인 성공!', 'success');
@@ -28,10 +29,10 @@ const GoogleOAuthCallback = () => {
   });
 
   useEffect(() => {
-    if (code) {
-      googleSignInMutation.mutate(code);
+    if (code && state) {
+      googleSignInMutation.mutate({ code, state });
     }
-  }, [code]);
+  }, [code, state]);
 
   return <div className="p-10 text-center text-lg font-semibold">로그인 중입니다...</div>;
 };

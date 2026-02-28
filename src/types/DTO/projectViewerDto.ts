@@ -6,19 +6,22 @@ export interface TeamMember {
 export interface ProjectDetailsResponseDto {
   contestId: number;
   contestName: string;
+  trackId: number;
+  trackName: string;
   teamId: number;
-  leaderId: number;
   teamName: string;
+  leaderId: number;
   projectName: string;
-  overview: string;
   professorName: string | null;
   leaderName: string;
-  teamMembers: TeamMember[]; // WARN: 백엔드 측에서 필드명 바꿀 수도 있음 주의
+  teamMembers: TeamMember[];
+  overview: string;
   previewIds: number[];
   productionPath: string | null;
   githubPath: string;
   youTubePath: string;
-  isLiked: boolean;
+  isLiked: boolean | null;
+  isVoted: boolean | null;
 }
 
 export type PreviewResult =

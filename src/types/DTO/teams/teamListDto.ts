@@ -1,8 +1,9 @@
+import { AwardDto } from '../awardsDto';
+
 export interface TeamListItemResponseDto {
   teamId: number;
   teamName: string;
   projectName: string;
   isLiked: boolean;
-  awardName: string | null;
-  awardColor: string | null;
+  awards: AwardDto[];
 }

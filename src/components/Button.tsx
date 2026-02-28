@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { cn } from 'utils/classname';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -9,8 +9,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = ({ className = '', children, ...props }: Props) => {
   return (
     <button
-      className={twMerge(
-        'flex items-center justify-center rounded-md px-2 py-1 text-center text-sm text-white hover:cursor-pointer text-nowrap',
+      className={cn(
+        'flex items-center justify-center rounded-md px-4 py-2 text-center text-sm text-nowrap text-white hover:cursor-pointer hover:bg-gray-50',
         className,
       )}
       {...props}

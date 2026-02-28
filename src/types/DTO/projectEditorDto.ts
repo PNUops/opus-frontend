@@ -1,9 +1,9 @@
 export interface ProjectDetailsEditDto {
   contestId: number;
+  trackId: number;
   teamName: string;
   projectName: string;
   professorName: string;
-  leaderName: string;
   overview: string;
   productionPath: string | null;
   githubPath: string;

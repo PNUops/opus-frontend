@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@constants/env';
 import apiClient from './apiClient';
 import {
   ProjectDetailsResponseDto,
@@ -17,8 +18,6 @@ export const getProjectDetails = async (teamId: number): Promise<ProjectDetailsR
 };
 
 export const getPreviewImages = async (teamId: number, imageIds: number[]): Promise<PreviewImagesResponseDto> => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://swpms.pnu.app';
-
   const imageResults: PreviewResult[] = [];
 
   for (const imageId of imageIds) {
@@ -26,11 +25,19 @@ export const getPreviewImages = async (teamId: number, imageIds: number[]): Prom
       const response = await apiClient.get(`/teams/${teamId}/image/${imageId}`);
 
       if (response.status === 200) {
-        imageResults.push({ id: imageId, status: 'success', url: `${baseUrl}/api/teams/${teamId}/image/${imageId}` });
+        imageResults.push({
+          id: imageId,
+          status: 'success',
+          url: `${API_BASE_URL}/api/teams/${teamId}/image/${imageId}`,
+        });
       } else if (response.status === 202) {
         imageResults.push({ status: 'processing', code: 'PREVIEW_PROCESSING' });
       } else {
-        imageResults.push({ id: imageId, status: 'success', url: `${baseUrl}/api/teams/${teamId}/image/${imageId}` });
+        imageResults.push({
+          id: imageId,
+          status: 'success',
+          url: `${API_BASE_URL}/api/teams/${teamId}/image/${imageId}`,
+        });
       }
     } catch (error: any) {
       if (error.response?.status === 404) {

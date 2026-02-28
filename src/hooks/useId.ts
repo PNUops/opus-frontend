@@ -1,13 +1,38 @@
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export const useTeamId = (): number | null => {
-  const { teamId } = useParams<{ teamId: string }>();
-  const parsedTeamId = Number(teamId);
-  return !teamId || isNaN(parsedTeamId) ? null : parsedTeamId;
-};
+const createNumericIdHook =
+  <TKey extends string>(key: TKey) =>
+  () => {
+    const params = useParams<Record<TKey, string | undefined>>();
+    const raw = params[key as keyof typeof params];
+    const parsed = Number(raw);
+    return !raw || isNaN(parsed) ? null : parsed;
+  };
 
-export const useContestId = (): number | null => {
-  const { contestId } = useParams<{ contestId: string }>();
-  const parsedContestId = Number(contestId);
-  return !contestId || isNaN(parsedContestId) ? null : parsedContestId;
-};
+const createNumericIdOrRedirectHook =
+  (useIdHook: () => number | null, defaultRedirect: string) =>
+  (redirectTo: string = defaultRedirect): number => {
+    const navigate = useNavigate();
+    const id = useIdHook();
+
+    useEffect(() => {
+      if (id === null) {
+        navigate(redirectTo, { replace: true });
+      }
+    }, [id, navigate, redirectTo]);
+
+    return id as number;
+  };
+
+export const useTeamId = createNumericIdHook('teamId');
+
+export const useContestId = createNumericIdHook('contestId');
+
+export const useNoticeId = createNumericIdHook('noticeId');
+
+/* NULL 허용하지 않고 리다이렉트 */
+
+export const useTeamIdOrRedirect = createNumericIdOrRedirectHook(useTeamId, '/');
+
+export const useContestIdOrRedirect = createNumericIdOrRedirectHook(useContestId, '/');
