@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
 import Button from '@components/Button';
 import Input from '@components/Input';
 import { patchContest } from 'apis/contest';
@@ -8,9 +7,11 @@ import { useToast } from 'hooks/useToast';
 import useContestName from 'hooks/useContestName';
 import CategorySelect from '../CategorySelect';
 import { ContestRequestDto } from 'types/DTO';
+import { useContestIdOrRedirect } from 'hooks/useId';
+import QueryWrapper from 'providers/QueryWrapper';
 
 const ContestEdit = () => {
-  const { contestId: contestIdParam } = useParams();
+  const contestId = useContestIdOrRedirect();
   const prevName = useContestName();
   const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
@@ -18,7 +19,7 @@ const ContestEdit = () => {
   const queryClient = useQueryClient();
 
   const { mutate: editContestName, isPending } = useMutation({
-    mutationFn: (payload: ContestRequestDto) => patchContest(Number(contestIdParam) ?? 0, payload),
+    mutationFn: (payload: ContestRequestDto) => patchContest(contestId, payload),
   });
 
   useEffect(() => {
@@ -26,7 +27,6 @@ const ContestEdit = () => {
   }, [prevName]);
 
   const handleEdit = () => {
-    if (!contestIdParam) return;
     if (!contestName) {
       toast('수정할 대회명을 입력해주세요.', 'error');
       return;
@@ -55,14 +55,16 @@ const ContestEdit = () => {
       <div className="flex flex-col gap-7.5">
         <div className="flex items-center gap-2.5">
           <div className="text-midGray w-[120px] shrink-0">대회 카테고리</div>
-          <CategorySelect categoryId={categoryId} onChange={(id) => setCategoryId(id)} />
+          <QueryWrapper loadingStyle="h-10 rounded-sm w-[250px]" errorStyle="h-50">
+            <CategorySelect categoryId={categoryId} onChange={(id) => setCategoryId(id)} />
+          </QueryWrapper>
         </div>
         <div className="flex items-center gap-2.5">
           <div className="text-midGray w-[120px] shrink-0">대회 이름</div>
           <Input
             value={contestName}
             onChange={(e) => setContestName(e.target.value)}
-            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-base focus:outline-1"
+            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-sm focus:outline-1"
             placeholder="대회 이름을 입력해주세요."
           />
         </div>
