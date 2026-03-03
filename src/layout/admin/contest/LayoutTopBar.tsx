@@ -1,16 +1,18 @@
 import ContestSelect from '@pages/admin/ContestSelect';
+import { useContestId } from 'hooks/useId';
 import QueryWrapper from 'providers/QueryWrapper';
 import { useState } from 'react';
 import { MdArrowBackIos } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 const LayoutTopBar = () => {
+  const contestIdParam = useContestId();
   const [contestId, setContestId] = useState<string>('');
   const navigate = useNavigate();
 
-  const onChangeContest = (contestId: string) => {
-    setContestId(contestId);
-    navigate(`/admin/contest/${contestId}`);
+  const onChangeContest = (newContestId: string) => {
+    setContestId(newContestId);
+    if (Number(newContestId) !== contestIdParam) navigate(`/admin/contest/${newContestId}`);
   };
 
   return (
