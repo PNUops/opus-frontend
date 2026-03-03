@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import { getVoteLog } from 'apis/statistics';
 import dayjs from 'dayjs';
-import { AdminNoData } from '@components/ui/admin';
+import { AdminNoData } from '@components/admin';
 import { useState } from 'react';
 import Pagination from '@components/Pagination';
 

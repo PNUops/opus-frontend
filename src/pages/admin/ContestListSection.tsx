@@ -1,9 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
-import { AdminCard, AdminCardTop, AdminCardCreateButton, AdminCardRow, AdminNoData } from '@components/ui/admin';
+import { AdminNoData } from '@components/ui/admin';
 import { contestOption } from 'queries/contests';
 import QueryWrapper from 'providers/QueryWrapper';
+import { AdminCard, AdminCardCreateButton, AdminCardRow, AdminCardTop } from '@components/admin';
 
 const ContentListSection = () => {
   return (

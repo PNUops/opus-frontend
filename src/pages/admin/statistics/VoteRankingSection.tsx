@@ -8,7 +8,7 @@ import { getColorClassForLabel } from 'utils/color';
 import Select from '@components/Select';
 import Tag from '@components/Tag';
 import { VoteRankingDto } from 'types/DTO';
-import { AdminNoData } from '@components/ui/admin';
+import { AdminNoData } from '@components/admin';
 
 const VoteRankingSection = () => {
   const { contestId } = useParams();

@@ -2,13 +2,13 @@ import { useState } from 'react';
 import {
   AdminCard,
   AdminCardCreateButton,
-  AdminCardTop,
-  AdminPopoverMenu,
   AdminCardRow,
-  AdminPopoverEditButton,
+  AdminCardTop,
   AdminPopoverDeleteButton,
+  AdminPopoverEditButton,
+  AdminPopoverMenu,
   AdminNoData,
-} from '@components/ui/admin';
+} from '@components/admin';
 import { CategoryModal, CategoryDeleteConfirmModal } from './CategoryModal';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { useSuspenseQuery } from '@tanstack/react-query';

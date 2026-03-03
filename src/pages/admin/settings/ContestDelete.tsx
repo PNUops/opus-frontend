@@ -7,7 +7,7 @@ import { useToast } from 'hooks/useToast';
 import useContestName from 'hooks/useContestName';
 import { useState } from 'react';
 import { Dialog } from '@components/ui/dialog';
-import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { AdminDeleteConfirmModal } from '@components/admin';
 
 const ContestDelete = () => {
   const { contestId: contestIdParam } = useParams();

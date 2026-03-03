@@ -4,7 +4,7 @@ import Button from '@components/Button';
 import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
-import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { AdminDeleteConfirmModal } from '@components/admin';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, patchCategory, postCategory } from 'apis/category';
 import { CategoryDto } from 'types/DTO';

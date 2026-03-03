@@ -2,11 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useAwardViewAdmin } from 'hooks/useAwardAdmin';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import useTeamList from 'hooks/useTeamList';
-import { AdminCardRow, AdminHeader } from '@components/ui/admin';
+import { AdminCardRow, AdminHeader } from '@components/admin';
 import AwardTag from '@components/AwardTag';
 import AwardEditForm from './AwardEditForm';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
-
 import { twMerge } from 'tailwind-merge';
 
 const AwardManagePage = () => {

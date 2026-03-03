@@ -8,7 +8,7 @@ import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notice';
 import { useToast } from 'hooks/useToast';
 import { noticeDetailOption } from 'queries/notices';
 import { NoticeRequestDto } from 'types/DTO/noticeDto';
-import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { AdminDeleteConfirmModal } from '@components/admin';
 
 interface NoticeModalProps {
   type: 'create' | 'edit';

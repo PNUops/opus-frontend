@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { getVoteStats } from 'apis/statistics';
-import { AdminNoData } from '@components/ui/admin';
+import { AdminNoData } from '@components/admin';
 
 const StatCardsSection = () => {
   const { contestId } = useParams();
