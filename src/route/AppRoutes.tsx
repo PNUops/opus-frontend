@@ -28,7 +28,7 @@ import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
 import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
-import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
+import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 
 const AppRoutes = () =>
@@ -91,7 +91,7 @@ const AppRoutes = () =>
                 { path: 'awards', element: <AwardManagePage /> },
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
-                { path: 'settings', element: <ContestSettingsPage /> },
+                { path: 'manage', element: <ContestManagePage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },
