@@ -1,35 +1,26 @@
-import Select from '@components/Select';
-import useContests from 'hooks/useContests';
+import ContestSelect from '@pages/admin/ContestSelect';
+import QueryWrapper from 'providers/QueryWrapper';
+import { useState } from 'react';
 import { MdArrowBackIos } from 'react-icons/md';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LayoutTopBar = () => {
-  const { contestId: contestIdParam } = useParams();
+  const [contestId, setContestId] = useState<string>('');
   const navigate = useNavigate();
-  const { data } = useContests();
-  const contests = data ?? [];
+
+  const onChangeContest = (contestId: string) => {
+    setContestId(contestId);
+    navigate(`/admin/contest/${contestId}`);
+  };
 
   return (
-    <div className="border-b px-8 py-2">
+    <div className="flex gap-2 border-b px-8 py-2">
       <button onClick={() => navigate('/admin')}>
         <MdArrowBackIos className="text-midGray hover:text-mainGreen inline text-2xl transition-all" />
       </button>
-      <Select
-        onChange={(e) => {
-          const contestId = e.target.value;
-          navigate(`/admin/contest/${contestId}`);
-        }}
-      >
-        {contests.map((contest) => (
-          <option
-            key={contest.contestId}
-            value={contest.contestId}
-            selected={contest.contestId === Number(contestIdParam)}
-          >
-            {contest.contestName}
-          </option>
-        ))}
-      </Select>
+      <QueryWrapper loadingStyle="h-10 my-0 rounded-sm" errorStyle="h-10 flex-wrap">
+        <ContestSelect contestId={contestId} onChange={onChangeContest} />
+      </QueryWrapper>
     </div>
   );
 };
