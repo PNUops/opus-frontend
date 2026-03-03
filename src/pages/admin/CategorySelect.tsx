@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { categoryOption } from 'queries/category';
-import { contestOption } from 'queries/contests';
+import { contestsOption } from 'queries/contests';
 
 interface CategorySelectProps {
   categoryId: string;
@@ -13,7 +13,7 @@ interface CategorySelectProps {
 
 const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
   const { contestId: contestIdParam } = useParams();
-  const { data: contests } = useQuery(contestOption());
+  const { data: contests } = useQuery(contestsOption());
   const { data: categories } = useQuery(categoryOption());
 
   useEffect(() => {

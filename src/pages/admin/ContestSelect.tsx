@@ -1,7 +1,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useContestId } from 'hooks/useId';
-import { contestOption } from 'queries/contests';
+import { contestsOption } from 'queries/contests';
 import { useEffect } from 'react';
 
 interface ContestSelectProps {
@@ -11,7 +11,7 @@ interface ContestSelectProps {
 
 const ContestSelect = ({ contestId, onChange }: ContestSelectProps) => {
   const contestIdParam = useContestId();
-  const { data: contests } = useSuspenseQuery(contestOption());
+  const { data: contests } = useSuspenseQuery(contestsOption());
 
   useEffect(() => {
     if (contestIdParam) onChange(contestIdParam.toString());
