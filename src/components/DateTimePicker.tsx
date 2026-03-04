@@ -57,7 +57,7 @@ export const DateTimePicker = ({ label, prevDate, onChange }: DateTimePickerProp
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Label htmlFor="time-picker" className="font-normal whitespace-nowrap">
+      <Label htmlFor="time-picker" className="text-base font-normal whitespace-nowrap">
         {label}
       </Label>
       <div className="flex items-center gap-2">
