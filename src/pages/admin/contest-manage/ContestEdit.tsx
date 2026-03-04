@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import Button from '@components/Button';
 import Input from '@components/Input';
 import { patchContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
@@ -9,6 +8,7 @@ import CategorySelect from '../CategorySelect';
 import { ContestRequestDto } from 'types/DTO';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import QueryWrapper from 'providers/QueryWrapper';
+import { AdminActionButton } from '@components/admin';
 
 const ContestEdit = () => {
   const contestId = useContestIdOrRedirect();
@@ -64,14 +64,14 @@ const ContestEdit = () => {
           <Input
             value={contestName}
             onChange={(e) => setContestName(e.target.value)}
-            className="bg-whiteGray w-[400px] rounded-sm px-3 py-2 text-sm focus:outline-1"
+            className="bg-whiteGray w-[250px] rounded-sm px-3 py-2 text-sm focus:outline-1"
             placeholder="대회 이름을 입력해주세요."
           />
         </div>
       </div>
-      <Button disabled={isPending} onClick={handleEdit} className="bg-mainBlue ml-auto px-3.5 py-2 text-sm">
+      <AdminActionButton disabled={!contestName || isPending} className="ml-auto" onClick={handleEdit}>
         수정하기
-      </Button>
+      </AdminActionButton>
     </div>
   );
 };
