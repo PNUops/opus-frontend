@@ -42,7 +42,10 @@ const ContestDelete = () => {
     <div className="flex flex-col gap-5">
       <h2 className="text-2xl font-bold">대회 삭제</h2>
       <div className="flex items-center justify-between">
-        <p className="ml-1">{`${contestName ?? ''} 삭제하기`}</p>
+        <p>
+          <span className="underline underline-offset-3">{contestName ?? ''}</span>
+          {' 삭제하기'}
+        </p>
         <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
           <AdminActionButton disabled={isPending} onClick={() => setDeleteOpen(true)} variant="destructive">
             <FaRegTrashCan size={16} className="" />
