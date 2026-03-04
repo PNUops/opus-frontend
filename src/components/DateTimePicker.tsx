@@ -3,10 +3,10 @@ import { CiCalendar } from 'react-icons/ci';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { Button } from '@components/ui/button';
-import { Calendar } from '@components/ui/calendar';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
+import { Calendar } from './calendar';
 
 interface DateTimePickerProps {
   label: string;
