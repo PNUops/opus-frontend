@@ -12,7 +12,7 @@ export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: 
     <div className="flex w-full items-center justify-between">
       <div className="flex items-center gap-3">
         <h2 className="text-2xl font-bold">{title}</h2>
-        <h4 className="text-exsm text-midGray">{description}</h4>
+        <h4 className="text-midGray mt-2 text-sm">{description}</h4>
       </div>
       {buttonLabel && onButtonClick && (
         <AdminCardCreateButton onClick={onButtonClick}>{buttonLabel}</AdminCardCreateButton>
