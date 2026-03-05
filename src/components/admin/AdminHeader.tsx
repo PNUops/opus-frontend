@@ -1,13 +1,15 @@
+import { ReactNode } from 'react';
 import { AdminCardCreateButton } from './AdminCard';
 
 interface AdminHeaderProps {
   title: string;
   description?: string;
   buttonLabel?: string;
+  children?: ReactNode;
   onButtonClick?: () => void;
 }
 
-export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: AdminHeaderProps) => {
+export const AdminHeader = ({ title, description, buttonLabel, children, onButtonClick }: AdminHeaderProps) => {
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex items-center gap-3">
@@ -17,6 +19,7 @@ export const AdminHeader = ({ title, description, buttonLabel, onButtonClick }: 
       {buttonLabel && onButtonClick && (
         <AdminCardCreateButton onClick={onButtonClick}>{buttonLabel}</AdminCardCreateButton>
       )}
+      {children && children}
     </div>
   );
 };
