@@ -79,6 +79,7 @@ const BannerUploadSection = () => {
     e.stopPropagation();
     setNewBannerFile(null);
     setNewBannerPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleSubmit = () => {
