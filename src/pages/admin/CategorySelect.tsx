@@ -3,16 +3,15 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { categoryOption } from 'queries/category';
 import { contestsOption } from 'queries/contests';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { useContestId } from 'hooks/useId';
 
 interface CategorySelectProps {
   categoryId: string;
   onChange: (value: string) => void;
-  className?: string;
 }
 
-const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
-  const contestId = useContestIdOrRedirect();
+const CategorySelect = ({ categoryId, onChange }: CategorySelectProps) => {
+  const contestId = useContestId();
   const { data: contests } = useSuspenseQuery(contestsOption());
   const { data: categories } = useSuspenseQuery(categoryOption());
 
