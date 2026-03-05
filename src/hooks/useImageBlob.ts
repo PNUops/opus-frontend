@@ -1,12 +1,12 @@
-import { QueryKey, useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { QueryKey, useSuspenseQuery, UseSuspenseQueryOptions } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export const useImageBlob = <TQueryFnData, TError, TQueryKey extends QueryKey = QueryKey>(
-  queryOptions: UseQueryOptions<TQueryFnData, TError, Blob, TQueryKey>,
+  queryOptions: UseSuspenseQueryOptions<TQueryFnData, TError, Blob | null, TQueryKey>,
 ) => {
   const [imageURL, setImageURL] = useState<string | null>(null);
 
-  const query = useQuery(queryOptions);
+  const query = useSuspenseQuery(queryOptions);
 
   useEffect(() => {
     if (query.data) {
@@ -16,7 +16,7 @@ export const useImageBlob = <TQueryFnData, TError, TQueryKey extends QueryKey = 
       return () => {
         URL.revokeObjectURL(newUrl);
       };
-    }
+    } else setImageURL(null);
   }, [query.data]);
 
   useEffect(() => {

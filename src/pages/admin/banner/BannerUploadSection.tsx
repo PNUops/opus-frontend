@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { FiX } from 'react-icons/fi';
 import { useToast } from 'hooks/useToast';
@@ -8,19 +7,21 @@ import { postBanner } from 'apis/banner';
 import Button from '@components/Button';
 import { cn } from '@components/lib/utils';
 import { bannerOption } from 'queries/banner';
+import { useContestIdOrRedirect } from 'hooks/useId';
+import { AdminActionButton, AdminHeader } from '@components/admin';
 
 const BannerUploadSection = () => {
-  const { contestId } = useParams();
+  const contestId = useContestIdOrRedirect();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [newBannerFile, setNewBannerFile] = useState<File | null>(null);
   const [newBannerPreview, setNewBannerPreview] = useState<string | null>(null);
   const toast = useToast();
+  const queryClient = useQueryClient();
 
-  const { refetch: refetchBanner } = useQuery(bannerOption(Number(contestId ?? 0)));
   const uploadMutation = useMutation({
-    mutationKey: ['banner', Number(contestId ?? 0)],
-    mutationFn: (formData: FormData) => postBanner(Number(contestId ?? 0), formData),
+    mutationKey: ['bannerUpload'],
+    mutationFn: (formData: FormData) => postBanner(contestId, formData),
   });
 
   useEffect(() => {
@@ -91,7 +92,7 @@ const BannerUploadSection = () => {
       onSuccess: () => {
         setNewBannerFile(null);
         setNewBannerPreview(null);
-        refetchBanner();
+        queryClient.resetQueries({ queryKey: bannerOption(contestId).queryKey });
       },
       onError: (error: any) => {
         toast(error.response?.data?.message || '배너 등록에 실패했습니다.', 'error');
@@ -101,7 +102,7 @@ const BannerUploadSection = () => {
 
   return (
     <section className="flex flex-col gap-5">
-      <h2 className="text-lg font-bold">신규 배너 등록</h2>
+      <AdminHeader title="신규 배너 등록" />
       <div
         className={cn(
           'hover:border-mainBlue flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-gray-300 p-10 transition-colors hover:bg-blue-50',
@@ -117,7 +118,7 @@ const BannerUploadSection = () => {
       >
         {newBannerPreview ? (
           <div className="relative">
-            <img src={newBannerPreview} alt="새 배너 미리보기" className="max-h-48 w-auto rounded" />
+            <img src={newBannerPreview} alt="새 배너 미리보기" className="max-h-48 w-auto" />
             <button
               onClick={handleRemoveFile}
               className="absolute top-[-4px] right-[-4px] rounded-full p-1 hover:bg-gray-200"
@@ -126,11 +127,11 @@ const BannerUploadSection = () => {
             </button>
           </div>
         ) : (
-          <>
+          <div className="flex flex-col items-center gap-1">
             <MdOutlineFileUpload className="text-4xl text-gray-400" />
-            <p className="text-gray-500">새로운 배너 이미지를 업로드 하세요.</p>
-            <p className="text-sm text-gray-400">지원되는 파일 형식: jpg, png, webp</p>
-          </>
+            <p className="mt-3 text-lg text-gray-600">새로운 배너 이미지를 업로드 하세요.</p>
+            <p className="text-sm text-gray-500">지원되는 파일 형식: jpg, png, webp</p>
+          </div>
         )}
         <input
           ref={fileInputRef}
@@ -140,13 +141,13 @@ const BannerUploadSection = () => {
           onChange={handleFileChange}
         />
       </div>
-      <Button
-        className="bg-mainBlue ml-auto px-4 py-1 hover:bg-blue-600"
+      <AdminActionButton
+        disabled={!newBannerFile || uploadMutation.isPending}
+        className="ml-auto"
         onClick={handleSubmit}
-        disabled={!newBannerFile || !contestId || uploadMutation.isPending}
       >
         {uploadMutation.isPending ? '등록 중...' : '등록하기'}
-      </Button>
+      </AdminActionButton>
     </section>
   );
 };
