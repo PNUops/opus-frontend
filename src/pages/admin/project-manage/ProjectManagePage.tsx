@@ -12,7 +12,7 @@ import {
   AdminPopoverMenu,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
-} from '@components/ui/admin';
+} from '@components/admin';
 import { getColorClassForLabel } from 'utils/color';
 import { useToast } from 'hooks/useToast';
 import { useContestIdOrRedirect } from 'hooks/useId';

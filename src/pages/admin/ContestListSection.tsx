@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
-import { AdminCard, AdminCardTop, AdminCardCreateButton, AdminCardRow, AdminNoData } from '@components/ui/admin';
-import { contestOption } from 'queries/contests';
+import { contestsOption } from 'queries/contests';
 import QueryWrapper from 'providers/QueryWrapper';
+import { AdminCard, AdminCardCreateButton, AdminCardRow, AdminCardTop, AdminNoData } from '@components/admin';
 
 const ContentListSection = () => {
   return (
@@ -26,7 +26,7 @@ const ContentListSection = () => {
 export default ContentListSection;
 
 const ContestList = () => {
-  const { data: contests } = useSuspenseQuery(contestOption());
+  const { data: contests } = useSuspenseQuery(contestsOption());
 
   if (contests.length === 0) return <AdminNoData />;
 

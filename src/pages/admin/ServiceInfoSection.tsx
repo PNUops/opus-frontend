@@ -1,4 +1,4 @@
-import { AdminCard, AdminCardTop } from '@components/ui/admin';
+import { AdminCard, AdminCardTop } from '@components/admin';
 
 const DEVELOPMENT_PLAN_URL = 'https://fuchsia-tabletop-6fc.notion.site/2025-SW-23edea889b87802e8ab2f4561ddd5a50';
 

@@ -30,7 +30,7 @@ const ContestCreateProgress = () => {
                   {isCompleted ? <FaCheck /> : <span className="font-bold">{stepNumber}</span>}
                 </span>
                 <span
-                  className={cn('text-center text-[14px] whitespace-nowrap transition-all duration-500 sm:text-sm', {
+                  className={cn('text-center text-sm whitespace-nowrap transition-all duration-500 sm:text-base', {
                     'font-bold': isCurrent,
                   })}
                 >

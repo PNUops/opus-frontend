@@ -7,7 +7,7 @@ import {
   AdminPopoverMenu,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
-} from '@components/ui/admin';
+} from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from 'apis/track';
 import { TrackDeleteConfirmModal, TrackModal } from './TrackModal';

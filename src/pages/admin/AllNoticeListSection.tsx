@@ -6,11 +6,11 @@ import {
   AdminCardTop,
   AdminCardCreateButton,
   AdminCardRow,
-  AdminPopoverMenu,
-  AdminPopoverEditButton,
   AdminPopoverDeleteButton,
+  AdminPopoverEditButton,
+  AdminPopoverMenu,
   AdminNoData,
-} from '@components/ui/admin';
+} from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { noticeOption } from 'queries/notices';
 import QueryWrapper from 'providers/QueryWrapper';

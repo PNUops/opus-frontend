@@ -1,36 +1,29 @@
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
-import { MoveUp } from 'lucide-react';
+import { useState } from 'react';
 import { VoteTermDto } from 'types/DTO';
 import { useToast } from 'hooks/useToast';
 import VoteRangeSelector from './VoteRangeSelector';
-import Button from '@components/Button';
-import { useParams } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { voteTermOption } from 'queries/votes';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { putVoteTerm } from 'apis/vote';
 import { VOTETERM_TIME_FORMAT } from 'constants/votes';
+import { useContestIdOrRedirect } from 'hooks/useId';
+import { AdminActionButton, AdminHeader } from '@components/admin';
+import { voteTermOption } from 'queries/votes';
+import QueryWrapper from 'providers/QueryWrapper';
 
 const VoteTermSetting = () => {
-  const { contestId: contestIdParam } = useParams();
+  const contestId = useContestIdOrRedirect();
   const [voteTerm, setVoteTerm] = useState<VoteTermDto>({
     voteStartAt: dayjs().format(VOTETERM_TIME_FORMAT),
     voteEndAt: dayjs().format(VOTETERM_TIME_FORMAT),
   });
-  const queryClient = useQueryClient();
   const toast = useToast();
+  const queryClient = useQueryClient();
 
-  const { data: voteTermData } = useQuery(voteTermOption(Number(contestIdParam ?? 0)));
   const updateVoteTerm = useMutation({
     mutationKey: ['updateVoteTerm'],
-    mutationFn: (payload: VoteTermDto) => putVoteTerm(Number(contestIdParam), payload),
+    mutationFn: (payload: VoteTermDto) => putVoteTerm(contestId, payload),
   });
-
-  useEffect(() => {
-    if (voteTermData) {
-      setVoteTerm(voteTermData);
-    }
-  }, [voteTermData]);
 
   const handleDateSave = () => {
     const startDate = dayjs(voteTerm.voteStartAt);
@@ -42,7 +35,7 @@ const VoteTermSetting = () => {
 
     updateVoteTerm.mutate(voteTerm, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['voteTerm'] });
+        await queryClient.invalidateQueries({ queryKey: voteTermOption(contestId).queryKey });
         toast('투표 기간을 수정했습니다.', 'success');
       },
       onError: (error: any) => {
@@ -53,20 +46,13 @@ const VoteTermSetting = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-end gap-2">
-        <h2 className="text-2xl font-bold">투표 기간</h2>
-        <p className="text-midGray text-xs">
-          방향 키 <MoveUp className="inline-block h-2 w-2" />를 통해 오전/오후를 설정할 수 있어요.
-        </p>
-      </div>
-      <VoteRangeSelector voteTerm={voteTerm} setVoteTerm={setVoteTerm} />
-      <Button
-        onClick={handleDateSave}
-        disabled={updateVoteTerm.isPending}
-        className="bg-mainBlue hover:bg-mainBlue/90 mt-4 ml-auto flex h-9 items-center justify-center rounded-md px-6 py-2 text-sm text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-400"
-      >
-        {'저장하기'}
-      </Button>
+      <AdminHeader title="투표 기간" description="방향 키 ↑↓ 를 통해 오전/오후를 설정할 수 있어요." />
+      <QueryWrapper loadingStyle="h-9 my-0 rounded-sm" errorStyle="h-9">
+        <VoteRangeSelector voteTerm={voteTerm} setVoteTerm={setVoteTerm} />
+      </QueryWrapper>
+      <AdminActionButton className="ml-auto" disabled={updateVoteTerm.isPending} onClick={handleDateSave}>
+        저장하기
+      </AdminActionButton>
     </div>
   );
 };
