@@ -9,11 +9,12 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-mainBlue hover:bg-blue-800',
         destructive: 'bg-mainRed hover:bg-red-600',
+        outline: 'border border-lightGray text-midGray hover:bg-gray-100',
       },
       size: {
         default: 'h-9 px-4 py-2',
         sm: 'h-8 px-3 text-xs',
-        lg: 'h-10 px-8',
+        lg: 'h-11 px-7 py-3',
         icon: 'h-9 w-9',
       },
     },

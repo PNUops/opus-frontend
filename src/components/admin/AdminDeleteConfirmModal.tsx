@@ -1,5 +1,5 @@
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
-import Button from '@components/Button';
+import { AdminActionButton } from './AdminActionButton';
 
 export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; onDelete: () => void }) => {
   return (
@@ -7,13 +7,13 @@ export const AdminDeleteConfirmModal = ({ title, onDelete }: { title: string; on
       <DialogTitle className="text-center text-lg font-semibold text-gray-800">{title}</DialogTitle>
       <div className="flex justify-center gap-4">
         <DialogClose asChild>
-          <Button className="border-lightGray text-midGray rounded-full border px-4 py-2 hover:bg-gray-100">
+          <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full">
             {'닫기'}
-          </Button>
+          </AdminActionButton>
         </DialogClose>
-        <Button className="rounded-full bg-red-700 px-4 py-2" onClick={onDelete}>
+        <AdminActionButton variant={'destructive'} size={'lg'} className="rounded-full" onClick={onDelete}>
           {'삭제'}
-        </Button>
+        </AdminActionButton>
       </div>
     </DialogContent>
   );

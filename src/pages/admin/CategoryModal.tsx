@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
-import Button from '@components/Button';
 import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
-import { AdminDeleteConfirmModal } from '@components/admin';
+import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, patchCategory, postCategory } from 'apis/category';
 import { CategoryDto } from 'types/DTO';
@@ -79,13 +78,13 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
       />
       <div className="flex justify-center gap-4">
         <DialogClose asChild>
-          <Button className="border-lightGray text-midGray rounded-full border px-5 py-3 hover:bg-gray-100">
+          <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full">
             {'닫기'}
-          </Button>
+          </AdminActionButton>
         </DialogClose>
-        <Button className="bg-mainBlue rounded-full px-5 py-3 hover:bg-blue-500" onClick={handleSubmit}>
+        <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSubmit}>
           {`${type === 'create' ? '추가' : '수정'}하기`}
-        </Button>
+        </AdminActionButton>
       </div>
     </DialogContent>
   );
