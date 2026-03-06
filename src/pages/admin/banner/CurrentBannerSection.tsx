@@ -37,7 +37,7 @@ const CurrentBannerSection = () => {
     <section className="flex flex-col gap-5">
       <AdminHeader title="현재 배너" />
       <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-        <QueryWrapper loadingStyle="h-40 my-0" errorStyle="h-40 flex-wrap">
+        <QueryWrapper loadingStyle="h-40 my-0" errorStyle="h-40">
           <BannerImage />
         </QueryWrapper>
       </div>

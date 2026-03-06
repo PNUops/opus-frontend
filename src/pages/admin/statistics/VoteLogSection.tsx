@@ -11,7 +11,7 @@ const VoteLogSection = () => {
   return (
     <section className="flex flex-col gap-5">
       <AdminHeader title="투표 로그" description="투표 시각 | 투표 대상 팀 | 투표자 이름 | 투표자 이메일" />
-      <QueryWrapper loadingStyle="h-60 my-0 rounded-sm" errorStyle="h-60 flex-wrap">
+      <QueryWrapper loadingStyle="h-60 my-0 rounded-sm" errorStyle="h-60">
         <VoteLogList />
       </QueryWrapper>
     </section>

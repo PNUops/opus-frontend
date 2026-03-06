@@ -46,7 +46,7 @@ const MaxVoteLimitSetting = () => {
       <div className="flex flex-wrap items-center justify-between gap-3 pl-2">
         <div className="flex flex-wrap items-center gap-10">
           <Label className="text-base font-normal">{'1인당 투표권 수'}</Label>
-          <QueryWrapper loadingStyle="h-10 my-0 rounded-sm w-[116px]" errorStyle="h-10 flex-wrap">
+          <QueryWrapper loadingStyle="h-10 my-0 rounded-sm w-[116px]" errorStyle="h-10">
             <VoteLimitSelector maxVotesLimit={maxVotesLimit} setMaxVotesLimit={setMaxVotesLimit} />
           </QueryWrapper>
         </div>

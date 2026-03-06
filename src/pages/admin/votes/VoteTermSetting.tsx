@@ -47,7 +47,7 @@ const VoteTermSetting = () => {
   return (
     <div className="flex flex-col gap-8">
       <AdminHeader title="투표 기간" description="방향 키 ↑↓ 를 통해 오전/오후를 설정할 수 있어요." />
-      <QueryWrapper loadingStyle="h-9 my-0 rounded-sm" errorStyle="h-9 flex-wrap">
+      <QueryWrapper loadingStyle="h-9 my-0 rounded-sm" errorStyle="h-9">
         <VoteRangeSelector voteTerm={voteTerm} setVoteTerm={setVoteTerm} />
       </QueryWrapper>
       <AdminActionButton className="ml-auto" disabled={updateVoteTerm.isPending} onClick={handleDateSave}>

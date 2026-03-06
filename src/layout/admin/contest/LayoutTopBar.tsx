@@ -20,7 +20,7 @@ const LayoutTopBar = () => {
       <button onClick={() => navigate('/admin')}>
         <MdArrowBackIos className="text-midGray hover:text-mainGreen inline text-2xl transition-all" />
       </button>
-      <QueryWrapper loadingStyle="h-10 my-0 rounded-sm w-[220px]" errorStyle="h-10 flex-wrap">
+      <QueryWrapper loadingStyle="h-10 my-0 rounded-sm w-[220px]" errorStyle="h-10">
         <ContestSelect contestId={contestId} onChange={onChangeContest} />
       </QueryWrapper>
     </div>

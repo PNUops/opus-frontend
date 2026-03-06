@@ -12,7 +12,7 @@ const OngoingContestSetting = () => {
     <div className="flex flex-col gap-5">
       <h2 className="text-2xl font-bold">진행 중인 대회 설정</h2>
       <div className="flex flex-wrap items-center justify-between gap-2.5">
-        <QueryWrapper loadingStyle="h-10 my-0 rounded-sm" errorStyle="h-10 flex-wrap">
+        <QueryWrapper loadingStyle="h-10 my-0 rounded-sm" errorStyle="h-10">
           <ContestSelect contestId={selectedContest} onChange={onChangeContest} />
           <div className="flex flex-wrap gap-5">
             <ContestSlots selectedId={selectedContest} />

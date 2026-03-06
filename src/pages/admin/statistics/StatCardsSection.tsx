@@ -9,7 +9,7 @@ const StatCardsSection = () => {
   return (
     <section className="flex flex-col gap-5">
       <AdminHeader title="투표 집계" />
-      <QueryWrapper loadingStyle="h-33 my-0 rounded-sm" errorStyle="h-33 flex-wrap">
+      <QueryWrapper loadingStyle="h-33 my-0 rounded-sm" errorStyle="h-33">
         <StatCardList />
       </QueryWrapper>
     </section>
