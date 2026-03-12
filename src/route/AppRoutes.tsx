@@ -30,6 +30,9 @@ import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
+import MyPageLayout from '@layout/me/MyPageLayout';
+import ActivityTab from '@pages/me/ActivityTab';
+import AccountTab from '@pages/me/AccountTab';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -54,7 +57,14 @@ const AppRoutes = () =>
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
-            { path: 'me', element: <MyPage /> },
+          ],
+        },
+        {
+          path: 'me',
+          element: <MyPageLayout />,
+          children: [
+            { path: 'activity', element: <ActivityTab /> },
+            { path: 'account', element: <AccountTab /> },
           ],
         },
         {
