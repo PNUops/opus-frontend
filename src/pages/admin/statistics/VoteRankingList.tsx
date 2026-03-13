@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { FaVoteYea } from 'react-icons/fa';
 import Tag from '@components/Tag';
-import { AdminNoData } from '@components/admin';
+import { NoData } from '@components/NoData';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import { voteRankingOption } from 'queries/statistics';
 import { VoteRankingDto } from 'types/DTO';
@@ -29,7 +29,7 @@ const VoteRankingList = ({ selectedFilter }: VoteRankingListProps) => {
     } else return voteRanking.filter((r) => r.trackName === selectedFilter);
   }, [voteRanking, selectedFilter]);
 
-  if (voteRanking.length === 0) return <AdminNoData className="h-30" />;
+  if (voteRanking.length === 0) return <NoData className="h-30" />;
   else {
     return (
       <div className="max-h-100 overflow-y-auto">

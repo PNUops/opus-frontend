@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { AdminHeader, AdminNoData } from '@components/admin';
+import { AdminHeader } from '@components/admin';
 import Pagination from '@components/Pagination';
+import { NoData } from '@components/NoData';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import { getVoteLog } from 'apis/statistics';
 import QueryWrapper from 'providers/QueryWrapper';
@@ -29,7 +30,7 @@ const VoteLogList = () => {
     queryFn: () => getVoteLog(contestId, { page: page - 1, size: 20 }),
   });
 
-  if (voteLogs.totalElements === 0) return <AdminNoData className="h-30" />;
+  if (voteLogs.totalElements === 0) return <NoData className="h-30" />;
 
   return (
     <div className="flex flex-col gap-5">
