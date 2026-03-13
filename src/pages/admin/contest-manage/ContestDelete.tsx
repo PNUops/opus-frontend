@@ -1,16 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import Button from '@components/Button';
+import { useState } from 'react';
 import { deleteContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import useContestName from 'hooks/useContestName';
-import { useState } from 'react';
+import { useContestIdOrRedirect } from 'hooks/useId';
 import { Dialog } from '@components/ui/dialog';
-import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 
 const ContestDelete = () => {
-  const { contestId: contestIdParam } = useParams();
+  const contestId = useContestIdOrRedirect();
   const contestName = useContestName();
   const navigate = useNavigate();
   const toast = useToast();
@@ -21,11 +21,9 @@ const ContestDelete = () => {
   });
 
   const handleDelete = async () => {
-    if (!contestIdParam) return;
-
     await contestDelete(
       {
-        contestId: Number(contestIdParam),
+        contestId,
       },
       {
         onSuccess: async () => {
@@ -44,16 +42,15 @@ const ContestDelete = () => {
     <div className="flex flex-col gap-5">
       <h2 className="text-2xl font-bold">대회 삭제</h2>
       <div className="flex items-center justify-between">
-        <p className="ml-1">{`${contestName} 삭제하기`}</p>
+        <p>
+          <span className="underline underline-offset-3">{contestName ?? ''}</span>
+          {' 삭제하기'}
+        </p>
         <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-          <Button
-            disabled={isPending}
-            onClick={() => setDeleteOpen(true)}
-            className="group flex items-center gap-1.5 border-2 border-red-500 px-3.5 py-2 text-sm text-red-500 transition-colors hover:bg-red-500 hover:text-white"
-          >
-            <FaRegTrashCan size={16} className="mt-0.5 fill-red-500 transition-all group-hover:fill-white" />
+          <AdminActionButton disabled={isPending} onClick={() => setDeleteOpen(true)} variant="destructive">
+            <FaRegTrashCan size={16} className="" />
             삭제하기
-          </Button>
+          </AdminActionButton>
           <AdminDeleteConfirmModal title={`${contestName} 대회를 삭제하시겠습니까?`} onDelete={handleDelete} />
         </Dialog>
       </div>

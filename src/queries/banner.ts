@@ -10,10 +10,8 @@ export const bannerOption = (contestId: number) => {
     staleTime: Infinity,
     retry: (failureCount, error: AxiosError | any) => {
       const status = error.response?.status;
-      if (status >= 400) {
-        return false;
-      }
-      return failureCount < 3;
+      if (status >= 400) return false;
+      else return failureCount < 3;
     },
   });
 };
