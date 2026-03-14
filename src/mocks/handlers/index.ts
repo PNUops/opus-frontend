@@ -6,6 +6,7 @@ import { signUpHandlers } from './sign-up';
 import { statisticsHandlers } from './statistics';
 import { teamsHandlers } from './teams';
 import { viewerHandlers } from './viewer';
+import { meHandlers } from './meHandlers';
 
 export const handlers = [
   ...contestsHandler,
@@ -16,4 +17,5 @@ export const handlers = [
   ...signInHandlers,
   ...signUpHandlers,
   ...teamsHandlers,
+  ...meHandlers,
 ];

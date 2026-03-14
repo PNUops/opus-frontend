@@ -1,5 +1,6 @@
 import { AwardDto } from './awardsDto';
 
+
 export interface MyProjectDto {
   contestId: number;
   contestName: string;
@@ -32,4 +33,5 @@ export type GetMyProjectsResponseDto = MyProjectDto[];
 
 export type GetMyVotesResponseDto = MyVoteDto[];
 
+export type GetMyLikesPreviewResponseDto = MyLikeDto[]; // INFO: 미리보기는 3개까지만 반환
 export type GetMyLikesResponseDto = MyLikeDto[];

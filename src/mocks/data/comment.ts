@@ -1,45 +1,38 @@
-export const comment_list = [
-  {
-    commentId: 1,
-    description: '정말 멋진 프로젝트네영!!',
-    memberId: 101,
-    memberName: '홍지연',
-    teamId: 5,
-  },
-  {
-    commentId: 2,
-    description: '화이팅입니다 ㅎㅎ!',
-    memberId: 102,
-    memberName: '홍지영',
-    teamId: 5,
-  },
-  {
-    commentId: 3,
-    description: '대단한 작업이네요! 계속 힘내세요!',
-    memberId: 103,
-    memberName: '홍지열',
-    teamId: 5,
-  },
-  {
-    commentId: 4,
-    description:
-      '진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. 진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. 진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. 진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. 진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. 진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. 진짜 멋진 아이디어! 꼭 성공하시길 바랍니다. ',
-    memberId: 104,
-    memberName: '홍지율',
-    teamId: 5,
-  },
-  {
-    commentId: 5,
-    description: '너무 좋은 프로젝트입니다! 기대하고 있어요!',
-    memberId: 105,
-    memberName: '홍지운',
-    teamId: 5,
-  },
-  {
-    commentId: 6,
-    description: '아이디어가 정말 창의적이에요. 좋은 결과 있기를 바랍니다.',
-    memberId: 106,
-    memberName: '홍지민',
-    teamId: 5,
-  },
-];
+import type { GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
+
+export const mockCommentsPagination: GetCommentsPaginationResponseDto = {
+  content: [
+    {
+      commentId: 1,
+      content: '멋진 프로젝트네요!',
+      createdAt: '2026-03-14T10:00:00Z',
+      teamId: 101,
+      teamName: '오푸스팀',
+      projectName: 'Opus Project',
+      overview: '프로젝트 개요입니다.',
+      thumbnailUrl: 'https://example.com/thumb1.png',
+      contestId: 201,
+      contestName: '2026 해커톤',
+      categoryName: '웹',
+      trackName: '프론트엔드',
+    },
+    {
+      commentId: 2,
+      content: '기능이 인상적입니다.',
+      createdAt: '2026-03-14T11:00:00Z',
+      teamId: 102,
+      teamName: '코드마스터',
+      projectName: 'Code Master',
+      overview: null,
+      thumbnailUrl: null,
+      contestId: 202,
+      contestName: '2026 아이디어톤',
+      categoryName: '앱',
+      trackName: '백엔드',
+    },
+  ],
+  totalElements: 2,
+  totalPages: 1,
+  currentPage: 1,
+  size: 10,
+};

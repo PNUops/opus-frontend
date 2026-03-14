@@ -1,4 +1,4 @@
-import { GetMyProjectsResponseDto, GetMyVotesResponseDto, GetMyLikesResponseDto } from '../../types/DTO/meDto';
+import { GetMyProjectsResponseDto, GetMyVotesResponseDto, GetMyLikesResponseDto } from 'types/DTO/meDto';
 
 export const mockMyProjects: GetMyProjectsResponseDto = [
   {
@@ -43,6 +43,33 @@ export const mockMyVotes: GetMyVotesResponseDto = [
   },
 ];
 
+export const mockMyLikesPreview: GetMyLikesResponseDto = [
+  {
+    teamId: 101,
+    teamName: '코드마스터',
+    contestId: 1,
+    projectName: 'AI 챗봇 플랫폼',
+    thumbnailUrl: 'https://placehold.co/100x100',
+    contestName: '2026 SW 프로젝트 경진대회',
+  },
+  {
+    teamId: 104,
+    teamName: '프론트엔드러버',
+    contestId: 3,
+    projectName: 'UI/UX 디자인 툴',
+    thumbnailUrl: null,
+    contestName: '2024 디자인 공모전',
+  },
+  {
+    teamId: 105,
+    teamName: '백엔드러버',
+    contestId: 4,
+    projectName: '마이크로서비스 아키텍처',
+    thumbnailUrl: null,
+    contestName: '2023 기술 포럼',
+  },
+];
+
 export const mockMyLikes: GetMyLikesResponseDto = [
   {
     teamId: 101,
@@ -59,5 +86,29 @@ export const mockMyLikes: GetMyLikesResponseDto = [
     projectName: 'UI/UX 디자인 툴',
     thumbnailUrl: null,
     contestName: '2024 디자인 공모전',
+  },
+  {
+    teamId: 105,
+    teamName: '백엔드러버',
+    contestId: 4,
+    projectName: '마이크로서비스 아키텍처',
+    thumbnailUrl: null,
+    contestName: '2023 기술 포럼',
+  },
+  {
+    teamId: 106,
+    teamName: '모바일러버',
+    contestId: 5,
+    projectName: '모바일 앱 개발',
+    thumbnailUrl: null,
+    contestName: '2022 모바일 개발 경진대회',
+  },
+  {
+    teamId: 107,
+    teamName: '게임러버',
+    contestId: 6,
+    projectName: '인디 게임 개발',
+    thumbnailUrl: null,
+    contestName: '2021 게임잼',
   },
 ];
