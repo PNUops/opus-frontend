@@ -22,6 +22,42 @@ export const mockMyProjects: GetMyProjectsResponseDto = [
     thumbnailUrl: null,
     awards: [],
   },
+  {
+    contestId: 3,
+    contestName: '2024 아이디어톤',
+    teamId: 103,
+    teamName: '아이디어러버',
+    projectName: '친환경 에너지 솔루션',
+    thumbnailUrl: 'https://placehold.co/100x100',
+    awards: [{ awardName: '우수상', awardColor: '#C0C0C0' }],
+  },
+  {
+    contestId: 4,
+    contestName: '2023 기술 포럼',
+    teamId: 105,
+    teamName: '백엔드러버',
+    projectName: '마이크로서비스 아키텍처',
+    thumbnailUrl: null,
+    awards: [{ awardName: '장려상', awardColor: '#CD7F32' }],
+  },
+  {
+    contestId: 5,
+    contestName: '2022 모바일 개발 경진대회',
+    teamId: 106,
+    teamName: '모바일러버',
+    projectName: '모바일 앱 개발',
+    thumbnailUrl: null,
+    awards: [],
+  },
+  {
+    contestId: 6,
+    contestName: '2021 게임잼',
+    teamId: 107,
+    teamName: '게임러버',
+    projectName: '인디 게임 개발',
+    thumbnailUrl: null,
+    awards: [{ awardName: '참가상', awardColor: '#C0C0C0' }],
+  },
 ];
 
 export const mockMyVotes: GetMyVotesResponseDto = [
