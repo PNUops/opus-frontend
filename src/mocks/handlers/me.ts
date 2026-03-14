@@ -4,19 +4,19 @@ import { mockCommentsPagination } from '../data/comment';
 import { http, HttpResponse } from 'msw';
 
 export const meHandlers = [
-  http.get(`${API_BASE_URL}/members/me/projects`, () => {
+  http.get(`${API_BASE_URL}/api/members/me/projects`, () => {
     return HttpResponse.json(mockMyProjects);
   }),
-  http.get(`${API_BASE_URL}/members/me/likes/preview`, () => {
+  http.get(`${API_BASE_URL}/api/members/me/likes/preview`, () => {
     return HttpResponse.json(mockMyLikesPreview);
   }),
-  http.get(`${API_BASE_URL}/members/me/likes`, () => {
+  http.get(`${API_BASE_URL}/api/members/me/likes`, () => {
     return HttpResponse.json(mockMyLikes);
   }),
-  http.get(`${API_BASE_URL}/members/me/votes`, () => {
+  http.get(`${API_BASE_URL}/api/members/me/votes`, () => {
     return HttpResponse.json(mockMyVotes);
   }),
-  http.get(`${API_BASE_URL}/members/me/comments`, () => {
+  http.get(`${API_BASE_URL}/api/members/me/comments`, () => {
     return HttpResponse.json(mockCommentsPagination);
   }),
 ];
