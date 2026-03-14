@@ -1,6 +1,5 @@
 import Input from '@components/Input';
 import { useMutation } from '@tanstack/react-query';
-import { postEmailVerification } from 'apis/signUp';
 import { useState } from 'react';
 import { EmailVerificationRequestDTO } from 'types/DTO';
 import { isPNUEmail } from 'utils/email';

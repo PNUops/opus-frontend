@@ -1,6 +1,7 @@
 module.exports = {
   plugins: ['prettier-plugin-tailwindcss'],
   tailwindConfig: './tailwind.config.js',
+  endOfLine: 'auto',
   singleQuote: true,
   semi: true,
   useTabs: false,

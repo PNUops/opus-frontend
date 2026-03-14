@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { RiLink } from 'react-icons/ri';
 import { FaGithub, FaYoutube } from 'react-icons/fa';

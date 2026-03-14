@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { cn } from 'utils/classname';
+import { useState } from 'react';
 
 // TODO: 추후 실제 API 응답 타입으로 교체
 interface StatisticsData {

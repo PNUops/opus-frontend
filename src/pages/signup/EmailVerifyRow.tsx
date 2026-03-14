@@ -1,6 +1,5 @@
 import Input from '@components/Input';
 import { useMutation } from '@tanstack/react-query';
-import { patchEmailVerificationCode } from 'apis/signUp';
 import { useState } from 'react';
 import { EmailVerificationCodeRequestDTO } from 'types/DTO';
 import { formatToMMSS } from 'utils/time';

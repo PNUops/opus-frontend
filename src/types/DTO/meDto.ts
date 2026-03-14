@@ -1,6 +1,5 @@
 import { AwardDto } from './awardsDto';
 
-
 export interface MyProjectDto {
   contestId: number;
   contestName: string;

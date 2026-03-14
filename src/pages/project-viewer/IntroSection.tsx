@@ -1,8 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 
-import useAuth from 'hooks/useAuth';
-import { useUserStore } from 'stores/useUserStore';
-
 import { FaGithub, FaYoutube } from 'react-icons/fa';
 import { FaEdit } from 'react-icons/fa';
 import { RiLink } from 'react-icons/ri';
