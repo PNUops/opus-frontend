@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { deleteMyAccount } from 'apis/member';
-
 import { useToast } from 'hooks/useToast';
-import { AdminHeader } from '@components/ui/admin';
 import ConfirmModal from '@components/ConfirmModal';
+import { AdminHeader } from '@components/admin';
 
 const MyPage = () => {
   return (

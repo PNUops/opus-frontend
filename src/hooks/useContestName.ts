@@ -1,10 +1,11 @@
-import { useParams } from 'react-router-dom';
-import useContests from './useContests';
+import { useContestIdOrRedirect } from './useId';
+import { useQuery } from '@tanstack/react-query';
+import { contestsOption } from 'queries/contests';
 
 const useContestName = () => {
-  const { contestId: contestIdParam } = useParams();
-  const { data: contests } = useContests();
-  const contestName = contests?.find((contest) => contest.contestId === Number(contestIdParam))?.contestName;
+  const contestId = useContestIdOrRedirect();
+  const { data: contests } = useQuery(contestsOption());
+  const contestName = contests?.find((contest) => contest.contestId === Number(contestId))?.contestName;
 
   return contestName;
 };

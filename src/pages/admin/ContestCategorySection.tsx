@@ -1,19 +1,19 @@
 import { useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
   AdminCard,
   AdminCardCreateButton,
-  AdminCardTop,
-  AdminPopoverMenu,
   AdminCardRow,
-  AdminPopoverEditButton,
+  AdminCardTop,
   AdminPopoverDeleteButton,
-  AdminNoData,
-} from '@components/ui/admin';
-import { CategoryModal, CategoryDeleteConfirmModal } from './CategoryModal';
+  AdminPopoverEditButton,
+  AdminPopoverMenu,
+} from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { NoData } from '@components/NoData';
 import { categoryOption } from 'queries/category';
 import QueryWrapper from 'providers/QueryWrapper';
+import { CategoryModal, CategoryDeleteConfirmModal } from './CategoryModal';
 
 const ContestCategorySection = () => {
   const [createOpen, setCreateOpen] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const CategoryList = () => {
 
   const { data: categories } = useSuspenseQuery(categoryOption());
 
-  if (categories.length === 0) return <AdminNoData />;
+  if (categories.length === 0) return <NoData />;
 
   return categories.map((category) => (
     <AdminCardRow key={category.categoryId}>

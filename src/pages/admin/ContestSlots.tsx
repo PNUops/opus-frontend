@@ -1,17 +1,18 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { ContestResponseDto } from 'types/DTO';
 import { cn } from '@components/lib/utils';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { patchChangeOngoingContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
-import { contestOption } from 'queries/contests';
+import { contestsOption } from 'queries/contests';
 
 interface ContestSlotsProps {
-  contests?: ContestResponseDto[];
-  selectedContest?: ContestResponseDto;
+  selectedId: string;
 }
 
-export const ContestSlots = ({ contests, selectedContest }: ContestSlotsProps) => {
+export const ContestSlots = ({ selectedId }: ContestSlotsProps) => {
+  const { data: contests } = useSuspenseQuery(contestsOption());
+
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -21,12 +22,19 @@ export const ContestSlots = ({ contests, selectedContest }: ContestSlotsProps) =
       patchChangeOngoingContest(payload.contestId, payload.isCurrent),
   });
 
-  const toggleOngoingContest = (contest: ContestResponseDto, isCurrent: boolean) => {
+  const toggleOngoingContest = (target: ContestResponseDto | number, isCurrent: boolean) => {
+    let contest: ContestResponseDto;
+    if (typeof target === 'number') {
+      const targetContest = contests.find((c) => c.contestId === Number(selectedId));
+      if (!targetContest) return toast(`ID: ${target}의 대회를 찾을 수 없습니다.`);
+      contest = targetContest;
+    } else contest = target;
+
     changeOngoingContest.mutate(
       { contestId: contest.contestId, isCurrent },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: contestOption().queryKey });
+          queryClient.invalidateQueries({ queryKey: contestsOption().queryKey });
           if (isCurrent) toast(`${contest.contestName}를 진행 대회로 설정했습니다.`, 'success');
           else toast(`${contest.contestName}를 진행 대회에서 제외했습니다.`, 'success');
         },
@@ -35,8 +43,6 @@ export const ContestSlots = ({ contests, selectedContest }: ContestSlotsProps) =
     );
   };
 
-  if (!contests || !selectedContest) return null;
-
   const ongoingContests = contests.filter((e) => e.isCurrent);
 
   if (ongoingContests.length === 0) {
@@ -44,13 +50,13 @@ export const ContestSlots = ({ contests, selectedContest }: ContestSlotsProps) =
       <OngoingContestSlot
         type="available"
         text="진행 중인 대회로 설정"
-        onClick={() => toggleOngoingContest(selectedContest, true)}
+        onClick={() => toggleOngoingContest(Number(selectedId), true)}
       />
     );
   }
 
   if (ongoingContests.length === 1) {
-    const alreadyOccupied = ongoingContests[0].categoryName === selectedContest.categoryName;
+    const alreadyOccupied = ongoingContests[0].contestId === Number(selectedId);
     return (
       <>
         <OngoingContestSlot
@@ -61,7 +67,7 @@ export const ContestSlots = ({ contests, selectedContest }: ContestSlotsProps) =
         <OngoingContestSlot
           type={alreadyOccupied ? 'disabled' : 'available'}
           text={alreadyOccupied ? '이미 설정된 대회입니다' : '진행 중인 대회로 설정'}
-          onClick={() => toggleOngoingContest(selectedContest, true)}
+          onClick={() => toggleOngoingContest(Number(selectedId), true)}
         />
       </>
     );
@@ -86,12 +92,16 @@ interface OngoingContestSlotProps {
 
 const slotStyle = {
   available: 'bg-mainBlue text-white hover:cursor-pointer',
-  occupied: 'bg-mainGreen text-white',
+  occupied: 'bg-mainGreen text-white hover:cursor-default',
   disabled: 'bg-lightGray text-midGray hover:cursor-not-allowed',
 };
 
 const OngoingContestSlot = ({ type, text, onClick, onDelete }: OngoingContestSlotProps) => (
-  <div className={cn('flex items-center gap-2.5 rounded-md px-3.5 py-2.5 text-sm', slotStyle[type])} onClick={onClick}>
+  <button
+    className={cn('flex items-center gap-2.5 rounded-md px-3.5 py-2.5 text-sm', slotStyle[type])}
+    disabled={type === 'disabled'}
+    onClick={onClick}
+  >
     <span>{text}</span>
     {type === 'occupied' && (
       <TiDeleteOutline
@@ -100,5 +110,5 @@ const OngoingContestSlot = ({ type, text, onClick, onDelete }: OngoingContestSlo
         onClick={onDelete}
       />
     )}
-  </div>
+  </button>
 );

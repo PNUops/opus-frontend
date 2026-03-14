@@ -5,10 +5,9 @@ import Input from '@components/Input';
 import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
 import { createContestNotice, deleteContestNotice, updateContestNotice } from 'apis/notice';
-
 import { useToast } from 'hooks/useToast';
 import { NoticeRequestDto } from 'types/DTO/noticeDto';
-import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { AdminDeleteConfirmModal } from '@components/admin';
 import { contestNoticeDetailOption } from 'queries/notices';
 
 interface ContestNoticeModalProps {

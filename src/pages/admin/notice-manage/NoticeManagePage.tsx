@@ -10,7 +10,7 @@ import {
   AdminPopoverMenu,
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
-} from '@components/ui/admin';
+} from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
 import { contestNoticeOption } from 'queries/notices';
 import { ContestNoticeModal, ContestNoticeDeleteConfirmModal } from './ContestNoticeModal';
