@@ -6,7 +6,7 @@ export interface RequiredFieldsDto {
   teamMembersRequired: boolean;
   professorRequired: boolean;
   githubPathRequired: boolean;
-  youtubePathRequired: boolean;
+  youTubePathRequired: boolean;
   productionPathRequired: boolean;
   overviewRequired: boolean;
   posterRequired: boolean;
