@@ -1,14 +1,14 @@
 export interface RequiredFieldsDto {
-  track: boolean;
-  projectName: boolean;
-  teamName: boolean;
-  leader: boolean;
-  teamMembers: boolean;
-  professor: boolean;
-  githubPath: boolean;
-  youtubePath: boolean;
-  productionPath: boolean;
-  overview: boolean;
-  poster: boolean;
-  images: boolean;
+  trackRequired: boolean;
+  projectNameRequired: boolean;
+  teamNameRequired: boolean;
+  leaderRequired: boolean;
+  teamMembersRequired: boolean;
+  professorRequired: boolean;
+  githubPathRequired: boolean;
+  youtubePathRequired: boolean;
+  productionPathRequired: boolean;
+  overviewRequired: boolean;
+  posterRequired: boolean;
+  imagesRequired: boolean;
 }
