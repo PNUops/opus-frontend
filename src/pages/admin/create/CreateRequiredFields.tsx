@@ -1,21 +1,16 @@
-import React from 'react';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 import { useRequiredFields } from 'hooks/useRequiredFields';
-import RequiredFields from './RequiredFields';
 import QueryWrapper from 'providers/QueryWrapper';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import RequiredFields from '../required-field/RequiredFields';
+import { useContestCreate } from './ContestCreateContext';
 
-const RequiredFieldsPage: React.FC = () => {
-  const contestId = useContestIdOrRedirect();
+const CreateRequiredFields = () => {
+  const { contestId } = useContestCreate();
   const { fieldsSetting, isPending, setFieldsSetting, handleToggleField, handleSave } = useRequiredFields(contestId);
 
   return (
-    <div className="flex flex-col gap-8">
-      <AdminHeader title="필수 항목 설정" description="프로젝트 생성/수정 폼의 필수 항목을 설정합니다.">
-        <AdminActionButton className="" disabled={isPending} onClick={handleSave}>
-          {isPending ? '저장 중...' : '저장'}
-        </AdminActionButton>
-      </AdminHeader>
+    <div className="flex flex-col gap-7">
+      <AdminHeader title="필수 항목 설정" description="해당 대회의 프로젝트 생성/수정 폼의 필수 항목을 설정해주세요." />
       <QueryWrapper loadingStyle="h-[794px] my-0 rounded-lg" errorStyle="h-[300px]">
         <RequiredFields
           contestId={contestId}
@@ -24,8 +19,13 @@ const RequiredFieldsPage: React.FC = () => {
           onToggle={handleToggleField}
         />
       </QueryWrapper>
+      <div className="flex justify-center">
+        <AdminActionButton disabled={isPending} onClick={handleSave}>
+          설정하기
+        </AdminActionButton>
+      </div>
     </div>
   );
 };
 
-export default RequiredFieldsPage;
+export default CreateRequiredFields;

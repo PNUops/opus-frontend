@@ -1,13 +1,13 @@
 import VoteRankingSection from './VoteRankingSection';
 import StatCardsSection from './StatCardsSection';
-import VoteLogTable from './VoteLogTable';
+import VoteLogSection from './VoteLogSection';
 
 const ContestStatisticsPage = () => {
   return (
     <div className="flex flex-col gap-[70px]">
       <VoteRankingSection />
       <StatCardsSection />
-      <VoteLogTable />
+      <VoteLogSection />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CurrentBannerSection from './CurrentBannerSection';
 import BannerUploadSection from './BannerUploadSection';
 
