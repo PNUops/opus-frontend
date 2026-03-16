@@ -52,7 +52,7 @@ const AppRoutes = () =>
             { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectViewerPage /> },
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
             { path: 'find', element: <FindPage /> },
-            { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
+            { path: 'oauth/callback', element: <GoogleOAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
             { path: 'me', element: <MyPage /> },
           ],
