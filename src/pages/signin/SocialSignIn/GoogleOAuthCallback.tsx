@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useToast } from 'hooks/useToast';
 import useAuth from 'hooks/useAuth';
@@ -29,7 +29,12 @@ const GoogleOAuthCallback = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
+  const isProcessed = useRef(false);
+
   useEffect(() => {
+    if (isProcessed.current) return;
+    isProcessed.current = true;
+
     if (token) {
       signIn(token);
       toast('구글 로그인 성공!', 'success');
