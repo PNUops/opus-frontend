@@ -1,31 +1,27 @@
 import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 
-export const defaultRequiredFields: RequiredFieldsDto = {
-  trackRequired: false,
-  projectNameRequired: false,
-  teamNameRequired: false,
-  leaderRequired: false,
-  teamMembersRequired: false,
-  professorRequired: false,
-  githubPathRequired: false,
-  youTubePathRequired: false,
-  productionPathRequired: false,
-  overviewRequired: false,
-  posterRequired: false,
-  imagesRequired: false,
-};
+const REQUIRED_FIELD_CONFIG = [
+  { key: 'trackRequired', label: '분과' },
+  { key: 'projectNameRequired', label: '프로젝트명' },
+  { key: 'teamNameRequired', label: '팀명' },
+  { key: 'leaderRequired', label: '팀장' },
+  { key: 'teamMembersRequired', label: '팀원' },
+  { key: 'professorRequired', label: '지도교수' },
+  { key: 'githubPathRequired', label: 'GitHub 링크' },
+  { key: 'youTubePathRequired', label: 'YouTube 링크' },
+  { key: 'productionPathRequired', label: '배포 링크' },
+  { key: 'overviewRequired', label: '프로젝트 개요' },
+  { key: 'posterRequired', label: '포스터' },
+  { key: 'imagesRequired', label: '이미지' },
+] as const;
 
-export const labelByField: Record<string, string> = {
-  trackRequired: '분과',
-  projectNameRequired: '프로젝트명',
-  teamNameRequired: '팀명',
-  leaderRequired: '팀장',
-  teamMembersRequired: '팀원',
-  professorRequired: '지도교수',
-  githubPathRequired: 'GitHub 링크',
-  youTubePathRequired: 'YouTube 링크',
-  productionPathRequired: '배포 링크',
-  overviewRequired: '프로젝트 개요',
-  posterRequired: '포스터',
-  imagesRequired: '이미지',
-};
+export type RequiredFieldKey = (typeof REQUIRED_FIELD_CONFIG)[number]['key'];
+
+export const defaultRequiredFields = Object.fromEntries(
+  REQUIRED_FIELD_CONFIG.map(({ key }) => [key, false]),
+) as RequiredFieldsDto;
+
+export const labelByField = Object.fromEntries(REQUIRED_FIELD_CONFIG.map(({ key, label }) => [key, label])) as Record<
+  RequiredFieldKey,
+  string
+>;
