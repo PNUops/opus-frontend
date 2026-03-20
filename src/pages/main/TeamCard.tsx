@@ -11,7 +11,7 @@ interface TeamCardProps {
   teamId: number;
   teamName: string;
   projectName: string;
-  awards: AwardDto[];
+  awards?: AwardDto[];
   isLiked?: boolean;
   isVoteTerm?: boolean;
 }
@@ -37,7 +37,8 @@ const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, i
         <div className="absolute top-2 right-0 left-0 w-full px-2">
           <div className="flex w-full min-w-0 items-center gap-2">
             {/* TODO: API 개발 완료 시 테스트 필요. 특히 수상 몇개 표시할 것인지 논의 필요 */}
-            {awards.length > 0 &&
+            {awards &&
+              awards.length > 0 &&
               awards.map((award) => (
                 <div key={award.awardName} className="w-0 max-w-full min-w-0 flex-auto">
                   <AwardTag awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
