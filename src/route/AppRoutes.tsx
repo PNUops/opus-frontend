@@ -30,8 +30,8 @@ import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 import MyPageLayout from '@layout/me/MyPageLayout';
-import ActivityTab from '@pages/me/ActivityTab';
-import AccountTab from '@pages/me/AccountTab';
+import ActivityTab from '@pages/me/activity/ActivityTab';
+import AccountTab from '@pages/me/account/AccountTab';
 
 const AppRoutes = () =>
   createBrowserRouter([
