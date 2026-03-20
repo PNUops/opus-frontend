@@ -6,7 +6,6 @@ export interface MyProjectDto {
   teamId: number;
   teamName: string;
   projectName: string;
-  thumbnailUrl: string | null;
   awards: AwardDto[];
 }
 
