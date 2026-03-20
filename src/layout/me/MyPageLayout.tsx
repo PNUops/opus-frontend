@@ -1,12 +1,17 @@
-import { Outlet } from 'react-router-dom';
-import MyPageNavigation from './MyPageNavigation';
+import FullContainerLayout from '@layout/FullContainerLayout';
+import LayoutSideBar from '@layout/common/LayoutSideBar';
+import myPageSidebarData from '@layout/me/myPageSidebarData';
 
 const MyPageLayout = () => {
   return (
-    <div className="flex w-full flex-col gap-12">
-      <MyPageNavigation />
-      <Outlet />
-    </div>
+    <>
+      <div className="flex">
+        <LayoutSideBar sections={myPageSidebarData} />
+        <div className="flex-1 border-l">
+          <FullContainerLayout />
+        </div>
+      </div>
+    </>
   );
 };
 
