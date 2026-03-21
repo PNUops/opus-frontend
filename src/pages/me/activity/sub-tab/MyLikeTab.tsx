@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight, FaChevronDown, FaCheck } from 'react-ico
 import TeamCard from '@pages/main/TeamCard';
 import { GetMyLikesResponseDto, MyLikeDto } from 'types/DTO/meDto';
 import { getMyLikes } from 'apis/me';
-import useFilterQuery from './useFilterQueryData';
+import useFilterQuery from '../hooks/useFilterQueryData';
 import { inferDateType } from '../utils/filter';
 import { getDateRange } from '../utils/date';
 import { TbReload } from 'react-icons/tb';

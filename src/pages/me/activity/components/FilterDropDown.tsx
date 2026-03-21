@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Option } from '../sub-tab/useFilterQueryData';
+import { Option } from '../hooks/useFilterQueryData';
 import { FaChevronDown, FaCheck } from 'react-icons/fa6';
 
 interface Props<T extends string> {

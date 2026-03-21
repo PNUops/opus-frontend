@@ -1,5 +1,5 @@
 import FilterDropDown from './FilterDropDown';
-import useFilterQuery from '../sub-tab/useFilterQueryData';
+import useFilterQuery from '../hooks/useFilterQueryData';
 import { FilterState } from '../hooks/useMyLikesFilter';
 
 interface Props {
