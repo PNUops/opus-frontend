@@ -44,8 +44,8 @@ export type GetMyLikesParamsDto = {
   sort?: 'latest' | 'oldest';
   startDate?: string;
   endDate?: string;
-  category?: string;
-  contestId?: number;
+  categoryId?: string;
+  contestId?: string;
   page: number;
   size: number;
 };
