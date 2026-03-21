@@ -32,6 +32,7 @@ import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage
 import MyPageLayout from '@layout/me/MyPageLayout';
 import ActivityTab from '@pages/me/activity/ActivityTab';
 import AccountTab from '@pages/me/account/AccountTab';
+import MyLikeTab from '@pages/me/activity/sub-tab/MyLikeTab';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -63,6 +64,7 @@ const AppRoutes = () =>
           element: <MyPageLayout />,
           children: [
             { path: 'activity', element: <ActivityTab /> },
+            { path: 'activity/likes', element: <MyLikeTab /> },
             { path: 'account', element: <AccountTab /> },
           ],
         },
