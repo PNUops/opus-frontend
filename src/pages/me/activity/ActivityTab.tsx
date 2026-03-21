@@ -1,7 +1,7 @@
 import MyProjectSection from '@pages/me/activity/MyProjectSection';
-import MyLikeSection from '@pages/me/activity/MyLikeSection';
+import MyLikePreviewSection from '@pages/me/activity/MyLikePreviewSection';
 import MyVoteSection from '@pages/me/activity/MyVoteSection';
-import MyCommentSection from './MyCommentSection';
+import MyCommentPreviewSection from './MyCommentPreviewSection';
 
 const ActivityTab = () => {
   return (
@@ -10,9 +10,9 @@ const ActivityTab = () => {
       <div className="border-lightGray border-t" />
       <MyVoteSection />
       <div className="border-lightGray border-t" />
-      <MyLikeSection />
+      <MyLikePreviewSection />
       <div className="border-lightGray border-t" />
-      <MyCommentSection />
+      <MyCommentPreviewSection />
     </div>
   );
 };
