@@ -28,8 +28,8 @@ const MyProjectPreviewList = () => {
 
   return (
     <div
-      className="flex min-h-55 w-full gap-5 overflow-hidden overflow-x-scroll py-2"
-      style={{ alignItems: 'stretch' }}
+      className="scrollbar-thin scrollbar-thumb-gray-300 flex min-h-55 w-full items-stretch gap-4 overflow-x-auto py-2 sm:gap-5"
+      style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {myProjects?.map((project) => (
         <MyProjectPreview key={project.projectName} project={project} />
@@ -42,20 +42,18 @@ const MyProjectPreview = ({ project }: { project: MyProjectDto }) => {
   const { contestId, contestName, teamId, teamName, projectName, awards } = project;
 
   return (
-    <div className="box-border flex max-w-65 min-w-55 flex-col items-start gap-1 rounded-lg bg-white p-4 text-xs">
-      <h3 className="mb-2 truncate font-medium" title={contestName}>
+    <div className="box-border flex h-full max-w-65 min-w-55 flex-col sm:max-w-65 sm:min-w-55">
+      <h3 className="mb-2 truncate text-sm font-medium sm:text-base" title={contestName}>
         {contestName}
       </h3>
-      <div className="flex w-full flex-1 items-center">
-        <TeamCard
-          key={teamId}
-          contestId={contestId}
-          teamId={teamId}
-          teamName={teamName}
-          projectName={projectName}
-          awards={awards}
-        />
-      </div>
+      <TeamCard
+        key={teamId}
+        contestId={contestId}
+        teamId={teamId}
+        teamName={teamName}
+        projectName={projectName}
+        awards={awards}
+      />
     </div>
   );
 };
