@@ -28,8 +28,8 @@ const MyLikeSection = () => {
 export default MyLikeSection;
 
 const MyLikeList = () => {
-  const { data: myLikes } = useQuery<GetMyLikesPreviewResponseDto>({
-    queryKey: ['myLikes'],
+  const { data: myLikesPreview } = useQuery<GetMyLikesPreviewResponseDto>({
+    queryKey: ['myLikesPreview'],
     queryFn: getMyLikesPreview,
     staleTime: 5 * 60 * 1000,
   });
@@ -39,7 +39,7 @@ const MyLikeList = () => {
       className="scrollbar-thin scrollbar-thumb-gray-300 flex min-h-55 w-full flex-nowrap gap-4 overflow-x-auto py-2 sm:flex-wrap sm:gap-5 sm:overflow-x-visible"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      {myLikes?.map((like) => (
+      {myLikesPreview?.map((like) => (
         <div className="box-border flex h-full max-w-[260px] min-w-[220px] sm:max-w-65 sm:min-w-55">
           <TeamCard
             key={like.teamId}

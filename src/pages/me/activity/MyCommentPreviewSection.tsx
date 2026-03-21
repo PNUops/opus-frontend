@@ -3,7 +3,7 @@ import { ActivitySection } from './ActivityTab';
 import { FaChevronRight } from 'react-icons/fa6';
 import { FaRegCommentAlt } from 'react-icons/fa';
 
-const MyCommentSection = () => {
+const MyCommentPreviewSection = () => {
   return (
     <ActivitySection.Root>
       <ActivitySection.Header>
@@ -17,4 +17,4 @@ const MyCommentSection = () => {
   );
 };
 
-export default MyCommentSection;
+export default MyCommentPreviewSection;
