@@ -7,7 +7,7 @@ const MyCommentPreviewSection = () => {
   return (
     <ActivitySection.Root>
       <ActivitySection.Header>
-        <FaRegCommentAlt className="text-mainGreen size-6" />
+        <FaRegCommentAlt className="text-mainGreen size-5" />
         <p className="text-base sm:text-lg">댓글</p>
         <Link to="/me/activity/comments" className="text-midGray ml-auto">
           <FaChevronRight />
