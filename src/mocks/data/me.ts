@@ -5,6 +5,37 @@ import {
   MyLikeDto,
 } from 'types/DTO/meDto';
 
+export const mockMyCommentsContent = (params: {
+  sort: string;
+  startDate: string;
+  endDate: string;
+  page: number;
+  size: number;
+}) => {
+  return {
+    content: Array.from({ length: 10 }, (_, i) => ({
+      comment: {
+        memberName: '홍지연',
+        commentId: i + 1 + (params.page ? Number(params.page) * 10 : 0),
+        content: '인정합니다. 인정합니다. 인정합니다.',
+        createdAt: '2026-01-01T00:00:00',
+      },
+      project: {
+        contestId: 1,
+        contestName: '제6회창의융합해커톤대회',
+        categoryName: '해커톤',
+        trackName: '창업트랙',
+        teamId: 5,
+        teamName: 'TeamName',
+        projectName: 'Project Name',
+        overview: 'Artify는 일상 속 모든 순간을 예술로 재해석하는 크리에이티브 플랫폼입니다...',
+      },
+    })),
+    totalPages: 2,
+    currentPage: params.page ? Number(params.page) : 0,
+  };
+};
+
 export const mockMyProjects: GetMyProjectsResponseDto = [
   {
     contestId: 1,
