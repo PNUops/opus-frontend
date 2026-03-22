@@ -7,7 +7,7 @@ import { RiHeart3Line } from 'react-icons/ri';
 import { FaChevronRight } from 'react-icons/fa6';
 import TeamCard from '@pages/main/TeamCard';
 
-const MyLikeSection = () => {
+const MyLikePreviewSection = () => {
   return (
     <ActivitySection.Root>
       <ActivitySection.Header>
@@ -25,7 +25,7 @@ const MyLikeSection = () => {
   );
 };
 
-export default MyLikeSection;
+export default MyLikePreviewSection;
 
 const MyLikeList = () => {
   const { data: myLikesPreview } = useQuery<GetMyLikesPreviewResponseDto>({
