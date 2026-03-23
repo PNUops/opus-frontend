@@ -1,7 +1,7 @@
 import FullContainerLayout from '@layout/FullContainerLayout';
 import LayoutTopBar from '@layout/admin/contest/AdminContestLayoutTopBar';
 import LayoutSideBar from '@layout/common/LayoutSideBar';
-import adminContestSidebarData from '@layout/admin/contest/adminContestLayoutSidebarData';
+import adminContestSidebarData from '@constants/adminContestLayoutSidebarData';
 
 const AdminContestLayout = () => {
   return (

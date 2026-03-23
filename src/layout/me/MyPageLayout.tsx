@@ -1,6 +1,6 @@
 import FullContainerLayout from '@layout/FullContainerLayout';
 import LayoutSideBar from '@layout/common/LayoutSideBar';
-import myPageSidebarData from '@layout/me/myPageSidebarData';
+import myPageSidebarData from '@constants/myPageSidebarData';
 
 const MyPageLayout = () => {
   return (
