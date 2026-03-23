@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from './ActivityTab';
+import { ActivitySection } from './ActivityPage';
 import { getMyLikesPreview } from 'apis/me';
 import type { GetMyLikesPreviewResponseDto } from 'types/DTO/meDto';
 import { RiHeart3Line } from 'react-icons/ri';

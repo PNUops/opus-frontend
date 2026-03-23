@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from '../ActivityTab';
+import { ActivitySection } from '../ActivityPage';
 import { FaChevronLeft, FaChevronRight, FaChevronDown, FaCheck } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
 import useFilterQuery from '../hooks/useFilterQueryData';
@@ -33,7 +33,7 @@ type MyCommentResponse = {
   currentPage: number;
 };
 
-const MyCommentTab = () => {
+const MyCommentPage = () => {
   const [filter, setFilter] = useState({
     sort: 'latest',
     startDate: '',
@@ -102,7 +102,7 @@ const MyCommentTab = () => {
   );
 };
 
-export default MyCommentTab;
+export default MyCommentPage;
 
 type Option<T extends string = string> = {
   label: string;

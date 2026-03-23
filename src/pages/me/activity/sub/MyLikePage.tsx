@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { ActivitySection } from '@pages/me/activity/ActivityTab';
+import { ActivitySection } from '@pages/me/activity/ActivityPage';
 import { RiHeart3Line } from 'react-icons/ri';
 import { FaChevronLeft, FaChevronRight, FaChevronDown, FaCheck } from 'react-icons/fa6';
 import TeamCard from '@pages/main/TeamCard';

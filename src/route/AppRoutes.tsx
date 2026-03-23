@@ -30,10 +30,10 @@ import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
 import MyPageLayout from '@layout/me/MyPageLayout';
-import ActivityTab from '@pages/me/activity/ActivityTab';
-import AccountTab from '@pages/me/account/AccountTab';
-import MyLikeTab from '@pages/me/activity/sub-tab/MyLikeTab';
-import MyCommentTab from '@pages/me/activity/sub-tab/MyCommentTab';
+import ActivityPage from '@pages/me/activity/ActivityPage';
+import AccountPage from '@pages/me/account/AccountPage';
+import MyLikePage from '@pages/me/activity/sub/MyLikePage';
+import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -64,10 +64,10 @@ const AppRoutes = () =>
           path: 'me',
           element: <MyPageLayout />,
           children: [
-            { path: 'activity', element: <ActivityTab /> },
-            { path: 'activity/likes', element: <MyLikeTab /> },
-            { path: 'activity/comments', element: <MyCommentTab /> },
-            { path: 'account', element: <AccountTab /> },
+            { path: 'activity', element: <ActivityPage /> },
+            { path: 'activity/likes', element: <MyLikePage /> },
+            { path: 'activity/comments', element: <MyCommentPage /> },
+            { path: 'account', element: <AccountPage /> },
           ],
         },
         {

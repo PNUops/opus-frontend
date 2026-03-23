@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from './ActivityTab';
+import { ActivitySection } from './ActivityPage';
 import { getMyProjects } from 'apis/me';
 import type { MyProjectDto, GetMyProjectsResponseDto } from 'types/DTO/meDto';
 import TeamCard from '@pages/main/TeamCard';

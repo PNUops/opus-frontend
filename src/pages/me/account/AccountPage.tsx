@@ -7,9 +7,9 @@ import { PasswordResetRequestDto } from 'types/DTO';
 import { GetMyProfileResponseDto } from 'types/DTO';
 import AltProfile from './components/AltProfile';
 import { isValidPassword } from 'utils/password';
-import { ActivitySection } from '../activity/ActivityTab';
+import { ActivitySection } from '../activity/ActivityPage';
 
-const AccountTab = () => {
+const AccountPage = () => {
   const { data: profile } = useQuery({
     queryKey: ['account', 'me'],
     queryFn: getMyAccount,
@@ -28,7 +28,7 @@ const AccountTab = () => {
   );
 };
 
-export default AccountTab;
+export default AccountPage;
 
 const ProfileSection = ({ profile }: { profile: GetMyProfileResponseDto }) => {
   return (

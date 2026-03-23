@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from './ActivityTab';
+import { ActivitySection } from './ActivityPage';
 import { getMyVotes } from 'apis/me';
 import type { GetMyVotesResponseDto } from 'types/DTO/meDto';
 import TeamCard from '@pages/main/TeamCard';

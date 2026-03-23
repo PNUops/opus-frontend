@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ActivitySection } from './ActivityTab';
+import { ActivitySection } from './ActivityPage';
 import { FaChevronRight } from 'react-icons/fa6';
 import { FaRegCommentAlt } from 'react-icons/fa';
 
