@@ -12,7 +12,7 @@ const NoticeList = () => {
     <div className="rounded-xl bg-gray-50 p-2.5 shadow-md">
       <ul className="flex flex-col gap-1">
         {notices.length === 0 && <li className="text-midGray py-2 text-center text-sm">등록된 공지사항이 없습니다.</li>}
-        {notices.map((notice) => {
+        {notices.slice(0, 3).map((notice) => {
           const showNewIcon = dayjs(notice.createdAt).isAfter(dayjs().subtract(3, 'day'));
           return (
             <li key={notice.noticeId}>
