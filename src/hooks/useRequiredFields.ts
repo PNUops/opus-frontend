@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { defaultRequiredFields } from 'constants/requiredFields';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 import { putRequiredFields } from 'apis/requiredFields';
+import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 import { useToast } from './useToast';
 
 export const useRequiredFields = (contestId: number) => {

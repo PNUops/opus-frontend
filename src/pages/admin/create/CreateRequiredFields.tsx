@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 import { useRequiredFields } from 'hooks/useRequiredFields';
 import QueryWrapper from 'providers/QueryWrapper';
@@ -7,6 +8,12 @@ import { useContestCreate } from './ContestCreateContext';
 const CreateRequiredFields = () => {
   const { contestId } = useContestCreate();
   const { fieldsSetting, isPending, setFieldsSetting, handleToggleField, handleSave } = useRequiredFields(contestId);
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    handleSave();
+    navigate('/admin');
+  };
 
   return (
     <div className="flex flex-col gap-7">
@@ -20,7 +27,7 @@ const CreateRequiredFields = () => {
         />
       </QueryWrapper>
       <div className="flex justify-center">
-        <AdminActionButton disabled={isPending} onClick={handleSave}>
+        <AdminActionButton disabled={isPending} onClick={handleButtonClick}>
           설정하기
         </AdminActionButton>
       </div>
