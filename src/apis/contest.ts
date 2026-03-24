@@ -1,6 +1,12 @@
 import apiClient from './apiClient';
 
-import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto, ProjectsAdminResponseDto } from 'types/DTO';
+import {
+  ContestRequestDto,
+  ContestResponseDto,
+  CurrentContestResponseDto,
+  GroupedContestResponseDto,
+  ProjectsAdminResponseDto,
+} from 'types/DTO';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
 export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
@@ -14,6 +20,11 @@ export const getAllContests = async (): Promise<ContestResponseDto[]> => {
     ...contest,
     updatedAt: new Date(contest.updatedAt),
   }));
+};
+
+export const getGroupedContests = async (): Promise<GroupedContestResponseDto[]> => {
+  const res = await apiClient.get('/sidebar');
+  return res.data;
 };
 
 export const postAllContests = async (contestName: string) => {

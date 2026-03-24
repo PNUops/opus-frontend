@@ -9,6 +9,12 @@ export interface ContestResponseDto {
   updatedAt: Date;
 }
 
+export interface GroupedContestResponseDto {
+  categoryId: number;
+  categoryName: string;
+  contests: Pick<ContestResponseDto, 'contestId' | 'contestName' | 'isCurrent'>[];
+}
+
 export interface CurrentContestResponseDto {
   contestId: number;
   categoryName: string;
