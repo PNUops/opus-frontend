@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { getNotices } from 'apis/notice';
 import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';
@@ -7,13 +6,14 @@ import StatisticsSection from './StatisticsSection';
 import { currentContestOption } from 'queries/contests';
 import { noticeOption } from 'queries/notices';
 import dayjs from 'dayjs';
+import QueryWrapper from 'providers/QueryWrapper';
 
 const MainPage = () => {
   const { data: notices } = useQuery(noticeOption());
   const { data: currentContests } = useQuery(currentContestOption());
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-8">
+    <div className="mx-auto flex max-w-4xl flex-col gap-17.5">
       <section className="flex flex-col gap-4">
         <div className="rounded-xl bg-gray-50 p-2">
           {notices && notices.length > 0 ? (
@@ -27,7 +27,6 @@ const MainPage = () => {
 
       <section className="flex flex-col gap-6">
         <h2 className="text-xl font-bold sm:text-2xl">현재 진행 중인 대회</h2>
-
         <div className="flex flex-col gap-5">
           {currentContests && currentContests.length > 0 ? (
             currentContests.map((contest) => {
@@ -48,8 +47,9 @@ const MainPage = () => {
         </div>
       </section>
 
-      <StatisticsSection />
-
+      <QueryWrapper loadingStyle="h-58 rounded-2xl" errorStyle="h-58 rounded-2xl shadow-lg">
+        <StatisticsSection />
+      </QueryWrapper>
       <div className="h-10" />
     </div>
   );
