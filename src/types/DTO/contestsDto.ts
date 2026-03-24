@@ -8,6 +8,7 @@ export interface ContestResponseDto {
   isCurrent: boolean;
   updatedAt: Date;
 }
+
 export interface CurrentContestResponseDto {
   contestId: number;
   categoryName: string;
