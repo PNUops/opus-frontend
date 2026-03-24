@@ -6,6 +6,7 @@ import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
 import { currentContestOption } from 'queries/contests';
 import QueryWrapper from 'providers/QueryWrapper';
+import NoticeListSkeleton from './NoticeListSkeleton';
 
 const MainPage = () => {
   const { data: currentContests } = useQuery(currentContestOption());
@@ -13,7 +14,7 @@ const MainPage = () => {
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-17.5">
       <section className="flex flex-col gap-4">
-        <QueryWrapper loadingStyle="h-36 rounded-xl" errorStyle="h-36 rounded-xl shadow-md">
+        <QueryWrapper loadingFallback={<NoticeListSkeleton />} errorStyle="h-36 rounded-xl shadow-md">
           <NoticeList />
         </QueryWrapper>
         <LeaderSection />
