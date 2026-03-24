@@ -1,27 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
 import { currentContestOption } from 'queries/contests';
-import { noticeOption } from 'queries/notices';
-import dayjs from 'dayjs';
 import QueryWrapper from 'providers/QueryWrapper';
 
 const MainPage = () => {
-  const { data: notices } = useQuery(noticeOption());
   const { data: currentContests } = useQuery(currentContestOption());
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-17.5">
       <section className="flex flex-col gap-4">
-        <div className="rounded-xl bg-gray-50 p-2">
-          {notices && notices.length > 0 ? (
-            <NoticeList notices={notices.slice(0, 3)} />
-          ) : (
-            <div className="py-4 text-center text-sm text-gray-500">공지사항을 불러오는 중...</div>
-          )}
-        </div>
+        <QueryWrapper loadingStyle="h-36 rounded-xl" errorStyle="h-36 rounded-xl shadow-md">
+          <NoticeList />
+        </QueryWrapper>
         <LeaderSection />
       </section>
 
