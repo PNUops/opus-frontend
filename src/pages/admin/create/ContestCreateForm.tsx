@@ -13,7 +13,7 @@ import CategorySelect from '../CategorySelect';
 const ContestCreateForm = () => {
   const [categoryId, setCategoryId] = useState<string>('');
   const [contestName, setContestName] = useState<string>('');
-  const { setCurrentStep, setContestId } = useContestCreate();
+  const { currentStepName, setCurrentStep, setContestId } = useContestCreate();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -36,12 +36,12 @@ const ContestCreateForm = () => {
       },
       {
         onSuccess: (res) => {
-          toast('대회 생성이 완료되었습니다.', 'success');
+          toast(`${currentStepName}이 완료되었습니다.`, 'success');
           setContestId(res.contestId);
           setCurrentStep(2);
         },
         onError: () => {
-          toast('대회 생성에 실패했습니다.', 'error');
+          toast(`${currentStepName}에 실패했습니다.`, 'error');
         },
       },
     );
@@ -49,7 +49,7 @@ const ContestCreateForm = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <AdminHeader title="대회 생성" description="대회 카테고리 및 이름을 설정해주세요." />
+      <AdminHeader title={currentStepName} description="대회 카테고리 및 이름을 설정해주세요." />
       <div className="rounded-sm border border-red-400 p-2 text-red-400">
         * 다음 단계로 넘어갈 시 대회 관리 페이지에서 수정 및 삭제가 가능합니다.
       </div>

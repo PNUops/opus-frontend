@@ -6,7 +6,7 @@ import RequiredFields from '../required-field/RequiredFields';
 import { useContestCreate } from './ContestCreateContext';
 
 const CreateRequiredFields = () => {
-  const { contestId } = useContestCreate();
+  const { currentStepName, contestId } = useContestCreate();
   const { fieldsSetting, isPending, setFieldsSetting, handleToggleField, handleSave } = useRequiredFields(contestId);
   const navigate = useNavigate();
 
@@ -17,7 +17,10 @@ const CreateRequiredFields = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <AdminHeader title="필수 항목 설정" description="해당 대회의 프로젝트 생성/수정 폼의 필수 항목을 설정해주세요." />
+      <AdminHeader
+        title={currentStepName}
+        description="해당 대회의 프로젝트 생성/수정 폼의 필수 항목을 설정해주세요."
+      />
       <QueryWrapper loadingStyle="h-[794px] my-0 rounded-lg" errorStyle="h-[300px]">
         <RequiredFields
           contestId={contestId}

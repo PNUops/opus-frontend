@@ -1,19 +1,19 @@
 import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 import { FiUpload, FiX } from 'react-icons/fi';
-import Button from '@components/Button';
+import { useMutation } from '@tanstack/react-query';
 import { useState, useRef } from 'react';
+import Button from '@components/Button';
+import { XLSX_MIME_TYPE } from '@constants/contest';
+import { AdminHeader } from '@components/admin';
 import { cn } from 'utils/classname';
 import { useToast } from 'hooks/useToast';
-import { useContestCreate } from './ContestCreateContext';
-import { useMutation } from '@tanstack/react-query';
 import { postBulkAddTeams } from 'apis/contest';
-
-const XLSX_MIME_TYPE = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`;
+import { useContestCreate } from './ContestCreateContext';
 
 const ContestTeamInsert = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const { contestId, setCurrentStep } = useContestCreate();
+  const { currentStepName, contestId, setCurrentStep } = useContestCreate();
   const inputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
@@ -95,10 +95,7 @@ const ContestTeamInsert = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-xl font-bold">대회 참여자 설정</h2>
-        <div className="text-midGray text-xs">하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요.</div>
-      </div>
+      <AdminHeader title={currentStepName} description="대회 카테고리 및 이름을 설정해주세요." />
       <a href="/팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
         <PiMicrosoftExcelLogo size={24} className="fill-mainGreen mt-0.75" />
         <span className="group-hover:text-mainGreen text-lg group-hover:underline">팀등록_템플릿파일.xlsx</span>

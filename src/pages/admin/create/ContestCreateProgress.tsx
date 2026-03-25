@@ -1,8 +1,7 @@
 import { cn } from '@components/lib/utils';
 import { FaCheck } from 'react-icons/fa';
 import { useContestCreate } from './ContestCreateContext';
-
-const steps = ['대회 생성', '필수 항목 설정'];
+import { contestCreateSteps } from '@constants/contest';
 
 const ContestCreateProgress = () => {
   const { currentStep } = useContestCreate();
@@ -10,7 +9,7 @@ const ContestCreateProgress = () => {
   return (
     <div className="flex items-center justify-center">
       <ol className="flex w-full max-w-2xl items-center justify-center gap-3">
-        {steps.flatMap((step, index) => {
+        {contestCreateSteps.flatMap((step, index) => {
           const stepNumber = index + 1;
           const isCompleted = currentStep > stepNumber;
           const isCurrent = currentStep === stepNumber;
@@ -41,7 +40,7 @@ const ContestCreateProgress = () => {
           );
 
           const connectorNode =
-            index < steps.length - 1 ? (
+            index < contestCreateSteps.length - 1 ? (
               <li key={`${step}-connector`} className="w-10 sm:w-25" aria-hidden="true">
                 <div className="h-0.5 rounded-full bg-gray-200">
                   <div
