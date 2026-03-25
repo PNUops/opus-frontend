@@ -4,7 +4,7 @@ import { cn } from '@components/lib/utils';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { patchChangeOngoingContest } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
-import { contestsOption } from 'queries/contests';
+import { contestsOption } from 'queries/contest';
 
 interface ContestSlotsProps {
   selectedId: string;

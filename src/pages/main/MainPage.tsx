@@ -4,7 +4,7 @@ import NoticeList from './NoticeList';
 import LeaderSection from './LeaderSection';
 import ContestBanner from './ContestBox';
 import StatisticsSection from './StatisticsSection';
-import { currentContestOption } from 'queries/contests';
+import { currentContestOption } from 'queries/contest';
 import { noticeOption } from 'queries/notices';
 import dayjs from 'dayjs';
 

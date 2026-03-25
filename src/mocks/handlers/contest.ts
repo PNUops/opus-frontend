@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '@constants/env';
-import { mockContestsResponse, mockProjectsAdminResponse } from '@mocks/data/contests';
+import { mockContestsResponse, mockProjectsAdminResponse } from '@mocks/data/contest';
 import { mockTeams } from '@mocks/data/teams';
 import { http, HttpResponse } from 'msw';
 
