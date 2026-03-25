@@ -29,11 +29,9 @@ const CreateRequiredFields = () => {
           onToggle={handleToggleField}
         />
       </QueryWrapper>
-      <div className="flex justify-center">
-        <AdminActionButton disabled={isPending} onClick={handleButtonClick}>
-          설정하기
-        </AdminActionButton>
-      </div>
+      <AdminActionButton size="lg" className="mx-auto rounded-full" disabled={isPending} onClick={handleButtonClick}>
+        설정하기
+      </AdminActionButton>
     </div>
   );
 };

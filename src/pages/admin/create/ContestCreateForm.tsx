@@ -71,10 +71,12 @@ const ContestCreateForm = () => {
         </div>
       </div>
       <div className="flex items-center justify-center gap-6">
-        <AdminActionButton variant={'destructive'} onClick={handleCancel}>
+        <AdminActionButton size="lg" className="rounded-full" variant={'destructive'} onClick={handleCancel}>
           취소하기
         </AdminActionButton>
-        <AdminActionButton onClick={handleCreateContest}>생성하기</AdminActionButton>
+        <AdminActionButton size="lg" className="rounded-full" disabled={!contestName} onClick={handleCreateContest}>
+          생성하기
+        </AdminActionButton>
       </div>
     </div>
   );

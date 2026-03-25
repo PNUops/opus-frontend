@@ -2,9 +2,8 @@ import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 import { FiUpload, FiX } from 'react-icons/fi';
 import { useMutation } from '@tanstack/react-query';
 import { useState, useRef } from 'react';
-import Button from '@components/Button';
 import { XLSX_MIME_TYPE } from '@constants/contest';
-import { AdminHeader } from '@components/admin';
+import { AdminActionButton, AdminHeader } from '@components/admin';
 import { cn } from 'utils/classname';
 import { useToast } from 'hooks/useToast';
 import { postBulkAddTeams } from 'apis/contest';
@@ -95,7 +94,7 @@ const ContestTeamInsert = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <AdminHeader title={currentStepName} description="대회 카테고리 및 이름을 설정해주세요." />
+      <AdminHeader title={currentStepName} description="하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요." />
       <a href="/팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
         <PiMicrosoftExcelLogo size={24} className="fill-mainGreen mt-0.75" />
         <span className="group-hover:text-mainGreen text-lg group-hover:underline">팀등록_템플릿파일.xlsx</span>
@@ -142,15 +141,9 @@ const ContestTeamInsert = () => {
           </>
         )}
       </div>
-      <div className="flex justify-center">
-        <Button
-          className="disabled:border-midGray disabled:bg-whiteGray disabled:text-midGray border-mainGreen text-mainGreen w-fit rounded-3xl border px-6 py-2"
-          onClick={handleUpload}
-          disabled={!file}
-        >
-          팀 설정하기
-        </Button>
-      </div>
+      <AdminActionButton size="lg" className="mx-auto rounded-full" disabled={!file} onClick={handleUpload}>
+        설정하기
+      </AdminActionButton>
     </div>
   );
 };
