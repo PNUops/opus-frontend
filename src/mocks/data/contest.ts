@@ -1,4 +1,4 @@
-import { ContestResponseDto } from 'types/DTO';
+import { ContestBulkAddTeamsErrorDto, ContestBulkAddTeamsResponseDto, ContestResponseDto } from 'types/DTO';
 import { ProjectsAdminResponseDto, GetContestTracksResponseDto, GetContestAwardsResponseDto } from 'types/DTO';
 
 export const mockContestsResponse: ContestResponseDto[] = [
@@ -35,6 +35,40 @@ export const mockContestsResponse: ContestResponseDto[] = [
     updatedAt: new Date('2025-06-20T09:15:45Z'),
   },
 ];
+
+export const mockContestBulkAddTeamsResponse: ContestBulkAddTeamsResponseDto = {
+  teamCount: 3,
+  teams: [
+    {
+      rowNumber: 5,
+      teamName: '태윤팀',
+      teamId: 101,
+    },
+    {
+      rowNumber: 6,
+      teamName: '오푸스팀',
+      teamId: 102,
+    },
+    {
+      rowNumber: 7,
+      teamName: '태영팀',
+      teamId: 103,
+    },
+  ],
+};
+
+export const mockContestBulkAddTeamsError: { errors: ContestBulkAddTeamsErrorDto[] } = {
+  errors: [
+    {
+      rowNumber: 5,
+      message: '팀 이름은 필수입니다.',
+    },
+    {
+      rowNumber: 7,
+      message: '팀원 이름, 학번, 이메일의 개수가 일치하지 않습니다.',
+    },
+  ],
+};
 
 export const mockProjectsAdminResponse: ProjectsAdminResponseDto[] = [
   {

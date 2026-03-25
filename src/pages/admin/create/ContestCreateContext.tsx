@@ -16,7 +16,7 @@ interface ContestCreateProviderProps {
 }
 
 export const ContestCreateProvider = ({ children }: ContestCreateProviderProps) => {
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(1);
   const [contestId, setContestId] = useState<number>(0);
 
   const value = {
