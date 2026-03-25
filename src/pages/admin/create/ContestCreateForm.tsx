@@ -40,8 +40,8 @@ const ContestCreateForm = () => {
           setContestId(res.contestId);
           setCurrentStep(2);
         },
-        onError: () => {
-          toast(`${currentStepName}에 실패했습니다.`, 'error');
+        onError: (error: any) => {
+          toast(error.response?.data?.message || `${currentStepName}에 실패했습니다.`, 'error');
         },
       },
     );
