@@ -2,32 +2,19 @@ import { useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
 import { RiHeart3Line } from 'react-icons/ri';
-import { FaChevronLeft, FaChevronRight, FaChevronDown, FaCheck } from 'react-icons/fa6';
+import { FaChevronDown, FaCheck } from 'react-icons/fa6';
 import TeamCard from '@pages/main/TeamCard';
-import { GetMyLikesResponseDto, MyLikeDto } from 'types/DTO/meDto';
+import { GetMyLikesResponseDto } from 'types/DTO/meDto';
 import { getMyLikes } from 'apis/me';
 import useFilterQuery from '../hooks/useFilterQueryData';
 import { inferDateType } from '../utils/filter';
 import { getDateRange } from '../utils/date';
 import { TbReload } from 'react-icons/tb';
 import { FilterState, useMyLikesFilter } from '../hooks/useMyLikesFilter';
+import Pagination from '@components/Pagination';
 
 const MyLikeTab = () => {
   const { state, update, reset, apiParams, queryKey } = useMyLikesFilter();
-
-  const { data: myLikes } = useQuery<GetMyLikesResponseDto>({
-    queryKey: queryKey,
-    queryFn: () => getMyLikes(apiParams),
-    placeholderData: keepPreviousData,
-  });
-
-  const { content, totalElements, totalPages, currentPage, size } = myLikes || {
-    content: [],
-    totalElements: 0,
-    totalPages: 0,
-    currentPage: 0,
-    size: 0,
-  };
 
   return (
     <MyPageSection.Root>
@@ -37,12 +24,7 @@ const MyLikeTab = () => {
       </MyPageSection.Header>
       <MyPageSection.Body>
         <MyLikeFilterBar query={state} onQueryClean={reset} onQueryChange={update} />
-        <MyLikeGrid
-          projects={content}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={(p) => update({ page: String(p) })}
-        />
+        <MyLikeGrid apiParams={apiParams} queryKey={queryKey} onPageChange={(page) => update({ page: String(page) })} />
       </MyPageSection.Body>
     </MyPageSection.Root>
   );
@@ -161,20 +143,30 @@ const MyLikeFilterBar = ({ query, onQueryChange, onQueryClean }: MyLikeFilterBar
 };
 
 const MyLikeGrid = ({
-  projects,
-  totalPages,
-  currentPage,
+  apiParams,
+  queryKey,
   onPageChange,
 }: {
-  projects: MyLikeDto[];
-  totalPages: number;
-  currentPage: number;
+  apiParams: Parameters<typeof getMyLikes>[0];
+  queryKey: ReturnType<typeof useMyLikesFilter>['queryKey'];
   onPageChange: (page: number) => void;
 }) => {
+  const { data: myLikes } = useQuery<GetMyLikesResponseDto>({
+    queryKey: queryKey,
+    queryFn: () => getMyLikes(apiParams),
+    placeholderData: keepPreviousData,
+  });
+
+  const { content, totalPages, currentPage } = myLikes || {
+    content: [],
+    totalPages: 0,
+    currentPage: 0,
+  };
+
   return (
     <div className="flex flex-col items-center">
       <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-        {projects?.map((proj) => (
+        {content?.map((proj) => (
           <TeamCard
             key={proj.teamId}
             contestId={proj.contestId}
@@ -185,59 +177,12 @@ const MyLikeGrid = ({
         ))}
       </div>
       {totalPages > 1 && (
-        <MyLikeGridPagination totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage + 1}
+          onPageChange={(page) => onPageChange(page - 1)}
+        />
       )}
-    </div>
-  );
-};
-
-interface MyLikeGridPaginationProps {
-  totalPages: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-}
-
-const MyLikeGridPagination = ({ totalPages, currentPage, onPageChange }: MyLikeGridPaginationProps) => {
-  return (
-    <div className="flex w-full max-w-65 items-center justify-between gap-4 py-4">
-      <button
-        disabled={currentPage <= 0}
-        onClick={() => onPageChange(currentPage - 1)}
-        className={`rounded-sm border border-transparent p-1 transition-all duration-200 ${
-          currentPage <= 0 ? 'cursor-auto opacity-10' : 'hover:border-lightGray'
-        }`}
-      >
-        <FaChevronLeft className="size-4" />
-      </button>
-      <div className="flex flex-1 items-center justify-center gap-2">
-        {(() => {
-          const maxButtons = 5;
-          const half = Math.floor(maxButtons / 2);
-          const start = Math.max(0, Math.min(currentPage - half, Math.max(0, totalPages - maxButtons)));
-          const end = Math.min(totalPages, start + maxButtons);
-          return Array.from({ length: end - start }, (_, i) => {
-            const page = start + i;
-            return (
-              <button
-                key={page}
-                onClick={() => onPageChange(page)}
-                className={`p-1 transition-all duration-200 hover:text-black ${currentPage === page ? 'font-medium text-black' : 'text-lightGray'}`}
-              >
-                {page + 1}
-              </button>
-            );
-          });
-        })()}
-      </div>
-      <button
-        disabled={currentPage >= totalPages - 1}
-        onClick={() => onPageChange(currentPage + 1)}
-        className={`rounded-sm border border-transparent p-1 transition-all duration-200 ${
-          currentPage >= totalPages - 1 ? 'cursor-auto opacity-10' : 'hover:border-lightGray'
-        }`}
-      >
-        <FaChevronRight className="size-4" />
-      </button>
     </div>
   );
 };
