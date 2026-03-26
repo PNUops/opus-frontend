@@ -1,13 +1,14 @@
 import { useState, ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useToast } from 'hooks/useToast';
-import { getMyAccount, updateProfileVisibility, patchMyStudentId, deleteMyAccount } from 'apis/member';
-import { patchPasswordReset } from 'apis/signIn';
-import { PasswordResetRequestDto } from 'types/DTO';
-import { GetMyProfileResponseDto } from 'types/DTO';
-import AltProfile from './components/AltProfile';
-import { isValidPassword } from 'utils/password';
+import PasswordInput from 'components/PasswordInput';
+import { useToast } from '@hooks/useToast';
+import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
+import AltProfile from '@pages/me/account/components/AltProfile';
+import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from '@apis/member';
+import { patchPasswordReset } from '@apis/signIn';
+import { PasswordResetRequestDto } from 'types/DTO';
+import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from 'queries/member';
 
 const AccountPage = () => {
   return (
@@ -34,11 +35,12 @@ const ProfileSection = () => {
 };
 
 const ProfileCard = () => {
-  const { data: profile } = useQuery<GetMyProfileResponseDto>({
-    queryKey: ['account', 'me'],
-    queryFn: getMyAccount,
-  });
-  const { name, email, profileImageUrl, githubUrl } = profile || {};
+  const { data: account } = useQuery(myAccountOption());
+
+  const name = account?.name;
+  const email = account?.email;
+  const githubUrl = account?.githubUrl;
+  const profileImageUrl = account?.profileImageUrl;
 
   return (
     <div className="bg-whiteGray flex w-full flex-col items-start gap-10 rounded-lg px-17 py-12">
@@ -72,11 +74,8 @@ const ProfileCard = () => {
 const ProfileVisibilitySection = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data: profile } = useQuery<GetMyProfileResponseDto>({
-    queryKey: ['account', 'me'],
-    queryFn: getMyAccount,
-  });
-  const { isProfilePublic } = profile || {};
+  const { data: profile } = useQuery(myAccountOption());
+  const isProfilePublic = profile?.isProfilePublic ?? false;
 
   const { mutate } = useMutation({
     mutationFn: (isPublic: boolean) => {
@@ -85,7 +84,7 @@ const ProfileVisibilitySection = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['account', 'me'] });
+      queryClient.invalidateQueries({ queryKey: MY_ACCOUNT_QUERY_KEY });
       toast('프로필 공개 설정이 변경되었어요.', 'success');
     },
     onError: (err) => {
@@ -194,13 +193,8 @@ const StudentIdEditSection = () => {
   );
 };
 
-import PasswordInput from 'components/PasswordInput';
-
 const PasswordEditSection = () => {
-  const { data: profile } = useQuery<GetMyProfileResponseDto>({
-    queryKey: ['account', 'me'],
-    queryFn: getMyAccount,
-  });
+  const { data: profile } = useQuery(myAccountOption());
   const email = profile?.email ?? '';
 
   const toast = useToast();
