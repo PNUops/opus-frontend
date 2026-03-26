@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 
-import IntroSection from './IntroSection';
 import UrlInput from './UrlInput';
 import ImageUploaderSection from './ImageUploaderSection';
 import OverviewInput from './OverviewInput';

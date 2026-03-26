@@ -24,7 +24,7 @@ interface CarouselSectionProps {
 
 const getEmbedUrl = (url: string) => {
   try {
-    let fixedUrl = url.replace('m.youtube.com', 'www.youtube.com');
+    const fixedUrl = url.replace('m.youtube.com', 'www.youtube.com');
     const urlObj = new URL(fixedUrl);
 
     let videoId = urlObj.searchParams.get('v');

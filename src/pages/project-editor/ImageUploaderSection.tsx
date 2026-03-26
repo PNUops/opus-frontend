@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useToast } from 'hooks/useToast';
 import { imageValidator } from 'utils/image';
 import { ThumbnailResult } from 'apis/projectEditor';

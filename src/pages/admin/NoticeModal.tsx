@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
-import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
 import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notice';
 import { useToast } from 'hooks/useToast';

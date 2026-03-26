@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MdImage } from 'react-icons/md';
-import Button from '@components/Button';
 import { deleteBanner } from 'apis/banner';
 import { useToast } from 'hooks/useToast';
 import { useImageBlob } from 'hooks/useImageBlob';

@@ -61,7 +61,7 @@ const Header = () => {
             )}
             {user?.name && (
               <Link
-                to="/me"
+                to="/me/activity"
                 className="hover:bg-whiteGray flex items-center gap-2 rounded-full px-4 py-2 hover:cursor-pointer"
               >
                 <CgProfile className="text-mainGreen h-5 w-5 cursor-pointer" />

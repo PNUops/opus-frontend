@@ -1,5 +1,3 @@
-import Notice from '@pages/main/Notice';
-import LeaderSection from '@pages/main/LeaderSection';
 import TeamCardGrid from '@pages/main/TeamCardGrid';
 import useTeamList from 'hooks/useTeamList';
 import { useParams } from 'react-router-dom';
