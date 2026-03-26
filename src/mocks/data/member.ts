@@ -1,6 +1,6 @@
-import { GetMemberAccountResponseDto } from 'types/DTO';
+import { GetMyProfileResponseDto } from 'types/DTO';
 
-export const mockMemberAccount: GetMemberAccountResponseDto = {
+export const mockMemberAccount: GetMyProfileResponseDto = {
   name: '홍지연',
   email: 'redzzzi@pusan.ac.kr',
   profileImageUrl: null,
