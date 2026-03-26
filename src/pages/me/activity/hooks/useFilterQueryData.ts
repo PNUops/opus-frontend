@@ -3,9 +3,8 @@ import { getAllCategory } from 'apis/category';
 import { getAllContests } from 'apis/contest';
 import { CategoryDto } from 'types/DTO';
 import { ContestResponseDto } from 'types/DTO';
+import type { SortType, DateType } from '@pages/me/activity/types/filter';
 
-type SortType = 'latest' | 'oldest';
-type DateType = '' | '1m' | '3m' | 'custom';
 export type Option<T extends string> = {
   label: string;
   value: T;
