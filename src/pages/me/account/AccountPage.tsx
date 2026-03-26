@@ -1,12 +1,12 @@
 import { useState, ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import PasswordInput from 'components/PasswordInput';
-import { useToast } from '@hooks/useToast';
-import { isValidPassword } from '@utils/password';
+import { useToast } from 'hooks/useToast';
+import { isValidPassword } from 'utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 import AltProfile from '@pages/me/account/components/AltProfile';
-import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from '@apis/member';
-import { patchPasswordReset } from '@apis/signIn';
+import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from 'apis/member';
+import { patchPasswordReset } from 'apis/signIn';
 import { PasswordResetRequestDto } from 'types/DTO';
 import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from 'queries/member';
 
