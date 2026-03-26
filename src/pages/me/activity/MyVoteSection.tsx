@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from './ActivityPage';
+import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyVotes } from 'apis/me';
 import type { GetMyVotesResponseDto } from 'types/DTO/meDto';
 import TeamCard from '@pages/main/TeamCard';
@@ -7,16 +7,16 @@ import { LuVote } from 'react-icons/lu';
 
 const MyVoteSection = () => {
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>
+    <MyPageSection.Root>
+      <MyPageSection.Header>
         <LuVote className="text-mainBlue size-6" />
         <p>투표</p>
-      </ActivitySection.Header>
-      <ActivitySection.Description>최근 투표한 프로젝트</ActivitySection.Description>
-      <ActivitySection.Body>
+      </MyPageSection.Header>
+      <MyPageSection.Description>최근 투표한 프로젝트</MyPageSection.Description>
+      <MyPageSection.Body>
         <MyVoteList />
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 

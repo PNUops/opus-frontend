@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from '../ActivityPage';
+import { MyPageSection } from '@pages/me/mypageSection';
 import { FaChevronLeft, FaChevronRight, FaChevronDown, FaCheck } from 'react-icons/fa6';
 import { TbReload } from 'react-icons/tb';
 import useFilterQuery from '../hooks/useFilterQueryData';
@@ -61,12 +61,12 @@ const MyCommentPage = () => {
   const dateType = inferDateType(filter.startDate, filter.endDate);
 
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>
+    <MyPageSection.Root>
+      <MyPageSection.Header>
         <FaRegCommentAlt className="text-mainGreen size-5" />
         <p>내가 쓴 댓글</p>
-      </ActivitySection.Header>
-      <ActivitySection.Body>
+      </MyPageSection.Header>
+      <MyPageSection.Body>
         <div className="mb-10 flex w-full flex-wrap items-center justify-start gap-4 md:flex-row">
           <FilterDropDown
             label={SORT_OPTIONS.find((opt) => opt.value === (filter.sort || 'latest'))?.label ?? SORT_OPTIONS[0].label}
@@ -97,8 +97,8 @@ const MyCommentPage = () => {
           currentPage={currentPage}
           onPageChange={(p) => setFilter((prev) => ({ ...prev, page: p }))}
         />
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 

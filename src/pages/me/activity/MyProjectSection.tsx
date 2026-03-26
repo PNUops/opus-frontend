@@ -1,19 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from './ActivityPage';
+import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyProjects } from 'apis/me';
 import type { MyProjectDto, GetMyProjectsResponseDto } from 'types/DTO/meDto';
 import TeamCard from '@pages/main/TeamCard';
 
 const MyProjectSection = () => {
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>
+    <MyPageSection.Root>
+      <MyPageSection.Header>
         <p>나의 프로젝트</p>
-      </ActivitySection.Header>
-      <ActivitySection.Body>
+      </MyPageSection.Header>
+      <MyPageSection.Body>
         <MyProjectPreviewList />
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 

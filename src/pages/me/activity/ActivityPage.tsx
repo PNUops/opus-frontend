@@ -18,30 +18,3 @@ const ActivityPage = () => {
 };
 
 export default ActivityPage;
-
-type ActivitySectionProps = {
-  children: React.ReactNode;
-};
-
-const ActivitySectionRoot = ({ children }: ActivitySectionProps) => {
-  return <section className="flex w-full flex-col gap-4 p-2 sm:gap-5 sm:p-4 md:p-6">{children}</section>;
-};
-
-const ActivitySectionHeader = ({ children }: ActivitySectionProps) => {
-  return <div className="flex items-center gap-2 text-base font-bold sm:text-lg">{children}</div>;
-};
-
-const ActivitySectionDescription = ({ children }: ActivitySectionProps) => {
-  return <div className="text-midGray text-xs sm:text-sm">{children}</div>;
-};
-
-const ActivitySectionBody = ({ children }: ActivitySectionProps) => {
-  return <div className="flex flex-col gap-3 sm:gap-4">{children}</div>;
-};
-
-export const ActivitySection = {
-  Root: ActivitySectionRoot,
-  Header: ActivitySectionHeader,
-  Description: ActivitySectionDescription,
-  Body: ActivitySectionBody,
-};

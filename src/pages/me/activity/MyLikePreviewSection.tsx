@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ActivitySection } from './ActivityPage';
+import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyLikesPreview } from 'apis/me';
 import type { GetMyLikesPreviewResponseDto } from 'types/DTO/meDto';
 import { RiHeart3Line } from 'react-icons/ri';
@@ -9,19 +9,19 @@ import TeamCard from '@pages/main/TeamCard';
 
 const MyLikePreviewSection = () => {
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>
+    <MyPageSection.Root>
+      <MyPageSection.Header>
         <RiHeart3Line className="text-mainRed size-6" />
         <p>좋아요</p>
         <Link to="/me/activity/likes" className="text-midGray ml-auto">
           <FaChevronRight />
         </Link>
-      </ActivitySection.Header>
-      <ActivitySection.Description>최근 좋아요한 프로젝트</ActivitySection.Description>
-      <ActivitySection.Body>
+      </MyPageSection.Header>
+      <MyPageSection.Description>최근 좋아요한 프로젝트</MyPageSection.Description>
+      <MyPageSection.Body>
         <MyLikeList />
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 

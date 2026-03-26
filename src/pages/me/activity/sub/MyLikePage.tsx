@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { ActivitySection } from '@pages/me/activity/ActivityPage';
+import { MyPageSection } from '@pages/me/mypageSection';
 import { RiHeart3Line } from 'react-icons/ri';
 import { FaChevronLeft, FaChevronRight, FaChevronDown, FaCheck } from 'react-icons/fa6';
 import TeamCard from '@pages/main/TeamCard';
@@ -30,12 +30,12 @@ const MyLikeTab = () => {
   };
 
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>
+    <MyPageSection.Root>
+      <MyPageSection.Header>
         <RiHeart3Line className="text-mainRed size-6" />
         <p>좋아요</p>
-      </ActivitySection.Header>
-      <ActivitySection.Body>
+      </MyPageSection.Header>
+      <MyPageSection.Body>
         <MyLikeFilterBar query={state} onQueryClean={reset} onQueryChange={update} />
         <MyLikeGrid
           projects={content}
@@ -43,8 +43,8 @@ const MyLikeTab = () => {
           currentPage={currentPage}
           onPageChange={(p) => update({ page: String(p) })}
         />
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 

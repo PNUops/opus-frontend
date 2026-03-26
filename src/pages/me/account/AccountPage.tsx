@@ -7,7 +7,7 @@ import { PasswordResetRequestDto } from 'types/DTO';
 import { GetMyProfileResponseDto } from 'types/DTO';
 import AltProfile from './components/AltProfile';
 import { isValidPassword } from 'utils/password';
-import { ActivitySection } from '../activity/ActivityPage';
+import { MyPageSection } from '@pages/me/mypageSection';
 
 const AccountPage = () => {
   const { data: profile } = useQuery({
@@ -91,12 +91,12 @@ const ProfileVisibilitySection = ({ isProfilePublic }: { isProfilePublic: boolea
   });
 
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>프로필 공개</ActivitySection.Header>
-      <ActivitySection.Description>
+    <MyPageSection.Root>
+      <MyPageSection.Header>프로필 공개</MyPageSection.Header>
+      <MyPageSection.Description>
         프로필 및 수상 내역이 포함된 나의 프로필 페이지를 공개합니다.
-      </ActivitySection.Description>
-      <ActivitySection.Body>
+      </MyPageSection.Description>
+      <MyPageSection.Body>
         <div className="flex flex-col items-start gap-2 text-sm font-medium text-neutral-700">
           <label className="flex cursor-pointer items-center gap-2">
             <input
@@ -121,8 +121,8 @@ const ProfileVisibilitySection = ({ isProfilePublic }: { isProfilePublic: boolea
             <span>아니요. 프로필 페이지를 공개하지 않을게요.</span>
           </label>
         </div>
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 
@@ -171,9 +171,9 @@ const StudentIdEditSection = () => {
   };
 
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>학번</ActivitySection.Header>
-      <ActivitySection.Body>
+    <MyPageSection.Root>
+      <MyPageSection.Header>학번</MyPageSection.Header>
+      <MyPageSection.Body>
         <div className="flex items-center gap-2 text-sm">
           <input
             autoComplete="off"
@@ -186,8 +186,8 @@ const StudentIdEditSection = () => {
             변경하기
           </button>
         </div>
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 
@@ -246,9 +246,9 @@ const PasswordEditSection = ({ email }: { email: string }) => {
   };
 
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>비밀번호</ActivitySection.Header>
-      <ActivitySection.Body>
+    <MyPageSection.Root>
+      <MyPageSection.Header>비밀번호</MyPageSection.Header>
+      <MyPageSection.Body>
         <button onClick={handleOpen} className="bg-mainBlue w-fit rounded-lg px-3 py-1.5 text-sm text-white">
           비밀번호 변경하기
         </button>
@@ -284,8 +284,8 @@ const PasswordEditSection = ({ email }: { email: string }) => {
             </div>
           </div>
         )}
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 
@@ -302,9 +302,9 @@ const AccountManagementSection = () => {
     },
   });
   return (
-    <ActivitySection.Root>
-      <ActivitySection.Header>계정 탈퇴</ActivitySection.Header>
-      <ActivitySection.Body>
+    <MyPageSection.Root>
+      <MyPageSection.Header>계정 탈퇴</MyPageSection.Header>
+      <MyPageSection.Body>
         <button
           onClick={() => setOpen(true)}
           className="border-mainRed text-mainRed hover:bg-whiteGray w-fit rounded-lg border-1 px-3 py-1.5 text-sm font-medium"
@@ -348,8 +348,8 @@ const AccountManagementSection = () => {
             </div>
           </div>
         )}
-      </ActivitySection.Body>
-    </ActivitySection.Root>
+      </MyPageSection.Body>
+    </MyPageSection.Root>
   );
 };
 
