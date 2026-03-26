@@ -3,7 +3,7 @@ import { cn } from 'utils/classname';
 
 interface LayoutSideBarProps {
   sections: {
-    title?: string;
+    title: string;
     links: { to: string; label: string }[];
   }[];
 }
@@ -17,7 +17,7 @@ const LayoutSideBar = ({ sections }: LayoutSideBarProps) => {
     <aside className="flex flex-col gap-6 p-8">
       {sections.map((section) => (
         <section key={section.title}>
-          {section.title && <h2 className="py-2 text-lg font-semibold text-nowrap">{section.title}</h2>}
+          <h2 className="py-2 text-lg font-semibold text-nowrap">{section.title}</h2>
           <ul className="flex flex-col gap-2 pl-2">
             {section.links.map((link) => (
               <li key={link.to}>
