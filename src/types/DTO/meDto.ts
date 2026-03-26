@@ -25,10 +25,8 @@ export interface MyLikeDto {
   projectName: string;
 }
 
-interface MyLikeGridPagination {
-  content: MyLikeDto[];
-  totalElements: number;
-  totalPages: number;
+import { PaginationResponseDto } from './commonDto';
+interface MyLikeGridPagination extends PaginationResponseDto<MyLikeDto> {
   currentPage: number;
   size: number;
 }

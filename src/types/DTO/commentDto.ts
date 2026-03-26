@@ -13,10 +13,9 @@ interface MyCommentItemDto {
   trackName: string;
 }
 
-export interface GetCommentsPaginationResponseDto {
-  content: MyCommentItemDto[];
-  totalElements: number;
-  totalPages: number;
+import { PaginationResponseDto } from './commonDto';
+
+export interface GetCommentsPaginationResponseDto extends PaginationResponseDto<MyCommentItemDto> {
   currentPage: number;
   size: number;
 }
