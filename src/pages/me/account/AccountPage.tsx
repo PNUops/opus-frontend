@@ -10,18 +10,11 @@ import { isValidPassword } from 'utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 
 const AccountPage = () => {
-  const { data: profile } = useQuery({
-    queryKey: ['account', 'me'],
-    queryFn: getMyAccount,
-  });
-
-  if (!profile) return null;
-
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 p-4 sm:gap-10 sm:p-8 md:gap-12 md:p-12">
-      <ProfileSection profile={profile} />
+      <ProfileSection />
       <Divider />
-      <AccountSecuritySection email={profile.email} />
+      <AccountSecuritySection />
       <Divider />
       <AccountManagementSection />
     </div>
@@ -30,18 +23,23 @@ const AccountPage = () => {
 
 export default AccountPage;
 
-const ProfileSection = ({ profile }: { profile: GetMyProfileResponseDto }) => {
+const ProfileSection = () => {
   return (
     <div className="flex flex-col gap-8 sm:gap-10 md:gap-12">
-      <ProfileCard profile={profile} />
+      <ProfileCard />
       <Divider />
-      <ProfileVisibilitySection isProfilePublic={profile.isProfilePublic} />
+      <ProfileVisibilitySection />
     </div>
   );
 };
 
-const ProfileCard = ({ profile }: { profile: GetMyProfileResponseDto }) => {
-  const { name, email, profileImageUrl, githubUrl } = profile;
+const ProfileCard = () => {
+  const { data: profile } = useQuery<GetMyProfileResponseDto>({
+    queryKey: ['account', 'me'],
+    queryFn: getMyAccount,
+  });
+  const { name, email, profileImageUrl, githubUrl } = profile || {};
+
   return (
     <div className="bg-whiteGray flex w-full flex-col items-start gap-10 rounded-lg px-17 py-12">
       <div className="flex items-center gap-10">
@@ -71,9 +69,14 @@ const ProfileCard = ({ profile }: { profile: GetMyProfileResponseDto }) => {
   );
 };
 
-const ProfileVisibilitySection = ({ isProfilePublic }: { isProfilePublic: boolean }) => {
+const ProfileVisibilitySection = () => {
   const toast = useToast();
   const queryClient = useQueryClient();
+  const { data: profile } = useQuery<GetMyProfileResponseDto>({
+    queryKey: ['account', 'me'],
+    queryFn: getMyAccount,
+  });
+  const { isProfilePublic } = profile || {};
 
   const { mutate } = useMutation({
     mutationFn: (isPublic: boolean) => {
@@ -126,12 +129,12 @@ const ProfileVisibilitySection = ({ isProfilePublic }: { isProfilePublic: boolea
   );
 };
 
-const AccountSecuritySection = ({ email }: { email: string }) => {
+const AccountSecuritySection = () => {
   return (
     <div className="flex flex-col gap-8 sm:gap-10 md:gap-12">
       <StudentIdEditSection />
       <Divider />
-      <PasswordEditSection email={email} />
+      <PasswordEditSection />
     </div>
   );
 };
@@ -193,7 +196,13 @@ const StudentIdEditSection = () => {
 
 import PasswordInput from 'components/PasswordInput';
 
-const PasswordEditSection = ({ email }: { email: string }) => {
+const PasswordEditSection = () => {
+  const { data: profile } = useQuery<GetMyProfileResponseDto>({
+    queryKey: ['account', 'me'],
+    queryFn: getMyAccount,
+  });
+  const email = profile?.email ?? '';
+
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -227,6 +236,10 @@ const PasswordEditSection = ({ email }: { email: string }) => {
   };
   const handleSubmit = () => {
     console.log('submit', { newPassword, confirmPassword });
+    if (!email) {
+      setError('계정 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.');
+      return;
+    }
     if (!newPassword || !confirmPassword) {
       setError('모든 항목을 입력해주세요.');
       return;
