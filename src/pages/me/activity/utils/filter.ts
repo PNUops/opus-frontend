@@ -1,4 +1,5 @@
-type SortType = 'latest' | 'oldest';
+import dayjs from 'dayjs';
+import type { SortType, DateType } from '@pages/me/activity/types/filter';
 
 export const normalize = (v: unknown): string => {
   if (v === undefined || v === null) return '';
@@ -15,16 +16,19 @@ const DATE_PRESET = {
   '3m': 95,
 } as const;
 
-export const inferDateType = (startDate?: string, endDate?: string): '' | '1m' | '3m' | 'custom' => {
+export const inferDateType = (startDate?: string, endDate?: string): DateType => {
   if (!startDate || !endDate) return '';
 
-  const now = new Date();
-  const start = new Date(startDate);
+  const now = dayjs().startOf('day');
+  const start = dayjs(startDate).startOf('day');
+  const end = dayjs(endDate).startOf('day');
 
-  const diffDays = Math.round((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  if (!start.isValid() || !end.isValid()) return '';
+
+  const diffDays = now.diff(start, 'day');
 
   for (const [key, maxDays] of Object.entries(DATE_PRESET)) {
-    if (diffDays <= maxDays) return key as '1m' | '3m';
+    if (diffDays <= maxDays) return key as DateType;
   }
 
   return 'custom';
