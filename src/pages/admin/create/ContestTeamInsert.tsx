@@ -1,19 +1,22 @@
 import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 import { FiUpload, FiX } from 'react-icons/fi';
-import Button from '@components/Button';
+import { useMutation } from '@tanstack/react-query';
 import { useState, useRef } from 'react';
+import { XLSX_MIME_TYPE } from '@constants/contest';
+import { AdminActionButton, AdminHeader } from '@components/admin';
+import { Dialog } from '@components/ui/dialog';
 import { cn } from 'utils/classname';
 import { useToast } from 'hooks/useToast';
-import { useContestCreate } from './ContestCreateContext';
-import { useMutation } from '@tanstack/react-query';
 import { postBulkAddTeams } from 'apis/contest';
-
-const XLSX_MIME_TYPE = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`;
+import { ContestBulkAddTeamsErrorDto } from 'types/DTO';
+import { useContestCreate } from './ContestCreateContext';
+import { TemplateErrorModal } from './TemplateErrorModal';
 
 const ContestTeamInsert = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const { contestId, setCurrentStep } = useContestCreate();
+  const [templateErrors, setTemplateErrors] = useState<string[]>([]);
+  const { currentStepName, contestId, setCurrentStep } = useContestCreate();
   const inputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
@@ -26,6 +29,7 @@ const ContestTeamInsert = () => {
   const handleFileChange = (selectedFile: File | null) => {
     if (selectedFile) {
       if (selectedFile.type === XLSX_MIME_TYPE || selectedFile.name.endsWith('.xlsx')) {
+        setTemplateErrors([]);
         setFile(selectedFile);
       } else {
         toast('지원되는 파일 형식과 맞지 않습니다.', 'error');
@@ -68,6 +72,7 @@ const ContestTeamInsert = () => {
   const handleRemoveFile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setFile(null);
+    if (inputRef.current) inputRef.current.value = '';
   };
 
   const handleUpload = () => {
@@ -82,12 +87,19 @@ const ContestTeamInsert = () => {
         formData,
       },
       {
-        onSuccess: () => {
-          toast('팀 설정이 완료되었습니다.', 'success');
+        onSuccess: (data) => {
+          toast(`${data.teamCount}개의 팀 생성이 완료되었습니다.`, 'success');
           setCurrentStep(3);
         },
         onError: (error: any) => {
-          toast(error.response?.data?.message || '팀 설정에 실패했습니다.', 'error');
+          if (error.response?.data?.message) toast(error.response.data.message, 'error');
+          else if (error.response?.data?.errors) {
+            setTemplateErrors(
+              error.response.data.errors.map((e: ContestBulkAddTeamsErrorDto) => `${e.rowNumber}행 - ${e.message}`),
+            );
+            setFile(null);
+            if (inputRef.current) inputRef.current.value = '';
+          } else toast(`${currentStepName}에 실패했습니다.`, 'error');
         },
       },
     );
@@ -95,10 +107,7 @@ const ContestTeamInsert = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-xl font-bold">대회 참여자 설정</h2>
-        <div className="text-midGray text-xs">하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요.</div>
-      </div>
+      <AdminHeader title={currentStepName} description="하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요." />
       <a href="/팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
         <PiMicrosoftExcelLogo size={24} className="fill-mainGreen mt-0.75" />
         <span className="group-hover:text-mainGreen text-lg group-hover:underline">팀등록_템플릿파일.xlsx</span>
@@ -145,15 +154,12 @@ const ContestTeamInsert = () => {
           </>
         )}
       </div>
-      <div className="flex justify-center">
-        <Button
-          className="disabled:border-midGray disabled:bg-whiteGray disabled:text-midGray border-mainGreen text-mainGreen w-fit rounded-3xl border px-6 py-2"
-          onClick={handleUpload}
-          disabled={!file}
-        >
-          팀 설정하기
-        </Button>
-      </div>
+      <Dialog open={templateErrors.length > 0} onOpenChange={(open) => !open && setTemplateErrors([])}>
+        <TemplateErrorModal errors={templateErrors} />
+      </Dialog>
+      <AdminActionButton size="lg" className="mx-auto rounded-full" disabled={!file} onClick={handleUpload}>
+        설정하기
+      </AdminActionButton>
     </div>
   );
 };

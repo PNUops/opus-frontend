@@ -28,6 +28,20 @@ export interface ContestRequestDto {
   categoryId: number;
 }
 
+export interface ContestBulkAddTeamsResponseDto {
+  teamCount: number;
+  teams: {
+    rowNumber: number;
+    teamName: string;
+    teamId: number;
+  }[];
+}
+
+export interface ContestBulkAddTeamsErrorDto {
+  rowNumber: number;
+  message: string;
+}
+
 export interface VoteTermDto {
   voteStartAt: string;
   voteEndAt: string;
