@@ -1,4 +1,4 @@
-import TeamCardGrid from '@pages/main/TeamCardGrid';
+import TeamCardGrid from '@pages/contest/TeamCardGrid';
 import useTeamList from 'hooks/useTeamList';
 import { useParams } from 'react-router-dom';
 import useContests from 'hooks/useContests';

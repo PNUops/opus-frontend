@@ -1,4 +1,10 @@
-import { PaginationResponseDto, VoteLogItemDto, VoteRankingDto, VoteStatsDto } from 'types/DTO';
+import { MainStatsDto, PaginationResponseDto, VoteLogItemDto, VoteRankingDto, VoteStatsDto } from 'types/DTO';
+
+export const mockMainStats: MainStatsDto = {
+  totalProjects: 1250,
+  totalLikes: 45800,
+  totalContests: 42,
+};
 
 export const mockVoteRanking: VoteRankingDto[] = [
   {
