@@ -1,38 +1,23 @@
-import { useEffect, useState } from 'react';
-import { cn } from 'utils/classname';
-
-// TODO: 추후 실제 API 응답 타입으로 교체
-interface StatisticsData {
-  projectCount: number;
-  visitorCount: number;
-  likeCount: number;
-}
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { getMainStats } from 'apis/statistics';
 
 const StatisticsSection = () => {
-  // 초기 더미 데이터
-  const [data, setData] = useState<StatisticsData>({
-    projectCount: 1284,
-    visitorCount: 2431,
-    likeCount: 8029,
+  const { data } = useSuspenseQuery({
+    queryKey: ['mainStats'],
+    queryFn: getMainStats,
   });
 
-  // API 연동 시 별도 가공 없이 데이터 사용
-
   return (
-    <section className="flex flex-col gap-4">
-      <div className="text-center font-semibold text-black/80">
+    <section className="flex flex-col gap-10 rounded-2xl p-12.5 shadow-lg">
+      <div className="text-center text-xl font-semibold">
         부산대학교 SW 프로젝트 관리 시스템은 이렇게 성장하고 있어요 🚀
       </div>
-
-      <div className="flex w-full flex-col justify-around gap-8 rounded-2xl bg-white px-4 py-10 shadow-sm sm:flex-row sm:gap-0 sm:px-10">
-        <StatItem label="프로젝트 등록 수" value={`${data.projectCount}개`} />
-
+      <div className="flex w-full flex-col justify-around gap-8 sm:flex-row sm:gap-0">
+        <StatItem label="진행된 대회 수" value={data.totalContests} />
         <Divider />
-
-        <StatItem label="오늘 방문자 수" value={`${data.visitorCount}명`} />
+        <StatItem label="프로젝트 등록 수" value={data.totalProjects} />
         <Divider />
-
-        <StatItem label="총 좋아요 수" value={`${data.likeCount}개`} />
+        <StatItem label="총 좋아요 수" value={data.totalLikes} />
       </div>
     </section>
   );
@@ -40,9 +25,9 @@ const StatisticsSection = () => {
 
 export default StatisticsSection;
 
-const StatItem = ({ label, value }: { label: string; value: string }) => (
+const StatItem = ({ label, value }: { label: string; value: number }) => (
   <div className="bg--color-subGreen flex flex-1 flex-col items-center justify-center gap-2 text-center">
-    <span className="text-3xl font-bold text-black sm:text-4xl">{value}</span>
+    <span className="text-2xl font-bold sm:text-3xl">{`${value.toLocaleString()}개`}</span>
     <span className="text-midGray text-sm font-medium">{label}</span>
   </div>
 );

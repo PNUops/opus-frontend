@@ -1,4 +1,9 @@
-import { ContestBulkAddTeamsErrorDto, ContestBulkAddTeamsResponseDto, ContestResponseDto } from 'types/DTO';
+import {
+  ContestResponseDto,
+  GroupedContestResponseDto,
+  ContestBulkAddTeamsErrorDto,
+  ContestBulkAddTeamsResponseDto,
+} from 'types/DTO';
 import { ProjectsAdminResponseDto, GetContestTracksResponseDto, GetContestAwardsResponseDto } from 'types/DTO';
 
 export const mockContestsResponse: ContestResponseDto[] = [
@@ -69,6 +74,29 @@ export const mockContestBulkAddTeamsError: { errors: ContestBulkAddTeamsErrorDto
     },
   ],
 };
+export const mockGroupedContestsResponse: GroupedContestResponseDto[] = [
+  {
+    categoryId: 1,
+    categoryName: '창의융합 SW해커톤',
+    contests: [
+      {
+        contestId: 4,
+        contestName: '제6회 PNU 창의융합 SW해커톤',
+        isCurrent: true,
+      },
+      {
+        contestId: 3,
+        contestName: '제5회 PNU 창의융합 SW해커톤',
+        isCurrent: false,
+      },
+    ],
+  },
+  {
+    categoryId: 2,
+    categoryName: '졸업과제',
+    contests: [{ contestId: 8, contestName: '2025 전기 졸업과제', isCurrent: false }],
+  },
+];
 
 export const mockProjectsAdminResponse: ProjectsAdminResponseDto[] = [
   {

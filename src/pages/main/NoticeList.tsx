@@ -2,22 +2,18 @@ import { AiOutlineNotification } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { MdFiberNew } from 'react-icons/md';
 import dayjs from 'dayjs';
-import { NoticeListDto } from 'types/DTO/noticeDto';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { noticeOption } from 'queries/notices';
 
-interface Props {
-  notices: NoticeListDto[];
-}
+const NoticeList = () => {
+  const { data: notices } = useSuspenseQuery(noticeOption());
 
-const NoticeList = ({ notices }: Props) => {
   return (
-    <div className="w-full">
+    <div className="rounded-xl bg-gray-50 p-2.5 shadow-md">
       <ul className="flex flex-col gap-1">
-        {notices && notices.length === 0 && (
-          <li className="text-midGray py-2 text-center text-sm">등록된 공지사항이 없습니다.</li>
-        )}
-        {notices?.map((notice) => {
+        {notices.length === 0 && <li className="text-midGray py-2 text-center text-sm">등록된 공지사항이 없습니다.</li>}
+        {notices.slice(0, 3).map((notice) => {
           const showNewIcon = dayjs(notice.createdAt).isAfter(dayjs().subtract(3, 'day'));
-
           return (
             <li key={notice.noticeId}>
               <Link

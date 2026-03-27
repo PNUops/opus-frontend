@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTeamId } from 'hooks/useId';
 import useAuth from 'hooks/useAuth';
 
