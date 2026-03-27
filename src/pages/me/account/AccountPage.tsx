@@ -1,6 +1,7 @@
 import { useState, ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import PasswordInput from 'components/PasswordInput';
+import Divider from '@components/ui/divider';
 import { useToast } from 'hooks/useToast';
 import { isValidPassword } from 'utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
@@ -358,8 +359,4 @@ const AccountManagementSection = () => {
       </MyPageSection.Body>
     </MyPageSection.Root>
   );
-};
-
-const Divider = () => {
-  return <div className="border-lightGray border-t" />;
 };

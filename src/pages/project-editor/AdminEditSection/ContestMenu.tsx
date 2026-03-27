@@ -2,8 +2,6 @@ import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useOutsideClick } from 'hooks/useOutsideClick';
 
-import { useToast } from 'hooks/useToast';
-
 import { getAllContests } from 'apis/contest';
 import { ContestResponseDto } from 'types/DTO';
 
@@ -17,7 +15,6 @@ interface ContestMenuProps {
 }
 
 const ContestMenu = ({ value, onChange }: ContestMenuProps) => {
-  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLUListElement | null>(null);
 

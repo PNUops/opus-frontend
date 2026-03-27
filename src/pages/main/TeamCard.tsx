@@ -1,10 +1,9 @@
 import { FaHeart } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
-import { getThumbnailTeams } from '../../apis/team';
 import AwardTag from '@components/AwardTag';
 import { AwardDto } from 'types/DTO/awardsDto';
+import useTeamThumbnail from 'hooks/useTeamThumbnail';
 
 interface TeamCardProps {
   contestId: number;
@@ -17,17 +16,7 @@ interface TeamCardProps {
 }
 
 const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, isVoteTerm }: TeamCardProps) => {
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>(basicThumbnail);
-
-  useEffect(() => {
-    const fetchThumbnail = async () => {
-      const url = await getThumbnailTeams(teamId);
-      if (url) {
-        setThumbnailUrl(url);
-      }
-    };
-    fetchThumbnail();
-  }, [teamId]);
+  const { thumbnailUrl } = useTeamThumbnail(teamId);
 
   return (
     <Link to={`/contest/${contestId}/teams/view/${teamId}`} className="flex aspect-[7/8] w-full flex-col">
