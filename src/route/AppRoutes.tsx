@@ -8,7 +8,7 @@ import ProjectViewerPage from '@pages/project-viewer/ProjectViewerPage';
 import SignInPage from '@pages/signin/SignInPage';
 import SignUpPage from '@pages/signup/SignUpPage';
 import FindPage from '@pages/find/FindPage';
-import GoogleOAuthCallback from '@pages/signin/SocialSignIn/GoogleOAuthCallback';
+import OAuthCallback from '@pages/signin/SocialSignIn/OAuthCallback';
 import NoticeDetail from '@pages/notice/NoticeDetail';
 import ContestPage from '@pages/contest/ContestPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
@@ -56,7 +56,7 @@ const AppRoutes = () =>
             { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectViewerPage /> },
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
             { path: 'find', element: <FindPage /> },
-            { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
+            { path: 'oauth/callback', element: <OAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
           ],
         },
