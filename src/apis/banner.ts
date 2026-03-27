@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import apiClient from './apiClient';
 
 export const getBanner = async (contestId: number): Promise<Blob | null> => {

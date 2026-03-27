@@ -1,7 +1,6 @@
 import { ContestCreateProvider, useContestCreate } from './ContestCreateContext';
 import ContestCreateProgress from './ContestCreateProgress';
 import ContestCreateForm from './ContestCreateForm';
-import ContestTeamInsert from './ContestTeamInsert';
 import CreateRequiredFields from './CreateRequiredFields';
 
 const ContestCreateContent = () => {

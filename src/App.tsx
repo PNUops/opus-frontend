@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 import './index.css';
 import { useLocation } from 'react-router-dom';
 import { Toaster } from '@components/Toaster';

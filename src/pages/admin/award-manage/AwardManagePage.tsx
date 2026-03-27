@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useAwardViewAdmin } from 'hooks/useAwardAdmin';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import useTeamList from 'hooks/useTeamList';

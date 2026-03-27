@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { ProjectDetailsResponseDto, TeamMember } from 'types/DTO/projectViewerDto';
+import { ProjectDetailsResponseDto } from 'types/DTO/projectViewerDto';
 import { FaCrown } from 'react-icons/fa6';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import { IoEllipsisHorizontal, IoPerson } from 'react-icons/io5';

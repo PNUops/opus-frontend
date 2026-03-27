@@ -11,8 +11,8 @@ interface TeamCardProps {
   teamId: number;
   teamName: string;
   projectName: string;
-  isLiked: boolean;
-  awards: AwardDto[];
+  awards?: AwardDto[];
+  isLiked?: boolean;
   isVoteTerm?: boolean;
 }
 
@@ -37,7 +37,8 @@ const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, i
         <div className="absolute top-2 right-0 left-0 w-full px-2">
           <div className="flex w-full min-w-0 items-center gap-2">
             {/* TODO: API 개발 완료 시 테스트 필요. 특히 수상 몇개 표시할 것인지 논의 필요 */}
-            {awards.length > 0 &&
+            {awards &&
+              awards.length > 0 &&
               awards.map((award) => (
                 <div key={award.awardName} className="w-0 max-w-full min-w-0 flex-auto">
                   <AwardTag awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
@@ -51,11 +52,11 @@ const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, i
         </div>
       </div>
 
-      <div className="p-3">
-        <div className="line-clamp-2 text-[clamp(0.85rem,2vw,1.3rem)] leading-tight font-semibold text-black">
+      <div className="flex flex-col p-3">
+        <div className="text-midGray truncate overflow-hidden py-2 text-[clamp(0.8rem,1.8vw,1rem)]">{teamName}</div>
+        <div className="line-clamp-2 max-h-[3.2rem] min-h-[2.6rem] text-[clamp(0.85rem,2vw,1.3rem)] leading-tight font-semibold text-black">
           {projectName}
         </div>
-        <div className="text-midGray truncate overflow-hidden py-2 text-[clamp(0.8rem,1.8vw,1rem)]">{teamName}</div>
       </div>
     </Link>
   );

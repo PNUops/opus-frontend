@@ -23,13 +23,17 @@ import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
 import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
-import MyPage from '@pages/me/MyPage';
 import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
 import BannerManagePage from '@pages/admin/banner/BannerManagePage';
 import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
+import MyPageLayout from '@layout/me/MyPageLayout';
+import ActivityPage from '@pages/me/activity/ActivityPage';
+import AccountPage from '@pages/me/account/AccountPage';
+import MyLikePage from '@pages/me/activity/sub/MyLikePage';
+import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -54,7 +58,16 @@ const AppRoutes = () =>
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
-            { path: 'me', element: <MyPage /> },
+          ],
+        },
+        {
+          path: 'me',
+          element: <MyPageLayout />,
+          children: [
+            { path: 'activity', element: <ActivityPage /> },
+            { path: 'activity/likes', element: <MyLikePage /> },
+            { path: 'activity/comments', element: <MyCommentPage /> },
+            { path: 'account', element: <AccountPage /> },
           ],
         },
         {
