@@ -38,12 +38,22 @@ export type GetMyVotesResponseDto = MyVoteDto[];
 export type GetMyLikesPreviewResponseDto = MyLikeDto[]; // INFO: 미리보기는 3개까지만 반환
 export type GetMyLikesResponseDto = MyLikeGridPagination;
 
+import type { SortType } from '@pages/me/activity/types/filter';
+
 export type GetMyLikesParamsDto = {
-  sort?: 'latest' | 'oldest';
+  sort?: SortType;
   startDate?: string;
   endDate?: string;
   categoryId?: string;
   contestId?: string;
-  page: number;
-  size: number;
+  page?: number;
+  size?: number;
+};
+
+export type GetMyCommentsParamsDto = {
+  sort?: SortType;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  size?: number;
 };

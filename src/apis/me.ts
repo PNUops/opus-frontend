@@ -4,6 +4,7 @@ import {
   GetMyVotesResponseDto,
   GetMyLikesPreviewResponseDto,
   GetMyLikesParamsDto,
+  GetMyCommentsParamsDto,
   GetMyLikesResponseDto,
 } from 'types/DTO/meDto';
 import { GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
@@ -24,11 +25,11 @@ export const getMyLikesPreview = async (): Promise<GetMyLikesPreviewResponseDto>
 };
 
 export const getMyLikes = async (params?: GetMyLikesParamsDto): Promise<GetMyLikesResponseDto> => {
-  const res = await apiClient.get('/members/me/likes', { params: params || {} });
+  const res = await apiClient.get('/members/me/likes', { params: params });
   return res.data;
 };
 
-export const getMyComments = async (): Promise<GetCommentsPaginationResponseDto> => {
-  const res = await apiClient.get('/members/me/comments');
+export const getMyComments = async (params?: GetMyCommentsParamsDto): Promise<GetCommentsPaginationResponseDto> => {
+  const res = await apiClient.get('/members/me/comments', { params: params });
   return res.data;
 };
