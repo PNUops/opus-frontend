@@ -1,5 +1,5 @@
 import { bannersHandler } from './banners';
-import { contestsHandler } from './contests';
+import { contestsHandler } from './contest';
 import { noticesHandler } from './notices';
 import { signInHandlers } from './sign-in';
 import { signUpHandlers } from './sign-up';

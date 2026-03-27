@@ -8,6 +8,13 @@ export interface ContestResponseDto {
   isCurrent: boolean;
   updatedAt: Date;
 }
+
+export interface GroupedContestResponseDto {
+  categoryId: number;
+  categoryName: string;
+  contests: Pick<ContestResponseDto, 'contestId' | 'contestName' | 'isCurrent'>[];
+}
+
 export interface CurrentContestResponseDto {
   contestId: number;
   categoryName: string;
@@ -19,6 +26,20 @@ export interface CurrentContestResponseDto {
 export interface ContestRequestDto {
   contestName: string;
   categoryId: number;
+}
+
+export interface ContestBulkAddTeamsResponseDto {
+  teamCount: number;
+  teams: {
+    rowNumber: number;
+    teamName: string;
+    teamId: number;
+  }[];
+}
+
+export interface ContestBulkAddTeamsErrorDto {
+  rowNumber: number;
+  message: string;
 }
 
 export interface VoteTermDto {

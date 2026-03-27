@@ -1,6 +1,13 @@
 import apiClient from './apiClient';
 
-import { ContestRequestDto, ContestResponseDto, CurrentContestResponseDto, ProjectsAdminResponseDto } from 'types/DTO';
+import {
+  ContestRequestDto,
+  ContestResponseDto,
+  CurrentContestResponseDto,
+  ContestBulkAddTeamsResponseDto,
+  GroupedContestResponseDto,
+  ProjectsAdminResponseDto,
+} from 'types/DTO';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
 export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
@@ -14,6 +21,11 @@ export const getAllContests = async (): Promise<ContestResponseDto[]> => {
     ...contest,
     updatedAt: new Date(contest.updatedAt),
   }));
+};
+
+export const getGroupedContests = async (): Promise<GroupedContestResponseDto[]> => {
+  const res = await apiClient.get('/sidebar');
+  return res.data;
 };
 
 export const postAllContests = async (contestName: string) => {
@@ -46,7 +58,10 @@ export const getContestTeams = async (contestId: number): Promise<TeamListItemRe
   return res.data;
 };
 
-export const postBulkAddTeams = async (contestId: number, formData: FormData) => {
+export const postBulkAddTeams = async (
+  contestId: number,
+  formData: FormData,
+): Promise<ContestBulkAddTeamsResponseDto> => {
   const res = await apiClient.post(`/contests/${contestId}/teams/bulk`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });

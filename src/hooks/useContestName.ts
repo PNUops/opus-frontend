@@ -1,6 +1,6 @@
 import { useContestIdOrRedirect } from './useId';
 import { useQuery } from '@tanstack/react-query';
-import { contestsOption } from 'queries/contests';
+import { contestsOption } from 'queries/contest';
 
 const useContestName = () => {
   const contestId = useContestIdOrRedirect();

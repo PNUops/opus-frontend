@@ -1,4 +1,9 @@
-import { ContestResponseDto } from 'types/DTO';
+import {
+  ContestResponseDto,
+  GroupedContestResponseDto,
+  ContestBulkAddTeamsErrorDto,
+  ContestBulkAddTeamsResponseDto,
+} from 'types/DTO';
 import { ProjectsAdminResponseDto, GetContestTracksResponseDto, GetContestAwardsResponseDto } from 'types/DTO';
 
 export const mockContestsResponse: ContestResponseDto[] = [
@@ -33,6 +38,63 @@ export const mockContestsResponse: ContestResponseDto[] = [
     contestId: 4,
     contestName: '제3회PNU창의융합SW해커톤',
     updatedAt: new Date('2025-06-20T09:15:45Z'),
+  },
+];
+
+export const mockContestBulkAddTeamsResponse: ContestBulkAddTeamsResponseDto = {
+  teamCount: 3,
+  teams: [
+    {
+      rowNumber: 5,
+      teamName: '태윤팀',
+      teamId: 101,
+    },
+    {
+      rowNumber: 6,
+      teamName: '오푸스팀',
+      teamId: 102,
+    },
+    {
+      rowNumber: 7,
+      teamName: '태영팀',
+      teamId: 103,
+    },
+  ],
+};
+
+export const mockContestBulkAddTeamsError: { errors: ContestBulkAddTeamsErrorDto[] } = {
+  errors: [
+    {
+      rowNumber: 5,
+      message: '팀 이름은 필수입니다.',
+    },
+    {
+      rowNumber: 7,
+      message: '팀원 이름, 학번, 이메일의 개수가 일치하지 않습니다.',
+    },
+  ],
+};
+export const mockGroupedContestsResponse: GroupedContestResponseDto[] = [
+  {
+    categoryId: 1,
+    categoryName: '창의융합 SW해커톤',
+    contests: [
+      {
+        contestId: 4,
+        contestName: '제6회 PNU 창의융합 SW해커톤',
+        isCurrent: true,
+      },
+      {
+        contestId: 3,
+        contestName: '제5회 PNU 창의융합 SW해커톤',
+        isCurrent: false,
+      },
+    ],
+  },
+  {
+    categoryId: 2,
+    categoryName: '졸업과제',
+    contests: [{ contestId: 8, contestName: '2025 전기 졸업과제', isCurrent: false }],
   },
 ];
 

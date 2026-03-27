@@ -1,5 +1,5 @@
-import TeamCard from '@pages/main/TeamCard';
-import TeamCardSkeleton from '@pages/main/TeamCardSkeleton';
+import TeamCard from '@pages/contest/TeamCard';
+import TeamCardSkeleton from '@pages/contest/TeamCardSkeleton';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 
 import { useIsVoteTerm } from 'hooks/useVoteTerm';
