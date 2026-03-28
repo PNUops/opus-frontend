@@ -3,8 +3,8 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '@layout/MainLayout';
 
 import MainPage from '@pages/main/MainPage';
-import ProjectEditorPage from '@pages/project-editor/ProjectEditorPage';
-import ProjectViewerPage from '@pages/project-viewer/ProjectViewerPage';
+import ProjectEditPage from '@pages/project-editor/ProjectEditPage';
+import ProjectDetailPage from '@pages/project-viewer/ProjectDetailPage';
 import SignInPage from '@pages/signin/SignInPage';
 import SignUpPage from '@pages/signup/SignUpPage';
 import FindPage from '@pages/find/FindPage';
@@ -53,8 +53,8 @@ const AppRoutes = () =>
           children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
-            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectViewerPage /> },
-            { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditorPage mode="edit" /> },
+            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectDetailPage /> },
+            { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/callback', element: <OAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
@@ -98,7 +98,7 @@ const AppRoutes = () =>
                 // 프로젝트
                 { path: 'projects', element: <ProjectManagePage /> },
                 // 프로젝트 생성
-                { path: 'projects/create', element: <ProjectEditorPage mode="create" /> },
+                { path: 'projects/create', element: <ProjectEditPage /> },
                 { path: 'sort', element: <div>정렬 관리</div> },
                 { path: 'team-order', element: <TeamOrderAdminPage /> },
                 { path: 'awards', element: <AwardManagePage /> },

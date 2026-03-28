@@ -1,10 +1,10 @@
 import { FaHeart } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
+import { MdHowToVote } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
-import { getThumbnailTeams } from '../../apis/team';
 import AwardTag from '@components/AwardTag';
 import { AwardDto } from 'types/DTO/awardsDto';
+import useTeamThumbnail from 'hooks/useTeamThumbnail';
 
 interface TeamCardProps {
   contestId: number;
@@ -13,21 +13,12 @@ interface TeamCardProps {
   projectName: string;
   awards?: AwardDto[];
   isLiked?: boolean;
+  isVoted?: boolean;
   isVoteTerm?: boolean;
 }
 
-const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, isVoteTerm }: TeamCardProps) => {
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>(basicThumbnail);
-
-  useEffect(() => {
-    const fetchThumbnail = async () => {
-      const url = await getThumbnailTeams(teamId);
-      if (url) {
-        setThumbnailUrl(url);
-      }
-    };
-    fetchThumbnail();
-  }, [teamId]);
+const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, isVoted, awards, isVoteTerm }: TeamCardProps) => {
+  const { thumbnailUrl } = useTeamThumbnail(teamId);
 
   return (
     <Link to={`/contest/${contestId}/teams/view/${teamId}`} className="flex aspect-[7/8] w-full flex-col">
@@ -45,8 +36,11 @@ const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, i
                 </div>
               ))}
 
-            {isVoteTerm && isLiked && (
-              <FaHeart color="red" size="clamp(1.5rem, 2vw, 1.8rem)" className="flex-shrink-0" />
+            {isVoteTerm && (isLiked || isVoted) && (
+              <div className="flex flex-shrink-0 items-center gap-1">
+                {isLiked && <FaHeart color="red" size="clamp(1.5rem, 2vw, 1.8rem)" />}
+                {isVoted && <MdHowToVote color="#2E6CF6" size="clamp(1.5rem, 2vw, 1.8rem)" />}
+              </div>
             )}
           </div>
         </div>

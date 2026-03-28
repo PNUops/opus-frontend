@@ -32,6 +32,7 @@ module.exports = [
       },
     },
     rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
       'prettier/prettier': 'error',
       'react/react-in-jsx-scope': 'off',
       'no-unused-vars': 'off',

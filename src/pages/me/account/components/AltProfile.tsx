@@ -6,25 +6,28 @@ interface AltProfileProps {
   size?: number;
 }
 const AltProfile = ({ seed, imageUrl, size = 64 }: AltProfileProps) => {
-  const isValidImage = imageUrl?.trim();
-  if (isValidImage) {
+  const safeImageUrl = typeof imageUrl === 'string' ? imageUrl.trim() : '';
+  const displayName = seed || 'Unknown';
+
+  if (safeImageUrl) {
     return (
       <img
-        src={imageUrl || undefined}
-        alt={seed}
+        src={safeImageUrl}
+        alt={displayName}
         width={size}
         height={size}
         className="rounded-full object-cover"
         onError={(e) => {
-          e.currentTarget.style.display = 'none';
+          e.currentTarget.src = '';
         }}
       />
     );
   }
+
   return (
     <Avatar
       size={size}
-      name={seed || 'Unknown'}
+      name={displayName}
       variant="beam"
       colors={['#005baa', '#00a651', '#979797', '#d1f3e1', '#e2e2e2']}
     />

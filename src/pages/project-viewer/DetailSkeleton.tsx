@@ -1,4 +1,4 @@
-export const IntroSectionSkeleton = () => (
+export const ProjectIntroSectionSkeleton = () => (
   <div className="animate-pulse space-y-2 rounded-md bg-gray-100 p-4">
     <div className="h-6 w-3/4 rounded bg-gray-300"></div>
     <div className="h-4 w-1/2 rounded bg-gray-300"></div>

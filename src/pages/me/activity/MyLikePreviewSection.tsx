@@ -5,7 +5,7 @@ import { getMyLikesPreview } from 'apis/me';
 import type { GetMyLikesPreviewResponseDto } from 'types/DTO/meDto';
 import { RiHeart3Line } from 'react-icons/ri';
 import { FaChevronRight } from 'react-icons/fa6';
-import TeamCard from '@pages/main/TeamCard';
+import TeamCard from '@pages/contest/TeamCard';
 
 const MyLikePreviewSection = () => {
   return (

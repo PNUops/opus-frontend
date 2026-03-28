@@ -1,6 +1,7 @@
-import { useState, ChangeEvent } from 'react';
+import { useEffect, useState, ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import PasswordInput from 'components/PasswordInput';
+import Divider from '@components/ui/divider';
 import { useToast } from 'hooks/useToast';
 import { isValidPassword } from 'utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
@@ -9,6 +10,11 @@ import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from 'apis
 import { patchPasswordReset } from 'apis/signIn';
 import { PasswordResetRequestDto } from 'types/DTO';
 import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from 'queries/member';
+import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from 'apis/me';
+import { MdEdit } from 'react-icons/md';
+import { createImageFormData, imageValidator } from 'utils/image';
+import { isValidGithubUrl } from '@pages/project-editor/urlValidators';
+import { getApiErrorMessage } from 'utils/error';
 
 const AccountPage = () => {
   return (
@@ -35,19 +41,63 @@ const ProfileSection = () => {
 };
 
 const ProfileCard = () => {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const { data: account } = useQuery(myAccountOption());
+  const { data: profileImage } = useQuery({
+    queryKey: ['profileImage', 'me'],
+    queryFn: getMyProfileImage,
+  });
 
   const name = account?.name;
   const email = account?.email;
   const githubUrl = account?.githubUrl;
-  const profileImageUrl = account?.profileImageUrl;
+  const profileImageUrl = profileImage?.status === 'success' ? profileImage.url : null;
+  const [isGithubInputOpen, setIsGithubInputOpen] = useState(false);
+  const [githubInputValue, setGithubInputValue] = useState(githubUrl ?? '');
+
+  useEffect(() => {
+    return () => {
+      if (profileImageUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(profileImageUrl);
+      }
+    };
+  }, [profileImageUrl]);
+
+  useEffect(() => {
+    if (!isGithubInputOpen) {
+      setGithubInputValue(githubUrl ?? '');
+    }
+  }, [githubUrl, isGithubInputOpen]);
+
+  const { mutate: saveGithubUrl, isPending: isSavingGithubUrl } = useMutation({
+    mutationFn: patchMyGithubUrl,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: MY_ACCOUNT_QUERY_KEY });
+      toast('GitHub 계정이 연결되었어요.', 'success');
+    },
+    onError: (err) => {
+      toast(`${err?.message}` || 'GitHub 계정 연결에 실패했어요. 다시 시도해주세요.', 'error');
+    },
+  });
+
+  const handleGithubInputBlur = () => {
+    const nextGithubValue = githubInputValue.trim();
+    const prevGithubValue = (githubUrl ?? '').trim();
+
+    setIsGithubInputOpen(false);
+
+    if (!nextGithubValue || nextGithubValue === prevGithubValue) return;
+    saveGithubUrl(nextGithubValue);
+  };
 
   return (
     <div className="bg-whiteGray flex w-full flex-col items-start gap-10 rounded-lg px-17 py-12">
       <div className="flex items-center gap-10">
-        <AltProfile seed={name} imageUrl={profileImageUrl} />
+        <EditableProfileImage name={name} profileImageUrl={profileImageUrl} />
         <span className="text-2xl font-bold text-neutral-800">{name}</span>
       </div>
+
       <div className="flex w-full flex-col items-start gap-4">
         <div className="text-md flex items-center gap-4">
           <span className="w-15 font-semibold text-neutral-800">이메일</span>
@@ -61,13 +111,183 @@ const ProfileCard = () => {
               className="truncate font-medium text-neutral-500"
               target="_blank"
               rel="noopener noreferrer"
+            >
+              {githubUrl}
+            </a>
+          ) : isGithubInputOpen ? (
+            <input
+              autoFocus
+              value={githubInputValue}
+              onChange={(e) => setGithubInputValue(e.target.value)}
+              onBlur={() => {
+                if (isValidGithubUrl(githubInputValue)) {
+                  handleGithubInputBlur();
+                } else {
+                  setGithubInputValue(githubUrl ?? '');
+                  setIsGithubInputOpen(false);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.currentTarget.blur();
+                }
+
+                if (e.key === 'Escape') {
+                  setGithubInputValue(githubUrl ?? '');
+                  setIsGithubInputOpen(false);
+                }
+              }}
+              disabled={isSavingGithubUrl}
+              type="url"
+              placeholder="GitHub URL을 입력해주세요."
+              className="bg-lightGray w-full rounded-md p-1.5 px-2 text-neutral-600 outline-none"
             />
           ) : (
-            <p></p>
+            <button
+              type="button"
+              onClick={() => setIsGithubInputOpen(true)}
+              className="text-midGray truncate p-1.5 text-left"
+            >
+              아직 GitHub 계정이 연결되지 않았어요.
+            </button>
           )}
         </div>
       </div>
     </div>
+  );
+};
+
+interface EditableProfileImageProps {
+  name: string | undefined;
+  profileImageUrl: string | null;
+}
+
+const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImageProps) => {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { mutate: uploadProfileImage, isPending: isUploading } = useMutation({
+    mutationFn: (file: File) => {
+      const formData = createImageFormData(file);
+      return patchMyProfileImage(formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profileImage', 'me'] });
+      toast('프로필 이미지가 변경되었어요.', 'success');
+      setIsModalOpen(false);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    },
+    onError: (err) => {
+      toast(getApiErrorMessage(err, '프로필 이미지 변경에 실패했어요.'), 'error');
+    },
+  });
+
+  const { mutate: removeProfileImage, isPending: isDeleting } = useMutation({
+    mutationFn: deleteMyProfileImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profileImage', 'me'] });
+      toast('프로필 이미지가 삭제되었어요.', 'success');
+      setIsModalOpen(false);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    },
+    onError: (err) => {
+      toast(getApiErrorMessage(err, '프로필 이미지 삭제에 실패했어요.'), 'error');
+    },
+  });
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    const validate = imageValidator(file);
+    if (!validate.isValid) {
+      validate.message.forEach((message) => toast(message, 'error'));
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedFile(null);
+    setPreviewUrl(null);
+  };
+
+  const handleSaveImage = () => {
+    if (!selectedFile) {
+      toast('이미지를 먼저 선택해주세요.', 'info');
+      return;
+    }
+    uploadProfileImage(selectedFile);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        className="group relative h-16 w-16 overflow-hidden rounded-full"
+        onClick={() => setIsModalOpen(true)}
+        aria-label="프로필 이미지 수정"
+      >
+        <AltProfile seed={name} imageUrl={profileImageUrl} />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35 group-focus-visible:bg-black/35">
+          <MdEdit className="text-xl text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+        </div>
+      </button>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="relative w-[360px] rounded-2xl bg-white p-8 shadow-xl">
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              onClick={handleCloseModal}
+              aria-label="닫기"
+            >
+              ×
+            </button>
+
+            <h3 className="mb-4 text-center text-lg font-semibold">프로필 이미지 수정</h3>
+
+            <div className="mb-5 flex justify-center">
+              <div className="h-20 w-20 overflow-hidden rounded-full">
+                <AltProfile seed={name} imageUrl={previewUrl || profileImageUrl} size={80} />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="bg-mainBlue cursor-pointer rounded-lg px-3 py-2 text-center text-sm text-white">
+                이미지 선택
+                <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+              </label>
+              <button
+                type="button"
+                className="border-mainRed text-mainRed hover:bg-whiteGray rounded-lg border px-3 py-2 text-sm"
+                onClick={() => removeProfileImage()}
+                disabled={isDeleting || isUploading}
+              >
+                프로필 사진 삭제하기
+              </button>
+              <button
+                type="button"
+                className="bg-mainBlue mt-2 rounded-lg px-3 py-2 text-sm text-white disabled:opacity-50"
+                onClick={handleSaveImage}
+                disabled={isUploading || isDeleting}
+              >
+                저장하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -88,7 +308,7 @@ const ProfileVisibilitySection = () => {
       toast('프로필 공개 설정이 변경되었어요.', 'success');
     },
     onError: (err) => {
-      toast(`${err?.message}` || '프로필 공개 설정 변경에 실패했어요. 다시 시도해주세요.', 'error');
+      toast(getApiErrorMessage(err, '프로필 공개 설정 변경에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
 
@@ -153,7 +373,7 @@ const StudentIdEditSection = () => {
       toast('학번이 성공적으로 변경되었어요.', 'success');
     },
     onError: (err) => {
-      toast(`${err?.message}` || '학번 변경에 실패했어요. 다시 시도해주세요.', 'error');
+      toast(getApiErrorMessage(err, '학번 변경에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
 
@@ -214,8 +434,8 @@ const PasswordEditSection = () => {
       toast('비밀번호가 성공적으로 변경되었어요.', 'success');
     },
     onError: (err) => {
-      setError(`${err?.message}` || '비밀번호 변경에 실패했어요. 다시 시도해주세요.');
-      toast(`${err?.message}` || '비밀번호 변경에 실패했어요. 다시 시도해주세요.', 'error');
+      setError(getApiErrorMessage(err, '비밀번호 변경에 실패했어요. 다시 시도해주세요.'));
+      toast(getApiErrorMessage(err, '비밀번호 변경에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
 
@@ -358,8 +578,4 @@ const AccountManagementSection = () => {
       </MyPageSection.Body>
     </MyPageSection.Root>
   );
-};
-
-const Divider = () => {
-  return <div className="border-lightGray border-t" />;
 };

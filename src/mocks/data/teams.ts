@@ -1,29 +1,30 @@
-import { ProjectDetailsResponseDto } from '../../types/DTO/projectViewerDto';
+import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
 
-export const mockTeamDetail: ProjectDetailsResponseDto = {
+export const mockTeamDetail: TeamDetailDto = {
   contestId: 1,
   contestName: '2026 소프트웨어 캡스톤 디자인',
   trackId: 3,
   trackName: 'AI & 데이터',
   teamId: 101,
   teamName: '팀 노바',
-  leaderId: 1001,
   projectName: '외국인 정착 지원 플랫폼',
   overview: '외국인의 한국 정착을 돕기 위해 맞춤형 가이드, 정착 로드맵, 커뮤니티 기능을 제공하는 플랫폼입니다.',
   professorName: '김민수 교수',
-  leaderName: '홍지연',
   teamMembers: [
     {
-      teamMemberId: 1001,
+      memberId: 1001,
       teamMemberName: '홍지연',
+      roleType: 'ROLE_팀장',
     },
     {
-      teamMemberId: 1002,
+      memberId: 1002,
       teamMemberName: '이동혁',
+      roleType: 'ROLE_팀원',
     },
     {
-      teamMemberId: 1003,
+      memberId: 1003,
       teamMemberName: '박민지',
+      roleType: 'ROLE_팀원',
     },
   ],
   previewIds: [501, 502, 503],
@@ -32,6 +33,7 @@ export const mockTeamDetail: ProjectDetailsResponseDto = {
   youTubePath: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   isLiked: true,
   isVoted: false,
+  awards: [{ awardId: 1, awardName: '대상', awardColor: '#FFD700' }],
 };
 
 export const mockTeams = [

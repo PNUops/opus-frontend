@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { FaGithub } from 'react-icons/fa';
-import { GithubCardSkeleton } from '../ViewerSkeleton';
+import { GithubCardSkeleton } from '../DetailSkeleton';
 import { fetchGithubContent } from 'utils/media';
 
 interface GithubCardProps {

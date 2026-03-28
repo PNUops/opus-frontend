@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyVotes } from 'apis/me';
 import type { GetMyVotesResponseDto } from 'types/DTO/meDto';
-import TeamCard from '@pages/main/TeamCard';
+import TeamCard from '@pages/contest/TeamCard';
 import { LuVote } from 'react-icons/lu';
 
 const MyVoteSection = () => {

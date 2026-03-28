@@ -4,10 +4,10 @@ import { FaGithub, FaYoutube } from 'react-icons/fa';
 import { FaEdit } from 'react-icons/fa';
 import { RiLink } from 'react-icons/ri';
 import { FiExternalLink } from 'react-icons/fi';
-import { ProjectDetailsResponseDto } from 'types/DTO/projectViewerDto';
+import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
 
-interface IntroSectionProps {
-  data: ProjectDetailsResponseDto;
+interface ProjectIntroSectionProps {
+  data: TeamDetailDto;
   isEditor: boolean;
 }
 
@@ -42,7 +42,7 @@ const UrlButton = ({ url }: { url: string }) => {
   );
 };
 
-const IntroSection = ({ data, isEditor }: IntroSectionProps) => {
+const ProjectIntroSection = ({ data, isEditor }: ProjectIntroSectionProps) => {
   const navigate = useNavigate();
   const { contestId, teamId, teamName, projectName, productionPath } = data;
 
@@ -70,4 +70,4 @@ const IntroSection = ({ data, isEditor }: IntroSectionProps) => {
   );
 };
 
-export default IntroSection;
+export default ProjectIntroSection;

@@ -4,7 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { API_BASE_URL } from '@constants/env';
 import defaultBanner from 'assets/basicThumbnail.jpg';
-import { currentContestOption } from 'queries/contests';
+import { currentContestOption } from 'queries/contest';
 
 const CurrentContestSection = () => {
   const { data: currentContests } = useSuspenseQuery(currentContestOption());

@@ -1,65 +1,17 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import FilterDropDown from '@components/FilterDropDown';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import Pagination from '@components/Pagination';
+import Divider from '@components/ui/divider';
 import { MyPageSection } from '@pages/me/mypageSection';
-import useFilterQuery from '@pages/me/activity/hooks/useFilterQueryData';
-import { getDateRange } from '@pages/me/activity/utils/date';
-import { inferDateType } from '@pages/me/activity/utils/filter';
+import ActivityFilterBar from '@pages/me/activity/components/ActivityFilterBar';
+import { useMyCommentsFilter } from '@pages/me/activity/hooks/useMyCommentsFilter';
+import { getMyComments } from 'apis/me';
+import { MyCommentItemDto, GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
 import { FaRegCommentAlt } from 'react-icons/fa';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6';
-import { TbReload } from 'react-icons/tb';
-import { mockMyCommentsContent } from '@mocks/data/me';
-
-type MyComment = {
-  comment: {
-    memberName: string;
-    commentId: number;
-    content: string;
-    createdAt: string;
-  };
-  project: {
-    contestId: number;
-    contestName: string;
-    categoryName: string;
-    trackName: string;
-    teamId: number;
-    teamName: string;
-    projectName: string;
-    overview: string;
-  };
-};
-type MyCommentResponse = {
-  content: MyComment[];
-  totalPages: number;
-  currentPage: number;
-};
+import useTeamThumbnail from 'hooks/useTeamThumbnail';
+import AltProfile from '@pages/me/account/components/AltProfile';
 
 const MyCommentPage = () => {
-  const [filter, setFilter] = useState({
-    sort: 'latest',
-    startDate: '',
-    endDate: '',
-    page: 0,
-    size: 10,
-  });
-
-  const { SORT_OPTIONS, DATE_OPTIONS } = useFilterQuery();
-
-  const { data } = useQuery<MyCommentResponse>({
-    queryKey: ['myComments', filter],
-    queryFn: () => Promise.resolve(mockMyCommentsContent(filter)),
-  });
-
-  const { content = [], totalPages = 0, currentPage = 0 } = data || {};
-
-  const handleFilterChange = (next: Partial<typeof filter>) => {
-    setFilter((prev) => ({ ...prev, ...next, page: 0 }));
-  };
-  const handleReset = () => {
-    setFilter({ sort: 'latest', startDate: '', endDate: '', page: 0, size: 10 });
-  };
-
-  const dateType = inferDateType(filter.startDate, filter.endDate);
+  const { state, update, reset, apiParams, queryKey } = useMyCommentsFilter();
 
   return (
     <MyPageSection.Root>
@@ -68,35 +20,11 @@ const MyCommentPage = () => {
         <p>내가 쓴 댓글</p>
       </MyPageSection.Header>
       <MyPageSection.Body>
-        <div className="mb-10 flex w-full flex-wrap items-center justify-start gap-4 md:flex-row">
-          <FilterDropDown
-            label={SORT_OPTIONS.find((opt) => opt.value === (filter.sort || 'latest'))?.label ?? SORT_OPTIONS[0].label}
-            value={filter.sort || 'latest'}
-            options={SORT_OPTIONS}
-            onChange={(v) => handleFilterChange({ sort: v })}
-          />
-          <FilterDropDown
-            label={DATE_OPTIONS.find((opt) => opt.value === dateType)?.label ?? DATE_OPTIONS[0].label}
-            value={dateType}
-            options={DATE_OPTIONS}
-            onChange={(v) => {
-              if (!v) {
-                handleFilterChange({ startDate: '', endDate: '' });
-                return;
-              }
-              const range = getDateRange(v as '1m' | '3m');
-              handleFilterChange({ ...range });
-            }}
-          />
-          <button onClick={handleReset} className="hover:bg-lightGray bg-whiteGray rounded-sm p-1 transition-colors">
-            <TbReload className="size-4" />
-          </button>
-        </div>
+        <ActivityFilterBar query={state} onQueryChange={update} onQueryReset={reset} />
         <MyCommentGrid
-          comments={content}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={(p) => setFilter((prev) => ({ ...prev, page: p }))}
+          apiParams={apiParams}
+          queryKey={queryKey}
+          onPageChange={(page) => update({ page: String(page) })}
         />
       </MyPageSection.Body>
     </MyPageSection.Root>
@@ -106,96 +34,90 @@ const MyCommentPage = () => {
 export default MyCommentPage;
 
 const MyCommentGrid = ({
-  comments,
-  totalPages,
-  currentPage,
+  apiParams,
+  queryKey,
   onPageChange,
 }: {
-  comments: MyComment[];
-  totalPages: number;
-  currentPage: number;
+  apiParams: Parameters<typeof getMyComments>[0];
+  queryKey: ReturnType<typeof useMyCommentsFilter>['queryKey'];
   onPageChange: (p: number) => void;
 }) => {
+  const { data } = useQuery<GetCommentsPaginationResponseDto>({
+    queryKey: queryKey,
+    queryFn: () => getMyComments(apiParams),
+    placeholderData: keepPreviousData,
+  });
+
+  const { content, totalPages, currentPage } = data || {
+    content: [],
+    totalPages: 0,
+    currentPage: 0,
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <div className="flex w-full flex-col gap-4">
-        {comments.map((item, idx) => (
-          <MyCommentCard key={item.comment.commentId || idx} comment={item.comment} project={item.project} />
+      <div className="flex w-full flex-col">
+        {content.map((item, index) => (
+          <div key={item.comment.commentId}>
+            <MyCommentCard comment={item.comment} project={item.project} />
+            {index < content.length - 1 && <Divider />}
+          </div>
         ))}
       </div>
       {totalPages > 1 && (
-        <MyCommentPagination totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage + 1}
+          onPageChange={(page) => onPageChange(page - 1)}
+        />
       )}
     </div>
   );
 };
 
-const MyCommentCard = ({ comment, project }: { comment: MyComment['comment']; project: MyComment['project'] }) => {
-  return (
-    <div className="flex flex-col gap-2 rounded-md border bg-white p-4">
-      <div className="flex items-center gap-2">
-        <span className="text-mainBlue font-semibold">{comment.memberName}</span>
-        <span className="text-xs text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
-      </div>
-      <div className="text-sm text-gray-800">{comment.content}</div>
-      <div className="mt-2 text-xs text-gray-500">
-        <span className="font-medium">{project.projectName}</span> | {project.contestName} | {project.categoryName} |{' '}
-        {project.trackName}
-      </div>
-      <div className="truncate text-xs text-gray-400">{project.overview}</div>
-    </div>
-  );
-};
+const MyCommentCard = ({ comment, project }: MyCommentItemDto) => {
+  const { thumbnailUrl } = useTeamThumbnail(project.teamId);
+  const createdDate = new Date(comment.createdAt);
+  const displayDate = `${createdDate.getFullYear()}.${String(createdDate.getMonth() + 1).padStart(2, '0')}.${String(
+    createdDate.getDate(),
+  ).padStart(2, '0')}`;
 
-const MyCommentPagination = ({
-  totalPages,
-  currentPage,
-  onPageChange,
-}: {
-  totalPages: number;
-  currentPage: number;
-  onPageChange: (p: number) => void;
-}) => {
   return (
-    <div className="flex w-full max-w-65 items-center justify-between gap-4 py-4">
-      <button
-        disabled={currentPage <= 0}
-        onClick={() => onPageChange(currentPage - 1)}
-        className={`rounded-sm border border-transparent p-1 transition-all duration-200 ${
-          currentPage <= 0 ? 'cursor-auto opacity-10' : 'hover:border-lightGray'
-        }`}
-      >
-        <FaChevronLeft className="size-4" />
-      </button>
-      <div className="flex flex-1 items-center justify-center gap-2">
-        {(() => {
-          const maxButtons = 5;
-          const half = Math.floor(maxButtons / 2);
-          const start = Math.max(0, Math.min(currentPage - half, Math.max(0, totalPages - maxButtons)));
-          const end = Math.min(totalPages, start + maxButtons);
-          return Array.from({ length: end - start }, (_, i) => {
-            const page = start + i;
-            return (
-              <button
-                key={page}
-                onClick={() => onPageChange(page)}
-                className={`p-1 transition-all duration-200 hover:text-black ${currentPage === page ? 'font-medium text-black' : 'text-lightGray'}`}
-              >
-                {page + 1}
-              </button>
-            );
-          });
-        })()}
+    <div className="flex flex-col gap-4 bg-white p-4">
+      <div className="flex items-start gap-4">
+        <img
+          src={thumbnailUrl}
+          alt={`${project.teamName} 썸네일`}
+          className="border-lightGray h-20 w-30 rounded-md border object-contain"
+        />
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
+          <div className="w-full min-w-0">
+            <div className="flex w-full items-center justify-between">
+              <p className="text-md truncate font-semibold text-black">{project.projectName}</p>
+              <p className="text-mainGreen shrink-0 pt-1 text-xs font-medium">
+                {project.categoryName} &gt; {project.contestName} &gt; {project.trackName}
+              </p>
+            </div>
+            <p className="text-md font-medium text-black">
+              {project.teamId}. {project.teamName}
+            </p>
+            <div className="text-midGray mt-1 truncate text-xs">{project.overview || ''}</div>
+          </div>
+        </div>
       </div>
-      <button
-        disabled={currentPage >= totalPages - 1}
-        onClick={() => onPageChange(currentPage + 1)}
-        className={`rounded-sm border border-transparent p-1 transition-all duration-200 ${
-          currentPage >= totalPages - 1 ? 'cursor-auto opacity-10' : 'hover:border-lightGray'
-        }`}
-      >
-        <FaChevronRight className="size-4" />
-      </button>
+
+      <div className="ml-6 flex items-start gap-3">
+        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
+          <AltProfile seed={comment.memberName} size={40} />
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-base font-semibold text-black">{comment.memberName}</span>
+            <span className="text-xs text-gray-400">{displayDate}</span>
+          </div>
+          <p className="mt-1 text-sm text-gray-800">{comment.content}</p>
+        </div>
+      </div>
     </div>
   );
 };
