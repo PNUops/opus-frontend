@@ -15,7 +15,7 @@ export interface PreviewDeleteRequestDto {
 }
 
 export interface TeamMemberCreateRequestDto {
-  teamMemberName: string;
-  teamMemberStudentId: string;
+  memberName: string;
+  memberStudentId: string;
   roleType: 'ROLE_팀장' | 'ROLE_팀원';
 }
