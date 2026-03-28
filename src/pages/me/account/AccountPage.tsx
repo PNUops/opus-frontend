@@ -57,6 +57,14 @@ const ProfileCard = () => {
   const [githubInputValue, setGithubInputValue] = useState(githubUrl ?? '');
 
   useEffect(() => {
+    return () => {
+      if (profileImageUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(profileImageUrl);
+      }
+    };
+  }, [profileImageUrl]);
+
+  useEffect(() => {
     if (!isGithubInputOpen) {
       setGithubInputValue(githubUrl ?? '');
     }

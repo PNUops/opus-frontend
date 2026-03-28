@@ -8,7 +8,6 @@ import {
   GetMyLikesResponseDto,
 } from 'types/DTO/meDto';
 import { GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
-import { API_BASE_URL } from '@constants/env';
 
 export const getMyProjects = async (): Promise<GetMyProjectsResponseDto> => {
   const res = await apiClient.get('/members/me/projects');
@@ -55,13 +54,15 @@ type ProfileResult =
 export const getMyProfileImage = async (): Promise<ProfileResult> => {
   try {
     const res = await apiClient.get('/members/me/images/profile', {
+      responseType: 'blob',
       validateStatus: (status) => [200, 202, 404].includes(status),
     });
 
     if (res.status === 200) {
+      const blobUrl = URL.createObjectURL(res.data);
       return {
         status: 'success',
-        url: `${API_BASE_URL}/members/me/images/profile`,
+        url: blobUrl,
       };
     }
 
@@ -76,7 +77,7 @@ export const getMyProfileImage = async (): Promise<ProfileResult> => {
       status: 'error',
       code: 'NOTFOUND',
     };
-  } catch (error: any) {
+  } catch {
     return { status: 'error', code: 'ERR_ETC' };
   }
 };
