@@ -33,10 +33,15 @@ interface UseMyActivityFilterOptions {
 const parseState = (params: URLSearchParams): FilterState => {
   const startDate = normalize(params.get('startDate'));
   const endDate = normalize(params.get('endDate'));
+  const dateTypeParam = normalize(params.get('dateType'));
+  const dateType: DateType =
+    dateTypeParam === '1m' || dateTypeParam === '3m' || dateTypeParam === 'custom'
+      ? dateTypeParam
+      : inferDateType(startDate, endDate);
 
   return {
     sort: parseSort(params.get('sort')),
-    dateType: inferDateType(startDate, endDate),
+    dateType,
     startDate,
     endDate,
     categoryId: normalize(params.get('categoryId')),
@@ -71,7 +76,13 @@ export const useMyActivityFilter = <TApiParams extends ActivityApiParams>({
         merged.startDate = startDate;
         merged.endDate = endDate;
       } else if (next.dateType === 'custom') {
-        alert('날짜를 입력해주세요.');
+        if (next.startDate !== undefined || next.endDate !== undefined) {
+          merged.startDate = normalize(next.startDate);
+          merged.endDate = normalize(next.endDate);
+        } else {
+          merged.startDate = '';
+          merged.endDate = '';
+        }
       }
     }
 

@@ -1,4 +1,5 @@
 import { FaHeart } from 'react-icons/fa';
+import { MdHowToVote } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
 import AwardTag from '@components/AwardTag';
@@ -12,10 +13,11 @@ interface TeamCardProps {
   projectName: string;
   awards?: AwardDto[];
   isLiked?: boolean;
+  isVoted?: boolean;
   isVoteTerm?: boolean;
 }
 
-const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, isVoteTerm }: TeamCardProps) => {
+const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, isVoted, awards, isVoteTerm }: TeamCardProps) => {
   const { thumbnailUrl } = useTeamThumbnail(teamId);
 
   return (
@@ -34,8 +36,11 @@ const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, awards, i
                 </div>
               ))}
 
-            {isVoteTerm && isLiked && (
-              <FaHeart color="red" size="clamp(1.5rem, 2vw, 1.8rem)" className="flex-shrink-0" />
+            {isVoteTerm && (isLiked || isVoted) && (
+              <div className="flex flex-shrink-0 items-center gap-1">
+                {isLiked && <FaHeart color="red" size="clamp(1.5rem, 2vw, 1.8rem)" />}
+                {isVoted && <MdHowToVote color="#2E6CF6" size="clamp(1.5rem, 2vw, 1.8rem)" />}
+              </div>
             )}
           </div>
         </div>

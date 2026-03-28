@@ -3,11 +3,12 @@ import React, { useRef } from 'react';
 interface OverviewInputProps {
   overview: string | null;
   setOverview: (text: string) => void;
+  required?: boolean;
 }
 
 const MAX_OVERVIEW = 3000;
 
-const OverviewInput = ({ overview, setOverview }: OverviewInputProps) => {
+const OverviewInput = ({ overview, setOverview, required = true }: OverviewInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOverviewChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -29,8 +30,8 @@ const OverviewInput = ({ overview, setOverview }: OverviewInputProps) => {
   return (
     <div className="text-exsm flex flex-col gap-3 sm:flex-row sm:gap-10 sm:text-sm">
       <div className="text-midGray flex w-25 gap-1 sm:py-3">
-        <span className="mr-1 text-red-500">*</span>
-        <span className="w-full">Overview</span>
+        {required ? <span className="mr-1 text-red-500">*</span> : null}
+        <span className="w-full text-nowrap">프로젝트 설명</span>
       </div>
       <div className="flex flex-1 flex-col">
         <textarea

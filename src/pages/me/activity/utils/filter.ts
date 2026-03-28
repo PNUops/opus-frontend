@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import type { SortType, DateType } from '@pages/me/activity/types/filter';
+import { getDateRange } from './date';
 
 export const normalize = (v: unknown): string => {
   if (v === undefined || v === null) return '';
@@ -11,25 +12,21 @@ export const parseSort = (v: string | null): SortType => {
   return 'latest';
 };
 
-const DATE_PRESET = {
-  '1m': 32,
-  '3m': 95,
-} as const;
-
 export const inferDateType = (startDate?: string, endDate?: string): DateType => {
   if (!startDate || !endDate) return '';
 
-  const now = dayjs().startOf('day');
   const start = dayjs(startDate).startOf('day');
   const end = dayjs(endDate).startOf('day');
 
   if (!start.isValid() || !end.isValid()) return '';
 
-  const diffDays = now.diff(start, 'day');
+  if (end.isBefore(start)) return '';
 
-  for (const [key, maxDays] of Object.entries(DATE_PRESET)) {
-    if (diffDays <= maxDays) return key as DateType;
-  }
+  const oneMonthRange = getDateRange('1m');
+  if (startDate === oneMonthRange.startDate && endDate === oneMonthRange.endDate) return '1m';
+
+  const threeMonthRange = getDateRange('3m');
+  if (startDate === threeMonthRange.startDate && endDate === threeMonthRange.endDate) return '3m';
 
   return 'custom';
 };

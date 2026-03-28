@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
 import Pagination from '@components/Pagination';
-import TeamCard from '@pages/main/TeamCard';
+import TeamCard from '@pages/contest/TeamCard';
 import { useMyLikesFilter } from '@pages/me/activity/hooks/useMyLikesFilter';
 import ActivityFilterBar from '@pages/me/activity/components/ActivityFilterBar';
 import { getMyLikes } from 'apis/me';
