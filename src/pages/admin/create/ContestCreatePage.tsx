@@ -2,6 +2,7 @@ import { ContestCreateProvider, useContestCreate } from './ContestCreateContext'
 import ContestCreateProgress from './ContestCreateProgress';
 import ContestCreateForm from './ContestCreateForm';
 import CreateRequiredFields from './CreateRequiredFields';
+import ContestTeamInsert from './ContestTeamInsert';
 
 const ContestCreateContent = () => {
   const { currentStep } = useContestCreate();

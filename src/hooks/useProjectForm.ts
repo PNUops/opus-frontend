@@ -506,8 +506,8 @@ export const useProjectForm = () => {
         await Promise.all(
           addedMembers.map((member) =>
             postMember(currentTeamId, {
-              teamMemberName: member.teamMemberName,
-              teamMemberStudentId: member.teamMemberStudentId ?? '',
+              memberName: member.teamMemberName,
+              memberStudentId: member.teamMemberStudentId ?? '',
               roleType: member.roleType,
             }),
           ),
@@ -617,8 +617,8 @@ export const useProjectForm = () => {
         await Promise.all(
           formState.teamMembers.map((member) =>
             postMember(createdTeamId, {
-              teamMemberName: member.teamMemberName,
-              teamMemberStudentId: member.teamMemberStudentId ?? '',
+              memberName: member.teamMemberName,
+              memberStudentId: member.teamMemberStudentId ?? '',
               roleType: member.roleType,
             }),
           ),

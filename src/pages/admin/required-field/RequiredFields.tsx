@@ -29,7 +29,7 @@ const RequiredFields: React.FC<RequiredFieldsProps> = ({ contestId, fields, onTo
         <div className="w-16 text-center">필수</div>
       </div>
       <div>
-        {Object.entries(fields).map(([key, value]) => (
+        {(Object.entries(fields) as [keyof RequiredFieldsDto, boolean][]).map(([key, value]) => (
           <div key={key} className={`flex items-center justify-between border-t px-7 py-4.5 hover:bg-gray-50`}>
             <div>{labelByField[key]}</div>
             <div className="flex w-16 justify-center">

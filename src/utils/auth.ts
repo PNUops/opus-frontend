@@ -1,7 +1,7 @@
 import { TeamMemberDto } from 'types/DTO/teams/teamsDto';
 
 const isTeamMember = (memberId: number, teamMembers: TeamMemberDto[]): boolean => {
-  return teamMembers.some((member) => member.teamMemberId === memberId);
+  return teamMembers.some((member) => member.memberId === memberId);
 };
 
 export const canEditTeamPage = (memberId: number, teamMembers: TeamMemberDto[], isAdmin = false): boolean => {
