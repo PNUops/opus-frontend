@@ -1,10 +1,12 @@
+import { contestCreateSteps } from '@constants/contest';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface ContestCreateContextType {
   currentStep: number;
   setCurrentStep: (step: number) => void;
-  contestId: number | null;
-  setContestId: (id: number | null) => void;
+  currentStepName: string;
+  contestId: number;
+  setContestId: (id: number) => void;
 }
 
 const ContestCreateContext = createContext<ContestCreateContextType | undefined>(undefined);
@@ -15,9 +17,15 @@ interface ContestCreateProviderProps {
 
 export const ContestCreateProvider = ({ children }: ContestCreateProviderProps) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [contestId, setContestId] = useState<number | null>(null);
+  const [contestId, setContestId] = useState<number>(0);
 
-  const value = { currentStep, setCurrentStep, contestId, setContestId };
+  const value = {
+    currentStep,
+    setCurrentStep,
+    currentStepName: contestCreateSteps[currentStep - 1],
+    contestId,
+    setContestId,
+  };
 
   return <ContestCreateContext.Provider value={value}>{children}</ContestCreateContext.Provider>;
 };

@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
 import { deleteContestAward, getContestAwards, createContestAward } from 'apis/award';
 import { getTeamAwards, updateTeamAward } from 'apis/team';
@@ -7,25 +7,25 @@ import AwardTag from '@components/AwardTag';
 import { AwardDto, ContestAwardDto, TeamAwardDto } from 'types/DTO/awardsDto';
 import { AWRD_PALETTE } from 'constants/palette';
 import useDebounce from 'hooks/useDebounce';
-import { deleteTeamAward } from 'apis/team';
+import { useToast } from 'hooks/useToast';
 
 interface AwardSelectorProps {
+  contestId: number;
+  teamId: number;
   awards: AwardDto[];
-  options?: string[];
-  onSelect?: (selected: string[]) => void;
 }
 
-const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
-  const contestId = 1; // 임시 contestId
+const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [newAwardName, setNewAwardName] = useState('');
   const debouncedAwardName = useDebounce(newAwardName, 100);
-  const [selectedAwardIds, setSelectedAwardIds] = useState<number[]>([]);
-  const debouncedSelectedAwardIds = useDebounce<number[]>(selectedAwardIds, 1000);
 
   const { data: teamAwards } = useQuery({
-    queryKey: ['teamAwards', contestId],
-    queryFn: () => getTeamAwards(contestId),
+    queryKey: ['teamAwards', teamId],
+    queryFn: () => getTeamAwards(teamId),
+    enabled: Boolean(teamId),
   });
 
   const { data: contestAwards } = useQuery({
@@ -35,43 +35,71 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
 
   const teamAwardsList: TeamAwardDto[] = Array.isArray(teamAwards) ? teamAwards : [];
   const contestAwardsList: ContestAwardDto[] = contestAwards ?? [];
+  const selectedAwardIds = useMemo(() => teamAwardsList.map((award) => award.awardId), [teamAwardsList]);
+
+  const invalidateAwardQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['teamAwards', teamId] });
+    queryClient.invalidateQueries({ queryKey: ['contestAwards', contestId] });
+    queryClient.invalidateQueries({ queryKey: ['teams', contestId] });
+  };
+
+  const { mutate: mutateTeamAwards, isPending: isUpdatingTeamAwards } = useMutation({
+    mutationFn: (awardIds: number[]) => updateTeamAward(teamId, awardIds),
+    onSuccess: () => {
+      invalidateAwardQueries();
+    },
+    onError: (error: any) => {
+      toast(error.response?.data?.message || '팀 수상 수정에 실패했습니다.', 'error');
+    },
+  });
+
+  const { mutate: mutateCreateContestAward, isPending: isCreatingContestAward } = useMutation({
+    mutationFn: ({ awardName, awardColor }: { awardName: string; awardColor: string }) =>
+      createContestAward(contestId, { awardName, awardColor }),
+    onSuccess: () => {
+      invalidateAwardQueries();
+      setNewAwardName('');
+      toast('새 상훈을 추가했습니다.');
+    },
+    onError: (error: any) => {
+      toast(error.response?.data?.message || '상훈 추가에 실패했습니다.', 'error');
+    },
+  });
+
+  const { mutate: mutateDeleteContestAward, isPending: isDeletingContestAward } = useMutation({
+    mutationFn: (awardId: number) => deleteContestAward(contestId, awardId),
+    onSuccess: () => {
+      invalidateAwardQueries();
+      toast('상훈을 삭제했습니다.');
+    },
+    onError: (error: any) => {
+      toast(error.response?.data?.message || '상훈 삭제에 실패했습니다.', 'error');
+    },
+  });
+
+  const handleToggleTeamAward = (awardId: number) => {
+    const exists = selectedAwardIds.includes(awardId);
+    const nextAwardIds = exists ? selectedAwardIds.filter((id) => id !== awardId) : [...selectedAwardIds, awardId];
+    mutateTeamAwards(nextAwardIds);
+  };
 
   const handleRemoveTeamAward = (awardId: number) => {
-    deleteTeamAward(awardId);
-    // alert(`삭제 awardId: ${awardId}`);
+    const nextAwardIds = selectedAwardIds.filter((id) => id !== awardId);
+    mutateTeamAwards(nextAwardIds);
   };
-
-  const handleRemoveContestAward = (awardId: number) => {
-    deleteContestAward(contestId, awardId);
-    // alert(`삭제 awardId: ${awardId}`);
-  };
-
-  const handleAddTeamAward = (awardIds: number[]) => {
-    updateTeamAward(contestId, awardIds);
-    // alert(`추가 awardIds: ${awardIds}`);
-  };
-
-  const toggleSelectAwardId = (id: number) => {
-    setSelectedAwardIds((prev) => {
-      const exists = prev.includes(id);
-      if (exists) return prev.filter((x) => x !== id);
-      return [...prev, id];
-    });
-  };
-
-  useEffect(() => {
-    if (debouncedSelectedAwardIds && debouncedSelectedAwardIds.length > 0) {
-      handleAddTeamAward(debouncedSelectedAwardIds);
-      setSelectedAwardIds([]);
-    }
-  }, [debouncedSelectedAwardIds]);
 
   const handleAddContestAward = (awardName: string, awardColor: string) => {
-    createContestAward(contestId, { awardName, awardColor });
-    alert(`추가 awardName: ${awardName}, awardColor: ${awardColor}`);
+    if (!awardName.trim()) {
+      toast('상훈 이름을 입력해주세요.', 'error');
+      return;
+    }
+    mutateCreateContestAward({ awardName: awardName.trim(), awardColor });
   };
 
-  const filteredTeamAwardsList = teamAwardsList.filter((award) => award.awardName && award.awardColor);
+  const filteredTeamAwardsList = teamAwardsList.filter(
+    (award) => Boolean(award.awardName) && Boolean(award.awardColor),
+  );
+  const isPendingAction = isUpdatingTeamAwards || isCreatingContestAward || isDeletingContestAward;
 
   return (
     <div className="flex w-full items-center gap-4">
@@ -109,7 +137,9 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
                     key={index}
                     awardName={award.awardName ?? ''}
                     awardColor={award.awardColor ?? ''}
-                    onRemove={() => handleRemoveTeamAward(award.awardId)}
+                    onRemove={() => {
+                      if (!isPendingAction) handleRemoveTeamAward(award.awardId);
+                    }}
                   />
                 ))}
               </div>
@@ -134,6 +164,7 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
                   awardName={debouncedAwardName}
                   awardColor={color}
                   onClick={() => {
+                    if (isPendingAction) return;
                     handleAddContestAward(newAwardName, color);
                     setNewAwardName('');
                   }}
@@ -143,22 +174,28 @@ const AwardSelector = ({ awards, options, onSelect }: AwardSelectorProps) => {
           ) : (
             <div className="flex flex-col items-start gap-3 p-4">
               <p className="text-midGray text-base font-medium">옵션 선택</p>
-              {contestAwards &&
-                contestAwards.map((award) => (
+              {contestAwardsList.map((award) => (
+                <div
+                  key={award.awardId}
+                  className={
+                    selectedAwardIds.includes(award.awardId) ? 'rounded-full ring-2 ring-blue-300 ring-offset-1' : ''
+                  }
+                >
                   <AwardTag
-                    key={award.awardId}
                     awardName={award.awardName}
                     awardColor={award.awardColor}
                     onClick={() => {
-                      toggleSelectAwardId(award.awardId);
+                      if (isPendingAction) return;
+                      handleToggleTeamAward(award.awardId);
                       setNewAwardName('');
-                      alert('선택 awardId: ' + award.awardId);
                     }}
                     onRemove={() => {
-                      handleRemoveContestAward(award.awardId);
+                      if (isPendingAction) return;
+                      mutateDeleteContestAward(award.awardId);
                     }}
                   />
-                ))}
+                </div>
+              ))}
             </div>
           )}
         </PopoverContent>

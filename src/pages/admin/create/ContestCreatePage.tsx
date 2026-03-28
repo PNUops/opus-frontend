@@ -1,8 +1,8 @@
 import { ContestCreateProvider, useContestCreate } from './ContestCreateContext';
 import ContestCreateProgress from './ContestCreateProgress';
 import ContestCreateForm from './ContestCreateForm';
+import CreateRequiredFields from './CreateRequiredFields';
 import ContestTeamInsert from './ContestTeamInsert';
-import ContestRequiredSetting from './ContestRequiredSetting';
 
 const ContestCreateContent = () => {
   const { currentStep } = useContestCreate();
@@ -12,8 +12,8 @@ const ContestCreateContent = () => {
       <ContestCreateProgress />
       <div className="border-t pt-8">
         {currentStep === 1 && <ContestCreateForm />}
-        {/* {currentStep === 2 && <ContestTeamInsert />} */}
-        {currentStep === 2 && <ContestRequiredSetting />}
+        {currentStep === 2 && <ContestTeamInsert />}
+        {currentStep === 3 && <CreateRequiredFields />}
       </div>
     </div>
   );

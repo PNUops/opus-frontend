@@ -30,6 +30,7 @@ export const getThumbnailTeams = async (teamId: number) => {
     } else if (response.status === 202) {
       return null;
     }
+    return null;
   } catch (error: any) {
     if (error.response?.status === 404) {
       return null;

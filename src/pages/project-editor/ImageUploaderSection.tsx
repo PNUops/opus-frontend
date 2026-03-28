@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useToast } from 'hooks/useToast';
 import { imageValidator } from 'utils/image';
 import { ThumbnailResult } from 'apis/projectEditor';
@@ -10,7 +10,7 @@ import { AiFillPicture } from 'react-icons/ai';
 import { MdOutlineFileUpload, MdBrokenImage } from 'react-icons/md';
 import { CgSandClock } from 'react-icons/cg';
 
-const PREVIEW_BOX_TAGS = ['썸네일', '졸업과제 포스터'];
+const PREVIEW_BOX_TAGS = ['썸네일', '상세 이미지'];
 
 interface ImageUploaderSectionProps {
   thumbnail: ThumbnailResult | File | undefined;
@@ -20,7 +20,7 @@ interface ImageUploaderSectionProps {
   setThumbnailToDelete: (value: boolean) => void;
   previewsToDelete: number[];
   setPreviewsToDelete: React.Dispatch<React.SetStateAction<number[]>>;
-  isAdmin: boolean;
+  required?: boolean;
 }
 
 const getImageSrc = (data: File | ThumbnailResult | PreviewResult): string => {
@@ -43,7 +43,7 @@ const ImageUploaderSection = ({
   setThumbnailToDelete,
   previewsToDelete,
   setPreviewsToDelete,
-  isAdmin,
+  required = false,
 }: ImageUploaderSectionProps) => {
   const toast = useToast();
 
@@ -201,19 +201,15 @@ const ImageUploaderSection = ({
     <div className="flex flex-col gap-3 text-sm sm:flex-row sm:gap-10">
       <div className="text-exsm flex items-start justify-between gap-3 sm:flex-col sm:justify-normal sm:pt-3 sm:text-sm">
         <div className="text-midGray flex w-25 gap-1">
-          <span className={`{mr-1 ${isAdmin ? 'invisible' : 'text-red-500'} }`}>*</span>
+          {required ? <span className="mr-1 text-red-500">*</span> : null}
           <span>이미지</span>
         </div>
         <div className="group relative inline-block">
           <span className="ml-1 inline-flex animate-bounce cursor-help items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs text-green-500">
             <HiInformationCircle /> 가이드
           </span>
-          <div className="absolute top-1/2 right-full z-10 mr-3 w-64 -translate-y-1/2 rounded bg-green-50 p-3 text-xs leading-5 text-green-600 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-80 group-active:opacity-100 sm:left-full sm:ml-3">
+          <div className="pointer-events-none absolute top-1/2 right-full z-10 mr-3 w-64 -translate-y-1/2 rounded bg-green-50 p-3 text-xs leading-5 text-green-600 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-80 group-active:opacity-100 sm:left-full sm:ml-3">
             권장 비율: <strong>3:2</strong> (예: 1500×1000)
-            <br />
-            <span className="bg-mainGreen rounded-lg p-0.5 px-1 text-white">
-              단, 포스터의 경우 약 2:3으로 표시돼요.
-            </span>
             <br />
             최대 이미지 개수: <strong>6개</strong>
             <br />

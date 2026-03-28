@@ -6,12 +6,12 @@ import {
   AdminCardTop,
   AdminCardCreateButton,
   AdminCardRow,
-  AdminPopoverMenu,
-  AdminPopoverEditButton,
   AdminPopoverDeleteButton,
-  AdminNoData,
-} from '@components/ui/admin';
+  AdminPopoverEditButton,
+  AdminPopoverMenu,
+} from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
+import { NoData } from '@components/NoData';
 import { noticeOption } from 'queries/notices';
 import QueryWrapper from 'providers/QueryWrapper';
 import { NoticeDeleteConfirmModal, NoticeModal } from './NoticeModal';
@@ -47,7 +47,7 @@ const AllNoticeList = () => {
 
   const { data: notices } = useSuspenseQuery(noticeOption());
 
-  if (notices.length === 0) return <AdminNoData />;
+  if (notices.length === 0) return <NoData />;
 
   return notices.map((notice) => (
     <AdminCardRow key={notice.noticeId} className="border-b-lightGray px-2.5 not-last:border-b">

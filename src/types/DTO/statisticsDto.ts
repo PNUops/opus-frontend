@@ -1,3 +1,9 @@
+export interface MainStatsDto {
+  totalProjects: number;
+  totalLikes: number;
+  totalContests: number;
+}
+
 export interface VoteRankingDto {
   rank: number;
   teamName: string;

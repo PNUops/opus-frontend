@@ -1,26 +1,39 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuth from 'hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { patchLikeToggle } from 'apis/projectViewer';
+import { putLikeToggle, putVoteToggle } from 'apis/projectViewer';
 import { useToast } from 'hooks/useToast';
 import { FaHeart } from 'react-icons/fa';
+import { MdHowToVote } from 'react-icons/md';
 import Backdrop from '@components/Backdrop';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 
 interface LikeSectionProps {
   contestId: number;
   teamId: number;
   isLiked: boolean | null;
+  isVoted: boolean | null;
 }
 
-const LikeSection = ({ contestId, teamId, isLiked }: LikeSectionProps) => {
+const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) => {
   const { isSignedIn } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
 
   const [showLikeCountTooltip, setShowLikeCountTooltip] = useState(false);
   const [likeCount, setLikeCount] = useState<number | null>(null);
+  const [likedState, setLikedState] = useState(Boolean(isLiked));
+  const [votedState, setVotedState] = useState(Boolean(isVoted));
+
+  useEffect(() => {
+    setLikedState(Boolean(isLiked));
+  }, [isLiked]);
+
+  useEffect(() => {
+    setVotedState(Boolean(isVoted));
+  }, [isVoted]);
+
   const handleLikeCountTooltip = (likeCount: number) => {
     setLikeCount(likeCount);
     setShowLikeCountTooltip(true);
@@ -29,13 +42,17 @@ const LikeSection = ({ contestId, teamId, isLiked }: LikeSectionProps) => {
 
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const invalidateVoteLikeQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['teamDetail', teamId] });
+    queryClient.invalidateQueries({ queryKey: ['teams', 'current', user?.id ?? 'guest'] });
+    queryClient.invalidateQueries({ queryKey: ['teams', contestId, user?.id ?? 'guest'] });
+  };
+
   const likeMutation = useMutation({
-    mutationFn: (nextIsLiked: boolean) => patchLikeToggle({ teamId, isLiked: nextIsLiked }),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['projectDetails', teamId] });
-      queryClient.invalidateQueries({ queryKey: ['teams', 'current', user?.id ?? 'guest'] });
-      queryClient.invalidateQueries({ queryKey: ['teams', contestId, user?.id ?? 'guest'] });
-      toast(!isLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
+    mutationFn: (nextIsLiked: boolean) => putLikeToggle({ teamId, isLiked: nextIsLiked }),
+    onSuccess: (res, nextIsLiked) => {
+      invalidateVoteLikeQueries();
+      toast(nextIsLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
 
       handleLikeCountTooltip(res.remainingLikeCount);
     },
@@ -44,28 +61,76 @@ const LikeSection = ({ contestId, teamId, isLiked }: LikeSectionProps) => {
     },
   });
 
-  const handleClick = () => {
+  const voteMutation = useMutation({
+    mutationFn: (nextIsVoted: boolean) => putVoteToggle(teamId, nextIsVoted),
+    onSuccess: (_, nextIsVoted) => {
+      invalidateVoteLikeQueries();
+      toast(nextIsVoted ? '투표를 완료했어요' : '투표를 취소했어요');
+    },
+    onError: (err: any) => {
+      toast(err.response.data.message ?? '요청에 실패했어요', 'error');
+    },
+  });
+
+  const checkSignedIn = () => {
     if (!isSignedIn) {
       toast('로그인이 필요해요.');
       navigate('/signin');
+      return false;
     }
+    return true;
+  };
+
+  const handleLikeClick = () => {
+    if (!checkSignedIn()) return;
     if (likeMutation.isPending) return;
-    likeMutation.mutate(!isLiked);
+
+    const prev = likedState;
+    const next = !prev;
+    setLikedState(next);
+    likeMutation.mutate(next, {
+      onError: () => setLikedState(prev),
+    });
+  };
+
+  const handleVoteClick = () => {
+    if (!checkSignedIn()) return;
+    if (voteMutation.isPending) return;
+
+    const prev = votedState;
+    const next = !prev;
+    setVotedState(next);
+    voteMutation.mutate(next, {
+      onError: () => setVotedState(prev),
+    });
   };
 
   return (
     <LikeAbuseToolTip>
       <LikeCountToolTip isOpen={showLikeCountTooltip} likeCount={likeCount}>
-        <button
-          onClick={handleClick}
-          disabled={likeMutation.isPending}
-          className={`${
-            isLiked ? 'bg-mainGreen text-white hover:bg-emerald-600' : 'bg-lightGray text-white hover:bg-gray-300'
-          } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
-        >
-          <FaHeart className={`${isLiked ? 'text-white' : 'text-whiteGray'}`} size={20} />
-          <span className="hidden sm:inline">좋아요</span>
-        </button>
+        <div className="flex items-center justify-center gap-3">
+          <button
+            onClick={handleLikeClick}
+            disabled={likeMutation.isPending}
+            className={`${
+              likedState ? 'bg-mainGreen text-white hover:bg-emerald-600' : 'bg-lightGray text-white hover:bg-gray-300'
+            } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
+          >
+            <FaHeart className={`${likedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
+            <span className="hidden sm:inline">좋아요</span>
+          </button>
+
+          <button
+            onClick={handleVoteClick}
+            disabled={voteMutation.isPending}
+            className={`${
+              votedState ? 'bg-mainBlue text-white hover:bg-blue-600' : 'bg-lightGray text-white hover:bg-gray-300'
+            } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
+          >
+            <MdHowToVote className={`${votedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
+            <span className="hidden sm:inline">투표</span>
+          </button>
+        </div>
       </LikeCountToolTip>
     </LikeAbuseToolTip>
   );

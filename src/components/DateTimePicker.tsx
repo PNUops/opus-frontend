@@ -3,10 +3,10 @@ import { CiCalendar } from 'react-icons/ci';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { Button } from '@components/ui/button';
-import { Calendar } from '@components/ui/calendar';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover';
+import { Calendar } from './Calendar';
 
 interface DateTimePickerProps {
   label: string;
@@ -57,7 +57,7 @@ export const DateTimePicker = ({ label, prevDate, onChange }: DateTimePickerProp
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Label htmlFor="time-picker" className="font-normal whitespace-nowrap">
+      <Label htmlFor="time-picker" className="text-base font-normal whitespace-nowrap">
         {label}
       </Label>
       <div className="flex items-center gap-2">

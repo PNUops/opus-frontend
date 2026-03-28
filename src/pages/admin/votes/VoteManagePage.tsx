@@ -1,11 +1,11 @@
 import VoteTermSetting from './VoteTermSetting';
-import MaxVoteLimitSetting from './MaxVoteLimitSetting';
+import VoteLimitSetting from './VoteLimitSetting';
 
 const VoteManagePage = () => {
   return (
-    <div className="flex flex-col gap-[70px]">
+    <div className="flex flex-col gap-17.5">
       <VoteTermSetting />
-      <MaxVoteLimitSetting />
+      <VoteLimitSetting />
     </div>
   );
 };

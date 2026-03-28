@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '@constants/env';
+import axios from 'axios';
 import apiClient from './apiClient';
 import {
-  ProjectDetailsResponseDto,
   PreviewImagesResponseDto,
   LikeUpdateRequestDto,
   CommentCreateRequestDto,
@@ -11,10 +11,23 @@ import {
   PreviewResult,
   LikeUpdateResponseDto,
 } from 'types/DTO/projectViewerDto';
+import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
 
-export const getProjectDetails = async (teamId: number): Promise<ProjectDetailsResponseDto> => {
-  const response = await apiClient.get(`/teams/${teamId}`);
-  return response.data;
+export const getTeamDetail = async (teamId: number): Promise<TeamDetailDto> => {
+  try {
+    const res = await apiClient.get(`/teams/${teamId}`);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && [401].includes(error.response?.status ?? 0)) {
+      return getTeamDetailPublic(teamId);
+    }
+    throw error;
+  }
+};
+
+export const getTeamDetailPublic = async (teamId: number): Promise<TeamDetailDto> => {
+  const res = await apiClient.get(`/teams/${teamId}/public`);
+  return res.data;
 };
 
 export const getPreviewImages = async (teamId: number, imageIds: number[]): Promise<PreviewImagesResponseDto> => {
@@ -51,9 +64,14 @@ export const getPreviewImages = async (teamId: number, imageIds: number[]): Prom
   return { imageResults };
 };
 
-export const patchLikeToggle = async (request: LikeUpdateRequestDto): Promise<LikeUpdateResponseDto> => {
+export const putLikeToggle = async (request: LikeUpdateRequestDto): Promise<LikeUpdateResponseDto> => {
   const { teamId, isLiked } = request;
-  const response = await apiClient.patch(`/teams/${teamId}/like`, { isLiked });
+  const response = await apiClient.put(`/teams/${teamId}/likes`, { isLiked });
+  return response.data;
+};
+
+export const putVoteToggle = async (teamId: number, isVoted: boolean) => {
+  const response = await apiClient.put(`/teams/${teamId}/votes`, { isVoted });
   return response.data;
 };
 

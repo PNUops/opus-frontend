@@ -2,7 +2,7 @@ import { ReactNode, Suspense } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { cn } from '@components/lib/utils';
-import Button from '@components/Button';
+import { AdminActionButton } from '@components/admin';
 
 interface QueryWrapperProps {
   children: ReactNode;
@@ -56,11 +56,11 @@ const LoadingFallback = ({ className }: { className?: string }) => {
 
 const ErrorFallback = ({ resetErrorBoundary, className }: FallbackProps & { className?: string }) => {
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-4', className)}>
+    <div className={cn('flex flex-col flex-wrap items-center justify-center gap-4', className)}>
       <p className="text-mainRed font-bold">데이터 조회 중 오류가 발생했습니다.</p>
-      <Button className="border border-black text-base text-black" onClick={() => resetErrorBoundary()}>
+      <AdminActionButton variant={'outline'} onClick={() => resetErrorBoundary()}>
         다시 시도
-      </Button>
+      </AdminActionButton>
     </div>
   );
 };

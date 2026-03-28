@@ -1,9 +1,11 @@
 import { http, HttpResponse } from 'msw';
-import { mockVoteRanking, mockVoteStats, mockVoteLogs } from '@mocks/data/statistics';
+import { mockVoteRanking, mockVoteStats, mockVoteLogs, mockMainStats } from '@mocks/data/statistics';
 
 const base = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export const statisticsHandlers = [
+  http.get(`${base}/api/statistics/summary`, () => HttpResponse.json(mockMainStats)),
+
   http.get(`${base}/api/contests/:contestId/ranking`, () => {
     return HttpResponse.json(mockVoteRanking);
   }),

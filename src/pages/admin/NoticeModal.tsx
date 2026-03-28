@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
-import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
 import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notice';
 import { useToast } from 'hooks/useToast';
 import { noticeDetailOption } from 'queries/notices';
 import { NoticeRequestDto } from 'types/DTO/noticeDto';
-import { AdminDeleteConfirmModal } from '@components/ui/admin';
+import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 
 interface NoticeModalProps {
   type: 'create' | 'edit';
@@ -83,11 +82,13 @@ export const NoticeModal = ({ type, noticeId, isOpen, closeModal }: NoticeModalP
       </div>
       <div className="flex justify-end gap-4">
         <DialogClose asChild>
-          <RoundedButton className="min-w-28">취소</RoundedButton>
+          <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full">
+            닫기
+          </AdminActionButton>
         </DialogClose>
-        <RoundedButton className="min-w-28" onClick={handleSave}>
-          {type === 'create' ? '추가' : '저장'}
-        </RoundedButton>
+        <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSave}>
+          {`${type === 'create' ? '추가' : '저장'}하기`}
+        </AdminActionButton>
       </div>
     </DialogContent>
   );

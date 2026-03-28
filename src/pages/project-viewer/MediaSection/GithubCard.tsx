@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useToast } from 'hooks/useToast';
 
 import { FaGithub } from 'react-icons/fa';
-import { GithubCardSkeleton } from '../ViewerSkeleton';
+import { GithubCardSkeleton } from '../DetailSkeleton';
 import { fetchGithubContent } from 'utils/media';
 
 interface GithubCardProps {

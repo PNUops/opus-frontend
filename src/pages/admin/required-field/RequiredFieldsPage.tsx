@@ -1,27 +1,29 @@
 import React from 'react';
-import RequiredFields from '@pages/admin/required-field/RequiredFields';
-import { Button } from '@components/ui/button';
+import { AdminActionButton, AdminHeader } from '@components/admin';
 import { useRequiredFields } from 'hooks/useRequiredFields';
-import { useParams } from 'react-router-dom';
+import RequiredFields from './RequiredFields';
+import QueryWrapper from 'providers/QueryWrapper';
+import { useContestIdOrRedirect } from 'hooks/useId';
 
 const RequiredFieldsPage: React.FC = () => {
-  const { contestId } = useParams();
-  const { fieldsSetting, isLoading, toggleField, handleSave } = useRequiredFields(Number(contestId ?? 0));
+  const contestId = useContestIdOrRedirect();
+  const { fieldsSetting, isPending, setFieldsSetting, handleToggleField, handleSave } = useRequiredFields(contestId);
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-title mb-2 font-bold">필수 항목 설정</h2>
-          <p className="text-sm text-gray-500">프로젝트 생성/수정 폼의 필수 항목을 설정합니다.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button className="bg-mainBlue hover:bg-blue-600" onClick={handleSave} disabled={isLoading}>
-            {isLoading ? '저장 중...' : '저장'}
-          </Button>
-        </div>
-      </header>
-      <RequiredFields fields={fieldsSetting} onToggle={toggleField} />
+      <AdminHeader title="필수 항목 설정" description="프로젝트 생성/수정 폼의 필수 항목을 설정합니다.">
+        <AdminActionButton className="" disabled={isPending} onClick={handleSave}>
+          {isPending ? '저장 중...' : '저장'}
+        </AdminActionButton>
+      </AdminHeader>
+      <QueryWrapper loadingStyle="h-[794px] my-0 rounded-lg" errorStyle="h-[300px]">
+        <RequiredFields
+          contestId={contestId}
+          fields={fieldsSetting}
+          setFieldsSetting={setFieldsSetting}
+          onToggle={handleToggleField}
+        />
+      </QueryWrapper>
     </div>
   );
 };

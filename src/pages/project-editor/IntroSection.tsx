@@ -34,7 +34,7 @@ const IntroSection = ({
           <span>{leaderName}</span>
           <div className="flex flex-wrap gap-x-3">
             {teamMembers.map((member, index) => (
-              <span key={index}>{member.teamMemberName}</span>
+              <span key={index}>{member.memberName}</span>
             ))}
           </div>
         </div>

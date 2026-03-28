@@ -1,30 +1,29 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { categoryOption } from 'queries/category';
-import { contestOption } from 'queries/contests';
+import { contestsOption } from 'queries/contest';
+import { useContestId } from 'hooks/useId';
 
 interface CategorySelectProps {
   categoryId: string;
   onChange: (value: string) => void;
-  className?: string;
 }
 
-const CategorySelect = ({ categoryId, onChange, className = '' }: CategorySelectProps) => {
-  const { contestId: contestIdParam } = useParams();
-  const { data: contests } = useQuery(contestOption());
-  const { data: categories } = useQuery(categoryOption());
+const CategorySelect = ({ categoryId, onChange }: CategorySelectProps) => {
+  const contestId = useContestId();
+  const { data: contests } = useSuspenseQuery(contestsOption());
+  const { data: categories } = useSuspenseQuery(categoryOption());
 
   useEffect(() => {
     if (categories && contests) {
-      if (!contestIdParam) onChange(categories[0].categoryId.toString());
+      if (!contestId) onChange(categories[0].categoryId.toString());
       else {
-        const currentId = contests.find((contest) => contest.contestId === Number(contestIdParam))?.categoryId;
+        const currentId = contests.find((contest) => contest.contestId === contestId)?.categoryId;
         if (currentId) onChange(String(currentId));
       }
     }
-  }, [contests, categories, contestIdParam]);
+  }, [contests, categories, contestId]);
 
   return (
     <Select onValueChange={onChange} value={categoryId}>

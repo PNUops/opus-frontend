@@ -1,6 +1,6 @@
 export interface TeamMember {
-  teamMemberId: number;
-  teamMemberName: string;
+  memberStudentId: number;
+  memberName: string;
 }
 
 export interface ProjectDetailsResponseDto {
@@ -25,7 +25,7 @@ export interface ProjectDetailsResponseDto {
 }
 
 export type PreviewResult =
-  | { id: number; status: 'success'; url: string }
+  | { id?: number; status: 'success'; url: string }
   | { status: 'processing'; code: 'PREVIEW_PROCESSING' }
   | { status: 'error'; code: 'PREVIEW_NOTFOUND' | 'PREVIEW_ERR_ETC' };
 

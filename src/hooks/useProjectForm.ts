@@ -1,57 +1,58 @@
-import { useEffect, useReducer, useRef, useState, useMemo, useCallback } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import useAuth from 'hooks/useAuth';
-import { useContestIdOrRedirect, useTeamIdOrRedirect } from './useId';
+import { useContestIdOrRedirect, useTeamId } from './useId';
 import { useToast } from 'hooks/useToast';
+import { useProjectEditorMode } from '@pages/project-editor/useProjectEditorMode';
 
-import { getProjectDetails, getPreviewImages } from 'apis/projectViewer';
+import { teamDetailOption } from 'queries/team';
+import { getRequiredFields } from 'apis/requiredFields';
+import { getPreviewImages } from 'apis/projectViewer';
 import {
   createProjectDetails,
-  getThumbnail,
-  patchProjectDetails,
-  postPreview,
-  postThumbnail,
+  deletePoster,
+  deleteMember,
   deletePreview,
   deleteThumbnail,
+  getPoster,
+  getThumbnail,
+  patchTeamDetail,
   postMember,
-  deleteMember,
+  postPoster,
+  postPreview,
+  postThumbnail,
+  PosterResult,
   ThumbnailResult,
 } from 'apis/projectEditor';
 
-import {
-  TeamMember,
-  PreviewImagesResponseDto,
-  ProjectDetailsResponseDto,
-  PreviewResult,
-} from 'types/DTO/projectViewerDto';
+import { canEditTeamPage } from 'utils/auth';
+import { isValidGithubUrl, isValidProjectUrl, isValidYoutubeUrl } from '@pages/project-editor/urlValidators';
+import { defaultRequiredFields } from 'constants/requiredFields';
 
-import { isValidGithubUrl, isValidYoutubeUrl, isValidProjectUrl } from '@pages/project-editor/urlValidators';
+import { ProjectDetailsEditDto } from 'types/DTO/projectEditorDto';
+import { PreviewImagesResponseDto, PreviewResult } from 'types/DTO/projectViewerDto';
+import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+import { MemberType } from 'types/MemberType';
+import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 
-type ProjectMode = 'create' | 'edit';
 interface ProjectFormState {
   contestId: number | null;
-  contestName: string;
   trackId: number | null;
-  trackName: string;
-  teamId: number | null;
-  teamName: string;
   projectName: string;
-  previewIds: number[];
-  professorName: string | null;
-  leaderId: number | null;
-  leaderName: string;
-  teamMembers: TeamMember[];
+  teamName: string;
+  professorName: string;
+  teamMembers: FormTeamMember[];
+  githubPath: string;
+  youTubePath: string;
+  productionPath: string | null;
   overview: string;
-  productionUrl: string | null;
-  githubUrl: string;
-  youtubeUrl: string;
-  isLiked: boolean | null;
-  isVoted: boolean | null;
 }
 
 interface ProjectImageState {
+  poster: PosterResult | File | undefined;
+  posterToDelete: boolean;
   thumbnail: ThumbnailResult | File | undefined;
   thumbnailToDelete: boolean;
   previews: (PreviewResult | File)[];
@@ -59,77 +60,91 @@ interface ProjectImageState {
 }
 
 type ProjectFormAction =
-  | { type: 'INIT_FROM_PROJECT'; payload: ProjectDetailsResponseDto }
+  | { type: 'INIT_FROM_PROJECT'; payload: TeamDetailDto }
   | { type: 'SET_CONTEST_ID'; payload: number | null }
   | { type: 'SET_FIELD'; field: keyof ProjectFormState; value: ProjectFormState[keyof ProjectFormState] }
-  | { type: 'SET_TEAM_MEMBERS'; payload: TeamMember[] }
-  | { type: 'ADD_MEMBER'; payload: TeamMember }
+  | { type: 'ADD_MEMBER'; payload: FormTeamMember }
   | { type: 'REMOVE_MEMBER'; payload: { memberId: number } };
 
 type ProjectImageAction =
+  | { type: 'SET_POSTER'; payload: PosterResult | File | undefined }
+  | { type: 'SET_POSTER_FROM_QUERY'; payload: PosterResult }
+  | { type: 'SET_POSTER_FILE'; payload: File }
+  | { type: 'MARK_POSTER_FOR_DELETE' }
+  | { type: 'SET_THUMBNAIL'; payload: ThumbnailResult | File | undefined }
   | { type: 'SET_THUMBNAIL_FROM_QUERY'; payload: ThumbnailResult }
   | { type: 'SET_THUMBNAIL_FILE'; payload: File }
   | { type: 'MARK_THUMBNAIL_FOR_DELETE' }
+  | { type: 'SET_PREVIEWS'; payload: (PreviewResult | File)[] }
   | { type: 'SET_PREVIEWS_FROM_QUERY'; payload: PreviewResult[] }
   | { type: 'ADD_PREVIEWS_FILES'; payload: File[] }
   | { type: 'MARK_PREVIEW_FOR_DELETE'; payload: number };
 
+type TeamMemberRoleType = Extract<MemberType, 'ROLE_팀장' | 'ROLE_팀원'>;
+
+export interface FormTeamMember {
+  memberId: number;
+  teamMemberName: string;
+  teamMemberStudentId?: string;
+  roleType: TeamMemberRoleType;
+}
+
+const getteamMemberName = (member: TeamDetailDto['teamMembers'][number]) => member.teamMemberName.trim();
+
+const getMemberId = (member: TeamDetailDto['teamMembers'][number]) => member.memberId;
+
+const getteamMemberStudentId = (member: TeamDetailDto['teamMembers'][number]) =>
+  (
+    (
+      member as TeamDetailDto['teamMembers'][number] & {
+        teamMemberStudentId?: string;
+        teamteamMemberStudentId?: string;
+      }
+    ).teamMemberStudentId ??
+    (
+      member as TeamDetailDto['teamMembers'][number] & {
+        teamMemberStudentId?: string;
+        teamteamMemberStudentId?: string;
+      }
+    ).teamteamMemberStudentId ??
+    ''
+  ).trim();
+
+const getNonLeaderMembers = (teamMembers: TeamDetailDto['teamMembers']): FormTeamMember[] =>
+  teamMembers
+    .filter((member) => member.roleType !== 'ROLE_팀장')
+    .map((member) => ({
+      memberId: getMemberId(member),
+      teamMemberName: getteamMemberName(member),
+      roleType: member.roleType as TeamMemberRoleType,
+      teamMemberStudentId: getteamMemberStudentId(member),
+    }));
+
+const mapTeamDetailToFormState = (team: TeamDetailDto): ProjectFormState => ({
+  contestId: team.contestId,
+  trackId: team.trackId,
+  projectName: team.projectName ?? '',
+  teamName: team.teamName ?? '',
+  professorName: team.professorName ?? '',
+  teamMembers: getNonLeaderMembers(team.teamMembers),
+  githubPath: team.githubPath ?? '',
+  youTubePath: team.youTubePath ?? '',
+  productionPath: team.productionPath ?? null,
+  overview: team.overview ?? '',
+});
+
 const projectFormReducer = (state: ProjectFormState, action: ProjectFormAction): ProjectFormState => {
   switch (action.type) {
-    case 'INIT_FROM_PROJECT': {
-      const p = action.payload;
-      return {
-        contestId: p.contestId,
-        contestName: p.contestName,
-        trackId: p.trackId,
-        trackName: p.trackName,
-        teamId: p.teamId,
-        teamName: p.teamName,
-        projectName: p.projectName,
-        previewIds: p.previewIds,
-        professorName: p.professorName,
-        leaderId: p.leaderId,
-        leaderName: p.leaderName,
-        teamMembers: p.teamMembers,
-        overview: p.overview,
-        productionUrl: p.productionPath,
-        githubUrl: p.githubPath,
-        youtubeUrl: p.youTubePath,
-        isLiked: p.isLiked,
-        isVoted: p.isVoted,
-      };
-    }
-
+    case 'INIT_FROM_PROJECT':
+      return mapTeamDetailToFormState(action.payload);
     case 'SET_CONTEST_ID':
-      return {
-        ...state,
-        contestId: action.payload,
-      };
-
+      return { ...state, contestId: action.payload };
     case 'SET_FIELD':
-      return {
-        ...state,
-        [action.field]: action.value,
-      };
-
-    case 'SET_TEAM_MEMBERS':
-      return {
-        ...state,
-        teamMembers: action.payload,
-      };
-
+      return { ...state, [action.field]: action.value };
     case 'ADD_MEMBER':
-      return {
-        ...state,
-        teamMembers: [...state.teamMembers, action.payload],
-      };
-
+      return { ...state, teamMembers: [...state.teamMembers, action.payload] };
     case 'REMOVE_MEMBER':
-      return {
-        ...state,
-        teamMembers: state.teamMembers.filter((m) => m.teamMemberId !== action.payload.memberId),
-      };
-
+      return { ...state, teamMembers: state.teamMembers.filter((m) => m.memberId !== action.payload.memberId) };
     default:
       return state;
   }
@@ -137,152 +152,170 @@ const projectFormReducer = (state: ProjectFormState, action: ProjectFormAction):
 
 const projectImageReducer = (state: ProjectImageState, action: ProjectImageAction): ProjectImageState => {
   switch (action.type) {
+    case 'SET_POSTER':
+      return { ...state, poster: action.payload };
+    case 'SET_POSTER_FROM_QUERY':
+      return { ...state, poster: action.payload, posterToDelete: false };
+    case 'SET_POSTER_FILE':
+      return { ...state, poster: action.payload, posterToDelete: false };
+    case 'MARK_POSTER_FOR_DELETE':
+      return { ...state, posterToDelete: true, poster: undefined };
+    case 'SET_THUMBNAIL':
+      return { ...state, thumbnail: action.payload };
     case 'SET_THUMBNAIL_FROM_QUERY':
-      return {
-        ...state,
-        thumbnail: action.payload,
-        thumbnailToDelete: false,
-      };
-
+      return { ...state, thumbnail: action.payload, thumbnailToDelete: false };
     case 'SET_THUMBNAIL_FILE':
-      return {
-        ...state,
-        thumbnail: action.payload,
-        thumbnailToDelete: false,
-      };
-
+      return { ...state, thumbnail: action.payload, thumbnailToDelete: false };
     case 'MARK_THUMBNAIL_FOR_DELETE':
-      return {
-        ...state,
-        thumbnailToDelete: true,
-      };
-
+      return { ...state, thumbnailToDelete: true, thumbnail: undefined };
+    case 'SET_PREVIEWS':
+      return { ...state, previews: action.payload };
     case 'SET_PREVIEWS_FROM_QUERY':
-      return {
-        ...state,
-        previews: action.payload,
-      };
-
+      return { ...state, previews: action.payload };
     case 'ADD_PREVIEWS_FILES':
-      return {
-        ...state,
-        previews: [...state.previews, ...action.payload],
-      };
-
-    case 'MARK_PREVIEW_FOR_DELETE':
+      return { ...state, previews: [...state.previews, ...action.payload] };
+    case 'MARK_PREVIEW_FOR_DELETE': {
       const id = action.payload;
-
       return {
         ...state,
         previewsToDelete: [...state.previewsToDelete, id],
-        previews: state.previews.filter((p) => {
-          if (p instanceof File) return true;
-          if (p.status !== 'success') return true;
-          return p.id !== id;
+        previews: state.previews.filter((preview) => {
+          if (preview instanceof File) return true;
+          if (preview.status !== 'success') return true;
+          return preview.id !== id;
         }),
       };
-
+    }
     default:
       return state;
   }
 };
 
-interface UseProjectFormProps {
-  mode: ProjectMode;
-}
+const buildProjectPayload = (
+  source: ProjectFormState,
+  fallback?: TeamDetailDto,
+  isAdmin = true,
+): ProjectDetailsEditDto | null => {
+  const toNullable = (value?: string | null) => {
+    if (value === null || value === undefined) return null;
+    return value.trim() === '' ? null : value;
+  };
 
-export const useProjectForm = ({ mode }: UseProjectFormProps) => {
-  const { user, isAdmin, isLeader, isMember } = useAuth();
+  const contestId = isAdmin ? source.contestId : fallback?.contestId;
+  const trackId = isAdmin ? source.trackId : fallback?.trackId;
+
+  if (contestId === null || contestId === undefined || trackId === null || trackId === undefined) {
+    return null;
+  }
+
+  return {
+    contestId,
+    trackId,
+    projectName: toNullable(source.projectName),
+    teamName: toNullable(isAdmin ? source.teamName : (fallback?.teamName ?? source.teamName)),
+    professorName: toNullable(source.professorName),
+    githubPath: toNullable(source.githubPath),
+    youTubePath: toNullable(source.youTubePath),
+    productionPath: toNullable(source.productionPath),
+    overview: toNullable(source.overview),
+  };
+};
+
+export const useProjectForm = () => {
+  const { user, isAdmin } = useAuth();
   const memberId = user?.id ?? null;
-
+  const { isEditMode, isCreateMode } = useProjectEditorMode();
   const contestId = useContestIdOrRedirect();
-  const teamId = useTeamIdOrRedirect();
-
-  const isEditMode = mode === 'edit';
-  const isCreateMode = mode === 'create';
+  const teamId = useTeamId();
 
   const toast = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
   const [isSaved, setIsSaved] = useState(false);
 
   const [formState, dispatchForm] = useReducer(projectFormReducer, {
-    contestId,
-    contestName: '',
+    contestId: contestId ?? null,
     trackId: null,
-    trackName: '',
-    teamId,
-    teamName: '',
     projectName: '',
-    previewIds: [],
-    professorName: null,
-    leaderId: null,
-    leaderName: '',
+    teamName: '',
+    professorName: '',
     teamMembers: [],
+    githubPath: '',
+    youTubePath: '',
+    productionPath: null,
     overview: '',
-    productionUrl: null,
-    githubUrl: '',
-    youtubeUrl: '',
-    isLiked: null,
-    isVoted: null,
   });
 
   const [imageState, dispatchImage] = useReducer(projectImageReducer, {
+    poster: undefined,
+    posterToDelete: false,
     thumbnail: undefined,
     thumbnailToDelete: false,
     previews: [],
     previewsToDelete: [],
   });
 
-  const teamMembersRef = useRef<TeamMember[]>(formState.teamMembers);
-
-  useEffect(() => {
-    teamMembersRef.current = formState.teamMembers;
-  }, [formState.teamMembers]);
-
   const {
     data: projectData,
     isLoading: isProjectLoading,
-    isError: isProjectError,
-  } = useQuery<ProjectDetailsResponseDto>({
-    queryKey: ['projectDetails', teamId],
-    queryFn: async () => {
-      if (teamId === null) throw new Error('teamId is null');
-      return await getProjectDetails(teamId);
-    },
+    error: isProjectError,
+  } = useQuery({
+    ...teamDetailOption(teamId ?? -1),
     enabled: isEditMode && teamId !== null,
   });
+
+  const requiredFieldsContestId = formState.contestId ?? contestId ?? projectData?.contestId ?? null;
+  const { data: requiredFieldsData } = useQuery<RequiredFieldsDto>({
+    queryKey: ['requiredFields', requiredFieldsContestId],
+    queryFn: async () => {
+      if (requiredFieldsContestId === null || requiredFieldsContestId === undefined) {
+        return defaultRequiredFields;
+      }
+      return getRequiredFields(requiredFieldsContestId);
+    },
+    enabled: requiredFieldsContestId !== null && requiredFieldsContestId !== undefined,
+  });
+  const requiredFields = requiredFieldsData ?? defaultRequiredFields;
 
   const { data: thumbnailResult } = useQuery<ThumbnailResult>({
     queryKey: ['thumbnail', teamId],
     queryFn: async () => {
       if (teamId === null) throw new Error('teamId is null');
-      return await getThumbnail(teamId);
+      return getThumbnail(teamId);
     },
     enabled: teamId !== null,
     refetchInterval: (query) => (query.state.data?.status === 'processing' ? 1500 : false),
   });
 
-  const stablePreviewIds = useMemo(() => {
-    return projectData?.previewIds ?? [];
-  }, [projectData?.previewIds?.join(',')]);
+  const { data: posterResult } = useQuery<PosterResult>({
+    queryKey: ['poster', teamId],
+    queryFn: async () => {
+      if (teamId === null) throw new Error('teamId is null');
+      return getPoster(teamId);
+    },
+    enabled: teamId !== null,
+    refetchInterval: (query) => (query.state.data?.status === 'processing' ? 1500 : false),
+  });
 
+  const stablePreviewIds = useMemo(() => projectData?.previewIds ?? [], [projectData?.previewIds?.join(',')]);
   const { data: previewData } = useQuery<PreviewImagesResponseDto>({
     queryKey: ['previewImages', teamId, stablePreviewIds],
     queryFn: async () => {
-      if (teamId === null || !projectData?.previewIds) {
-        throw new Error('previewIds 없음');
-      }
-      return await getPreviewImages(teamId, projectData.previewIds);
+      if (teamId === null || !projectData?.previewIds) throw new Error('previewIds 없음');
+      return getPreviewImages(teamId, projectData.previewIds);
     },
     enabled: teamId !== null && stablePreviewIds.length > 0,
     refetchInterval: (query) => {
-      const data = query.state.data;
-      const shouldRefetch = data?.imageResults?.some((result) => result.status === 'processing') ?? false;
-      return shouldRefetch ? 1500 : false;
+      const processing = query.state.data?.imageResults?.some((result) => result.status === 'processing') ?? false;
+      return processing ? 1500 : false;
     },
   });
+
+  useEffect(() => {
+    if (isEditMode && teamId === null) {
+      navigate('/', { replace: true });
+    }
+  }, [isEditMode, teamId, navigate]);
 
   useEffect(() => {
     if (projectData && isEditMode) {
@@ -291,409 +324,395 @@ export const useProjectForm = ({ mode }: UseProjectFormProps) => {
   }, [projectData, isEditMode]);
 
   useEffect(() => {
+    if (posterResult) {
+      dispatchImage({ type: 'SET_POSTER_FROM_QUERY', payload: posterResult });
+    }
+  }, [posterResult]);
+
+  useEffect(() => {
     if (thumbnailResult) {
-      dispatchImage({
-        type: 'SET_THUMBNAIL_FROM_QUERY',
-        payload: thumbnailResult,
-      });
+      dispatchImage({ type: 'SET_THUMBNAIL_FROM_QUERY', payload: thumbnailResult });
     }
   }, [thumbnailResult]);
 
   useEffect(() => {
-    if (previewData && previewData.imageResults) {
-      dispatchImage({
-        type: 'SET_PREVIEWS_FROM_QUERY',
-        payload: previewData.imageResults,
-      });
+    if (previewData?.imageResults) {
+      dispatchImage({ type: 'SET_PREVIEWS_FROM_QUERY', payload: previewData.imageResults });
     }
   }, [previewData]);
 
-  useEffect(() => {
-    return () => {
-      const { thumbnail, previews } = imageState;
-
-      if (
-        thumbnail &&
-        typeof thumbnail === 'object' &&
-        'url' in thumbnail &&
-        typeof (thumbnail as any).url === 'string' &&
-        (thumbnail as any).url.startsWith('blob:')
-      ) {
-        URL.revokeObjectURL((thumbnail as any).url);
-      }
-
-      previews.forEach((p) => {
-        if (
-          typeof p === 'object' &&
-          'url' in p &&
-          typeof (p as any).url === 'string' &&
-          (p as any).url.startsWith('blob:')
-        ) {
-          URL.revokeObjectURL((p as any).url);
-        }
-      });
-    };
-  }, [imageState]);
-
-  const isContributorOfThisTeam =
-    isEditMode &&
-    !!projectData &&
-    !!memberId &&
-    (memberId === projectData.leaderId || projectData.teamMembers.some((m) => m.teamMemberId === memberId));
-
+  const isEditorOfThisTeam = canEditTeamPage(memberId ?? -1, projectData?.teamMembers ?? [], isAdmin);
   const missingContestForCreate = isCreateMode && !formState.contestId;
   const missingTeamForEdit = isEditMode && !teamId;
-
   const isEmpty = (value?: string | null) => !value || value.trim() === '';
 
-  const validateCommonFields = () => {
-    const { projectName, teamName, leaderName, teamMembers, productionUrl, githubUrl, youtubeUrl, overview } =
-      formState;
+  const validateProjectPayload = (
+    payload: ProjectDetailsEditDto,
+    required: RequiredFieldsDto,
+    options?: { skipRequired?: boolean },
+  ) => {
+    const skipRequired = options?.skipRequired ?? false;
 
-    if (isEmpty(projectName)) return '프로젝트명이 입력되지 않았어요';
-    if (isEmpty(teamName)) return '팀명이 입력되지 않았어요';
-    if (isEmpty(leaderName)) return '팀장명이 입력되지 않았어요';
-    if (teamMembers.length < 1) return '팀원이 목록이 비어있어요';
+    if (!skipRequired && required.projectNameRequired && isEmpty(payload.projectName))
+      return '프로젝트 이름이 입력되지 않았어요';
+    if (!skipRequired && required.teamNameRequired && isEmpty(payload.teamName)) return '팀 이름이 입력되지 않았어요';
+    if (!skipRequired && required.professorRequired && isEmpty(payload.professorName))
+      return '지도교수명을 입력해주세요';
+    if (!skipRequired && required.githubPathRequired && isEmpty(payload.githubPath))
+      return 'GitHub 링크를 입력해주세요';
+    if (!skipRequired && required.youTubePathRequired && isEmpty(payload.youTubePath))
+      return 'YouTube 링크를 입력해주세요';
+    if (!skipRequired && required.productionPathRequired && isEmpty(payload.productionPath))
+      return '배포 링크를 입력해주세요';
+    if (!skipRequired && required.overviewRequired && isEmpty(payload.overview))
+      return '프로젝트 설명이 입력되지 않았어요';
 
-    const leaderLower = leaderName.trim().toLowerCase();
-    const isDuplicateWithMember = teamMembers.some(
-      (member) => member.teamMemberName.trim().toLowerCase() === leaderLower,
-    );
-    if (isDuplicateWithMember) return '팀장 이름이 팀원과 중복돼요';
-
-    if (productionUrl && !isValidProjectUrl(productionUrl)) {
+    if (typeof payload.githubPath === 'string' && !isEmpty(payload.githubPath) && !isValidGithubUrl(payload.githubPath))
+      return 'GitHub URL이 유효하지 않아요';
+    if (
+      typeof payload.youTubePath === 'string' &&
+      !isEmpty(payload.youTubePath) &&
+      !isValidYoutubeUrl(payload.youTubePath)
+    )
+      return 'YouTube URL이 유효하지 않아요';
+    if (
+      typeof payload.productionPath === 'string' &&
+      !isEmpty(payload.productionPath) &&
+      !isValidProjectUrl(payload.productionPath)
+    )
       return '프로젝트 주소가 유효하지 않아요';
-    }
-    if (isEmpty(githubUrl)) return 'GitHub 링크가 입력되지 않았어요';
-    if (!isValidGithubUrl(githubUrl)) return 'GitHub URL이 유효하지 않아요';
-    if (isEmpty(youtubeUrl)) return 'YouTube 링크가 입력되지 않았어요';
-    if (!isValidYoutubeUrl(youtubeUrl)) return 'YouTube URL이 유효하지 않아요';
-    if (isEmpty(overview)) return '프로젝트 소개글이 입력되지 않았어요';
 
+    if (!skipRequired && required.teamMembersRequired && formState.teamMembers.length < 1)
+      return '팀원을 1명 이상 입력해주세요';
+    if (!skipRequired && required.leaderRequired) {
+      const hasLeaderInForm = formState.teamMembers.some((member) => member.roleType === 'ROLE_팀장');
+      const hasLeaderInExisting = projectData?.teamMembers?.some((member) => member.roleType === 'ROLE_팀장') ?? false;
+      if (!hasLeaderInForm && !hasLeaderInExisting) return '팀장을 1명 이상 지정해주세요';
+    }
+
+    if (!skipRequired && required.posterRequired) {
+      const hasPoster =
+        imageState.poster instanceof File ||
+        (!!imageState.poster && 'status' in imageState.poster && imageState.poster.status === 'success');
+      if (!hasPoster) return '포스터를 업로드해주세요';
+    }
+
+    if (!skipRequired && required.imagesRequired) {
+      const hasThumbnail =
+        imageState.thumbnail instanceof File ||
+        (!!imageState.thumbnail && 'status' in imageState.thumbnail && imageState.thumbnail.status === 'success');
+      if (!hasThumbnail || imageState.previews.length === 0) return '썸네일과 상세 이미지를 업로드해주세요';
+    }
     return null;
-  };
-
-  const validateCreateInputs = () => {
-    if (isAdmin) {
-      if (formState.contestId === null) return '대회 종류를 선택해야 해요';
-    }
-    return validateCommonFields();
-  };
-
-  const validateEditInputs = () => {
-    if (isContributorOfThisTeam) {
-      if (!imageState.thumbnail || imageState.previews.length === 0) {
-        return '썸네일을 포함한 두 개 이상의 이미지를 올려주세요';
-      }
-    }
-    return validateCommonFields();
   };
 
   const validateInputs = () => {
-    if (isCreateMode) return validateCreateInputs();
-    if (isEditMode) return validateEditInputs();
-    return null;
+    const payload = buildProjectPayload(formState, projectData, isCreateMode ? true : isAdmin);
+    if (!payload) return '대회와 트랙을 선택해야 해요';
+    if (!isAdmin && requiredFields.trackRequired && formState.trackId === null) return '트랙을 선택해야 해요';
+    if (!isAdmin && isEditMode && isEditorOfThisTeam && requiredFields.imagesRequired) {
+      if (!imageState.thumbnail || imageState.previews.length === 0) return '썸네일 포함 2장 이상 이미지가 필요해요';
+    }
+    return validateProjectPayload(payload, requiredFields, { skipRequired: isAdmin });
   };
 
   const onMemberAdd = useCallback(
-    (newMemberName: string) => {
-      const trimmedName = newMemberName.trim();
+    (newMember: { teamMemberName: string; teamMemberStudentId: string; roleType: TeamMemberRoleType }) => {
+      const trimmedName = newMember.teamMemberName.trim();
+      const trimmedStudentId = newMember.teamMemberStudentId.trim();
+
       if (!trimmedName) {
         toast('팀원 이름이 입력되지 않았어요', 'info');
         return;
       }
+      if (!trimmedStudentId) {
+        toast('팀원 학번이 입력되지 않았어요', 'info');
+        return;
+      }
+      if (!/^\d+$/.test(trimmedStudentId)) {
+        toast('팀원 학번은 숫자만 입력할 수 있어요', 'info');
+        return;
+      }
 
-      const leaderLower = formState.leaderName.trim().toLowerCase();
-      const isDuplicate = teamMembersRef.current.some(
+      const duplicated = formState.teamMembers.some(
         (member) =>
-          member.teamMemberName.toLowerCase() === trimmedName.toLowerCase() ||
-          leaderLower === trimmedName.toLowerCase(),
+          member.teamMemberName.trim().toLowerCase() === trimmedName.toLowerCase() &&
+          (member.teamMemberStudentId ?? '').trim() === trimmedStudentId,
       );
-
-      if (isDuplicate) {
+      if (duplicated) {
         toast(`팀원 "${trimmedName}" 은(는) 이미 존재해요`, 'info');
         return;
       }
-
-      const generateUniqueId = () => Date.now() + Math.floor(Math.random() * 1000);
-
-      const newMember: TeamMember = {
-        teamMemberId: generateUniqueId(),
-        teamMemberName: trimmedName,
-      };
-
-      dispatchForm({ type: 'ADD_MEMBER', payload: newMember });
+      dispatchForm({
+        type: 'ADD_MEMBER',
+        payload: {
+          memberId: Date.now() + Math.floor(Math.random() * 1000),
+          teamMemberName: trimmedName,
+          teamMemberStudentId: trimmedStudentId,
+          roleType: newMember.roleType,
+        },
+      });
       toast(`팀원 "${trimmedName}"을(를) 추가했어요`, 'success');
     },
-    [formState.leaderName, toast],
+    [formState.teamMembers, toast],
   );
 
   const onMemberRemove = useCallback(
-    (teamMemberId: number) => {
-      const memberToRemove = teamMembersRef.current.find((m) => m.teamMemberId === teamMemberId);
-      if (!memberToRemove) {
-        toast('삭제할 팀원을 찾을 수 없어요', 'info');
-        return;
-      }
-
-      const memberName =
-        typeof memberToRemove.teamMemberName === 'string' && memberToRemove.teamMemberName.trim() !== ''
-          ? memberToRemove.teamMemberName
-          : '알 수 없는 팀원';
-
-      dispatchForm({ type: 'REMOVE_MEMBER', payload: { memberId: teamMemberId } });
-      toast(`팀원 "${memberName}"을(를) 삭제했어요`, 'info');
+    (memberId: number) => {
+      dispatchForm({ type: 'REMOVE_MEMBER', payload: { memberId: memberId } });
+      toast('팀원을 삭제했어요', 'info');
     },
     [toast],
+  );
+
+  const syncBasicInfo = useCallback(
+    async (currentTeamId: number, currentProjectData: TeamDetailDto) => {
+      const payload = buildProjectPayload(formState, currentProjectData, isAdmin);
+      if (!payload) throw new Error('INVALID_PAYLOAD');
+
+      const basicInfoChanged =
+        (currentProjectData.projectName ?? '') !== formState.projectName ||
+        (currentProjectData.teamName ?? '') !== formState.teamName ||
+        (currentProjectData.professorName ?? '') !== formState.professorName ||
+        (currentProjectData.overview ?? '') !== formState.overview ||
+        (currentProjectData.productionPath ?? null) !== formState.productionPath ||
+        (currentProjectData.githubPath ?? '') !== formState.githubPath ||
+        (currentProjectData.youTubePath ?? '') !== formState.youTubePath ||
+        (isAdmin &&
+          (currentProjectData.contestId !== payload.contestId ||
+            (currentProjectData.trackId ?? null) !== payload.trackId));
+
+      if (basicInfoChanged) {
+        await patchTeamDetail(currentTeamId, payload);
+      }
+    },
+    [formState, isAdmin],
+  );
+
+  const syncMembers = useCallback(
+    async (currentTeamId: number, currentProjectData: TeamDetailDto) => {
+      const existingMembers = getNonLeaderMembers(currentProjectData.teamMembers);
+      const addedMembers = formState.teamMembers.filter(
+        (member) => !existingMembers.some((existing) => existing.memberId === member.memberId),
+      );
+      const removedMembers = existingMembers.filter(
+        (member) => !formState.teamMembers.some((current) => current.memberId === member.memberId),
+      );
+
+      if (removedMembers.length > 0) {
+        await Promise.all(removedMembers.map((member) => deleteMember(currentTeamId, member.memberId)));
+      }
+      if (addedMembers.length > 0) {
+        await Promise.all(
+          addedMembers.map((member) =>
+            postMember(currentTeamId, {
+              memberName: member.teamMemberName,
+              memberStudentId: member.teamMemberStudentId ?? '',
+              roleType: member.roleType,
+            }),
+          ),
+        );
+      }
+    },
+    [formState.teamMembers],
+  );
+
+  const syncImages = useCallback(
+    async (currentTeamId: number) => {
+      if (imageState.posterToDelete) {
+        const response = await deletePoster(currentTeamId);
+        if (response.status === 202) toast('압축 중인 포스터는 삭제할 수 없어요', 'error');
+      }
+
+      if (imageState.poster instanceof File) {
+        const formData = new FormData();
+        formData.append('image', imageState.poster);
+        await postPoster(currentTeamId, formData);
+      }
+
+      if (imageState.thumbnailToDelete) {
+        const response = await deleteThumbnail(currentTeamId);
+        if (response.status === 202) toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
+      }
+
+      if (imageState.thumbnail instanceof File) {
+        const formData = new FormData();
+        formData.append('image', imageState.thumbnail);
+        await postThumbnail(currentTeamId, formData);
+      }
+
+      if (imageState.previewsToDelete.length > 0) {
+        const response = await deletePreview(currentTeamId, { imageIds: imageState.previewsToDelete });
+        if (response.status === 202) toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
+      }
+
+      const newFiles = imageState.previews.filter((preview): preview is File => preview instanceof File);
+      if (newFiles.length > 0) {
+        const formData = new FormData();
+        newFiles.forEach((file) => formData.append('images', file));
+        await postPreview(currentTeamId, formData);
+      }
+    },
+    [imageState, toast],
   );
 
   const handleEdit = useCallback(async () => {
     if (!teamId || !projectData) return;
 
-    const errorMessage = validateInputs();
-    if (errorMessage) {
-      toast(errorMessage, 'error');
+    const validationError = validateInputs();
+    if (validationError) {
+      toast(validationError, 'error');
       return;
     }
 
     try {
-      await patchProjectDetails(teamId, {
-        contestId: isAdmin ? (formState.contestId ?? projectData.contestId) : projectData.contestId,
-        trackId: isAdmin ? (formState.trackId ?? projectData.trackId) : projectData.trackId,
-        teamName: isAdmin ? formState.teamName : projectData.teamName,
-        projectName: formState.projectName,
-        professorName: formState.professorName ?? '',
-        overview: formState.overview,
-        productionPath: formState.productionUrl,
-        githubPath: formState.githubUrl,
-        youTubePath: formState.youtubeUrl,
-      });
-
-      const addedMembers = formState.teamMembers.filter(
-        (member) => !projectData.teamMembers.some((existing) => existing.teamMemberId === member.teamMemberId),
-      );
-      const removedMembers = projectData.teamMembers.filter(
-        (member) => !formState.teamMembers.some((current) => current.teamMemberId === member.teamMemberId),
-      );
-
-      const removeMemberPromises = removedMembers.map((member) => deleteMember(teamId, member.teamMemberId));
-      await Promise.all(removeMemberPromises);
-
-      const addMemberPromises = addedMembers.map((member) =>
-        postMember(teamId, { teamMemberName: member.teamMemberName }),
-      );
-      await Promise.all(addMemberPromises);
-
-      if (imageState.thumbnailToDelete) {
-        const res = await deleteThumbnail(teamId);
-        if (res.status === 202) {
-          toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
-        }
-      }
-
-      if (imageState.thumbnail instanceof File) {
-        const formData = new FormData();
-        formData.append('image', imageState.thumbnail);
-        await postThumbnail(teamId, formData);
-      }
-
-      if (imageState.previewsToDelete.length > 0) {
-        const res = await deletePreview(teamId, {
-          imageIds: imageState.previewsToDelete,
-        });
-        if (res.status === 202) {
-          toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
-        }
-      }
-
-      const newFiles = imageState.previews.filter((p) => p instanceof File) as File[];
-      if (newFiles.length > 0) {
-        const formData = new FormData();
-        newFiles.forEach((file) => formData.append('images', file));
-        await postPreview(teamId, formData);
-      }
+      await syncBasicInfo(teamId, projectData);
+      await syncMembers(teamId, projectData);
+      await syncImages(teamId);
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['contests'] }),
+        queryClient.invalidateQueries({ queryKey: ['poster', teamId] }),
         queryClient.invalidateQueries({ queryKey: ['thumbnail', teamId] }),
-        queryClient.invalidateQueries({
-          queryKey: ['previewImages', teamId, stablePreviewIds],
-        }),
+        queryClient.invalidateQueries({ queryKey: ['previewImages', teamId] }),
         queryClient.invalidateQueries({ queryKey: ['projectDetails', teamId] }),
       ]);
 
       toast('수정이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${teamId}`);
-    } catch (err: any) {
-      toast(err?.response?.data?.message || '저장 중 오류가 발생했어요', 'error');
+    } catch (error: any) {
+      toast(error?.response?.data?.message ?? '저장 중 오류가 발생했어요', 'error');
     }
-  }, [teamId, projectData, formState, imageState, isAdmin, queryClient, stablePreviewIds, toast, navigate]);
+  }, [
+    teamId,
+    projectData,
+    validateInputs,
+    toast,
+    syncBasicInfo,
+    syncMembers,
+    syncImages,
+    queryClient,
+    navigate,
+    contestId,
+  ]);
 
   const handleCreate = useCallback(async () => {
-    const errorMessage = validateInputs();
-    if (errorMessage) {
-      toast(errorMessage, 'error');
+    const validationError = validateInputs();
+    if (validationError) {
+      toast(validationError, 'error');
+      return;
+    }
+
+    const payload = buildProjectPayload(formState, undefined, true);
+    if (!payload) {
+      toast('대회와 트랙을 선택해주세요.', 'error');
       return;
     }
 
     try {
-      const response = await createProjectDetails({
-        contestId: formState.contestId!,
-        trackId: formState.trackId!,
-        projectName: formState.projectName,
-        teamName: formState.teamName,
-        professorName: formState.professorName ?? '',
-        githubPath: formState.githubUrl,
-        youTubePath: formState.youtubeUrl,
-        productionPath: formState.productionUrl,
-        overview: formState.overview,
-      });
+      const created = await createProjectDetails(payload);
+      const createdTeamId = created.teamId;
 
-      const createdTeamId = response.teamId;
-      await queryClient.invalidateQueries({ queryKey: ['projectDetails'] });
-
-      const postDetailTasks: Promise<any>[] = [];
-
-      const addMemberPromises = formState.teamMembers.map((member) =>
-        postMember(createdTeamId, {
-          teamMemberName: member.teamMemberName,
-        }),
-      );
-      postDetailTasks.push(...addMemberPromises);
-
-      if (imageState.thumbnail instanceof File) {
-        const formData = new FormData();
-        formData.append('image', imageState.thumbnail);
-        postDetailTasks.push(postThumbnail(createdTeamId, formData));
+      if (formState.teamMembers.length > 0) {
+        await Promise.all(
+          formState.teamMembers.map((member) =>
+            postMember(createdTeamId, {
+              memberName: member.teamMemberName,
+              memberStudentId: member.teamMemberStudentId ?? '',
+              roleType: member.roleType,
+            }),
+          ),
+        );
       }
 
-      const newFiles = imageState.previews.filter((p) => p instanceof File) as File[];
-      if (newFiles.length > 0) {
-        const formData = new FormData();
-        newFiles.forEach((file) => formData.append('images', file));
-        postDetailTasks.push(postPreview(createdTeamId, formData));
-      }
-
-      await Promise.all(postDetailTasks);
-
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['contests'] }),
-        queryClient.invalidateQueries({ queryKey: ['thumbnail', createdTeamId] }),
-        queryClient.invalidateQueries({
-          queryKey: ['previewImages', createdTeamId],
-        }),
-        queryClient.invalidateQueries({
-          queryKey: ['projectDetails', createdTeamId],
-        }),
-      ]);
+      await syncImages(createdTeamId);
 
       toast('생성이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${createdTeamId}`);
-    } catch (err: any) {
-      toast(err?.response?.data?.message || '생성 도중 실패했어요', 'error');
-      navigate(`/admin/contest`);
+    } catch (error: any) {
+      toast(error?.response?.data?.message ?? '생성 도중 실패했어요', 'error');
     }
-  }, [formState, imageState, queryClient, toast, navigate]);
+  }, [validateInputs, toast, formState, syncImages, navigate, contestId]);
 
   const handleSave = useCallback(async () => {
     if (isSaved) return;
     setIsSaved(true);
     try {
-      if (isCreateMode) {
-        await handleCreate();
-      } else if (isEditMode) {
-        await handleEdit();
-      }
+      if (isCreateMode) await handleCreate();
+      if (isEditMode) await handleEdit();
     } finally {
       setIsSaved(false);
     }
   }, [isSaved, isCreateMode, isEditMode, handleCreate, handleEdit]);
 
-  const hasCreatorInputs = (): boolean => {
-    const {
-      contestId,
-      projectName,
-      teamName,
-      professorName,
-      leaderName,
-      teamMembers,
-      githubUrl,
-      youtubeUrl,
-      overview,
-    } = formState;
+  const hasCreatorInputs = () =>
+    (() => {
+      const payload = buildProjectPayload(formState, undefined, true);
+      if (!payload) return false;
+      return validateProjectPayload(payload, requiredFields) === null;
+    })();
 
-    return (
-      !!contestId &&
-      !isEmpty(projectName) &&
-      !isEmpty(teamName) &&
-      !isEmpty(professorName) &&
-      !isEmpty(leaderName) &&
-      teamMembers.length > 0 &&
-      !isEmpty(githubUrl) &&
-      !isEmpty(youtubeUrl) &&
-      !isEmpty(overview)
-    );
-  };
-
-  const hasEditorChanges = (): boolean => {
+  const hasEditorChanges = () => {
     if (!projectData) return true;
 
-    const basicInfoChanged =
-      projectData.projectName !== formState.projectName ||
-      projectData.teamName !== formState.teamName ||
+    const originMembers = getNonLeaderMembers(projectData.teamMembers)
+      .map((m) => `${m.memberId}:${m.teamMemberName}:${m.roleType}:${m.teamMemberStudentId ?? ''}`)
+      .sort()
+      .join(',');
+    const nextMembers = formState.teamMembers
+      .map((m) => `${m.memberId}:${m.teamMemberName}:${m.roleType}:${m.teamMemberStudentId ?? ''}`)
+      .sort()
+      .join(',');
+
+    return (
+      (projectData.projectName ?? '') !== formState.projectName ||
+      (projectData.teamName ?? '') !== formState.teamName ||
       (projectData.professorName ?? '') !== formState.professorName ||
-      projectData.leaderName !== formState.leaderName ||
-      projectData.overview !== formState.overview ||
-      (projectData.productionPath ?? null) !== formState.productionUrl ||
-      projectData.githubPath !== formState.githubUrl ||
-      projectData.youTubePath !== formState.youtubeUrl;
-
-    const membersChanged =
-      JSON.stringify(projectData.teamMembers.map((m) => m.teamMemberName).sort()) !==
-      JSON.stringify(formState.teamMembers.map((m) => m.teamMemberName).sort());
-
-    const thumbnailChanged = imageState.thumbnailToDelete || imageState.thumbnail instanceof File;
-
-    const previewAdded = imageState.previews.some((p) => p instanceof File);
-    const previewDeleted = imageState.previewsToDelete.length > 0;
-
-    return basicInfoChanged || membersChanged || thumbnailChanged || previewAdded || previewDeleted;
+      (projectData.overview ?? '') !== formState.overview ||
+      (projectData.productionPath ?? null) !== formState.productionPath ||
+      (projectData.githubPath ?? '') !== formState.githubPath ||
+      (projectData.youTubePath ?? '') !== formState.youTubePath ||
+      originMembers !== nextMembers ||
+      imageState.posterToDelete ||
+      imageState.poster instanceof File ||
+      imageState.thumbnailToDelete ||
+      imageState.thumbnail instanceof File ||
+      imageState.previews.some((preview) => preview instanceof File) ||
+      imageState.previewsToDelete.length > 0
+    );
   };
 
   return {
     isCreateMode,
     isEditMode,
     isAdmin,
-    isContributorOfThisTeam,
+    isEditorOfThisTeam,
     missingContestForCreate,
     missingTeamForEdit,
-
     isProjectLoading,
     isProjectError,
     projectData,
-
     formState,
     imageState,
-
-    setContestId: (contestId: number | null) => dispatchForm({ type: 'SET_CONTEST_ID', payload: contestId }),
-
-    setField: (field: keyof ProjectFormState, value: any) => dispatchForm({ type: 'SET_FIELD', field, value }),
-
+    setContestId: (nextContestId: number | null) => dispatchForm({ type: 'SET_CONTEST_ID', payload: nextContestId }),
+    setField: <K extends keyof ProjectFormState>(field: K, value: ProjectFormState[K]) =>
+      dispatchForm({ type: 'SET_FIELD', field, value }),
+    setPoster: (value: PosterResult | File | undefined) => dispatchImage({ type: 'SET_POSTER', payload: value }),
+    setPosterFile: (file: File) => dispatchImage({ type: 'SET_POSTER_FILE', payload: file }),
+    markPosterForDelete: () => dispatchImage({ type: 'MARK_POSTER_FOR_DELETE' }),
+    setThumbnail: (value: ThumbnailResult | File | undefined) =>
+      dispatchImage({ type: 'SET_THUMBNAIL', payload: value }),
     setThumbnailFile: (file: File) => dispatchImage({ type: 'SET_THUMBNAIL_FILE', payload: file }),
-
     markThumbnailForDelete: () => dispatchImage({ type: 'MARK_THUMBNAIL_FOR_DELETE' }),
-
+    setPreviews: (value: (PreviewResult | File)[]) => dispatchImage({ type: 'SET_PREVIEWS', payload: value }),
     addPreviewFiles: (files: File[]) => dispatchImage({ type: 'ADD_PREVIEWS_FILES', payload: files }),
-
     markPreviewForDelete: (id: number) => dispatchImage({ type: 'MARK_PREVIEW_FOR_DELETE', payload: id }),
-
     onMemberAdd,
     onMemberRemove,
-
     handleSave,
     hasCreatorInputs,
     hasEditorChanges,
-
+    requiredFields,
     isSaved,
     teamId,
   };

@@ -1,78 +1,124 @@
 import { useState } from 'react';
-import { TeamMember } from 'types/DTO/projectViewerDto';
 import { IoPerson } from 'react-icons/io5';
+import Menu, { MenuOption } from 'components/Menu';
+import type { FormTeamMember } from 'hooks/useProjectForm';
 
 interface MembersInputProps {
-  teamMembers: TeamMember[];
-  onMemberAdd: (newMemberName: string) => void;
+  teamMembers: FormTeamMember[];
+  onMemberAdd: (member: {
+    teamMemberName: string;
+    teamMemberStudentId: string;
+    roleType: 'ROLE_팀장' | 'ROLE_팀원';
+  }) => void;
   onMemberRemove: (teamMemberId: number) => void;
+  required?: boolean;
 }
 
 const MAX_MEMBERS = 6;
 
-const MembersInput = ({ teamMembers, onMemberAdd, onMemberRemove }: MembersInputProps) => {
-  const [newMemberInput, setNewMemberInput] = useState('');
+const MembersInput = ({ teamMembers, onMemberAdd, onMemberRemove, required = false }: MembersInputProps) => {
+  const [newteamMemberName, setNewteamMemberName] = useState('');
+  const [newteamMemberStudentId, setNewteamMemberStudentId] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState<'ROLE_팀장' | 'ROLE_팀원'>('ROLE_팀원');
+
+  const roleOptions: MenuOption<'ROLE_팀장' | 'ROLE_팀원'>[] = [
+    { label: '팀원', value: 'ROLE_팀원' },
+    { label: '팀장', value: 'ROLE_팀장' },
+  ];
 
   const handleAddMember = () => {
-    const trimmed = newMemberInput.trim();
+    const trimmed = newteamMemberName.trim();
     if (!trimmed || teamMembers.length >= MAX_MEMBERS) return;
-    onMemberAdd(trimmed);
-    setNewMemberInput('');
+    onMemberAdd({
+      teamMemberName: trimmed,
+      teamMemberStudentId: newteamMemberStudentId.trim(),
+      roleType: newMemberRole,
+    });
+    setNewteamMemberName('');
+    setNewteamMemberStudentId('');
+    setNewMemberRole('ROLE_팀원');
   };
 
   return (
     <div className="text-exsm flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-10 sm:text-sm">
       <div className="text-midGray flex w-25 sm:py-3">
-        <span className="mr-1 text-red-500">*</span>
+        {required ? <span className="mr-1 text-red-500">*</span> : null}
         <span>팀원</span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="grid w-full grid-cols-1 gap-3 lg:grid-cols-2">
-          {teamMembers.map((member) => (
-            <div
-              key={member.teamMemberId}
-              className="border:lightGray relative w-full rounded border px-15 py-3 text-black"
+      <div className="flex flex-1 flex-col gap-3">
+        {teamMembers.length > 0 && (
+          <div className="grid w-full grid-cols-1 gap-3 lg:grid-cols-2">
+            {teamMembers.map((member) => (
+              <div
+                key={member.memberId}
+                className="border-lightGray bg-whiteGray/30 flex min-h-12 w-full items-center justify-between gap-3 rounded border px-4 py-3 text-black"
+              >
+                <div className="flex min-w-0 items-center gap-2">
+                  <IoPerson className="text-mainGreen/60 shrink-0" size={17} />
+                  <span className="truncate font-medium">{member.teamMemberName}</span>
+                  <span className="text-midGray shrink-0 text-xs whitespace-nowrap">
+                    {member.teamMemberStudentId ? `(${member.teamMemberStudentId})` : ''}
+                  </span>
+                  <span className="text-mainGreen shrink-0 text-xs whitespace-nowrap">
+                    {member.roleType === 'ROLE_팀장' ? '팀장' : '팀원'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onMemberRemove(member.memberId)}
+                  className="shrink-0 text-xs text-red-500 hover:cursor-pointer hover:text-red-700"
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {teamMembers.length < MAX_MEMBERS && (
+          <div className="border-lightGray flex w-full flex-col gap-2 rounded border p-3">
+            <input
+              type="text"
+              placeholder="팀원 이름을 입력해주세요."
+              className="placeholder-lightGray border-lightGray focus:border-mainGreen w-full truncate rounded border px-4 py-2.5 text-black duration-300 ease-in-out focus:outline-none"
+              value={newteamMemberName}
+              onChange={(e) => {
+                if (e.target.value.length <= 20) setNewteamMemberName(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleAddMember();
+              }}
+            />
+            <input
+              type="text"
+              placeholder="학번을 입력해주세요."
+              className="placeholder-lightGray border-lightGray focus:border-mainGreen w-full truncate rounded border px-4 py-2.5 text-black duration-300 ease-in-out focus:outline-none"
+              value={newteamMemberStudentId}
+              onChange={(e) => {
+                if (/^\d*$/.test(e.target.value)) setNewteamMemberStudentId(e.target.value);
+              }}
+            />
+            <Menu<'ROLE_팀장' | 'ROLE_팀원'>
+              options={roleOptions}
+              value={newMemberRole}
+              onChange={(value) => setNewMemberRole(value)}
+              placeholder="권한을 선택해주세요."
+            />
+            <button
+              type="button"
+              onClick={handleAddMember}
+              disabled={!newteamMemberName.trim() || !newteamMemberStudentId.trim()}
+              className={`mt-1 self-end rounded px-3 py-1.5 text-xs font-medium ${
+                newteamMemberName.trim() && newteamMemberStudentId.trim()
+                  ? 'text-mainGreen bg-subGreen hover:cursor-pointer hover:bg-emerald-100'
+                  : 'cursor-not-allowed bg-gray-100 text-gray-300'
+              }`}
             >
-              <IoPerson className="text-mainGreen/50 absolute top-1/2 left-5 -translate-y-1/2" size={20} />
-              <div className="truncate">{member.teamMemberName}</div>
-              <button
-                type="button"
-                onClick={() => onMemberRemove(member.teamMemberId)}
-                className="absolute top-1/2 right-5 -translate-y-1/2 text-xs text-red-500 hover:cursor-pointer hover:text-red-700"
-              >
-                삭제
-              </button>
-            </div>
-          ))}
-          {teamMembers.length < MAX_MEMBERS && (
-            <div className="relative w-full">
-              <IoPerson className="text-lightGray absolute top-1/2 left-5 -translate-y-1/2" size={20} />
-              <input
-                type="text"
-                placeholder="팀원명을 입력해주세요."
-                className="placeholder-lightGray border-lightGray focus:border-mainGreen w-full truncate rounded border px-15 py-3 text-black duration-300 ease-in-out focus:outline-none"
-                value={newMemberInput}
-                onChange={(e) => {
-                  if (e.target.value.length <= 20) setNewMemberInput(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleAddMember();
-                }}
-              />
-              <button
-                type="button"
-                onClick={handleAddMember}
-                disabled={!newMemberInput.trim()}
-                className={`absolute top-1/2 right-5 -translate-y-1/2 text-xs font-medium hover:cursor-pointer ${
-                  newMemberInput.trim() ? 'text-mainGreen hover:text-green-700' : 'cursor-not-allowed text-gray-300'
-                }`}
-              >
-                추가
-              </button>
-            </div>
-          )}
-        </div>
+              추가
+            </button>
+          </div>
+        )}
         <p className="text-lightGray text-xs">
           최대 {MAX_MEMBERS}명까지 등록할 수 있어요 ({MAX_MEMBERS - teamMembers.length}명 남음)
         </p>

@@ -5,5 +5,6 @@ export interface TeamListItemResponseDto {
   teamName: string;
   projectName: string;
   isLiked: boolean;
+  isVoted: boolean;
   awards: AwardDto[];
 }
