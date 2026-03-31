@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
-import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
 import { createContestNotice, deleteContestNotice, updateContestNotice } from 'apis/notice';
 import { useToast } from 'hooks/useToast';
 import { NoticeRequestDto } from 'types/DTO/noticeDto';
-import { AdminDeleteConfirmModal } from '@components/admin';
+import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 import { contestNoticeDetailOption } from 'queries/notices';
 
 interface ContestNoticeModalProps {
@@ -89,12 +88,12 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
         />
       </div>
       <div className="flex justify-end gap-4">
-        <RoundedButton className="min-w-28" onClick={handleClose}>
+        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
           취소
-        </RoundedButton>
-        <RoundedButton className="min-w-28" onClick={handleSave}>
+        </AdminActionButton>
+        <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSave}>
           {type === 'create' ? '추가' : '저장'}
-        </RoundedButton>
+        </AdminActionButton>
       </div>
     </DialogContent>
   );

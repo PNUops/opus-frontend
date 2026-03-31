@@ -4,6 +4,7 @@ import Button from '@components/Button';
 import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
+import { AdminActionButton } from '@components/admin';
 
 interface TrackModalProps {
   type: 'create' | 'edit';
@@ -43,16 +44,13 @@ export const TrackModal = ({ type, prevName, onSubmit, onClose }: TrackModalProp
         className="bg-whiteGray h-12 rounded-lg"
       />
       <div className="flex justify-center gap-4">
-        <Button
-          className="border-lightGray text-midGray rounded-full border px-5 py-3 hover:bg-gray-100"
-          onClick={handleClose}
-        >
+        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
           {'닫기'}
-        </Button>
+        </AdminActionButton>
         <DialogClose asChild>
-          <Button className="bg-mainBlue rounded-full px-5 py-3 hover:bg-blue-500" onClick={handleSubmit}>
+          <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSubmit}>
             {`${type === 'create' ? '추가' : '수정'}하기`}
-          </Button>
+          </AdminActionButton>
         </DialogClose>
       </div>
     </DialogContent>
