@@ -162,14 +162,21 @@ const ContestTeamInsert = ({ contestId, handleSkip }: ContestTeamInsertProps) =>
       <Dialog open={templateErrors.length > 0} onOpenChange={(open) => !open && setTemplateErrors([])}>
         <TemplateErrorModal errors={templateErrors} />
       </Dialog>
-      <AdminActionButton
-        size="lg"
-        className="mx-auto rounded-full"
-        disabled={!file || bulkAddTeams.isPending}
-        onClick={handleSetting}
-      >
-        설정하기
-      </AdminActionButton>
+      <div className="flex items-center justify-center gap-6">
+        {handleSkip && (
+          <AdminActionButton size="lg" className="rounded-full" variant="outline" onClick={handleSkip}>
+            나중에 설정하기
+          </AdminActionButton>
+        )}
+        <AdminActionButton
+          size="lg"
+          className="rounded-full"
+          disabled={!file || bulkAddTeams.isPending}
+          onClick={handleSetting}
+        >
+          설정하기
+        </AdminActionButton>
+      </div>
     </div>
   );
 };
