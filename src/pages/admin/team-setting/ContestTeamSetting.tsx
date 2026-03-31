@@ -16,7 +16,7 @@ interface ContestTeamInsertProps {
   handleSkip?: () => void;
 }
 
-const ContestTeamInsert = ({ contestId, handleSkip }: ContestTeamInsertProps) => {
+const ContestTeamSetting = ({ contestId, handleSkip }: ContestTeamInsertProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [templateErrors, setTemplateErrors] = useState<string[]>([]);
@@ -181,4 +181,4 @@ const ContestTeamInsert = ({ contestId, handleSkip }: ContestTeamInsertProps) =>
   );
 };
 
-export default ContestTeamInsert;
+export default ContestTeamSetting;

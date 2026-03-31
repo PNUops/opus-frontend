@@ -12,6 +12,7 @@ const adminContestSidebarData = [
     title: '대회',
     links: [
       { to: 'manage', label: '대회 관리' },
+      { to: 'team-setting', label: '팀·참여자 설정' },
       { to: 'tracks', label: '분과 관리' },
       { to: 'votes', label: '투표 관리' },
       { to: 'notices', label: '공지 관리' },

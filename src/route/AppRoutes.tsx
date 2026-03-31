@@ -29,6 +29,7 @@ import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
+import TeamSettingPage from '@pages/admin/team-setting/TeamSettingPage';
 import MyPageLayout from '@layout/me/MyPageLayout';
 import ActivityPage from '@pages/me/activity/ActivityPage';
 import AccountPage from '@pages/me/account/AccountPage';
@@ -105,6 +106,7 @@ const AppRoutes = () =>
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
                 { path: 'manage', element: <ContestManagePage /> },
+                { path: 'team-setting', element: <TeamSettingPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },
