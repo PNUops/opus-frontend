@@ -5,14 +5,14 @@ import CreateRequiredFields from './CreateRequiredFields';
 import ContestTeamInsert from './ContestTeamInsert';
 
 const ContestCreateContent = () => {
-  const { currentStep } = useContestCreate();
+  const { contestId, currentStep, setCurrentStep } = useContestCreate();
 
   return (
     <div className="flex flex-col gap-8">
       <ContestCreateProgress />
       <div className="border-t pt-8">
         {currentStep === 1 && <ContestCreateForm />}
-        {currentStep === 2 && <ContestTeamInsert />}
+        {currentStep === 2 && <ContestTeamInsert contestId={contestId} handleSkip={() => setCurrentStep(3)} />}
         {currentStep === 3 && <CreateRequiredFields />}
       </div>
     </div>
