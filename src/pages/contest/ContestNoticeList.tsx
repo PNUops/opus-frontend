@@ -11,7 +11,7 @@ const ContestNoticeList = () => {
     <NoticeList>
       {notices.length === 0 && <NoticeListNoData />}
       {notices.slice(0, 3).map((notice) => (
-        <NoticeListItem key={notice.noticeId} {...notice} />
+        <NoticeListItem key={notice.noticeId} {...notice} contestId={contestId} />
       ))}
     </NoticeList>
   );

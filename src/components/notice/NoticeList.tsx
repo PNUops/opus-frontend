@@ -8,13 +8,17 @@ export const NoticeList = ({ children }: React.ComponentProps<'ul'>) => {
   return <ul className="flex flex-col gap-1 rounded-xl bg-gray-50 p-2.5 shadow-md">{children}</ul>;
 };
 
-export const NoticeListItem = ({ title, noticeId, createdAt }: NoticeListDto) => {
+interface NoticeListItemProps extends NoticeListDto {
+  contestId?: number;
+}
+
+export const NoticeListItem = ({ title, noticeId, createdAt, contestId }: NoticeListItemProps) => {
   const showNewIcon = dayjs(createdAt).isAfter(dayjs().subtract(3, 'day'));
 
   return (
     <li key={noticeId}>
       <Link
-        to={`/notices/${noticeId}`}
+        to={`/notices/${!contestId ? noticeId : `${contestId}/${noticeId}`}`}
         className="group flex items-center justify-between rounded-md px-2 py-2 transition-colors hover:bg-black/5"
       >
         <div className="flex min-w-0 flex-1 items-center gap-3">

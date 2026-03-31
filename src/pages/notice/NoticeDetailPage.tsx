@@ -1,31 +1,22 @@
-import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getNoticeDetail } from 'apis/notice';
-import { AiOutlineNotification } from 'react-icons/ai';
-import { useEffect } from 'react';
-import NoticeDetailSkeleton from './NoticeDetailSkeleton';
 import dayjs from 'dayjs';
+import { AiOutlineNotification } from 'react-icons/ai';
+import { useContestId, useNoticeIdOrRedirect } from 'hooks/useId';
+import { contestNoticeDetailOption, noticeDetailOption } from 'queries/notices';
+import NoticeDetailSkeleton from './NoticeDetailSkeleton';
 
 const NoticeDetail = () => {
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, []);
+  const noticeId = useNoticeIdOrRedirect();
+  const contestId = useContestId();
 
-  const { noticeId } = useParams();
   const {
     data: notice,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ['noticeDetail', noticeId],
-    queryFn: () => getNoticeDetail(Number(noticeId)),
-    enabled: !!noticeId,
-  });
+  } = useQuery(!contestId ? noticeDetailOption(noticeId) : contestNoticeDetailOption(contestId, noticeId));
 
   if (isLoading) return <NoticeDetailSkeleton />;
-  if (isError || !notice) {
-    return <div>공지사항을 찾을 수 없습니다.</div>;
-  }
+  if (isError || !notice) return <div>공지사항 조회 중 오류가 발생했습니다.</div>;
 
   return (
     <div className="max-w mx-auto">
