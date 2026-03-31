@@ -9,7 +9,7 @@ import { cn } from 'utils/classname';
 import { postBulkAddTeams } from 'apis/contest';
 import { useToast } from 'hooks/useToast';
 import { ContestBulkAddTeamsErrorDto } from 'types/DTO';
-import { TemplateErrorModal } from './TemplateErrorModal';
+import { TemplateErrorModal } from '../create/TemplateErrorModal';
 
 interface ContestTeamInsertProps {
   contestId: number;
