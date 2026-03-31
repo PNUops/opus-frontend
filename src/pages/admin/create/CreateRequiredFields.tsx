@@ -11,8 +11,7 @@ const CreateRequiredFields = () => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    handleSave();
-    navigate('/admin');
+    handleSave(() => navigate('/admin'));
   };
 
   return (
