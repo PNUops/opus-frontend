@@ -4,7 +4,7 @@ import { getSortStatus, patchSortTeam, sortOptions } from 'apis/team';
 import { useToast } from 'hooks/useToast';
 import CustomOrderSection from './CustomOrderSection';
 
-const TeamOrderAdminPage = () => {
+const SortManagePage = () => {
   const queryClient = useQueryClient();
   const toast = useToast();
 
@@ -43,4 +43,4 @@ const TeamOrderAdminPage = () => {
     </div>
   );
 };
-export default TeamOrderAdminPage;
+export default SortManagePage;

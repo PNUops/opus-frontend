@@ -18,7 +18,7 @@ import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
 import SidebarLayout from '@layout/SidebarLayout';
-import TeamOrderAdminPage from '@pages/admin/team-order/TeamOrderAdminPage';
+import SortManagePage from '@pages/admin/sort/SortManagePage';
 import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
 import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
@@ -99,8 +99,7 @@ const AppRoutes = () =>
                 { path: 'projects', element: <ProjectManagePage /> },
                 // 프로젝트 생성
                 { path: 'projects/create', element: <ProjectEditPage /> },
-                { path: 'sort', element: <div>정렬 관리</div> },
-                { path: 'team-order', element: <TeamOrderAdminPage /> },
+                { path: 'sort', element: <SortManagePage /> },
                 { path: 'awards', element: <AwardManagePage /> },
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
