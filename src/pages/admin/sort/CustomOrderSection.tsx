@@ -2,17 +2,16 @@ import { useState, useEffect, Fragment } from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { PiDotsSixVerticalBold } from 'react-icons/pi';
-import useTeamList from 'hooks/useTeamList';
 import { AdminActionButton } from '@components/admin';
 import AwardTag from '@components/AwardTag';
-import Spinner from '@components/Spinner';
 import { cn } from 'utils/classname';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 import queryClient from 'stores/queryClient';
 import { useToast } from 'hooks/useToast';
 import { TeamCustomSortData } from 'types/DTO';
+import { contestTeamOption } from 'queries/contest';
 import { putTeamCustomSort } from 'apis/contest';
 import { useContestIdOrRedirect } from 'hooks/useId';
 
@@ -21,7 +20,7 @@ const CustomOrderSection = () => {
   const [localTeams, setLocalTeams] = useState<TeamListItemResponseDto[]>([]);
   const toast = useToast();
 
-  const { data: teamList, isLoading, error } = useTeamList(contestId);
+  const { data: teamList } = useSuspenseQuery(contestTeamOption(contestId));
   const customSortMutation = useMutation({
     mutationKey: ['saveCustomSort'],
     mutationFn: (payload: TeamCustomSortData[]) => putTeamCustomSort(contestId, payload),
@@ -58,9 +57,6 @@ const CustomOrderSection = () => {
       },
     );
   };
-
-  if (isLoading) return <Spinner />;
-  if (error) return <span>팀 목록을 불러오지 못했습니다. 다시 시도해 주세요</span>;
 
   return (
     <div className="flex flex-col gap-6">
