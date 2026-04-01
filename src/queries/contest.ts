@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllContests, getCurrentContest } from 'apis/contest';
+import { getAllContests, getCurrentContest, getSortStatus } from 'apis/contest';
 
 export const contestsOption = () => {
   return queryOptions({ queryKey: ['contests'], queryFn: getAllContests });
@@ -7,4 +7,8 @@ export const contestsOption = () => {
 
 export const currentContestOption = () => {
   return queryOptions({ queryKey: ['currentContests'], queryFn: getCurrentContest });
+};
+
+export const sortStatusOption = (contestId: number) => {
+  return queryOptions({ queryKey: ['sortStatus'], queryFn: () => getSortStatus(contestId) });
 };
