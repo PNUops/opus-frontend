@@ -25,11 +25,15 @@ const UrlInput = ({
 }: UrlInputProps) => {
   return (
     <div className="text-exsm flex flex-col gap-3 sm:flex-row sm:gap-10 sm:text-sm">
-      <div className="text-midGray flex w-25 sm:py-3">
+      <div className="text-midGray flex w-25 gap-1 sm:py-3">
         {requiredFields.githubPathRequired ||
         requiredFields.youTubePathRequired ||
         requiredFields.productionPathRequired ? (
-          <span className="mr-1 text-red-500">*</span>
+          <span
+            className={`mr-1 ${requiredFields.githubPathRequired || requiredFields.youTubePathRequired || requiredFields.productionPathRequired ? 'text-red-500' : 'text-transparent'}`}
+          >
+            *
+          </span>
         ) : null}
         <span>URL</span>
       </div>

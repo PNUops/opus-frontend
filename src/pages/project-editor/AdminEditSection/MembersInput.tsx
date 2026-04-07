@@ -2,14 +2,11 @@ import { useState } from 'react';
 import { IoPerson } from 'react-icons/io5';
 import Menu, { MenuOption } from 'components/Menu';
 import type { FormTeamMember } from 'hooks/useProjectForm';
+import type { TeamMemberType } from 'types/MemberType';
 
 interface MembersInputProps {
   teamMembers: FormTeamMember[];
-  onMemberAdd: (member: {
-    teamMemberName: string;
-    teamMemberStudentId: string;
-    roleType: 'ROLE_팀장' | 'ROLE_팀원';
-  }) => void;
+  onMemberAdd: (member: { teamMemberName: string; teamMemberStudentId: string; roleType: TeamMemberType }) => void;
   onMemberRemove: (teamMemberId: number) => void;
   required?: boolean;
 }
@@ -19,9 +16,9 @@ const MAX_MEMBERS = 6;
 const MembersInput = ({ teamMembers, onMemberAdd, onMemberRemove, required = false }: MembersInputProps) => {
   const [newteamMemberName, setNewteamMemberName] = useState('');
   const [newteamMemberStudentId, setNewteamMemberStudentId] = useState('');
-  const [newMemberRole, setNewMemberRole] = useState<'ROLE_팀장' | 'ROLE_팀원'>('ROLE_팀원');
+  const [newMemberRole, setNewMemberRole] = useState<TeamMemberType>('ROLE_팀원');
 
-  const roleOptions: MenuOption<'ROLE_팀장' | 'ROLE_팀원'>[] = [
+  const roleOptions: MenuOption<TeamMemberType>[] = [
     { label: '팀원', value: 'ROLE_팀원' },
     { label: '팀장', value: 'ROLE_팀장' },
   ];
@@ -41,8 +38,8 @@ const MembersInput = ({ teamMembers, onMemberAdd, onMemberRemove, required = fal
 
   return (
     <div className="text-exsm flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-10 sm:text-sm">
-      <div className="text-midGray flex w-25 sm:py-3">
-        {required ? <span className="mr-1 text-red-500">*</span> : null}
+      <div className="text-midGray flex w-25 gap-1 sm:py-3">
+        <span className={`mr-1 ${required ? 'text-red-500' : 'text-transparent'}`}>*</span>
         <span>팀원</span>
       </div>
 

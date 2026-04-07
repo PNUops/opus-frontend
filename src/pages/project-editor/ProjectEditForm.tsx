@@ -177,7 +177,7 @@ const BasicInfoSection = ({ isAdmin, formState, setContestId, setField, required
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10">
         <div className="text-midGray flex w-25 gap-1">
-          {requiredFields.trackRequired ? <span className="mr-1 text-red-500">*</span> : null}
+          <span className={`mr-1 ${requiredFields.trackRequired ? 'text-red-500' : 'text-transparent'}`}>*</span>
           <span className="w-full">트랙</span>
         </div>
         <div className="flex flex-1 flex-col">
@@ -225,7 +225,7 @@ interface TextInputRowProps {
 const TextInputRow = ({ label, value, onChange, placeholder, required }: TextInputRowProps) => (
   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10">
     <div className="text-midGray flex w-25 gap-1">
-      {required ? <span className="mr-1 text-red-500">*</span> : null}
+      <span className={`mr-1 ${required ? 'text-red-500' : 'text-transparent'}`}>*</span>
       <span className="w-full text-nowrap">{label}</span>
     </div>
     <div className="flex flex-1 flex-col">

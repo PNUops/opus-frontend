@@ -30,7 +30,7 @@ const OverviewInput = ({ overview, setOverview, required = true }: OverviewInput
   return (
     <div className="text-exsm flex flex-col gap-3 sm:flex-row sm:gap-10 sm:text-sm">
       <div className="text-midGray flex w-25 gap-1 sm:py-3">
-        {required ? <span className="mr-1 text-red-500">*</span> : null}
+        <span className={`mr-1 ${required ? 'text-red-500' : 'text-transparent'}`}>*</span>
         <span className="w-full text-nowrap">프로젝트 설명</span>
       </div>
       <div className="flex flex-1 flex-col">
