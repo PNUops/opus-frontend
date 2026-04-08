@@ -51,11 +51,13 @@ export type GetTeamAwardsResponseDto = TeamAwardDto[];
 
 export type PatchAwardRequestDto = AwardDto;
 
+export type TeamSortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
+
 export type TeamOrder = { teamId: number; itemOrder: number };
 
-export interface PatchCustomOrderRequestDto {
-  contestId: number;
-  teamOrders: TeamOrder[];
+export interface TeamCustomSortData {
+  teamId: number;
+  itemOrder: number;
 }
 
 export interface ProjectsAdminResponseDto {

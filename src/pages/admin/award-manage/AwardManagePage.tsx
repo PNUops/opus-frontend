@@ -1,17 +1,18 @@
 import { useAwardViewAdmin } from 'hooks/useAwardAdmin';
 import { useContestIdOrRedirect } from 'hooks/useId';
-import useTeamList from 'hooks/useTeamList';
 import { AdminCardRow, AdminHeader } from '@components/admin';
 import AwardTag from '@components/AwardTag';
 import AwardEditForm from './AwardEditForm';
 import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
 import { twMerge } from 'tailwind-merge';
 import Spinner from '@components/Spinner';
+import { useQuery } from '@tanstack/react-query';
+import { contestTeamOption } from 'queries/contest';
 
 const AwardManagePage = () => {
   const contestId = useContestIdOrRedirect();
   const viewAdmin = useAwardViewAdmin(contestId);
-  const { data: teamList, isLoading, error } = useTeamList(contestId);
+  const { data: teamList, isLoading, error } = useQuery(contestTeamOption(contestId));
 
   return (
     <div className="flex w-full flex-col">

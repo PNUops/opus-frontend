@@ -1,16 +1,16 @@
-import TeamCardGrid from '@pages/contest/TeamCardGrid';
+import { useQuery } from '@tanstack/react-query';
 import { NoticeListSkeleton } from '@components/notice';
-import useTeamList from 'hooks/useTeamList';
 import useContestName from 'hooks/useContestName';
 import { useContestIdOrRedirect } from 'hooks/useId';
 import QueryWrapper from 'providers/QueryWrapper';
 import ContestNoticeList from './ContestNoticeList';
+import TeamCardGrid from '@pages/contest/TeamCardGrid';
+import { contestTeamOption } from 'queries/contest';
 
 const ContestPage = () => {
   const contestId = useContestIdOrRedirect();
   const contestName = useContestName();
-
-  const { data: teams, isLoading, isError } = useTeamList(contestId);
+  const { data: teams, isLoading, isError } = useQuery(contestTeamOption(contestId));
 
   return (
     <div className="flex flex-col gap-8">
