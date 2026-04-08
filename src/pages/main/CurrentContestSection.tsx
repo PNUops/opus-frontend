@@ -13,6 +13,7 @@ const CurrentContestSection = () => {
     <div className="flex flex-col gap-5">
       {currentContests.map((contest) => (
         <Link
+          key={contest.contestId}
           to={`/contest/${contest.contestId}`}
           className="group relative flex h-48 w-full items-end overflow-hidden rounded-3xl shadow-lg transition-all hover:shadow-xl sm:h-64"
         >

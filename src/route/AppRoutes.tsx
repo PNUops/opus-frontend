@@ -9,7 +9,7 @@ import SignInPage from '@pages/signin/SignInPage';
 import SignUpPage from '@pages/signup/SignUpPage';
 import FindPage from '@pages/find/FindPage';
 import OAuthCallback from '@pages/signin/SocialSignIn/OAuthCallback';
-import NoticeDetail from '@pages/notice/NoticeDetail';
+import NoticeDetailPage from '@pages/notice/NoticeDetailPage';
 import ContestPage from '@pages/contest/ContestPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
@@ -29,6 +29,7 @@ import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
+import TeamSettingPage from '@pages/admin/team-setting/TeamSettingPage';
 import MyPageLayout from '@layout/me/MyPageLayout';
 import ActivityPage from '@pages/me/activity/ActivityPage';
 import AccountPage from '@pages/me/account/AccountPage';
@@ -57,7 +58,8 @@ const AppRoutes = () =>
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/callback', element: <OAuthCallback /> },
-            { path: 'notices/:noticeId', element: <NoticeDetail /> },
+            { path: 'notices/:noticeId', element: <NoticeDetailPage /> },
+            { path: 'notices/:contestId/:noticeId', element: <NoticeDetailPage /> },
           ],
         },
         {
@@ -104,6 +106,7 @@ const AppRoutes = () =>
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
                 { path: 'manage', element: <ContestManagePage /> },
+                { path: 'team-setting', element: <TeamSettingPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },

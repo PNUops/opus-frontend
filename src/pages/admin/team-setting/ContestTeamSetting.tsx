@@ -6,17 +6,20 @@ import { XLSX_MIME_TYPE } from '@constants/contest';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
 import { cn } from 'utils/classname';
-import { useToast } from 'hooks/useToast';
 import { postBulkAddTeams } from 'apis/contest';
+import { useToast } from 'hooks/useToast';
 import { ContestBulkAddTeamsErrorDto } from 'types/DTO';
-import { useContestCreate } from './ContestCreateContext';
-import { TemplateErrorModal } from './TemplateErrorModal';
+import { TemplateErrorModal } from '../create/TemplateErrorModal';
 
-const ContestTeamInsert = () => {
+interface ContestTeamInsertProps {
+  contestId: number;
+  handleSkip?: () => void;
+}
+
+const ContestTeamSetting = ({ contestId, handleSkip }: ContestTeamInsertProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [templateErrors, setTemplateErrors] = useState<string[]>([]);
-  const { currentStepName, contestId, setCurrentStep } = useContestCreate();
   const inputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
@@ -75,8 +78,8 @@ const ContestTeamInsert = () => {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const handleUpload = () => {
-    if (!file || !contestId) return;
+  const handleSetting = () => {
+    if (!file) return;
 
     const formData = new FormData();
     formData.append('file', file);
@@ -89,17 +92,16 @@ const ContestTeamInsert = () => {
       {
         onSuccess: (data) => {
           toast(`${data.teamCount}개의 팀 생성이 완료되었습니다.`, 'success');
-          setCurrentStep(3);
+          handleSkip?.();
         },
         onError: (error: any) => {
           if (error.response?.data?.message) toast(error.response.data.message, 'error');
           else if (error.response?.data?.errors) {
-            setTemplateErrors(
-              error.response.data.errors.map((e: ContestBulkAddTeamsErrorDto) => `${e.rowNumber}행 - ${e.message}`),
-            );
+            const errors = error.response.data.errors;
+            setTemplateErrors(errors.map((e: ContestBulkAddTeamsErrorDto) => `${e.rowNumber}행 - ${e.message}`));
             setFile(null);
             if (inputRef.current) inputRef.current.value = '';
-          } else toast(`${currentStepName}에 실패했습니다.`, 'error');
+          } else toast(`팀·참여자 설정에 실패했습니다.`, 'error');
         },
       },
     );
@@ -107,7 +109,7 @@ const ContestTeamInsert = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <AdminHeader title={currentStepName} description="하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요." />
+      <AdminHeader title="팀·참여자 설정" description="하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요." />
       <a href="/팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
         <PiMicrosoftExcelLogo size={24} className="fill-mainGreen mt-0.75" />
         <span className="group-hover:text-mainGreen text-lg group-hover:underline">팀등록_템플릿파일.xlsx</span>
@@ -157,11 +159,23 @@ const ContestTeamInsert = () => {
       <Dialog open={templateErrors.length > 0} onOpenChange={(open) => !open && setTemplateErrors([])}>
         <TemplateErrorModal errors={templateErrors} />
       </Dialog>
-      <AdminActionButton size="lg" className="mx-auto rounded-full" disabled={!file} onClick={handleUpload}>
-        설정하기
-      </AdminActionButton>
+      <div className="flex items-center justify-center gap-6">
+        {handleSkip && (
+          <AdminActionButton size="lg" className="rounded-full" variant="outline" onClick={handleSkip}>
+            나중에 설정하기
+          </AdminActionButton>
+        )}
+        <AdminActionButton
+          size="lg"
+          className="rounded-full"
+          disabled={!file || bulkAddTeams.isPending}
+          onClick={handleSetting}
+        >
+          설정하기
+        </AdminActionButton>
+      </div>
     </div>
   );
 };
 
-export default ContestTeamInsert;
+export default ContestTeamSetting;
