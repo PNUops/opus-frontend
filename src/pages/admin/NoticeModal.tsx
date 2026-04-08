@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
+import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
 import TextArea from '@components/TextArea';
 import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notice';
@@ -39,6 +39,12 @@ export const NoticeModal = ({ type, noticeId, isOpen, closeModal }: NoticeModalP
       setDescription(notice.description || '');
     }
   }, [type, isOpen, notice]);
+
+  const handleClose = () => {
+    setTitle(notice?.title || '');
+    setDescription(notice?.description || '');
+    closeModal();
+  };
 
   const handleSave = async () => {
     await upsertMutation.mutateAsync(
@@ -81,11 +87,9 @@ export const NoticeModal = ({ type, noticeId, isOpen, closeModal }: NoticeModalP
         />
       </div>
       <div className="flex justify-end gap-4">
-        <DialogClose asChild>
-          <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full">
-            닫기
-          </AdminActionButton>
-        </DialogClose>
+        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+          닫기
+        </AdminActionButton>
         <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSave}>
           {`${type === 'create' ? '추가' : '저장'}하기`}
         </AdminActionButton>
