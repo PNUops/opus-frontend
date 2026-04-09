@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import Input from '@components/Input';
 import { useToast } from 'hooks/useToast';
-import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
+import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteCategory, patchCategory, postCategory } from 'apis/category';
@@ -28,6 +28,11 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
     mutationFn: ({ categoryId, categoryName }: Omit<CategoryDto, 'updatedAt'>) =>
       patchCategory(categoryId, categoryName),
   });
+
+  const handleClose = () => {
+    setCategoryName(prevData?.categoryName ?? '');
+    closeModal();
+  };
 
   const handleSubmit = async () => {
     if (!categoryName) {
@@ -77,11 +82,9 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
         className="bg-whiteGray h-12 rounded-lg"
       />
       <div className="flex justify-center gap-4">
-        <DialogClose asChild>
-          <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full">
-            {'닫기'}
-          </AdminActionButton>
-        </DialogClose>
+        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+          {'닫기'}
+        </AdminActionButton>
         <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSubmit}>
           {`${type === 'create' ? '추가' : '수정'}하기`}
         </AdminActionButton>

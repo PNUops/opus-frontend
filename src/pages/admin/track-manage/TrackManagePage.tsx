@@ -76,7 +76,7 @@ const TrackManagePage = () => {
         <DialogTrigger asChild>
           <AdminHeader title="분과 관리" onButtonClick={() => setCreateOpen(true)} buttonLabel="+ 새 분과" />
         </DialogTrigger>
-        <TrackModal type="create" onSubmit={handleCreateTrack} />
+        <TrackModal type="create" onSubmit={handleCreateTrack} onClose={() => setCreateOpen(false)} />
       </Dialog>
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
@@ -121,6 +121,7 @@ const TrackManagePage = () => {
               handleEditTrack(editTarget.id, trackName);
               setEditTarget(null);
             }}
+            onClose={() => setEditTarget(null)}
           />
         )}
       </Dialog>
