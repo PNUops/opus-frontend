@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useProjectForm } from 'hooks/useProjectForm';
+import { useProjectForm } from '@hooks/useProjectForm';
 
 import ContestMenu from './AdminEditSection/ContestMenu';
 import CategoryMenu from './AdminEditSection/CategoryMenu';
@@ -8,7 +8,7 @@ import UrlInput from './UrlInput';
 import ImageUploaderSection from './ImageUploaderSection';
 import PosterUploaderSection from './PosterUploaderSection';
 import OverviewInput from './OverviewInput';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 
 const ProjectEditForm = () => {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ const ProjectEditForm = () => {
         teamMembers={formState.teamMembers}
         onMemberAdd={onMemberAdd}
         onMemberRemove={onMemberRemove}
-        required={requiredFields.teamMembersRequired}
+        requiredFields={requiredFields}
       />
       <div className="h-15" />
 
