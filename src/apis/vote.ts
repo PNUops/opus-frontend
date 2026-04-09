@@ -1,4 +1,4 @@
-import { VoteMaxVotesLimitDto, VoteTermDto } from '@dto/votesDto';
+import { VoteMaxVotesLimitDto, VoteTermDto, MyContestVoteStatusDto } from '@dto/votesDto';
 import apiClient from './apiClient';
 
 export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {
@@ -18,5 +18,10 @@ export const getMaxVoteLimit = async (contestId: number): Promise<VoteMaxVotesLi
 
 export const patchMaxVoteLimit = async (contestId: number, payload: VoteMaxVotesLimitDto) => {
   const res = await apiClient.patch(`/contests/${contestId}/votes`, payload);
+  return res.data;
+};
+
+export const getMyContestVoteStatus = async (contestId: number): Promise<MyContestVoteStatusDto> => {
+  const res = await apiClient.get(`/contests/${contestId}/votes/me`);
   return res.data;
 };
