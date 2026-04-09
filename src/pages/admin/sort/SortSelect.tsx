@@ -1,10 +1,10 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { sortOptions } from '@constants/contest';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { putTeamSort } from 'apis/contest';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { useToast } from 'hooks/useToast';
-import { sortStatusOption } from 'queries/contest';
+import { putTeamSort } from '@apis/contest';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { useToast } from '@hooks/useToast';
+import { sortStatusOption } from '@queries/contest';
 
 const SortSelect = () => {
   const contestId = useContestIdOrRedirect();

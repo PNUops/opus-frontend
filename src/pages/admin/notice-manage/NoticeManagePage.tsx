@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
 import Tag from '@components/Tag';
@@ -12,7 +12,7 @@ import {
   AdminPopoverDeleteButton,
 } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
-import { contestNoticeOption } from 'queries/notices';
+import { contestNoticeOption } from '@queries/notices';
 import { ContestNoticeModal, ContestNoticeDeleteConfirmModal } from './ContestNoticeModal';
 
 const NoticeManagePage = () => {

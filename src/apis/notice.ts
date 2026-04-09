@@ -1,4 +1,4 @@
-import { NoticeDetailDto, NoticeListDto, NoticeRequestDto } from 'types/DTO/noticeDto';
+import { NoticeDetailDto, NoticeListDto, NoticeRequestDto } from '@dto/noticeDto';
 import apiClient from './apiClient';
 
 export const getNotices = async (): Promise<NoticeListDto[]> => {

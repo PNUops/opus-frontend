@@ -1,13 +1,13 @@
-import { useAwardViewAdmin } from 'hooks/useAwardAdmin';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { useAwardViewAdmin } from '@hooks/useAwardAdmin';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { AdminCardRow, AdminHeader } from '@components/admin';
 import AwardTag from '@components/AwardTag';
 import AwardEditForm from './AwardEditForm';
-import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 import { twMerge } from 'tailwind-merge';
 import Spinner from '@components/Spinner';
 import { useQuery } from '@tanstack/react-query';
-import { contestTeamOption } from 'queries/contest';
+import { contestTeamOption } from '@queries/contest';
 
 const AwardManagePage = () => {
   const contestId = useContestIdOrRedirect();

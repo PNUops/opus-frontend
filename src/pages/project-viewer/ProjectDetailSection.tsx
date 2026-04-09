@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
 
 interface ProjectDetailSectionProps {

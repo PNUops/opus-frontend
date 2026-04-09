@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getAccessToken, removeAccessToken, writeAccessToken } from 'utils/token';
+import { getAccessToken, removeAccessToken, writeAccessToken } from '@utils/token';
 
 type TokenState = {
   token: string | null;

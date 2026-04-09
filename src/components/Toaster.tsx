@@ -1,5 +1,5 @@
 import { MdCancel, MdCheckCircle, MdInfo } from 'react-icons/md';
-import { Toast, useToastStore } from 'stores/useToastStore';
+import { Toast, useToastStore } from '@stores/useToastStore';
 
 interface ToastProps {
   toast: Toast;

@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { RiPencilFill } from 'react-icons/ri';
 import { IoRemoveCircle } from 'react-icons/io5';
-import { CommentDeleteRequestDto, CommentDto, CommentEditRequestDto } from 'types/DTO/projectViewerDto';
+import { CommentDeleteRequestDto, CommentDto, CommentEditRequestDto } from '@dto/projectViewerDto';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { deleteComment, editComment } from 'apis/projectViewer';
-import { useToast } from 'hooks/useToast';
-import { useTeamId } from 'hooks/useId';
-import useAuth from 'hooks/useAuth';
+import { deleteComment, editComment } from '@apis/projectViewer';
+import { useToast } from '@hooks/useToast';
+import { useTeamId } from '@hooks/useId';
+import useAuth from '@hooks/useAuth';
 
 interface CommentProps {
   comment: CommentDto;

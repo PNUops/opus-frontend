@@ -1,4 +1,4 @@
-import { TeamMemberDto } from 'types/DTO/teams/teamsDto';
+import { TeamMemberDto } from '@dto/teams/teamsDto';
 
 const isTeamMember = (memberId: number, teamMembers: TeamMemberDto[]): boolean => {
   return teamMembers.some((member) => member.memberId === memberId);

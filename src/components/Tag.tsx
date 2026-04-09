@@ -1,4 +1,4 @@
-import { cn } from 'utils/classname';
+import { cn } from '@utils/classname';
 
 const Tag = ({ children, className }: React.ComponentProps<'div'>) => {
   return (

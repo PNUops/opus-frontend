@@ -1,4 +1,4 @@
-import { TRCK_PALETTE } from 'constants/palette';
+import { TRCK_PALETTE } from '@constants/palette';
 
 export const getColorClassForLabel = (label: string | null | undefined) => {
   if (!label || typeof label !== 'string' || label.length === 0) {

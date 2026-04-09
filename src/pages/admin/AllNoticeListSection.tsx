@@ -12,8 +12,8 @@ import {
 } from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { NoData } from '@components/NoData';
-import { noticeOption } from 'queries/notices';
-import QueryWrapper from 'providers/QueryWrapper';
+import { noticeOption } from '@queries/notices';
+import QueryWrapper from '@providers/QueryWrapper';
 import { NoticeDeleteConfirmModal, NoticeModal } from './NoticeModal';
 
 const AllNoticeListSection = () => {

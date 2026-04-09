@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getBanner } from 'apis/banner';
+import { getBanner } from '@apis/banner';
 import { AxiosError } from 'axios';
 
 export const bannerOption = (contestId: number) => {

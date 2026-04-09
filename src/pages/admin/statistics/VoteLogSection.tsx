@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import { AdminHeader } from '@components/admin';
 import Pagination from '@components/Pagination';
 import { NoData } from '@components/NoData';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { getVoteLog } from 'apis/statistics';
-import QueryWrapper from 'providers/QueryWrapper';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { getVoteLog } from '@apis/statistics';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const VoteLogSection = () => {
   return (

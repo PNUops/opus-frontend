@@ -1,4 +1,4 @@
-import type { GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
+import type { GetCommentsPaginationResponseDto } from '@dto/commentDto';
 
 const mockComments = [
   {

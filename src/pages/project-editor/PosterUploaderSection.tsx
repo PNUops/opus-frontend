@@ -4,9 +4,9 @@ import { MdBrokenImage, MdOutlineFileUpload } from 'react-icons/md';
 import { CgSandClock } from 'react-icons/cg';
 import { HiInformationCircle } from 'react-icons/hi';
 
-import { PosterResult } from 'apis/projectEditor';
-import { useToast } from 'hooks/useToast';
-import { imageValidator } from 'utils/image';
+import { PosterResult } from '@apis/projectEditor';
+import { useToast } from '@hooks/useToast';
+import { imageValidator } from '@utils/image';
 
 interface PosterUploaderSectionProps {
   poster: PosterResult | File | undefined;

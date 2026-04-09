@@ -1,4 +1,4 @@
-import { SignInResponseDto } from 'types/DTO';
+import { SignInResponseDto } from '@dto/signInDto';
 
 export const mockSignInResponse: SignInResponseDto = {
   memberId: 1,

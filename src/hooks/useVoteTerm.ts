@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { voteTermOption } from 'queries/votes';
+import { voteTermOption } from '@queries/votes';
 
 export const useIsVoteTerm = (contestId: number | undefined) => {
   const { data: voteTermData } = useQuery(voteTermOption(contestId ?? 0));

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import Input from '@components/Input';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteCategory, patchCategory, postCategory } from 'apis/category';
-import { CategoryDto } from 'types/DTO';
+import { deleteCategory, patchCategory, postCategory } from '@apis/category';
+import { CategoryDto } from '@dto/categoryDto';
 
 interface CategoryModalProps {
   type: 'create' | 'edit';

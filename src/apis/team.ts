@@ -1,6 +1,6 @@
-import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
-import { SubmissionStatusResponseDto } from '../types/DTO/teams/submissionStatusDto';
-import { PatchAwardRequestDto, GetTeamAwardsResponseDto } from 'types/DTO';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
+import { SubmissionStatusResponseDto } from '@dto/teams/submissionStatusDto';
+import { PatchAwardRequestDto, GetTeamAwardsResponseDto } from '@dto/contestsDto';
 import apiClient from './apiClient';
 import { API_BASE_URL } from '@constants/env';
 

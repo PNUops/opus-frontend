@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuth from 'hooks/useAuth';
-import { useToast } from 'hooks/useToast';
-import { CommentCreateRequestDto, CommentDto } from 'types/DTO/projectViewerDto';
-import { postCommentForm } from 'apis/projectViewer';
+import useAuth from '@hooks/useAuth';
+import { useToast } from '@hooks/useToast';
+import { CommentCreateRequestDto, CommentDto } from '@dto/projectViewerDto';
+import { postCommentForm } from '@apis/projectViewer';
 interface CommentFormSection {
   teamId: number;
 }

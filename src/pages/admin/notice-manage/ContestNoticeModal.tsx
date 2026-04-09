@@ -3,11 +3,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
 import TextArea from '@components/TextArea';
-import { createContestNotice, deleteContestNotice, updateContestNotice } from 'apis/notice';
-import { useToast } from 'hooks/useToast';
-import { NoticeRequestDto } from 'types/DTO/noticeDto';
+import { createContestNotice, deleteContestNotice, updateContestNotice } from '@apis/notice';
+import { useToast } from '@hooks/useToast';
+import { NoticeRequestDto } from '@dto/noticeDto';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
-import { contestNoticeDetailOption } from 'queries/notices';
+import { contestNoticeDetailOption } from '@queries/notices';
 
 interface ContestNoticeModalProps {
   type: 'create' | 'edit';

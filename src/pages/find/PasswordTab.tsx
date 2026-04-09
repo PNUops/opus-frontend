@@ -5,12 +5,12 @@ import {
   patchEmailVerificationCodePasswordReset,
   patchPasswordReset,
   postEmailVerificationPasswordReset,
-} from 'apis/signIn';
+} from '@apis/signIn';
 import { useMutation } from '@tanstack/react-query';
 import PasswordRow from '@pages/signup/PasswordRow';
 import PasswordConfirmRow from '@pages/signup/PasswordConfirmRow';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 
 const PasswordTab = () => {
   const { formState, updateField, formError, validate } = useFindPasswordFormState();

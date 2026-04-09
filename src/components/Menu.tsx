@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
-import { useOutsideClick } from 'hooks/useOutsideClick';
+import { useOutsideClick } from '@hooks/useOutsideClick';
 
 export type MenuValue = number | string;
 
@@ -89,4 +89,3 @@ const Menu = <T extends MenuValue>({
 };
 
 export default Menu;
-

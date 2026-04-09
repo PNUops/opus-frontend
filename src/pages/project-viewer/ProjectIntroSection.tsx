@@ -4,7 +4,7 @@ import { FaGithub, FaYoutube } from 'react-icons/fa';
 import { FaEdit } from 'react-icons/fa';
 import { RiLink } from 'react-icons/ri';
 import { FiExternalLink } from 'react-icons/fi';
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
 
 interface ProjectIntroSectionProps {
   data: TeamDetailDto;

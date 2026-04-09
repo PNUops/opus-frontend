@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { cn } from 'utils/classname';
+import { cn } from '@utils/classname';
 
 interface LayoutSideBarProps {
   sections: {

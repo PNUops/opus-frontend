@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { worker } from '@mocks/browsers';
 import { QueryClientProvider } from '@tanstack/react-query';
-import queryClient from 'stores/queryClient';
+import queryClient from '@stores/queryClient';
 import { RouterProvider } from 'react-router-dom';
 import AppRoutes from '@route/AppRoutes';
 
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.MODE === 'development') {
   //   await worker.start();
 }
 

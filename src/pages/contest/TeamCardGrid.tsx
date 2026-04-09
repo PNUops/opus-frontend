@@ -1,8 +1,8 @@
 import TeamCard from '@pages/contest/TeamCard';
 import TeamCardSkeleton from '@pages/contest/TeamCardSkeleton';
-import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 
-import { useIsVoteTerm } from 'hooks/useVoteTerm';
+import { useIsVoteTerm } from '@hooks/useVoteTerm';
 import { useParams } from 'react-router-dom';
 
 interface Props {

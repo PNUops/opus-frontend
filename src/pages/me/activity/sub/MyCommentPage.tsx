@@ -4,10 +4,10 @@ import Divider from '@components/ui/divider';
 import { MyPageSection } from '@pages/me/mypageSection';
 import ActivityFilterBar from '@pages/me/activity/components/ActivityFilterBar';
 import { useMyCommentsFilter } from '@pages/me/activity/hooks/useMyCommentsFilter';
-import { getMyComments } from 'apis/me';
-import { MyCommentItemDto, GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
+import { getMyComments } from '@apis/me';
+import { MyCommentItemDto, GetCommentsPaginationResponseDto } from '@dto/commentDto';
 import { FaRegCommentAlt } from 'react-icons/fa';
-import useTeamThumbnail from 'hooks/useTeamThumbnail';
+import useTeamThumbnail from '@hooks/useTeamThumbnail';
 import AltProfile from '@pages/me/account/components/AltProfile';
 
 const MyCommentPage = () => {

@@ -10,8 +10,8 @@ import {
   CommentDto,
   PreviewResult,
   LikeUpdateResponseDto,
-} from 'types/DTO/projectViewerDto';
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+} from '@dto/projectViewerDto';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
 
 export const getTeamDetail = async (teamId: number): Promise<TeamDetailDto> => {
   try {

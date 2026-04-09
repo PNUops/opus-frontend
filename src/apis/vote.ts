@@ -1,4 +1,4 @@
-import { VoteMaxVotesLimitDto, VoteTermDto } from 'types/DTO';
+import { VoteMaxVotesLimitDto, VoteTermDto } from '@dto/votesDto';
 import apiClient from './apiClient';
 
 export const getVoteTerm = async (contestId: number): Promise<VoteTermDto> => {

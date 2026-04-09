@@ -2,7 +2,7 @@ import React from 'react';
 
 import { RiLink } from 'react-icons/ri';
 import { FaGithub, FaYoutube } from 'react-icons/fa';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 
 interface UrlInputProps {
   productionUrl: string | null;

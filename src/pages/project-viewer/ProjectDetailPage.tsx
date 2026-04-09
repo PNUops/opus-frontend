@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useTeamId } from 'hooks/useId';
-import useAuth from 'hooks/useAuth';
+import { useTeamId } from '@hooks/useId';
+import useAuth from '@hooks/useAuth';
 
 import ProjectIntroSection from './ProjectIntroSection';
 import CarouselSection from './CarouselSection';
@@ -10,9 +10,9 @@ import ProjectDetailSection from './ProjectDetailSection';
 import GithubCard from './MediaSection/GithubCard';
 import CommentSection from './CommentSection/CommentSection';
 
-import { useIsVoteTerm } from 'hooks/useVoteTerm';
-import { teamDetailOption } from 'queries/team';
-import { getPoster, PosterResult } from 'apis/projectEditor';
+import { useIsVoteTerm } from '@hooks/useVoteTerm';
+import { teamDetailOption } from '@queries/team';
+import { getPoster, PosterResult } from '@apis/projectEditor';
 
 import {
   ProjectIntroSectionSkeleton,
@@ -23,7 +23,7 @@ import {
   CommentSectionSkeleton,
 } from './DetailSkeleton';
 
-import { canEditTeamPage } from 'utils/auth';
+import { canEditTeamPage } from '@utils/auth';
 
 const ProjectDetailPage = () => {
   const teamId = useTeamId();

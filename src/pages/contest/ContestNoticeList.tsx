@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { NoticeList, NoticeListItem, NoticeListNoData } from '@components/notice';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { contestNoticeOption } from 'queries/notices';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { contestNoticeOption } from '@queries/notices';
 
 const ContestNoticeList = () => {
   const contestId = useContestIdOrRedirect();

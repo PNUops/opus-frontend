@@ -1,12 +1,6 @@
 import apiClient from './apiClient';
-import {
-  MainStatsDto,
-  VoteRankingDto,
-  VoteStatsDto,
-  VoteLogItemDto,
-  PaginationRequestDto,
-  PaginationResponseDto,
-} from 'types/DTO';
+import { MainStatsDto, VoteRankingDto, VoteStatsDto, VoteLogItemDto } from '@dto/statisticsDto';
+import { PaginationRequestDto, PaginationResponseDto } from '@dto/commonDto';
 
 export const getMainStats = async (): Promise<MainStatsDto> => {
   const res = await apiClient.get('/statistics/summary');

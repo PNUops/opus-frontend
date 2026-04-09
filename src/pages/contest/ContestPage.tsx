@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { NoticeListSkeleton } from '@components/notice';
-import useContestName from 'hooks/useContestName';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
+import useContestName from '@hooks/useContestName';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 import ContestNoticeList from './ContestNoticeList';
 import TeamCardGrid from '@pages/contest/TeamCardGrid';
-import { contestTeamOption } from 'queries/contest';
+import { contestTeamOption } from '@queries/contest';
 
 const ContestPage = () => {
   const contestId = useContestIdOrRedirect();

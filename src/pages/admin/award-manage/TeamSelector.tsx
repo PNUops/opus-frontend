@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 
 interface TeamSelectorProps {
   teamList: TeamListItemResponseDto[];

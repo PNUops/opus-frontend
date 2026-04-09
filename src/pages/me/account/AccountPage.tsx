@@ -1,20 +1,20 @@
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import PasswordInput from 'components/PasswordInput';
+import PasswordInput from '@components/PasswordInput';
 import Divider from '@components/ui/divider';
-import { useToast } from 'hooks/useToast';
-import { isValidPassword } from 'utils/password';
+import { useToast } from '@hooks/useToast';
+import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 import AltProfile from '@pages/me/account/components/AltProfile';
-import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from 'apis/member';
-import { patchPasswordReset } from 'apis/signIn';
-import { PasswordResetRequestDto } from 'types/DTO';
-import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from 'queries/member';
-import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from 'apis/me';
+import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from '@apis/member';
+import { patchPasswordReset } from '@apis/signIn';
+import { PasswordResetRequestDto } from '@dto/signInDto';
+import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from '@queries/member';
+import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from '@apis/me';
 import { MdEdit } from 'react-icons/md';
-import { createImageFormData, imageValidator } from 'utils/image';
+import { createImageFormData, imageValidator } from '@utils/image';
 import { isValidGithubUrl } from '@pages/project-editor/urlValidators';
-import { getApiErrorMessage } from 'utils/error';
+import { getApiErrorMessage } from '@utils/error';
 
 const AccountPage = () => {
   return (
@@ -69,7 +69,6 @@ const ProfileCard = () => {
       setGithubInputValue(githubUrl ?? '');
     }
   }, [githubUrl, isGithubInputOpen]);
-
   const { mutate: saveGithubUrl, isPending: isSavingGithubUrl } = useMutation({
     mutationFn: patchMyGithubUrl,
     onSuccess: () => {

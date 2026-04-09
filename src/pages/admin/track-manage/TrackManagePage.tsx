@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 import {
   AdminHeader,
   AdminCardRow,
@@ -9,9 +9,9 @@ import {
   AdminPopoverDeleteButton,
 } from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
-import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from 'apis/track';
+import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from '@apis/track';
 import { TrackDeleteConfirmModal, TrackModal } from './TrackModal';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 
 const TrackManagePage = () => {
   const toast = useToast();

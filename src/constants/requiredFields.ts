@@ -1,4 +1,4 @@
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 
 const REQUIRED_FIELD_CONFIG = [
   { key: 'trackRequired', label: '분과' },

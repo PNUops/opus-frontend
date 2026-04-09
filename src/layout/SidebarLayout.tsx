@@ -3,7 +3,7 @@ import Sidebar from '@layout/Sidebar';
 import FullContainer from '@layout/FullContainer';
 import { useSidebar } from '@layout/SidebarContext';
 import { useEffect } from 'react';
-import { cn } from 'utils/classname';
+import { cn } from '@utils/classname';
 
 const SidebarLayout = () => {
   const { isOpen, close } = useSidebar();

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { AiOutlineNotification } from 'react-icons/ai';
-import { useContestId, useNoticeIdOrRedirect } from 'hooks/useId';
-import { contestNoticeDetailOption, noticeDetailOption } from 'queries/notices';
+import { useContestId, useNoticeIdOrRedirect } from '@hooks/useId';
+import { contestNoticeDetailOption, noticeDetailOption } from '@queries/notices';
 import NoticeDetailSkeleton from './NoticeDetailSkeleton';
-import useContestName from 'hooks/useContestName';
+import useContestName from '@hooks/useContestName';
 import { Undo2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

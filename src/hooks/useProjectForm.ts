@@ -2,14 +2,14 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import useAuth from 'hooks/useAuth';
-import { useContestIdOrRedirect, useTeamId } from './useId';
-import { useToast } from 'hooks/useToast';
+import useAuth from '@hooks/useAuth';
+import { useContestIdOrRedirect, useTeamId } from '@hooks/useId';
+import { useToast } from '@hooks/useToast';
 import { useProjectEditorMode } from '@pages/project-editor/useProjectEditorMode';
 
-import { teamDetailOption } from 'queries/team';
-import { getRequiredFields } from 'apis/requiredFields';
-import { getPreviewImages } from 'apis/projectViewer';
+import { teamDetailOption } from '@queries/team';
+import { getRequiredFields } from '@apis/requiredFields';
+import { getPreviewImages } from '@apis/projectViewer';
 import {
   createProjectDetails,
   deletePoster,
@@ -25,17 +25,16 @@ import {
   postThumbnail,
   PosterResult,
   ThumbnailResult,
-} from 'apis/projectEditor';
+} from '@apis/projectEditor';
 
-import { canEditTeamPage } from 'utils/auth';
+import { canEditTeamPage } from '@utils/auth';
 import { isValidGithubUrl, isValidProjectUrl, isValidYoutubeUrl } from '@pages/project-editor/urlValidators';
-import { defaultRequiredFields } from 'constants/requiredFields';
-
-import { ProjectDetailsEditDto } from 'types/DTO/projectEditorDto';
-import { PreviewImagesResponseDto, PreviewResult } from 'types/DTO/projectViewerDto';
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+import { defaultRequiredFields } from '@constants/requiredFields';
+import { ProjectDetailsEditDto } from '@dto/projectEditorDto';
+import { PreviewImagesResponseDto, PreviewResult } from '@dto/projectViewerDto';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 import { MemberType } from 'types/MemberType';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 
 interface ProjectFormState {
   contestId: number | null;

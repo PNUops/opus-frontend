@@ -1,6 +1,6 @@
 import TeamSelector from './TeamSelector';
 import AwardSelector from './AwardSelector';
-import { useAwardViewAdmin } from 'hooks/useAwardAdmin';
+import { useAwardViewAdmin } from '@hooks/useAwardAdmin';
 
 interface AwardEditFormProps {
   contestId: number;

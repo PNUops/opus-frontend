@@ -3,8 +3,8 @@ import { MdHowToVote } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
 import AwardTag from '@components/AwardTag';
-import { AwardDto } from 'types/DTO/awardsDto';
-import useTeamThumbnail from 'hooks/useTeamThumbnail';
+import { AwardDto } from '@dto/awardsDto';
+import useTeamThumbnail from '@hooks/useTeamThumbnail';
 
 interface TeamCardProps {
   contestId: number;
@@ -17,7 +17,16 @@ interface TeamCardProps {
   isVoteTerm?: boolean;
 }
 
-const TeamCard = ({ contestId, teamId, teamName, projectName, isLiked, isVoted, awards, isVoteTerm }: TeamCardProps) => {
+const TeamCard = ({
+  contestId,
+  teamId,
+  teamName,
+  projectName,
+  isLiked,
+  isVoted,
+  awards,
+  isVoteTerm,
+}: TeamCardProps) => {
   const { thumbnailUrl } = useTeamThumbnail(teamId);
 
   return (

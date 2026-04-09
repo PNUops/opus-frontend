@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getAllContests } from 'apis/contest';
-import Menu, { MenuOption } from 'components/Menu';
-import { ContestResponseDto } from 'types/DTO';
+import { getAllContests } from '@apis/contest';
+import Menu, { MenuOption } from '@components/Menu';
+import { ContestResponseDto } from '@dto/contestsDto';
 
 interface ContestMenuProps {
   value: number | null;
@@ -38,4 +38,3 @@ const ContestMenu = ({ value, onChange }: ContestMenuProps) => {
 };
 
 export default ContestMenu;
-

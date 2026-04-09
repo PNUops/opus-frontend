@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useMediaQuery } from '@react-hookz/web';
 import { useSwipeable } from 'react-swipeable';
-import { useToast } from 'hooks/useToast';
-import { ThumbnailResult, getThumbnail } from 'apis/projectEditor';
-import { getPreviewImages } from 'apis/projectViewer';
-import { PreviewResult, PreviewImagesResponseDto } from 'types/DTO/projectViewerDto';
+import { useToast } from '@hooks/useToast';
+import { ThumbnailResult, getThumbnail } from '@apis/projectEditor';
+import { getPreviewImages } from '@apis/projectViewer';
+import { PreviewResult, PreviewImagesResponseDto } from '@dto/projectViewerDto';
 
 import Spinner from '@components/Spinner';
 import DefaultImage from '@assets/basicThumbnail.jpg';

@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
-import { useToast } from 'hooks/useToast';
-import { imageValidator } from 'utils/image';
-import { ThumbnailResult } from 'apis/projectEditor';
-import { PreviewResult } from 'types/DTO/projectViewerDto';
+import { useToast } from '@hooks/useToast';
+import { imageValidator } from '@utils/image';
+import { ThumbnailResult } from '@apis/projectEditor';
+import { PreviewResult } from '@dto/projectViewerDto';
 
 import { HiInformationCircle } from 'react-icons/hi';
 import { FiX } from 'react-icons/fi';

@@ -2,10 +2,10 @@ import { Dispatch, SetStateAction, ChangeEvent, useEffect } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import Input from '@components/Input';
 import { MAX_VOTE_PER_PERSON } from '@constants/votes';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { getMaxVoteLimit } from 'apis/vote';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { getMaxVoteLimit } from '@apis/vote';
 
 interface VoteLimitSelectorProps {
   maxVotesLimit: number;

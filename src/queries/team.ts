@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getTeamDetail } from 'apis/projectViewer';
+import { getTeamDetail } from '@apis/projectViewer';
 
 export const teamDetailOption = (teamId: number) =>
   queryOptions({

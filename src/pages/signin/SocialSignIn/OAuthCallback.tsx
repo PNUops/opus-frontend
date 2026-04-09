@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useToast } from 'hooks/useToast';
-import useAuth from 'hooks/useAuth';
-import { OAUTH_ERROR_MESSAGES, DEFAULT_OAUTH_ERROR_MESSAGE } from 'constants/oauth';
+import { useToast } from '@hooks/useToast';
+import useAuth from '@hooks/useAuth';
+import { OAUTH_ERROR_MESSAGES, DEFAULT_OAUTH_ERROR_MESSAGE } from '@constants/oauth';
 
 const parseErrorCode = (error: string): string => {
   const decoded = error.trim();

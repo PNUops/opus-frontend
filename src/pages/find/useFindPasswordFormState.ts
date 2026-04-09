@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { isPNUEmail } from 'utils/email';
-import { isValidPassword } from 'utils/password';
+import { isPNUEmail } from '@utils/email';
+import { isValidPassword } from '@utils/password';
 
 interface FindPasswordFormState {
   email: string;

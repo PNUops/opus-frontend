@@ -1,6 +1,6 @@
 import { useContestId } from './useId';
 import { useQuery } from '@tanstack/react-query';
-import { contestsOption } from 'queries/contest';
+import { contestsOption } from '@queries/contest';
 
 const useContestName = () => {
   const contestId = useContestId();

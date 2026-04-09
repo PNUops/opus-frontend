@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuth from 'hooks/useAuth';
+import useAuth from '@hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { putLikeToggle, putVoteToggle } from 'apis/projectViewer';
-import { useToast } from 'hooks/useToast';
+import { putLikeToggle, putVoteToggle } from '@apis/projectViewer';
+import { useToast } from '@hooks/useToast';
 import { FaHeart } from 'react-icons/fa';
 import { MdHowToVote } from 'react-icons/md';
 import Backdrop from '@components/Backdrop';

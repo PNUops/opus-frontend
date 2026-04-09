@@ -1,4 +1,4 @@
-import { GetMyCommentsParamsDto } from 'types/DTO/meDto';
+import { GetMyCommentsParamsDto } from '@dto/meDto';
 import { useMyActivityFilter } from './useMyActivityFilter';
 
 export const useMyCommentsFilter = () =>

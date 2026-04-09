@@ -1,4 +1,4 @@
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
 
 export const mockTeamDetail: TeamDetailDto = {
   contestId: 1,

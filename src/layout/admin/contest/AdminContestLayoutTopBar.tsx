@@ -1,7 +1,7 @@
-import ContestSelect from '@pages/admin/ContestSelect';
-import { useContestId } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
 import { useState } from 'react';
+import ContestSelect from '@pages/admin/ContestSelect';
+import { useContestId } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 import { MdArrowBackIos } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 

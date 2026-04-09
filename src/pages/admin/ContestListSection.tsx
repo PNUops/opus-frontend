@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { IoIosArrowForward } from 'react-icons/io';
 import { AdminCard, AdminCardCreateButton, AdminCardRow, AdminCardTop } from '@components/admin';
 import { NoData } from '@components/NoData';
-import { contestsOption } from 'queries/contest';
-import QueryWrapper from 'providers/QueryWrapper';
+import { contestsOption } from '@queries/contest';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const ContentListSection = () => {
   return (

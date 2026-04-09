@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { GithubCardSkeleton } from '@pages/project-viewer/DetailSkeleton';
+import { fetchGithubContent } from '@utils/media';
+
 import { FaGithub } from 'react-icons/fa';
-import { GithubCardSkeleton } from '../DetailSkeleton';
-import { fetchGithubContent } from 'utils/media';
 
 interface GithubCardProps {
   githubUrl: string;
