@@ -82,7 +82,7 @@ export const getMyProfileImage = async (): Promise<ProfileResult> => {
   }
 };
 
-export const patchMyGithubUrl = async (githubPath: string) => {
-  const res = await apiClient.patch('/members/me/github-path', { githubPath });
+export const patchMyGithubUrl = async (githubUrl: string) => {
+  const res = await apiClient.patch('/members/me/github-url', { githubUrl });
   return res.data;
 };
