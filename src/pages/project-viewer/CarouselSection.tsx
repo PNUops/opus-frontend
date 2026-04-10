@@ -19,6 +19,7 @@ interface CarouselSectionProps {
   previewIds: number[];
   youtubeUrl: string;
   isEditor: boolean;
+  imagesRequired: boolean;
 }
 
 type DefaultMedia = { status: 'default'; url: string };
@@ -188,7 +189,7 @@ const MediaRenderer = ({
   return <ErrorMessage icon={FaSadTear} message="이미지를 찾을 수 없어요." />;
 };
 
-const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor }: CarouselSectionProps) => {
+const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequired }: CarouselSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [, setLoadFailed] = useState(false);
@@ -215,6 +216,11 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor }: CarouselS
   });
 
   useEffect(() => {
+    if (!imagesRequired) {
+      imageNotFoundToast.current = false;
+      return;
+    }
+
     if (thumbnailResult?.status === 'error' && thumbnailResult.code === 'THUMBNAIL_NOTFOUND') {
       if (!imageNotFoundToast.current) {
         if (isEditor) {
@@ -225,20 +231,25 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor }: CarouselS
     } else {
       imageNotFoundToast.current = false;
     }
-  }, [thumbnailResult, isEditor, toast]);
+  }, [thumbnailResult, imagesRequired, isEditor, toast]);
 
   useEffect(() => {
+    if (!imagesRequired) {
+      imageNotFoundToast.current = false;
+      return;
+    }
+
     if (previewIds.length === 0) {
       if (!imageNotFoundToast.current) {
         if (isEditor) {
-          toast('작업 결과 미리보기 이미지를 올려주세요.', 'info');
+          toast('상세 이미지를 올려주세요.', 'info');
         }
         imageNotFoundToast.current = true;
       } else {
         imageNotFoundToast.current = false;
       }
     }
-  }, [previewIds, isEditor, toast]);
+  }, [previewIds, imagesRequired, isEditor, toast]);
 
   const embedUrl = useMemo(() => getEmbedUrl(youtubeUrl), [youtubeUrl]);
 
