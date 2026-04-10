@@ -103,16 +103,32 @@ const ProfileCard = () => {
           <span className="truncate font-medium text-neutral-500">{email}</span>
         </div>
         <div className="text-md flex w-full items-center gap-4">
-          <span className="w-15 font-semibold text-neutral-800">GitHub</span>
-          {githubUrl ? (
-            <a
-              href={githubUrl}
-              className="truncate font-medium text-neutral-500"
-              target="_blank"
-              rel="noopener noreferrer"
+          <span className="w-15 py-1.5 font-semibold text-neutral-800">GitHub</span>
+          {!isGithubInputOpen && githubUrl ? (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setIsGithubInputOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setIsGithubInputOpen(true);
+                }
+              }}
+              className="w-full cursor-text rounded-md border-2 border-transparent p-1.5 text-left"
             >
-              {githubUrl}
-            </a>
+              <span className="block min-w-0">
+                <a
+                  href={githubUrl}
+                  onClick={(e) => e.stopPropagation()}
+                  className="max-w-full truncate font-medium text-neutral-500 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {githubUrl}
+                </a>
+              </span>
+            </div>
           ) : isGithubInputOpen ? (
             <input
               autoFocus
@@ -139,7 +155,7 @@ const ProfileCard = () => {
               disabled={isSavingGithubUrl}
               type="url"
               placeholder="GitHub URL을 입력해주세요."
-              className="bg-lightGray w-full rounded-md p-1.5 px-2 text-neutral-600 outline-none"
+              className="border-midGray w-full rounded-md border-2 p-1.5 px-2 text-neutral-600 outline-none"
             />
           ) : (
             <button
