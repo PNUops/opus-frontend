@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { AdminActionButton, AdminHeader } from '@components/admin';
-import { useRequiredFields } from 'hooks/useRequiredFields';
-import QueryWrapper from 'providers/QueryWrapper';
+import { useRequiredFields } from '@hooks/useRequiredFields';
+import QueryWrapper from '@providers/QueryWrapper';
 import RequiredFields from '../required-field/RequiredFields';
 import { useContestCreate } from './ContestCreateContext';
 
@@ -11,8 +11,7 @@ const CreateRequiredFields = () => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    handleSave();
-    navigate('/admin');
+    handleSave(() => navigate('/admin'));
   };
 
   return (
@@ -29,9 +28,14 @@ const CreateRequiredFields = () => {
           onToggle={handleToggleField}
         />
       </QueryWrapper>
-      <AdminActionButton size="lg" className="mx-auto rounded-full" disabled={isPending} onClick={handleButtonClick}>
-        설정하기
-      </AdminActionButton>
+      <div className="flex items-center justify-center gap-6">
+        <AdminActionButton size="lg" className="rounded-full" variant="outline" onClick={() => navigate('/admin')}>
+          나중에 설정하기
+        </AdminActionButton>
+        <AdminActionButton size="lg" className="rounded-full" disabled={isPending} onClick={handleButtonClick}>
+          설정하기
+        </AdminActionButton>
+      </div>
     </div>
   );
 };

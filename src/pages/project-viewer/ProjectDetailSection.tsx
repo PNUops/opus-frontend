@@ -1,8 +1,6 @@
 import { useState } from 'react';
 
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
-import { FaCrown } from 'react-icons/fa6';
-import { FaChalkboardTeacher } from 'react-icons/fa';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
 
 interface ProjectDetailSectionProps {
@@ -11,42 +9,68 @@ interface ProjectDetailSectionProps {
 
 const ProjectDetailSection = ({ data }: ProjectDetailSectionProps) => {
   const { professorName, teamMembers, overview } = data;
+
+  const teamLeaderName = teamMembers.find((member) => member.roleType === 'ROLE_팀장')?.teamMemberName;
+  const teamMemberNames = teamMembers
+    .map((member) => (member.roleType === 'ROLE_팀원' ? member.teamMemberName : null))
+    .filter(Boolean) as string[];
+
   const hasProfessor = !!professorName?.trim();
-  const hasTeamMembers = teamMembers.length > 0;
-  const hasContributors = hasProfessor || hasTeamMembers;
+  const hasTeamLeader = !!teamLeaderName?.trim();
+  const hasTeamMembers = teamMemberNames.length > 0;
+  const hasContributors = hasProfessor || hasTeamLeader || hasTeamMembers;
   const hasOverview = overview?.trim();
   const safeOverview = overview ?? '';
-  const INIT_LENGTH = 500;
+  const OVERVIEW_LENGTH = 500;
 
   const [isFolded, setIsFolded] = useState(true);
-  const shouldTruncate = safeOverview.length > INIT_LENGTH;
-  const visibleText = isFolded && shouldTruncate ? safeOverview.slice(0, INIT_LENGTH) : safeOverview;
+  const shouldTruncate = safeOverview.length > OVERVIEW_LENGTH;
+  const visibleText = isFolded && shouldTruncate ? safeOverview.slice(0, OVERVIEW_LENGTH) : safeOverview;
 
   return (
     <>
       {hasContributors && (
         <div className="flex flex-col gap-3">
           <div className="sm:text-title text-xl font-bold">Contributors</div>
-          {hasProfessor && (
-            <span className="flex items-center gap-3">
-              <FaChalkboardTeacher className="text-teal-500" size={20} />
-              <span className="bg-whiteGray text-exsm rounded-full px-3 py-1 whitespace-nowrap sm:text-sm">
-                {professorName}
-              </span>
-            </span>
-          )}
-          {hasTeamMembers && (
-            <div className="flex items-start gap-3">
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                {teamMembers.map((member, index) => (
-                  <span key={member.memberId || index} className="flex items-center gap-3">
-                    {member.roleType === 'ROLE_팀장' ? <FaCrown className="text-amber-300" size={20} /> : null}
-                    <span className="bg-whiteGray text-exsm rounded-full px-3 py-1 whitespace-nowrap sm:text-sm">
-                      {member.teamMemberName}
-                    </span>
+          {(hasProfessor || hasTeamLeader || hasTeamMembers) && (
+            <div className="flex flex-col gap-2 sm:gap-3">
+              {hasProfessor && (
+                <div className="flex items-start gap-2">
+                  <span className="text-mainGreen/60 border-mainGreen/50 inline-flex h-8 w-[70px] items-center justify-center rounded-full border px-3 text-xs font-medium whitespace-nowrap">
+                    지도교수
                   </span>
-                ))}
-              </div>
+                  <span className="bg-whiteGray inline-flex h-8 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-slate-800">
+                    {professorName}
+                  </span>
+                </div>
+              )}
+              {hasTeamLeader && (
+                <div className="flex items-start gap-2">
+                  <span className="text-mainGreen/60 border-mainGreen/50 inline-flex h-8 w-[70px] items-center justify-center rounded-full border px-3 text-xs font-medium whitespace-nowrap">
+                    팀장
+                  </span>
+                  <span className="bg-whiteGray inline-flex h-8 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-slate-800">
+                    {teamLeaderName}
+                  </span>
+                </div>
+              )}
+              {hasTeamMembers && (
+                <div className="flex items-start gap-2">
+                  <span className="text-mainGreen/60 border-mainGreen/50 inline-flex h-8 w-[70px] items-center justify-center rounded-full border px-3 text-xs font-medium whitespace-nowrap">
+                    팀원
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {teamMemberNames.map((name) => (
+                      <span
+                        key={name}
+                        className="bg-whiteGray inline-flex h-8 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-slate-800"
+                      >
+                        {name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

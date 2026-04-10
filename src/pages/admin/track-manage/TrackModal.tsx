@@ -2,18 +2,25 @@ import { useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import Button from '@components/Button';
 import Input from '@components/Input';
-import { useToast } from 'hooks/useToast';
-import { DialogClose, DialogContent } from '@components/ui/dialog';
+import { useToast } from '@hooks/useToast';
+import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
+import { AdminActionButton } from '@components/admin';
 
 interface TrackModalProps {
   type: 'create' | 'edit';
   prevName?: string;
   onSubmit: (trackName: string) => void;
+  onClose: () => void;
 }
 
-export const TrackModal = ({ type, prevName, onSubmit }: TrackModalProps) => {
+export const TrackModal = ({ type, prevName, onSubmit, onClose }: TrackModalProps) => {
   const [trackName, setTrackName] = useState<string>(prevName ?? '');
   const toast = useToast();
+
+  const handleClose = () => {
+    setTrackName(prevName ?? '');
+    onClose();
+  };
 
   const handleSubmit = () => {
     if (!trackName) {
@@ -28,7 +35,7 @@ export const TrackModal = ({ type, prevName, onSubmit }: TrackModalProps) => {
       <div className="text-mainBlue mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
         <FaRegEdit size={20} />
       </div>
-      <h3 className="text-center text-lg font-semibold text-gray-800">{`${type === 'create' ? '추가' : '수정'}할 분과 이름을 입력하세요.`}</h3>
+      <DialogTitle className="text-center text-lg font-semibold text-gray-800">{`${type === 'create' ? '추가' : '수정'}할 분과 이름을 입력하세요.`}</DialogTitle>
       <Input
         type="text"
         value={trackName}
@@ -37,15 +44,13 @@ export const TrackModal = ({ type, prevName, onSubmit }: TrackModalProps) => {
         className="bg-whiteGray h-12 rounded-lg"
       />
       <div className="flex justify-center gap-4">
+        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+          {'닫기'}
+        </AdminActionButton>
         <DialogClose asChild>
-          <Button className="border-lightGray text-midGray rounded-full border px-5 py-3 hover:bg-gray-100">
-            {'닫기'}
-          </Button>
-        </DialogClose>
-        <DialogClose asChild>
-          <Button className="bg-mainBlue rounded-full px-5 py-3 hover:bg-blue-500" onClick={handleSubmit}>
+          <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSubmit}>
             {`${type === 'create' ? '추가' : '수정'}하기`}
-          </Button>
+          </AdminActionButton>
         </DialogClose>
       </div>
     </DialogContent>

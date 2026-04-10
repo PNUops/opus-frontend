@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
-import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO, SignUpRequestDto } from 'types/DTO';
-import { isPNUEmail } from 'utils/email';
+import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO, SignUpRequestDto } from '@dto/signUpDto';
+import { isPNUEmail } from '@utils/email';
 
 export const signUpHandlers = [
   http.post('/api/sign-up', async ({ request }) => {

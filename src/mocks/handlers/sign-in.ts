@@ -1,6 +1,6 @@
 import { mockSignInResponse } from '@mocks/data/sign-in';
 import { http, HttpResponse } from 'msw';
-import { SignInRequestDto } from 'types/DTO';
+import { SignInRequestDto } from '@dto/signInDto';
 
 export const signInHandlers = [
   http.post('/api/sign-in', async ({ request }) => {

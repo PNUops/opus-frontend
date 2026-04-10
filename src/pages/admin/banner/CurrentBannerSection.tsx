@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MdImage } from 'react-icons/md';
-import { deleteBanner } from 'apis/banner';
-import { useToast } from 'hooks/useToast';
-import { useImageBlob } from 'hooks/useImageBlob';
-import { bannerOption } from 'queries/banner';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
+import { deleteBanner } from '@apis/banner';
+import { useToast } from '@hooks/useToast';
+import { useImageBlob } from '@hooks/useImageBlob';
+import { bannerOption } from '@queries/banner';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 
 const CurrentBannerSection = () => {

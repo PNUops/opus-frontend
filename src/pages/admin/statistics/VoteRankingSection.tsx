@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { defaultRankFilter } from 'constants/statistics';
+import { defaultRankFilter } from '@constants/statistics';
 import { AdminHeader } from '@components/admin';
-import QueryWrapper from 'providers/QueryWrapper';
+import QueryWrapper from '@providers/QueryWrapper';
 import VoteFilterSelect from './VoteFilterSelect';
 import VoteRankingList from './VoteRankingList';
 

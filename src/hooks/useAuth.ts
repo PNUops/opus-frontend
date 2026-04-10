@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
-import { useUserStore } from 'stores/useUserStore';
-import { useTokenStore } from 'stores/useTokenStore';
-import { getUserFromToken } from 'utils/token';
+import { useUserStore } from '@stores/useUserStore';
+import { useTokenStore } from '@stores/useTokenStore';
+import { getUserFromToken } from '@utils/token';
 
 const useAuth = () => {
   const { user, setUser } = useUserStore();

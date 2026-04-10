@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-import { PostContestTrackRequestDto, GetContestTracksResponseDto } from 'types/DTO';
+import { PostContestTrackRequestDto, GetContestTracksResponseDto } from '@dto/contestsDto';
 
 export const getContestTracks = async (contestId: number): Promise<GetContestTracksResponseDto> => {
   const res = await apiClient.get<GetContestTracksResponseDto>(`/contests/${contestId}/tracks`);

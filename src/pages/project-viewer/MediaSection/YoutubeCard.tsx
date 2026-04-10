@@ -1,4 +1,4 @@
-import { formatEmbedUrl } from 'utils/media';
+import { formatEmbedUrl } from '@utils/media';
 
 interface YoutubeCardProps {
   youtubeVidUrl: string;

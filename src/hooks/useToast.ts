@@ -1,4 +1,4 @@
-import { ToastType, useToastStore } from 'stores/useToastStore';
+import { ToastType, useToastStore } from '@stores/useToastStore';
 
 export const useToast = () => {
   const addToast = useToastStore((state) => state.addToast);

@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
+import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
-import RoundedButton from '@components/RoundedButton';
 import TextArea from '@components/TextArea';
-import { createContestNotice, deleteContestNotice, updateContestNotice } from 'apis/notice';
-import { useToast } from 'hooks/useToast';
-import { NoticeRequestDto } from 'types/DTO/noticeDto';
-import { AdminDeleteConfirmModal } from '@components/admin';
-import { contestNoticeDetailOption } from 'queries/notices';
+import { createContestNotice, deleteContestNotice, updateContestNotice } from '@apis/notice';
+import { useToast } from '@hooks/useToast';
+import { NoticeRequestDto } from '@dto/noticeDto';
+import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
+import { contestNoticeDetailOption } from '@queries/notices';
 
 interface ContestNoticeModalProps {
   type: 'create' | 'edit';
@@ -41,6 +40,12 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
       setDescription(notice.description || '');
     }
   }, [type, isOpen, notice]);
+
+  const handleClose = () => {
+    setTitle(notice?.title || '');
+    setDescription(notice?.description || '');
+    closeModal();
+  };
 
   const handleSave = async () => {
     await upsertMutation.mutateAsync(
@@ -83,12 +88,12 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
         />
       </div>
       <div className="flex justify-end gap-4">
-        <DialogClose asChild>
-          <RoundedButton className="min-w-28">취소</RoundedButton>
-        </DialogClose>
-        <RoundedButton className="min-w-28" onClick={handleSave}>
+        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+          취소
+        </AdminActionButton>
+        <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSave}>
           {type === 'create' ? '추가' : '저장'}
-        </RoundedButton>
+        </AdminActionButton>
       </div>
     </DialogContent>
   );

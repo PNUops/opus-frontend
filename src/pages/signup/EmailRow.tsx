@@ -1,9 +1,9 @@
 import Input from '@components/Input';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
-import { EmailVerificationRequestDTO } from 'types/DTO';
-import { isPNUEmail } from 'utils/email';
-import { useToast } from 'hooks/useToast';
+import { EmailVerificationRequestDTO } from '@dto/signUpDto';
+import { isPNUEmail } from '@utils/email';
+import { useToast } from '@hooks/useToast';
 import Spinner from '@components/Spinner';
 
 interface Props {

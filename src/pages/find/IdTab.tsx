@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getFindEmail } from 'apis/signIn';
+import { getFindEmail } from '@apis/signIn';
 import { useEffect, useState } from 'react';
 import FindEmailForm from './FindEmailForm';
 import FindEmailResult from './FindEmailResult';
-import { FindEmailResponsetDto } from 'types/DTO';
-import { useToast } from 'hooks/useToast';
+import { FindEmailResponsetDto } from '@dto/signInDto';
+import { useToast } from '@hooks/useToast';
 
 const IdTab = () => {
   const [studentNumber, setStudentNumber] = useState('');

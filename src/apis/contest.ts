@@ -8,8 +8,10 @@ import {
   ContestBulkAddTeamsResponseDto,
   GroupedContestResponseDto,
   ProjectsAdminResponseDto,
-} from 'types/DTO';
-import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+  TeamCustomSortData,
+  TeamSortOption,
+} from '@dto/contestsDto';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 
 export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
   const res = await apiClient.post('/contests', payload);
@@ -78,6 +80,21 @@ export const postBulkAddTeams = async (
   const res = await apiClient.post(`/contests/${contestId}/teams/bulk`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+  return res.data;
+};
+
+export const getSortStatus = async (contestId: number): Promise<TeamSortOption> => {
+  const res = await apiClient.get(`/contests/${contestId}/sort`);
+  return res.data.currentMode as TeamSortOption;
+};
+
+export const putTeamSort = async (contestId: number, mode: string) => {
+  const res = await apiClient.put(`/contests/${contestId}/sort`, { mode });
+  return res.data;
+};
+
+export const putTeamCustomSort = async (contestId: number, payload: TeamCustomSortData[]) => {
+  const res = await apiClient.put(`/contests/${contestId}/sort/custom`, payload);
   return res.data;
 };
 

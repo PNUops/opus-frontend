@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { getProjectsAdmin } from 'apis/contest';
-import { deleteTeam } from 'apis/team';
+import { getProjectsAdmin } from '@apis/contest';
+import { deleteTeam } from '@apis/team';
 import ConfirmModal from '@components/ConfirmModal';
 import { twMerge } from 'tailwind-merge';
 import Tag from '@components/Tag';
@@ -13,9 +13,9 @@ import {
   AdminPopoverEditButton,
   AdminPopoverDeleteButton,
 } from '@components/admin';
-import { getColorClassForLabel } from 'utils/color';
-import { useToast } from 'hooks/useToast';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { getColorClassForLabel } from '@utils/color';
+import { useToast } from '@hooks/useToast';
+import { useContestIdOrRedirect } from '@hooks/useId';
 
 const ProjectManagePage = () => {
   const queryClient = useQueryClient();

@@ -1,12 +1,12 @@
 import Input from '@components/Input';
 import PasswordInput from '@components/PasswordInput';
-import { useMutation } from '@tanstack/react-query';
-import { postSignIn } from 'apis/signIn';
-import useAuth from 'hooks/useAuth';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { postSignIn } from '@apis/signIn';
+import useAuth from '@hooks/useAuth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { isPNUEmail } from 'utils/email';
-import { useToast } from 'hooks/useToast';
+import { isPNUEmail } from '@utils/email';
+import { useToast } from '@hooks/useToast';
 
 import Divider from './SocialSignIn/Divider';
 import GoogleSignInButton from './SocialSignIn/GoogleSignInButton';
@@ -17,11 +17,13 @@ const SignInForm = () => {
   const toast = useToast();
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const signInMutation = useMutation({
     mutationFn: postSignIn,
     onSuccess: (data) => {
       signIn(data.token);
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
       navigate('/');
     },
     onError: (error: any) => {

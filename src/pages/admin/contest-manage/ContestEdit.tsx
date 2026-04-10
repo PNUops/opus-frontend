@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Input from '@components/Input';
-import { patchContest } from 'apis/contest';
-import { useToast } from 'hooks/useToast';
-import useContestName from 'hooks/useContestName';
+import { patchContest } from '@apis/contest';
+import { useToast } from '@hooks/useToast';
+import useContestName from '@hooks/useContestName';
 import CategorySelect from '../CategorySelect';
-import { ContestRequestDto } from 'types/DTO';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
+import { ContestRequestDto } from '@dto/contestsDto';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 import { AdminActionButton } from '@components/admin';
 
 const ContestEdit = () => {

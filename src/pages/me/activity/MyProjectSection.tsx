@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
-import { getMyProjects } from 'apis/me';
-import type { MyProjectDto, GetMyProjectsResponseDto } from 'types/DTO/meDto';
+import { getMyProjects } from '@apis/me';
+import type { MyProjectDto, GetMyProjectsResponseDto } from '@dto/meDto';
 import TeamCard from '@pages/contest/TeamCard';
 
 const MyProjectSection = () => {

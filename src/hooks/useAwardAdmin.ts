@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import useTeamList from 'hooks/useTeamList';
-import { AwardDto } from 'types/DTO/awardsDto';
+import { AwardDto } from '@dto/awardsDto';
+import { useQuery } from '@tanstack/react-query';
+import { contestTeamOption } from '@queries/contest';
 
 interface AwardViewState {
   selectedTeamId?: number;
@@ -8,7 +9,7 @@ interface AwardViewState {
 }
 
 export const useAwardViewAdmin = (contestId: number) => {
-  const { data: teamList } = useTeamList(contestId);
+  const { data: teamList } = useQuery(contestTeamOption(contestId));
 
   const [viewState, setViewState] = useState<AwardViewState>({
     selectedTeamId: undefined,

@@ -1,4 +1,4 @@
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 import apiClient from './apiClient';
 
 export const getRequiredFields = async (contestId: number): Promise<RequiredFieldsDto> => {

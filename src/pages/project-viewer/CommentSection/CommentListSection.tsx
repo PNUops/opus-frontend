@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Comment from './Comment';
-import { getCommentsList } from 'apis/projectViewer';
-import { CommentDto } from 'types/DTO/projectViewerDto';
+import { getCommentsList } from '@apis/projectViewer';
+import { CommentDto } from '@dto/projectViewerDto';
 
 interface CommentListSectionProps {
   teamId: number;

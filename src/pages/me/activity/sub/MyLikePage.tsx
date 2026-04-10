@@ -4,8 +4,8 @@ import Pagination from '@components/Pagination';
 import TeamCard from '@pages/contest/TeamCard';
 import { useMyLikesFilter } from '@pages/me/activity/hooks/useMyLikesFilter';
 import ActivityFilterBar from '@pages/me/activity/components/ActivityFilterBar';
-import { getMyLikes } from 'apis/me';
-import { GetMyLikesResponseDto } from 'types/DTO/meDto';
+import { getMyLikes } from '@apis/me';
+import { GetMyLikesResponseDto } from '@dto/meDto';
 import { RiHeart3Line } from 'react-icons/ri';
 
 const MyLikePage = () => {

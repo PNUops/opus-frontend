@@ -4,11 +4,11 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Header from './Header';
 import Footer from './Footer';
 
-import useAuthInit from 'hooks/useAuthInit';
-import useScrollToTop from 'hooks/useScrollToTop';
+import useAuthInit from '@hooks/useAuthInit';
+import useScrollToTop from '@hooks/useScrollToTop';
 
 import { Toaster } from '@components/Toaster';
-import AxiosInterceptorProvider from 'providers/AxiosInterceptorProvider';
+import AxiosInterceptorProvider from '@providers/AxiosInterceptorProvider';
 import { SidebarProvider } from './SidebarContext';
 
 const MainLayout = () => {

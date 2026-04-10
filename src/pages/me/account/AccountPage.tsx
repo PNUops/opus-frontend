@@ -1,20 +1,20 @@
 import { useEffect, useState, ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import PasswordInput from 'components/PasswordInput';
+import PasswordInput from '@components/PasswordInput';
 import Divider from '@components/ui/divider';
-import { useToast } from 'hooks/useToast';
-import { isValidPassword } from 'utils/password';
+import { useToast } from '@hooks/useToast';
+import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 import AltProfile from '@pages/me/account/components/AltProfile';
-import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from 'apis/member';
-import { patchPasswordReset } from 'apis/signIn';
-import { PasswordResetRequestDto } from 'types/DTO';
-import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from 'queries/member';
-import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from 'apis/me';
+import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from '@apis/member';
+import { patchPasswordReset } from '@apis/signIn';
+import { PasswordResetRequestDto } from '@dto/signInDto';
+import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from '@queries/member';
+import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from '@apis/me';
 import { MdEdit } from 'react-icons/md';
-import { createImageFormData, imageValidator } from 'utils/image';
+import { createImageFormData, imageValidator } from '@utils/image';
 import { isValidGithubUrl } from '@pages/project-editor/urlValidators';
-import { getApiErrorMessage } from 'utils/error';
+import { getApiErrorMessage } from '@utils/error';
 
 const AccountPage = () => {
   return (
@@ -69,7 +69,6 @@ const ProfileCard = () => {
       setGithubInputValue(githubUrl ?? '');
     }
   }, [githubUrl, isGithubInputOpen]);
-
   const { mutate: saveGithubUrl, isPending: isSavingGithubUrl } = useMutation({
     mutationFn: patchMyGithubUrl,
     onSuccess: () => {
@@ -104,16 +103,32 @@ const ProfileCard = () => {
           <span className="truncate font-medium text-neutral-500">{email}</span>
         </div>
         <div className="text-md flex w-full items-center gap-4">
-          <span className="w-15 font-semibold text-neutral-800">GitHub</span>
-          {githubUrl ? (
-            <a
-              href={githubUrl}
-              className="truncate font-medium text-neutral-500"
-              target="_blank"
-              rel="noopener noreferrer"
+          <span className="w-15 py-1.5 font-semibold text-neutral-800">GitHub</span>
+          {!isGithubInputOpen && githubUrl ? (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setIsGithubInputOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setIsGithubInputOpen(true);
+                }
+              }}
+              className="w-full cursor-text rounded-md border-2 border-transparent p-1.5 text-left"
             >
-              {githubUrl}
-            </a>
+              <span className="block min-w-0">
+                <a
+                  href={githubUrl}
+                  onClick={(e) => e.stopPropagation()}
+                  className="max-w-full truncate font-medium text-neutral-500 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {githubUrl}
+                </a>
+              </span>
+            </div>
           ) : isGithubInputOpen ? (
             <input
               autoFocus
@@ -140,7 +155,7 @@ const ProfileCard = () => {
               disabled={isSavingGithubUrl}
               type="url"
               placeholder="GitHub URL을 입력해주세요."
-              className="bg-lightGray w-full rounded-md p-1.5 px-2 text-neutral-600 outline-none"
+              className="border-midGray w-full rounded-md border-2 p-1.5 px-2 text-neutral-600 outline-none"
             />
           ) : (
             <button

@@ -1,16 +1,16 @@
-import NoticeList from './NoticeList';
+import { NoticeListSkeleton } from '@components/notice';
+import AllNoticeList from './AllNoticeList';
 import LeaderSection from './LeaderSection';
 import CurrentContestSection from './CurrentContestSection';
 import StatisticsSection from './StatisticsSection';
-import QueryWrapper from 'providers/QueryWrapper';
-import NoticeListSkeleton from './NoticeListSkeleton';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const MainPage = () => {
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-17.5">
       <section className="flex flex-col gap-4">
         <QueryWrapper loadingFallback={<NoticeListSkeleton />} errorStyle="h-36 rounded-xl shadow-md">
-          <NoticeList />
+          <AllNoticeList />
         </QueryWrapper>
         <LeaderSection />
       </section>

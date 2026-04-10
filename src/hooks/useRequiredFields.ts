@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { defaultRequiredFields } from 'constants/requiredFields';
-import { putRequiredFields } from 'apis/requiredFields';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
-import { useToast } from './useToast';
+import { defaultRequiredFields } from '@constants/requiredFields';
+import { putRequiredFields } from '@apis/requiredFields';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
+import { useToast } from '@hooks/useToast';
 
 export const useRequiredFields = (contestId: number) => {
   const [fieldsSetting, setFieldsSetting] = useState<RequiredFieldsDto>(defaultRequiredFields);
@@ -19,11 +19,12 @@ export const useRequiredFields = (contestId: number) => {
     setFieldsSetting((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (successCb?: () => void) => {
     updateRequiredFields.mutate(fieldsSetting, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['requiredFields', contestId] });
         toast('필수 항목 설정이 저장되었습니다.', 'success');
+        successCb?.();
       },
       onError: () => {
         toast('필수 항목 설정 저장에 실패했습니다.', 'error');

@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-import { GetMyProfileResponseDto, UpdateProfileVisibilityRequestDto, PatchMyStudentIdRequestDto } from 'types/DTO';
+import { GetMyProfileResponseDto, UpdateProfileVisibilityRequestDto, PatchMyStudentIdRequestDto } from '@dto/memberDto';
 
 export const deleteMyAccount = async () => {
   const res = await apiClient.delete('/members/me');

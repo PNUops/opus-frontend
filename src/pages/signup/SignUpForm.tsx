@@ -5,10 +5,10 @@ import PasswordConfirmRow from './PasswordConfirmRow';
 import EmailBlock from './EmailBlock';
 import { useSignUpFormState } from './useSignUpFormState';
 import { useMutation } from '@tanstack/react-query';
-import { patchEmailVerificationCode, postEmailVerification, postSignUp } from 'apis/signUp';
+import { patchEmailVerificationCode, postEmailVerification, postSignUp } from '@apis/signUp';
 import { useNavigate } from 'react-router-dom';
 import RoundedButton from '@components/RoundedButton';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 
 const SignUpForm = () => {
   const { formState, updateField, formError, validate } = useSignUpFormState();

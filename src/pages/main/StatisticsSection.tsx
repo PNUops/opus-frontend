@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getMainStats } from 'apis/statistics';
+import { getMainStats } from '@apis/statistics';
 
 const StatisticsSection = () => {
   const { data } = useSuspenseQuery({

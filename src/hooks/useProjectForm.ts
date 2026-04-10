@@ -2,14 +2,14 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import useAuth from 'hooks/useAuth';
-import { useContestIdOrRedirect, useTeamId } from './useId';
-import { useToast } from 'hooks/useToast';
+import useAuth from '@hooks/useAuth';
+import { useContestIdOrRedirect, useTeamId } from '@hooks/useId';
+import { useToast } from '@hooks/useToast';
 import { useProjectEditorMode } from '@pages/project-editor/useProjectEditorMode';
 
-import { teamDetailOption } from 'queries/team';
-import { getRequiredFields } from 'apis/requiredFields';
-import { getPreviewImages } from 'apis/projectViewer';
+import { teamDetailOption } from '@queries/team';
+import { getRequiredFields } from '@apis/requiredFields';
+import { getPreviewImages } from '@apis/projectViewer';
 import {
   createProjectDetails,
   deletePoster,
@@ -25,17 +25,16 @@ import {
   postThumbnail,
   PosterResult,
   ThumbnailResult,
-} from 'apis/projectEditor';
+} from '@apis/projectEditor';
 
-import { canEditTeamPage } from 'utils/auth';
+import { canEditTeamPage } from '@utils/auth';
 import { isValidGithubUrl, isValidProjectUrl, isValidYoutubeUrl } from '@pages/project-editor/urlValidators';
-import { defaultRequiredFields } from 'constants/requiredFields';
-
-import { ProjectDetailsEditDto } from 'types/DTO/projectEditorDto';
-import { PreviewImagesResponseDto, PreviewResult } from 'types/DTO/projectViewerDto';
-import { TeamDetailDto } from 'types/DTO/teams/teamsDto';
+import { defaultRequiredFields } from '@constants/requiredFields';
+import { ProjectDetailsEditDto } from '@dto/projectEditorDto';
+import { PreviewImagesResponseDto, PreviewResult } from '@dto/projectViewerDto';
+import { TeamDetailDto } from '@dto/teams/teamsDto';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 import { MemberType } from 'types/MemberType';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
 
 interface ProjectFormState {
   contestId: number | null;
@@ -64,7 +63,7 @@ type ProjectFormAction =
   | { type: 'SET_CONTEST_ID'; payload: number | null }
   | { type: 'SET_FIELD'; field: keyof ProjectFormState; value: ProjectFormState[keyof ProjectFormState] }
   | { type: 'ADD_MEMBER'; payload: FormTeamMember }
-  | { type: 'REMOVE_MEMBER'; payload: { memberId: number } };
+  | { type: 'REMOVE_MEMBER'; payload: { clientId: string } };
 
 type ProjectImageAction =
   | { type: 'SET_POSTER'; payload: PosterResult | File | undefined }
@@ -83,10 +82,12 @@ type ProjectImageAction =
 type TeamMemberRoleType = Extract<MemberType, 'ROLE_팀장' | 'ROLE_팀원'>;
 
 export interface FormTeamMember {
-  memberId: number;
+  clientId: string;
+  memberId?: number;
   teamMemberName: string;
   teamMemberStudentId?: string;
   roleType: TeamMemberRoleType;
+  isNew: boolean;
 }
 
 const getteamMemberName = (member: TeamDetailDto['teamMembers'][number]) => member.teamMemberName.trim();
@@ -110,15 +111,15 @@ const getteamMemberStudentId = (member: TeamDetailDto['teamMembers'][number]) =>
     ''
   ).trim();
 
-const getNonLeaderMembers = (teamMembers: TeamDetailDto['teamMembers']): FormTeamMember[] =>
-  teamMembers
-    .filter((member) => member.roleType !== 'ROLE_팀장')
-    .map((member) => ({
-      memberId: getMemberId(member),
-      teamMemberName: getteamMemberName(member),
-      roleType: member.roleType as TeamMemberRoleType,
-      teamMemberStudentId: getteamMemberStudentId(member),
-    }));
+const getFormMembers = (teamMembers: TeamDetailDto['teamMembers']): FormTeamMember[] =>
+  teamMembers.map((member) => ({
+    clientId: `existing-${getMemberId(member)}`,
+    memberId: getMemberId(member),
+    teamMemberName: getteamMemberName(member),
+    roleType: member.roleType as TeamMemberRoleType,
+    teamMemberStudentId: getteamMemberStudentId(member),
+    isNew: false,
+  }));
 
 const mapTeamDetailToFormState = (team: TeamDetailDto): ProjectFormState => ({
   contestId: team.contestId,
@@ -126,7 +127,7 @@ const mapTeamDetailToFormState = (team: TeamDetailDto): ProjectFormState => ({
   projectName: team.projectName ?? '',
   teamName: team.teamName ?? '',
   professorName: team.professorName ?? '',
-  teamMembers: getNonLeaderMembers(team.teamMembers),
+  teamMembers: getFormMembers(team.teamMembers),
   githubPath: team.githubPath ?? '',
   youTubePath: team.youTubePath ?? '',
   productionPath: team.productionPath ?? null,
@@ -144,7 +145,7 @@ const projectFormReducer = (state: ProjectFormState, action: ProjectFormAction):
     case 'ADD_MEMBER':
       return { ...state, teamMembers: [...state.teamMembers, action.payload] };
     case 'REMOVE_MEMBER':
-      return { ...state, teamMembers: state.teamMembers.filter((m) => m.memberId !== action.payload.memberId) };
+      return { ...state, teamMembers: state.teamMembers.filter((m) => m.clientId !== action.payload.clientId) };
     default:
       return state;
   }
@@ -446,10 +447,11 @@ export const useProjectForm = () => {
       dispatchForm({
         type: 'ADD_MEMBER',
         payload: {
-          memberId: Date.now() + Math.floor(Math.random() * 1000),
+          clientId: `new-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
           teamMemberName: trimmedName,
           teamMemberStudentId: trimmedStudentId,
           roleType: newMember.roleType,
+          isNew: true,
         },
       });
       toast(`팀원 "${trimmedName}"을(를) 추가했어요`, 'success');
@@ -458,8 +460,8 @@ export const useProjectForm = () => {
   );
 
   const onMemberRemove = useCallback(
-    (memberId: number) => {
-      dispatchForm({ type: 'REMOVE_MEMBER', payload: { memberId: memberId } });
+    (clientId: string) => {
+      dispatchForm({ type: 'REMOVE_MEMBER', payload: { clientId } });
       toast('팀원을 삭제했어요', 'info');
     },
     [toast],
@@ -491,16 +493,16 @@ export const useProjectForm = () => {
 
   const syncMembers = useCallback(
     async (currentTeamId: number, currentProjectData: TeamDetailDto) => {
-      const existingMembers = getNonLeaderMembers(currentProjectData.teamMembers);
-      const addedMembers = formState.teamMembers.filter(
-        (member) => !existingMembers.some((existing) => existing.memberId === member.memberId),
-      );
-      const removedMembers = existingMembers.filter(
-        (member) => !formState.teamMembers.some((current) => current.memberId === member.memberId),
+      const existingMembers = getFormMembers(currentProjectData.teamMembers);
+      const addedMembers = formState.teamMembers.filter((member) => member.isNew);
+      const removedExistingMembers = existingMembers.filter(
+        (member): member is FormTeamMember & { memberId: number } =>
+          member.memberId !== undefined &&
+          !formState.teamMembers.some((current) => current.memberId === member.memberId),
       );
 
-      if (removedMembers.length > 0) {
-        await Promise.all(removedMembers.map((member) => deleteMember(currentTeamId, member.memberId)));
+      if (removedExistingMembers.length > 0) {
+        await Promise.all(removedExistingMembers.map((member) => deleteMember(currentTeamId, member.memberId)));
       }
       if (addedMembers.length > 0) {
         await Promise.all(
@@ -655,12 +657,12 @@ export const useProjectForm = () => {
   const hasEditorChanges = () => {
     if (!projectData) return true;
 
-    const originMembers = getNonLeaderMembers(projectData.teamMembers)
-      .map((m) => `${m.memberId}:${m.teamMemberName}:${m.roleType}:${m.teamMemberStudentId ?? ''}`)
+    const originMembers = getFormMembers(projectData.teamMembers)
+      .map((m) => `${m.memberId ?? 'new'}:${m.teamMemberName}:${m.roleType}:${m.teamMemberStudentId ?? ''}`)
       .sort()
       .join(',');
     const nextMembers = formState.teamMembers
-      .map((m) => `${m.memberId}:${m.teamMemberName}:${m.roleType}:${m.teamMemberStudentId ?? ''}`)
+      .map((m) => `${m.memberId ?? 'new'}:${m.teamMemberName}:${m.roleType}:${m.teamMemberStudentId ?? ''}`)
       .sort()
       .join(',');
 

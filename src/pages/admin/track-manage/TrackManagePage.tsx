@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 import {
   AdminHeader,
   AdminCardRow,
@@ -9,9 +9,9 @@ import {
   AdminPopoverDeleteButton,
 } from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
-import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from 'apis/track';
+import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from '@apis/track';
 import { TrackDeleteConfirmModal, TrackModal } from './TrackModal';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 
 const TrackManagePage = () => {
   const toast = useToast();
@@ -76,7 +76,7 @@ const TrackManagePage = () => {
         <DialogTrigger asChild>
           <AdminHeader title="분과 관리" onButtonClick={() => setCreateOpen(true)} buttonLabel="+ 새 분과" />
         </DialogTrigger>
-        <TrackModal type="create" onSubmit={handleCreateTrack} />
+        <TrackModal type="create" onSubmit={handleCreateTrack} onClose={() => setCreateOpen(false)} />
       </Dialog>
       <div className="h-[35px]" />
       <div className="flex flex-col gap-2">
@@ -121,6 +121,7 @@ const TrackManagePage = () => {
               handleEditTrack(editTarget.id, trackName);
               setEditTarget(null);
             }}
+            onClose={() => setEditTarget(null)}
           />
         )}
       </Dialog>

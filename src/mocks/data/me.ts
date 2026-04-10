@@ -1,9 +1,4 @@
-import {
-  GetMyProjectsResponseDto,
-  GetMyVotesResponseDto,
-  GetMyLikesPreviewResponseDto,
-  MyLikeDto,
-} from 'types/DTO/meDto';
+import { GetMyProjectsResponseDto, GetMyVotesResponseDto, GetMyLikesPreviewResponseDto, MyLikeDto } from '@dto/meDto';
 
 export const mockMyCommentsContent = (params: {
   sort: string;

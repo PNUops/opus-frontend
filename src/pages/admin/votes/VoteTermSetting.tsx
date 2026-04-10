@@ -1,15 +1,15 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { VoteTermDto } from 'types/DTO';
-import { useToast } from 'hooks/useToast';
+import { VoteTermDto } from '@dto/votesDto';
+import { useToast } from '@hooks/useToast';
 import VoteRangeSelector from './VoteRangeSelector';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { putVoteTerm } from 'apis/vote';
-import { VOTETERM_TIME_FORMAT } from 'constants/votes';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { putVoteTerm } from '@apis/vote';
+import { VOTETERM_TIME_FORMAT } from '@constants/votes';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { AdminActionButton, AdminHeader } from '@components/admin';
-import { voteTermOption } from 'queries/votes';
-import QueryWrapper from 'providers/QueryWrapper';
+import { voteTermOption } from '@queries/votes';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const VoteTermSetting = () => {
   const contestId = useContestIdOrRedirect();

@@ -1,4 +1,4 @@
-import { ContestAwardDto } from 'types/DTO/awardsDto';
+import { ContestAwardDto } from '@dto/awardsDto';
 import { MemberType } from 'types/MemberType';
 
 export interface TeamMemberDto {

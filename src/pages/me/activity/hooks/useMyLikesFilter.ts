@@ -1,4 +1,4 @@
-import { GetMyLikesParamsDto } from 'types/DTO/meDto';
+import { GetMyLikesParamsDto } from '@dto/meDto';
 import { useMyActivityFilter } from './useMyActivityFilter';
 
 export type { FilterState } from './useMyActivityFilter';

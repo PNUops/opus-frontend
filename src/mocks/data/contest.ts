@@ -3,8 +3,10 @@ import {
   GroupedContestResponseDto,
   ContestBulkAddTeamsErrorDto,
   ContestBulkAddTeamsResponseDto,
-} from 'types/DTO';
-import { ProjectsAdminResponseDto, GetContestTracksResponseDto, GetContestAwardsResponseDto } from 'types/DTO';
+  ProjectsAdminResponseDto,
+  GetContestTracksResponseDto,
+  GetContestAwardsResponseDto,
+} from '@dto/contestsDto';
 
 export const mockContestsResponse: ContestResponseDto[] = [
   {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from '@constants/env';
-import { getAccessToken } from 'utils/token';
+import { getAccessToken } from '@utils/token';
 
 const apiClient = axios.create({
   baseURL: `${API_BASE_URL}/api`,

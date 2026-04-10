@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getContestTracks } from 'apis/track';
-import Menu, { MenuOption } from 'components/Menu';
-import { ContestTrackDto } from 'types/DTO';
+import { getContestTracks } from '@apis/track';
+import Menu, { MenuOption } from '@components/Menu';
+import { ContestTrackDto } from '@dto/contestsDto';
 
 interface CategoryMenuProps {
   contestId: number | null;

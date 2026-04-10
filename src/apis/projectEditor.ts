@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '@constants/env';
 import apiClient from './apiClient';
-import { ProjectDetailsEditDto, PreviewDeleteRequestDto, TeamMemberCreateRequestDto } from 'types/DTO/projectEditorDto';
+import { ProjectDetailsEditDto, PreviewDeleteRequestDto, TeamMemberCreateRequestDto } from '@dto/projectEditorDto';
 
 export const patchTeamDetail = async (teamId: number, body: ProjectDetailsEditDto) => {
   const res = await apiClient.patch(`/teams/${teamId}`, body);

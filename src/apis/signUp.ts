@@ -1,4 +1,4 @@
-import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO, SignUpRequestDto } from 'types/DTO';
+import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO, SignUpRequestDto } from '@dto/signUpDto';
 import apiClient from './apiClient';
 
 export const postSignUp = async (request: SignUpRequestDto) => {

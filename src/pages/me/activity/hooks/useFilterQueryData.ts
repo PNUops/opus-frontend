@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllCategory } from 'apis/category';
-import { getAllContests } from 'apis/contest';
-import { CategoryDto } from 'types/DTO';
-import { ContestResponseDto } from 'types/DTO';
+import { getAllCategory } from '@apis/category';
+import { getAllContests } from '@apis/contest';
+import { CategoryDto } from '@dto/categoryDto';
+import { ContestResponseDto } from '@dto/contestsDto';
 import type { SortType, DateType } from '@pages/me/activity/types/filter';
 
 export type Option<T extends string> = {

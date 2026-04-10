@@ -1,15 +1,8 @@
-import { TeamListItemResponseDto } from '../types/DTO/teams/teamListDto';
-import { SubmissionStatusResponseDto } from '../types/DTO/teams/submissionStatusDto';
-import { PatchAwardRequestDto, PatchCustomOrderRequestDto, GetTeamAwardsResponseDto } from 'types/DTO';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
+import { SubmissionStatusResponseDto } from '@dto/teams/submissionStatusDto';
+import { PatchAwardRequestDto, GetTeamAwardsResponseDto } from '@dto/contestsDto';
 import apiClient from './apiClient';
 import { API_BASE_URL } from '@constants/env';
-
-export type SortOption = 'RANDOM' | 'ASC' | 'CUSTOM';
-export const sortOptions: { label: string; value: SortOption }[] = [
-  { label: '랜덤', value: 'RANDOM' },
-  { label: '오름차순', value: 'ASC' },
-  { label: '직접 설정', value: 'CUSTOM' },
-];
 
 export const getAllTeams = async (contestId: number): Promise<TeamListItemResponseDto[]> => {
   const res = await apiClient.get(`/contests/${contestId}/teams`);
@@ -40,21 +33,6 @@ export const getThumbnailTeams = async (teamId: number) => {
 
 export const deleteTeam = async (teamId: number) => {
   const res = await apiClient.delete(`/teams/${teamId}`);
-  return res.data;
-};
-
-export const patchSortTeam = async (mode: string) => {
-  const res = await apiClient.patch('/teams/sort', { mode: mode });
-  return res.data;
-};
-
-export const getSortStatus = async (): Promise<SortOption> => {
-  const res = await apiClient.get('/teams/sort');
-  return res.data.currentMode as SortOption;
-};
-
-export const patchCustomSortTeam = async (payload: PatchCustomOrderRequestDto) => {
-  const res = await apiClient.patch('/teams/sort/custom', payload);
   return res.data;
 };
 

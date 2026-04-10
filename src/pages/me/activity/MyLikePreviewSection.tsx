@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
-import { getMyLikesPreview } from 'apis/me';
-import type { GetMyLikesPreviewResponseDto } from 'types/DTO/meDto';
+import { getMyLikesPreview } from '@apis/me';
+import type { GetMyLikesPreviewResponseDto } from '@dto/meDto';
 import { RiHeart3Line } from 'react-icons/ri';
 import { FaChevronRight } from 'react-icons/fa6';
 import TeamCard from '@pages/contest/TeamCard';

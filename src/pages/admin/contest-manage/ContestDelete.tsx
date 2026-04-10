@@ -2,10 +2,10 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { useState } from 'react';
-import { deleteContest } from 'apis/contest';
-import { useToast } from 'hooks/useToast';
-import useContestName from 'hooks/useContestName';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { deleteContest } from '@apis/contest';
+import { useToast } from '@hooks/useToast';
+import useContestName from '@hooks/useContestName';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { Dialog } from '@components/ui/dialog';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 

@@ -11,8 +11,8 @@ import {
 } from '@components/admin';
 import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { NoData } from '@components/NoData';
-import { categoryOption } from 'queries/category';
-import QueryWrapper from 'providers/QueryWrapper';
+import { categoryOption } from '@queries/category';
+import QueryWrapper from '@providers/QueryWrapper';
 import { CategoryModal, CategoryDeleteConfirmModal } from './CategoryModal';
 
 const ContestCategorySection = () => {

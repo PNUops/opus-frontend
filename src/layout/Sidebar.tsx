@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { ContestResponseDto, GroupedContestResponseDto } from 'types/DTO/contestsDto';
-import { cn } from 'utils/classname';
+import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
+import { cn } from '@utils/classname';
 import { useQuery } from '@tanstack/react-query';
-import { getGroupedContests } from 'apis/contest';
+import { getGroupedContests } from '@apis/contest';
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
