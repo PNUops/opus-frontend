@@ -1,4 +1,4 @@
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import ContestTeamSetting from './ContestTeamSetting';
 
 const TeamSettingPage = () => {

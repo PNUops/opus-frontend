@@ -1,4 +1,4 @@
-import { CategoryDto } from 'types/DTO';
+import { CategoryDto } from '@dto/categoryDto';
 import apiClient from './apiClient';
 
 export const getAllCategory = async () => {

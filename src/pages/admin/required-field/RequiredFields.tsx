@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import Checkbox from '@components/ui/Checkbox';
-import { RequiredFieldsDto } from 'types/DTO/requiredFieldsDto';
-import { labelByField } from 'constants/requiredFields';
-import { getRequiredFields } from 'apis/requiredFields';
+import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
+import { labelByField } from '@constants/requiredFields';
+import { getRequiredFields } from '@apis/requiredFields';
 
 interface RequiredFieldsProps {
   contestId: number;

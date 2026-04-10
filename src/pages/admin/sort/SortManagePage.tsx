@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { AdminHeader } from '@components/admin';
-import { sortStatusOption } from 'queries/contest';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
+import { sortStatusOption } from '@queries/contest';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 import SortSelect from './SortSelect';
 import CustomOrderSection from './CustomOrderSection';
 

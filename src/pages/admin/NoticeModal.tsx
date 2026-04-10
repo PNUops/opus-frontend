@@ -3,10 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import Input from '@components/Input';
 import TextArea from '@components/TextArea';
-import { deleteNotice, patchNotice, postCreateNotice } from 'apis/notice';
-import { useToast } from 'hooks/useToast';
-import { noticeDetailOption } from 'queries/notices';
-import { NoticeRequestDto } from 'types/DTO/noticeDto';
+import { deleteNotice, patchNotice, postCreateNotice } from '@apis/notice';
+import { useToast } from '@hooks/useToast';
+import { noticeDetailOption } from '@queries/notices';
+import { NoticeRequestDto } from '@dto/noticeDto';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 
 interface NoticeModalProps {

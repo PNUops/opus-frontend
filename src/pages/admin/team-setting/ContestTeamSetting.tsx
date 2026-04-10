@@ -5,10 +5,10 @@ import { useState, useRef } from 'react';
 import { XLSX_MIME_TYPE } from '@constants/contest';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
-import { cn } from 'utils/classname';
-import { postBulkAddTeams } from 'apis/contest';
-import { useToast } from 'hooks/useToast';
-import { ContestBulkAddTeamsErrorDto } from 'types/DTO';
+import { cn } from '@utils/classname';
+import { postBulkAddTeams } from '@apis/contest';
+import { useToast } from '@hooks/useToast';
+import { ContestBulkAddTeamsErrorDto } from '@dto/contestsDto';
 import { TemplateErrorModal } from '../create/TemplateErrorModal';
 
 interface ContestTeamInsertProps {

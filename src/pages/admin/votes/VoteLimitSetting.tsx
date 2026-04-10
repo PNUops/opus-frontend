@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Label } from '@components/ui/label';
 import { AdminActionButton, AdminHeader } from '@components/admin';
-import { MAX_VOTE_PER_PERSON } from 'constants/votes';
-import { patchMaxVoteLimit } from 'apis/vote';
-import { VoteMaxVotesLimitDto } from 'types/DTO';
-import { useToast } from 'hooks/useToast';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
+import { MAX_VOTE_PER_PERSON } from '@constants/votes';
+import { patchMaxVoteLimit } from '@apis/vote';
+import { VoteMaxVotesLimitDto } from '@dto/votesDto';
+import { useToast } from '@hooks/useToast';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 import VoteLimitSelector from './VoteLimitSelector';
 
 const MaxVoteLimitSetting = () => {

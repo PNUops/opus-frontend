@@ -3,7 +3,7 @@ import AllNoticeList from './AllNoticeList';
 import LeaderSection from './LeaderSection';
 import CurrentContestSection from './CurrentContestSection';
 import StatisticsSection from './StatisticsSection';
-import QueryWrapper from 'providers/QueryWrapper';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const MainPage = () => {
   return (

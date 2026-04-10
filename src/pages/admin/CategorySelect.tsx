@@ -1,9 +1,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { categoryOption } from 'queries/category';
-import { contestsOption } from 'queries/contest';
-import { useContestId } from 'hooks/useId';
+import { categoryOption } from '@queries/category';
+import { contestsOption } from '@queries/contest';
+import { useContestId } from '@hooks/useId';
 
 interface CategorySelectProps {
   categoryId: string;

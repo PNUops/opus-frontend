@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
-import { GetContestAwardsResponseDto, PatchContestAwardRequestDto } from 'types/DTO';
-import { AwardDto } from 'types/DTO/awardsDto';
+import { GetContestAwardsResponseDto, PatchContestAwardRequestDto } from '@dto/contestsDto';
+import { AwardDto } from '@dto/awardsDto';
 
 export const getContestAwards = async (contestId: number): Promise<GetContestAwardsResponseDto> => {
   const res = await apiClient.get<GetContestAwardsResponseDto>(`/contests/${contestId}/awards`);

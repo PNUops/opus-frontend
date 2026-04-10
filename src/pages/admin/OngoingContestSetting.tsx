@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ContestSlots } from './ContestSlots';
 import ContestSelect from './ContestSelect';
-import QueryWrapper from 'providers/QueryWrapper';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const OngoingContestSetting = () => {
   const [selectedContest, setSelectedContest] = useState<string>('');

@@ -2,8 +2,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { defaultRankFilter } from '@constants/statistics';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { voteRankingOption } from 'queries/statistics';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { voteRankingOption } from '@queries/statistics';
 
 interface VoteFilterSelectProps {
   selectedFilter: string;

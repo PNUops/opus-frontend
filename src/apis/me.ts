@@ -6,8 +6,8 @@ import {
   GetMyLikesParamsDto,
   GetMyCommentsParamsDto,
   GetMyLikesResponseDto,
-} from 'types/DTO/meDto';
-import { GetCommentsPaginationResponseDto } from 'types/DTO/commentDto';
+} from '@dto/meDto';
+import { GetCommentsPaginationResponseDto } from '@dto/commentDto';
 
 export const getMyProjects = async (): Promise<GetMyProjectsResponseDto> => {
   const res = await apiClient.get('/members/me/projects');

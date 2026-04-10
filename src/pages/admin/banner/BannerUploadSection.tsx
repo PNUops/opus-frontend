@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { FiX } from 'react-icons/fi';
-import { useToast } from 'hooks/useToast';
-import { postBanner } from 'apis/banner';
+import { useToast } from '@hooks/useToast';
+import { postBanner } from '@apis/banner';
 import { cn } from '@components/lib/utils';
-import { bannerOption } from 'queries/banner';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import { bannerOption } from '@queries/banner';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 
 const BannerUploadSection = () => {

@@ -4,9 +4,9 @@ import { MdBrokenImage, MdOutlineFileUpload } from 'react-icons/md';
 import { CgSandClock } from 'react-icons/cg';
 import { HiInformationCircle } from 'react-icons/hi';
 
-import { PosterResult } from 'apis/projectEditor';
-import { useToast } from 'hooks/useToast';
-import { imageValidator } from 'utils/image';
+import { PosterResult } from '@apis/projectEditor';
+import { useToast } from '@hooks/useToast';
+import { imageValidator } from '@utils/image';
 
 interface PosterUploaderSectionProps {
   poster: PosterResult | File | undefined;
@@ -102,8 +102,8 @@ const PosterUploaderSection = ({
   return (
     <div className="flex flex-col gap-3 text-sm sm:flex-row sm:gap-10">
       <div className="text-exsm flex items-start justify-between gap-3 sm:flex-col sm:justify-normal sm:pt-2 sm:text-sm">
-        <div className="text-midGray flex w-25">
-          {required ? <span className="mr-1 text-red-500">*</span> : null}
+        <div className="text-midGray flex w-25 gap-1">
+          <span className={`mr-1 ${required ? 'text-red-500' : 'text-transparent'}`}>*</span>
           <span>포스터</span>
         </div>
         <div className="group relative inline-block">

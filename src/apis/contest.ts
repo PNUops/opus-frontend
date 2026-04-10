@@ -10,8 +10,8 @@ import {
   ProjectsAdminResponseDto,
   TeamCustomSortData,
   TeamSortOption,
-} from 'types/DTO';
-import { TeamListItemResponseDto } from 'types/DTO/teams/teamListDto';
+} from '@dto/contestsDto';
+import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 
 export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
   const res = await apiClient.post('/contests', payload);

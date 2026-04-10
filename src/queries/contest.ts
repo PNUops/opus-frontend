@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAllContests, getContestTeams, getCurrentContest, getSortStatus } from 'apis/contest';
+import { getAllContests, getContestTeams, getCurrentContest, getSortStatus } from '@apis/contest';
 
 export const contestsOption = () => {
   return queryOptions({ queryKey: ['contests'], queryFn: getAllContests });

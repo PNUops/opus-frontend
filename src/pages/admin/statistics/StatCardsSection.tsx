@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { AdminHeader } from '@components/admin';
-import { getVoteStats } from 'apis/statistics';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import QueryWrapper from 'providers/QueryWrapper';
+import { getVoteStats } from '@apis/statistics';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
 
 const StatCardsSection = () => {
   return (

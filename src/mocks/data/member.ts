@@ -1,4 +1,4 @@
-import { GetMyProfileResponseDto } from 'types/DTO';
+import { GetMyProfileResponseDto } from '@dto/memberDto';
 
 export const mockMemberAccount: GetMyProfileResponseDto = {
   name: '홍지연',

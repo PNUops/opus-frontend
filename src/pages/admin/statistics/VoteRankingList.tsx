@@ -3,10 +3,10 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { FaVoteYea } from 'react-icons/fa';
 import Tag from '@components/Tag';
 import { NoData } from '@components/NoData';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { voteRankingOption } from 'queries/statistics';
-import { VoteRankingDto } from 'types/DTO';
-import { getColorClassForLabel } from 'utils/color';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { voteRankingOption } from '@queries/statistics';
+import { VoteRankingDto } from '@dto/statisticsDto';
+import { getColorClassForLabel } from '@utils/color';
 
 interface VoteRankingListProps {
   selectedFilter: string;

@@ -1,9 +1,10 @@
-import LeaderMessage from '@pages/main/LeaderMessage';
-import useAuth from '../../hooks/useAuth';
-import { getSubmissionStatus } from '../../apis/team';
-import { useQuery } from '@tanstack/react-query';
-import { SubmissionStatusResponseDto } from '../../types/DTO/teams/submissionStatusDto';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import LeaderMessage from '@pages/main/LeaderMessage';
+import { getSubmissionStatus } from '@apis/team';
+import useAuth from '@hooks/useAuth';
+import { SubmissionStatusResponseDto } from '@dto/teams/submissionStatusDto';
+
 import { TbPencil } from 'react-icons/tb';
 import RoundedButton from '@components/RoundedButton';
 

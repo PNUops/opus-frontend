@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { AiOutlineNotification } from 'react-icons/ai';
 import { MdFiberNew } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import { NoticeListDto } from 'types/DTO';
+import { NoticeListDto } from '@dto/noticeDto';
 
 export const NoticeList = ({ children }: React.ComponentProps<'ul'>) => {
   return <ul className="flex flex-col gap-1 rounded-xl bg-gray-50 p-2.5 shadow-md">{children}</ul>;

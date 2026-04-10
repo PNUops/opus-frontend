@@ -1,13 +1,16 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import useAuth from 'hooks/useAuth';
+import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { putLikeToggle, putVoteToggle } from 'apis/projectViewer';
-import { useToast } from 'hooks/useToast';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FaHeart } from 'react-icons/fa';
 import { MdHowToVote } from 'react-icons/md';
+
+import { getMyContestVoteStatus } from '@apis/vote';
+import { putLikeToggle, putVoteToggle } from '@apis/projectViewer';
 import Backdrop from '@components/Backdrop';
-import { ReactNode, useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
+import useAuth from '@hooks/useAuth';
+import { useToast } from '@hooks/useToast';
+import { useIsVoteTerm } from '@hooks/useVoteTerm';
 
 interface LikeSectionProps {
   contestId: number;
@@ -17,12 +20,15 @@ interface LikeSectionProps {
 }
 
 const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, user } = useAuth();
+  const { isVoteTerm } = useIsVoteTerm(contestId);
   const navigate = useNavigate();
   const toast = useToast();
+  const queryClient = useQueryClient();
 
-  const [showLikeCountTooltip, setShowLikeCountTooltip] = useState(false);
-  const [likeCount, setLikeCount] = useState<number | null>(null);
+  const [showVoteCountTooltip, setShowVoteCountTooltip] = useState(false);
+  const [remainingVotesCount, setRemainingVotesCount] = useState<number | null>(null);
+  const [maxVotesLimit, setMaxVotesLimit] = useState<number | null>(null);
   const [likedState, setLikedState] = useState(Boolean(isLiked));
   const [votedState, setVotedState] = useState(Boolean(isVoted));
 
@@ -34,30 +40,40 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
     setVotedState(Boolean(isVoted));
   }, [isVoted]);
 
-  const handleLikeCountTooltip = (likeCount: number) => {
-    setLikeCount(likeCount);
-    setShowLikeCountTooltip(true);
-    setTimeout(() => setShowLikeCountTooltip(false), 2000);
+  const showVoteTooltip = (nextRemainingVotesCount: number, currentMaxVotesLimit: number) => {
+    setRemainingVotesCount(nextRemainingVotesCount);
+    setMaxVotesLimit(currentMaxVotesLimit);
+    setShowVoteCountTooltip(true);
+    setTimeout(() => setShowVoteCountTooltip(false), 2000);
   };
 
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
   const invalidateVoteLikeQueries = () => {
     queryClient.invalidateQueries({ queryKey: ['teamDetail', teamId] });
     queryClient.invalidateQueries({ queryKey: ['teams', 'current', user?.id ?? 'guest'] });
     queryClient.invalidateQueries({ queryKey: ['teams', contestId, user?.id ?? 'guest'] });
+    queryClient.invalidateQueries({ queryKey: ['myContestVoteStatus', contestId] });
   };
+
+  const { data: myContestVoteStatus } = useQuery({
+    queryKey: ['myContestVoteStatus', contestId],
+    queryFn: () => getMyContestVoteStatus(contestId),
+    enabled: isSignedIn && isVoteTerm,
+  });
+
+  useEffect(() => {
+    if (!myContestVoteStatus) return;
+    setRemainingVotesCount(myContestVoteStatus.remainingVotesCount);
+    setMaxVotesLimit(myContestVoteStatus.maxVotesLimit);
+  }, [myContestVoteStatus]);
 
   const likeMutation = useMutation({
     mutationFn: (nextIsLiked: boolean) => putLikeToggle({ teamId, isLiked: nextIsLiked }),
-    onSuccess: (res, nextIsLiked) => {
+    onSuccess: (_, nextIsLiked) => {
       invalidateVoteLikeQueries();
       toast(nextIsLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
-
-      handleLikeCountTooltip(res.remainingLikeCount);
     },
     onError: (err: any) => {
-      toast(err.response.data.message ?? '요청에 실패했어요', 'error');
+      toast(err.response?.data?.message ?? '요청에 실패했어요.', 'error');
     },
   });
 
@@ -66,9 +82,13 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
     onSuccess: (_, nextIsVoted) => {
       invalidateVoteLikeQueries();
       toast(nextIsVoted ? '투표를 완료했어요' : '투표를 취소했어요');
+
+      if (remainingVotesCount !== null && maxVotesLimit !== null) {
+        showVoteTooltip(remainingVotesCount + (nextIsVoted ? -1 : 1), maxVotesLimit);
+      }
     },
     onError: (err: any) => {
-      toast(err.response.data.message ?? '요청에 실패했어요', 'error');
+      toast(err.response?.data?.message ?? '요청에 실패했어요.', 'error');
     },
   });
 
@@ -107,8 +127,27 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
 
   return (
     <LikeAbuseToolTip>
-      <LikeCountToolTip isOpen={showLikeCountTooltip} likeCount={likeCount}>
-        <div className="flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-3">
+        {isVoteTerm ? (
+          <VoteCountToolTip
+            isOpen={showVoteCountTooltip}
+            remainingVotesCount={remainingVotesCount}
+            maxVotesLimit={maxVotesLimit}
+          >
+            <button
+              onClick={handleVoteClick}
+              disabled={voteMutation.isPending}
+              className={`${
+                votedState
+                  ? 'bg-mainGreen text-white hover:bg-emerald-600'
+                  : 'bg-lightGray text-white hover:bg-gray-300'
+              } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
+            >
+              <MdHowToVote className={`${votedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
+              <span className="hidden sm:inline">투표</span>
+            </button>
+          </VoteCountToolTip>
+        ) : (
           <button
             onClick={handleLikeClick}
             disabled={likeMutation.isPending}
@@ -119,19 +158,8 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
             <FaHeart className={`${likedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
             <span className="hidden sm:inline">좋아요</span>
           </button>
-
-          <button
-            onClick={handleVoteClick}
-            disabled={voteMutation.isPending}
-            className={`${
-              votedState ? 'bg-mainBlue text-white hover:bg-blue-600' : 'bg-lightGray text-white hover:bg-gray-300'
-            } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
-          >
-            <MdHowToVote className={`${votedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
-            <span className="hidden sm:inline">투표</span>
-          </button>
-        </div>
-      </LikeCountToolTip>
+        )}
+      </div>
     </LikeAbuseToolTip>
   );
 };
@@ -149,6 +177,7 @@ const LikeAbuseToolTip = ({ children }: { children: ReactNode }) => {
     likeAbuseMsgConfirmedUserList.push(user?.id);
     localStorage.setItem('likeAbuseMsgConfirmedUserList', JSON.stringify(likeAbuseMsgConfirmedUserList));
   };
+
   return (
     <div className="flex justify-center">
       <Tooltip open={showTooltip}>
@@ -160,9 +189,9 @@ const LikeAbuseToolTip = ({ children }: { children: ReactNode }) => {
         <TooltipContent className="max-w-3xs duration-400">
           <div className="flex flex-col gap-2 p-2 text-base">
             <p className="break-keep">
-              <strong className="text-mainBlue font-semibold">부정 로그인 계정</strong>을 모니터링하고 있어요.
+              <strong className="text-mainBlue font-semibold">부정 로그인 계정</strong>도 모니터링하고 있어요.
             </p>
-            <p>좋아요 남용이 의심되는 경우, 경고 없이 제한 될 수 있어요.</p>
+            <p>투표 남용이 의심되는 경우, 경고 없이 제한 될 수 있어요.</p>
             <button
               onClick={handleConfirm}
               className="text-mainBlue self-end-safe hover:cursor-pointer hover:font-semibold"
@@ -176,23 +205,27 @@ const LikeAbuseToolTip = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
-const LikeCountToolTip = ({
+
+const VoteCountToolTip = ({
   isOpen,
-  likeCount,
+  remainingVotesCount,
+  maxVotesLimit,
   children,
 }: {
   isOpen: boolean;
-  likeCount: number | null;
+  remainingVotesCount: number | null;
+  maxVotesLimit: number | null;
   children: ReactNode;
 }) => {
   return (
-    <Tooltip open={isOpen && likeCount !== null}>
+    <Tooltip open={isOpen && remainingVotesCount !== null && maxVotesLimit !== null}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent className="max-w-3xs duration-100">
         <div className="flex flex-col gap-2 p-2 text-base">
           <p className="break-keep">
-            <span>{'남은 좋아요 '}</span>
-            <strong className="text-mainBlue font-semibold">{`${likeCount}개`}</strong>
+            <span>남은 투표권 </span>
+            <strong className="text-mainBlue font-semibold">{`${remainingVotesCount}개`}</strong>
+            <span>{` / 전체 ${maxVotesLimit}개`}</span>
           </p>
         </div>
       </TooltipContent>

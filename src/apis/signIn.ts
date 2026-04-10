@@ -1,12 +1,11 @@
+import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO } from '@dto/signUpDto';
 import {
-  EmailVerificationCodeRequestDTO,
-  EmailVerificationRequestDTO,
   FindEmailRequestDto,
   FindEmailResponsetDto,
   PasswordResetRequestDto,
   SignInRequestDto,
   SignInResponseDto,
-} from 'types/DTO';
+} from '@dto/signInDto';
 import apiClient from './apiClient';
 
 export const postSignIn = async (request: SignInRequestDto): Promise<SignInResponseDto> => {

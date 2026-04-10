@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@dto/*": ["./src/types/DTO/*"],
+      "types/*": ["./src/types/*"],
+      "@apis/*": ["./src/apis/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@recoil/*": ["./src/recoil/*"],
+      "@route/*": ["./src/route/*"],
+      "@layout/*": ["./src/layout/*"],
+      "@mocks/*": ["./src/mocks/*"],
+      "@components/*": ["./src/components/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@queries/*": ["./src/queries/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@providers/*": ["./src/providers/*"]
+    }
+  }
+}

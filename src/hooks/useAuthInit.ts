@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useTokenStore } from 'stores/useTokenStore';
-import { useUserStore } from 'stores/useUserStore';
-import { getUserFromToken } from 'utils/token';
+import { useTokenStore } from '@stores/useTokenStore';
+import { useUserStore } from '@stores/useUserStore';
+import { getUserFromToken } from '@utils/token';
 
 const useAuthInit = () => {
   const { isTokenInit, initToken, token } = useTokenStore();

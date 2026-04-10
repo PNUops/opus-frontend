@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TeamMember } from 'types/DTO/projectViewerDto';
+import { TeamMember } from '@dto/projectViewerDto';
 
 interface IntroSectionProps {
   projectName: string;

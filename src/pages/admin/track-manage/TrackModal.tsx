@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import Button from '@components/Button';
 import Input from '@components/Input';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminActionButton } from '@components/admin';
 

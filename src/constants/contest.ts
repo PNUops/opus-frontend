@@ -1,4 +1,4 @@
-import { TeamSortOption } from 'types/DTO';
+import { TeamSortOption } from '@dto/contestsDto';
 
 export const contestCreateSteps = ['대회 생성', '팀·참여자 설정', '필수 항목 설정'];
 

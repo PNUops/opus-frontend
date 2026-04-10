@@ -1,9 +1,9 @@
 import React from 'react';
 import { AdminActionButton, AdminHeader } from '@components/admin';
-import { useRequiredFields } from 'hooks/useRequiredFields';
+import { useRequiredFields } from '@hooks/useRequiredFields';
 import RequiredFields from './RequiredFields';
-import QueryWrapper from 'providers/QueryWrapper';
-import { useContestIdOrRedirect } from 'hooks/useId';
+import QueryWrapper from '@providers/QueryWrapper';
+import { useContestIdOrRedirect } from '@hooks/useId';
 
 const RequiredFieldsPage: React.FC = () => {
   const contestId = useContestIdOrRedirect();

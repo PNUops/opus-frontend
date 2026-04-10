@@ -1,5 +1,5 @@
 import { IoIosArrowDown } from 'react-icons/io';
-import { cn } from 'utils/classname';
+import { cn } from '@utils/classname';
 
 const Select = ({
   children,

@@ -1,10 +1,10 @@
-import useAuth from 'hooks/useAuth';
+import useAuth from '@hooks/useAuth';
 import { BiCog } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
 import { HiMenu } from 'react-icons/hi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '@hooks/useToast';
 import { useSidebar } from './SidebarContext';
 import Button from '@components/Button';
 

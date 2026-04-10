@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { AdminActionButton, AdminHeader } from '@components/admin';
-import { useRequiredFields } from 'hooks/useRequiredFields';
-import QueryWrapper from 'providers/QueryWrapper';
+import { useRequiredFields } from '@hooks/useRequiredFields';
+import QueryWrapper from '@providers/QueryWrapper';
 import RequiredFields from '../required-field/RequiredFields';
 import { useContestCreate } from './ContestCreateContext';
 

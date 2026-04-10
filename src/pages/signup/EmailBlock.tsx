@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import EmailRow from './EmailRow';
 import EmailVerifyRow from './EmailVerifyRow';
-import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO } from 'types/DTO';
+import { EmailVerificationCodeRequestDTO, EmailVerificationRequestDTO } from '@dto/signUpDto';
 
 interface Props {
   email: string;

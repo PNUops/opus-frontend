@@ -1,10 +1,10 @@
 import { useEffect, ReactNode, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InternalAxiosRequestConfig, AxiosError } from 'axios';
-import apiClient from 'apis/apiClient';
-import { getAccessToken, isTokenExpired } from 'utils/token';
-import { useToast } from 'hooks/useToast';
-import useAuth from 'hooks/useAuth';
+import apiClient from '@apis/apiClient';
+import { getAccessToken, isTokenExpired } from '@utils/token';
+import { useToast } from '@hooks/useToast';
+import useAuth from '@hooks/useAuth';
 
 interface AxiosInterceptorProviderProps {
   children: ReactNode;

@@ -1,4 +1,4 @@
-import { NoticeDetailDto, NoticeListDto } from 'types/DTO/noticeDto';
+import { NoticeDetailDto, NoticeListDto } from '@dto/noticeDto';
 
 export const mockNotices: NoticeListDto[] = [
   {

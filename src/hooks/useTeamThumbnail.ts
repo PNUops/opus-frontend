@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import basicThumbnail from '@assets/basicThumbnail.jpg';
-import { getThumbnailTeams } from 'apis/team';
+import { getThumbnailTeams } from '@apis/team';
 
 export const teamThumbnailQueryKey = (teamId: number) => ['teamThumbnail', teamId] as const;
 

@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import DateTimePicker from '@components/DateTimePicker';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { VOTETERM_TIME_FORMAT } from 'constants/votes';
-import { useContestIdOrRedirect } from 'hooks/useId';
-import { voteTermOption } from 'queries/votes';
-import { VoteTermDto } from 'types/DTO';
+import { VOTETERM_TIME_FORMAT } from '@constants/votes';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { voteTermOption } from '@queries/votes';
+import { VoteTermDto } from '@dto/votesDto';
 
 interface VoteRangeSelectorProps {
   voteTerm: VoteTermDto;

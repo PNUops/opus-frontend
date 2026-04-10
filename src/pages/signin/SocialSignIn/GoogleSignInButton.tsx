@@ -1,7 +1,7 @@
 import googleIconUrl from '@assets/google-icon.svg';
 import { API_BASE_URL } from '@constants/env';
-import { useToast } from 'hooks/useToast';
-import { postSetOAuthRedirect } from 'apis/oauth';
+import { useToast } from '@hooks/useToast';
+import { postSetOAuthRedirect } from '@apis/oauth';
 
 const GoogleSignInButton = () => {
   const GOOGLE_AUTH_URL = `${API_BASE_URL}/api/oauth2/authorization/google`;

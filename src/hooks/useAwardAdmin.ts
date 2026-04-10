@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { AwardDto } from 'types/DTO/awardsDto';
+import { AwardDto } from '@dto/awardsDto';
 import { useQuery } from '@tanstack/react-query';
-import { contestTeamOption } from 'queries/contest';
+import { contestTeamOption } from '@queries/contest';
 
 interface AwardViewState {
   selectedTeamId?: number;

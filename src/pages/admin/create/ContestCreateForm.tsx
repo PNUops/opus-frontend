@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import Input from '@components/Input';
 import { AdminActionButton, AdminHeader } from '@components/admin';
-import { postContest } from 'apis/contest';
-import { ContestRequestDto } from 'types/DTO';
-import { useToast } from 'hooks/useToast';
-import QueryWrapper from 'providers/QueryWrapper';
+import { postContest } from '@apis/contest';
+import { ContestRequestDto } from '@dto/contestsDto';
+import { useToast } from '@hooks/useToast';
+import QueryWrapper from '@providers/QueryWrapper';
 import { useContestCreate } from './ContestCreateContext';
 import CategorySelect from '../CategorySelect';
 
