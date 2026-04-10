@@ -69,7 +69,7 @@ const PosterUploaderSection = ({
   };
 
   const renderContent = () => {
-    if (!poster) {
+    if (!poster || (!(poster instanceof File) && poster.status === 'error' && poster.code === 'POSTER_NOTFOUND')) {
       return (
         <div className="text-midGray flex h-full w-full flex-col items-center justify-center gap-3">
           <MdOutlineFileUpload size={24} />
