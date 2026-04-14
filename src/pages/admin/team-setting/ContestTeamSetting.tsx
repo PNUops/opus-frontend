@@ -110,9 +110,9 @@ const ContestTeamSetting = ({ contestId, handleSkip }: ContestTeamInsertProps) =
   return (
     <div className="flex flex-col gap-7">
       <AdminHeader title="팀·참여자 설정" description="하단 엑셀 파일 양식에 참여 팀들을 기입 후 업로드 해주세요." />
-      <a href="/팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
+      <a href="/PNUOps_관리자페이지_팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
         <PiMicrosoftExcelLogo size={24} className="fill-mainGreen mt-0.75" />
-        <span className="group-hover:text-mainGreen text-lg group-hover:underline">팀등록_템플릿파일.xlsx</span>
+        <span className="group-hover:text-mainGreen text-lg group-hover:underline">PNUOps_관리자페이지_팀등록_템플릿파일.xlsx</span>
       </a>
       <input
         ref={inputRef}
