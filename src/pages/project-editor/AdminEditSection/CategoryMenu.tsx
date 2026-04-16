@@ -34,10 +34,10 @@ const CategoryMenu = ({ contestId, value, onChange }: CategoryMenuProps) => {
       options={options}
       value={value}
       onChange={onChange}
-      placeholder="트랙을 선택해주세요."
+      placeholder="분과를 선택해주세요."
       loading={isLoading}
       error={isError ? '데이터를 가져오지 못했습니다.' : undefined}
-      emptyMessage={contestId === null ? '대회를 먼저 선택해주세요.' : '등록된 트랙이 없어요.'}
+      emptyMessage={contestId === null ? '대회를 먼저 선택해주세요.' : '등록된 분과가 없어요.'}
     />
   );
 };

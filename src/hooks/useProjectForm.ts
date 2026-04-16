@@ -409,8 +409,8 @@ export const useProjectForm = () => {
 
   const validateInputs = () => {
     const payload = buildProjectPayload(formState, projectData, isCreateMode ? true : isAdmin);
-    if (!payload) return '대회와 트랙을 선택해야 해요';
-    if (!isAdmin && requiredFields.trackRequired && formState.trackId === null) return '트랙을 선택해야 해요';
+    if (!payload) return '대회와 분과를 선택해야 해요';
+    if (!isAdmin && requiredFields.trackRequired && formState.trackId === null) return '분과을 선택해야 해요';
     if (!isAdmin && isEditMode && isEditorOfThisTeam && requiredFields.imagesRequired) {
       if (!imageState.thumbnail || imageState.previews.length === 0) return '썸네일 포함 2장 이상 이미지가 필요해요';
     }
@@ -607,7 +607,7 @@ export const useProjectForm = () => {
 
     const payload = buildProjectPayload(formState, undefined, true);
     if (!payload) {
-      toast('대회와 트랙을 선택해주세요.', 'error');
+      toast('대회와 분과를 선택해주세요.', 'error');
       return;
     }
 
