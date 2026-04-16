@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import useAuth from '@hooks/useAuth';
 import { useToast } from '@hooks/useToast';
 import { useIsVoteTerm } from '@hooks/useVoteTerm';
+import { getApiErrorMessage } from '@utils/error';
 
 interface LikeSectionProps {
   contestId: number;
@@ -72,8 +73,8 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
       invalidateVoteLikeQueries();
       toast(nextIsLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
     },
-    onError: (err: any) => {
-      toast(err.response?.data?.message ?? '요청에 실패했어요.', 'error');
+    onError: (err) => {
+      toast(getApiErrorMessage(err, '요청에 실패했어요.'), 'error');
     },
   });
 
@@ -87,8 +88,8 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
         showVoteTooltip(remainingVotesCount + (nextIsVoted ? -1 : 1), maxVotesLimit);
       }
     },
-    onError: (err: any) => {
-      toast(err.response?.data?.message ?? '요청에 실패했어요.', 'error');
+    onError: (err) => {
+      toast(getApiErrorMessage(err, '요청에 실패했어요.'), 'error');
     },
   });
 
@@ -126,7 +127,7 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
   };
 
   return (
-    <LikeAbuseToolTip>
+    <VoteAbuseToolTip>
       <div className="flex items-center justify-center gap-3">
         {isVoteTerm ? (
           <VoteCountToolTip
@@ -160,22 +161,22 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
           </button>
         )}
       </div>
-    </LikeAbuseToolTip>
+    </VoteAbuseToolTip>
   );
 };
 
 export default LikeSection;
 
-const LikeAbuseToolTip = ({ children }: { children: ReactNode }) => {
+const VoteAbuseToolTip = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
-  const likeAbuseMsgConfirmedUserList = JSON.parse(localStorage.getItem('likeAbuseMsgConfirmedUserList') ?? '[]');
-  const isConfirmed = !user || likeAbuseMsgConfirmedUserList.includes(user?.id);
+  const voteAbuseMsgConfirmedUserList = JSON.parse(localStorage.getItem('voteAbuseMsgConfirmedUserList') ?? '[]');
+  const isConfirmed = !user || voteAbuseMsgConfirmedUserList.includes(user?.id);
   const [showTooltip, setShowTooltip] = useState(!isConfirmed);
 
   const handleConfirm = () => {
     setShowTooltip(false);
-    likeAbuseMsgConfirmedUserList.push(user?.id);
-    localStorage.setItem('likeAbuseMsgConfirmedUserList', JSON.stringify(likeAbuseMsgConfirmedUserList));
+    voteAbuseMsgConfirmedUserList.push(user?.id);
+    localStorage.setItem('voteAbuseMsgConfirmedUserList', JSON.stringify(voteAbuseMsgConfirmedUserList));
   };
 
   return (
