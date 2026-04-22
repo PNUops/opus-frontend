@@ -13,7 +13,7 @@ const StatisticsSection = () => {
         부산대학교 SW 프로젝트 관리 시스템은 이렇게 성장하고 있어요 🚀
       </div>
       <div className="flex w-full flex-col justify-around gap-8 sm:flex-row sm:gap-0">
-        <StatItem label="진행된 대회 수" value={data.totalContests} />
+        <StatItem label="전체 대회 수" value={data.totalContests} />
         <Divider />
         <StatItem label="프로젝트 등록 수" value={data.totalProjects} />
         <Divider />
