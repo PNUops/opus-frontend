@@ -24,17 +24,17 @@ const CurrentContestSection = () => {
             onError={(e) => (e.currentTarget.src = defaultBanner)}
           />
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-          <div className="relative z-20 flex w-full justify-between px-8 py-8 text-white sm:px-12 sm:py-10">
+          <div className="relative z-20 flex h-full w-full items-center justify-between px-8 py-8 text-white sm:px-12 sm:py-10">
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center gap-2">
                 <span className="rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold text-gray-900">
                   {contest.categoryName}
                 </span>
               </div>
-              <h2 className="text-2xl leading-tight font-bold sm:text-4xl">{contest.contestName}</h2>
-              <div className="flex items-center gap-2 text-base sm:text-lg">
+              <h2 className="text-xl leading-tight font-bold sm:text-4xl">{contest.contestName}</h2>
+              <div className="flex items-center gap-2 text-sm sm:text-lg">
                 <FaCalendarAlt className="text-lg" />
-                <span>{`${dayjs(contest.voteStartAt).format('MM월 DD일')} ~ ${dayjs(contest.voteEndAt).format('MM월 DD일')}`}</span>
+                <span>{`${dayjs(contest.voteStartAt).format('YYYY년 MM월 DD일')} ~ ${dayjs(contest.voteEndAt).format('YYYY년 MM월 DD일')}`}</span>
               </div>
             </div>
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 group-hover:bg-white group-hover:text-black sm:h-16 sm:w-16">
