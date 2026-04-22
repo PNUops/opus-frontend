@@ -8,7 +8,7 @@ const StatisticsSection = () => {
   });
 
   return (
-    <section className="flex flex-col gap-10 rounded-2xl p-12.5 shadow-lg">
+    <section className="flex flex-col gap-10 rounded-2xl p-8 shadow-lg md:p-12.5">
       <div className="text-center text-xl font-semibold">
         부산대학교 SW 프로젝트 관리 시스템은 이렇게 성장하고 있어요 🚀
       </div>
@@ -18,6 +18,8 @@ const StatisticsSection = () => {
         <StatItem label="프로젝트 등록 수" value={data.totalProjects} />
         <Divider />
         <StatItem label="총 좋아요 수" value={data.totalLikes} />
+        <Divider />
+        <StatItem label="총 가입자 수" value={0} />
       </div>
     </section>
   );
