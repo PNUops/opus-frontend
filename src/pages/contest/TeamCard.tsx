@@ -51,7 +51,7 @@ const TeamCard = ({
 
       <div className="flex flex-col p-3">
         <div className="text-midGray truncate overflow-hidden py-2 text-[clamp(0.8rem,1.8vw,1rem)]">{teamName}</div>
-        <div className="line-clamp-2 max-h-[3.2rem] min-h-[2.6rem] text-[clamp(0.85rem,2vw,1.3rem)] leading-tight font-semibold text-black">
+        <div className="line-clamp-2 text-[clamp(0.85rem,2vw,1.3rem)] leading-tight font-semibold text-black">
           {projectName}
         </div>
       </div>
