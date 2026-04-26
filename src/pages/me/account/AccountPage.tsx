@@ -184,6 +184,22 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  const resetSelectedImage = () => {
+    if (previewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setSelectedFile(null);
+    setPreviewUrl(null);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const { mutate: uploadProfileImage, isPending: isUploading } = useMutation({
     mutationFn: (file: File) => {
       const formData = createImageFormData(file);
@@ -193,8 +209,7 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
       queryClient.invalidateQueries({ queryKey: ['profileImage', 'me'] });
       toast('프로필 이미지가 변경되었어요.', 'success');
       setIsModalOpen(false);
-      setSelectedFile(null);
-      setPreviewUrl(null);
+      resetSelectedImage();
     },
     onError: (err) => {
       toast(getApiErrorMessage(err, '프로필 이미지 변경에 실패했어요.'), 'error');
@@ -207,8 +222,7 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
       queryClient.invalidateQueries({ queryKey: ['profileImage', 'me'] });
       toast('프로필 이미지가 삭제되었어요.', 'success');
       setIsModalOpen(false);
-      setSelectedFile(null);
-      setPreviewUrl(null);
+      resetSelectedImage();
     },
     onError: (err) => {
       toast(getApiErrorMessage(err, '프로필 이미지 삭제에 실패했어요.'), 'error');
@@ -226,14 +240,16 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
       return;
     }
 
+    if (previewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl);
+    }
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedFile(null);
-    setPreviewUrl(null);
+    resetSelectedImage();
   };
 
   const handleSaveImage = () => {
@@ -260,7 +276,7 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="relative w-[360px] rounded-2xl bg-white p-8 shadow-xl">
+          <div className="relative h-70 w-90 rounded-2xl bg-white p-8 shadow-xl">
             <button
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
               onClick={handleCloseModal}
@@ -271,34 +287,45 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
 
             <h3 className="mb-4 text-center text-lg font-semibold">프로필 이미지 수정</h3>
 
-            <div className="mb-5 flex justify-center">
+            <div className="mb-10 flex justify-center">
               <div className="h-20 w-20 overflow-hidden rounded-full">
                 <AltProfile seed={name} imageUrl={previewUrl || profileImageUrl} size={80} />
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="bg-mainBlue cursor-pointer rounded-lg px-3 py-2 text-center text-sm text-white">
-                이미지 선택
-                <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-              </label>
-              <button
-                type="button"
-                className="border-mainRed text-mainRed hover:bg-whiteGray rounded-lg border px-3 py-2 text-sm"
-                onClick={() => removeProfileImage()}
-                disabled={isDeleting || isUploading}
-              >
-                프로필 사진 삭제하기
-              </button>
-              <button
-                type="button"
-                className="bg-mainBlue mt-2 rounded-lg px-3 py-2 text-sm text-white disabled:opacity-50"
-                onClick={handleSaveImage}
-                disabled={isUploading || isDeleting}
-              >
-                저장하기
-              </button>
-            </div>
+            {!selectedFile ? (
+              <div className="flex w-full justify-between gap-2">
+                <button
+                  type="button"
+                  className="border-lightGray text-midGray hover:bg-whiteGray flex-1 rounded-sm border px-3 py-2 text-sm"
+                  onClick={() => removeProfileImage()}
+                  disabled={isDeleting || isUploading}
+                >
+                  프로필 이미지 삭제
+                </button>
+                <label className="bg-mainGreen/90 hover:bg-mainGreen flex-1 cursor-pointer rounded-sm px-3 py-2 text-center text-sm text-white">
+                  기기에서 업로드
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    disabled={isDeleting || isUploading}
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="flex w-full flex-col items-end gap-2">
+                <button
+                  type="button"
+                  className="bg-mainGreen/90 hover:bg-mainGreen disabled:bg-midGray rounded-sm px-5 py-2 text-sm text-white"
+                  onClick={handleSaveImage}
+                  disabled={isDeleting || isUploading}
+                >
+                  {isUploading ? '저장 중...' : '해당 이미지로 변경'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
