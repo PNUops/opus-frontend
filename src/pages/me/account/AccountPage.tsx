@@ -15,6 +15,7 @@ import { MdEdit } from 'react-icons/md';
 import { createImageFormData, imageValidator } from '@utils/image';
 import { isValidGithubUrl } from '@pages/project-editor/urlValidators';
 import { getApiErrorMessage } from '@utils/error';
+import Spinner from '@components/Spinner';
 
 const AccountPage = () => {
   return (
@@ -297,11 +298,11 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
               <div className="flex w-full justify-between gap-2">
                 <button
                   type="button"
-                  className="border-lightGray text-midGray hover:bg-whiteGray flex-1 rounded-sm border px-3 py-2 text-sm"
+                  className="border-lightGray text-midGray hover:bg-whiteGray w-34 rounded-sm border px-3 py-2 text-sm"
                   onClick={() => removeProfileImage()}
                   disabled={isDeleting || isUploading}
                 >
-                  프로필 이미지 삭제
+                  기본 이미지 설정
                 </button>
                 <label className="bg-mainGreen/90 hover:bg-mainGreen flex-1 cursor-pointer rounded-sm px-3 py-2 text-center text-sm text-white">
                   기기에서 업로드
@@ -315,14 +316,22 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
                 </label>
               </div>
             ) : (
-              <div className="flex w-full flex-col items-end gap-2">
+              <div className="flex w-full justify-between gap-2">
                 <button
                   type="button"
-                  className="bg-mainGreen/90 hover:bg-mainGreen disabled:bg-midGray rounded-sm px-5 py-2 text-sm text-white"
+                  className="border-lightGray text-midGray hover:bg-whiteGray w-34 rounded-sm border px-3 py-2 text-sm"
+                  onClick={handleCloseModal}
+                  disabled={isDeleting || isUploading}
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  className="bg-mainGreen/90 hover:bg-mainGreen disabled:bg-midGray flex-1 rounded-sm px-5 py-2 text-sm text-white"
                   onClick={handleSaveImage}
                   disabled={isDeleting || isUploading}
                 >
-                  {isUploading ? '저장 중...' : '해당 이미지로 변경'}
+                  {isUploading ? <Spinner className="size-5" /> : '프로필 이미지 변경'}
                 </button>
               </div>
             )}
