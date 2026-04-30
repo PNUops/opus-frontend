@@ -567,13 +567,20 @@ const PasswordEditSection = () => {
   );
 };
 
+import { useTokenStore } from '@stores/useTokenStore';
+
 const AccountManagementSection = () => {
+  const clearToken = useTokenStore((state) => state.clearToken);
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const { mutate } = useMutation({
     mutationFn: deleteMyAccount,
     onSuccess: () => {
       toast('계정이 성공적으로 삭제되었어요.', 'success');
+      clearToken();
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
     },
     onError: (err) => {
       toast(`${err?.message}` || '계정 삭제에 실패했어요. 다시 시도해주세요.', 'error');
