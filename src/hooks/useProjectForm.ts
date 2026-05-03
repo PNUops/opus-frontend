@@ -28,6 +28,7 @@ import {
 } from '@apis/projectEditor';
 
 import { canEditTeamPage } from '@utils/auth';
+import { getApiErrorMessage } from '@utils/error';
 import { isValidGithubUrl, isValidProjectUrl, isValidYoutubeUrl } from '@pages/project-editor/urlValidators';
 import { defaultRequiredFields } from '@constants/requiredFields';
 import { ProjectDetailsEditDto } from '@dto/projectEditorDto';
@@ -583,7 +584,7 @@ export const useProjectForm = () => {
       toast('수정이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${teamId}`);
     } catch (error: any) {
-      toast(error?.response?.data?.message ?? '저장 중 오류가 발생했어요', 'error');
+      toast(getApiErrorMessage(error, '프로젝트 수정에 실패했어요.'), 'error');
     }
   }, [
     teamId,
@@ -632,7 +633,7 @@ export const useProjectForm = () => {
       toast('생성이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${createdTeamId}`);
     } catch (error: any) {
-      toast(error?.response?.data?.message ?? '생성 도중 실패했어요', 'error');
+      toast(getApiErrorMessage(error, '프로젝트 생성에 실패했어요.'), 'error');
     }
   }, [validateInputs, toast, formState, syncImages, navigate, contestId]);
 

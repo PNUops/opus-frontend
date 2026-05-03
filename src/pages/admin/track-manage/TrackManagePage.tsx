@@ -12,6 +12,7 @@ import { Dialog, DialogTrigger } from '@components/ui/dialog';
 import { getContestTracks, createContestTrack, updateContestTrack, deleteContestTrack } from '@apis/track';
 import { TrackDeleteConfirmModal, TrackModal } from './TrackModal';
 import { useContestIdOrRedirect } from '@hooks/useId';
+import { getApiErrorMessage } from '@utils/error';
 
 const TrackManagePage = () => {
   const toast = useToast();
@@ -32,8 +33,8 @@ const TrackManagePage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tracks', contestId] });
     },
-    onError: (error: any) => {
-      toast(error.response?.data?.message || '분과 생성에 실패했어요.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '분과 생성에 실패했어요.'), 'error');
     },
   });
 
@@ -43,8 +44,8 @@ const TrackManagePage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tracks', contestId] });
     },
-    onError: (error: any) => {
-      toast(error.response?.data?.message || '분과 수정에 실패했어요.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '분과 수정에 실패했어요.'), 'error');
     },
   });
 
@@ -53,8 +54,8 @@ const TrackManagePage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tracks', contestId] });
     },
-    onError: (error: any) => {
-      toast(error.response?.data?.message || '분과 삭제에 실패했어요.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '분과 삭제에 실패했어요.'), 'error');
     },
   });
 

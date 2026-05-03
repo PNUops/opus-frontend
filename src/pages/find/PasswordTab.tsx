@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+
 import RoundedButton from '@components/RoundedButton';
 import EmailBlock from '@pages/signup/EmailBlock';
 import { useFindPasswordFormState } from './useFindPasswordFormState';
@@ -6,11 +9,10 @@ import {
   patchPasswordReset,
   postEmailVerificationPasswordReset,
 } from '@apis/signIn';
-import { useMutation } from '@tanstack/react-query';
 import PasswordRow from '@pages/signup/PasswordRow';
 import PasswordConfirmRow from '@pages/signup/PasswordConfirmRow';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '@hooks/useToast';
+import { getApiErrorMessage } from '@utils/error';
 
 const PasswordTab = () => {
   const { formState, updateField, formError, validate } = useFindPasswordFormState();
@@ -19,12 +21,12 @@ const PasswordTab = () => {
 
   const mutation = useMutation({
     mutationFn: patchPasswordReset,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast(`비밀번호 변경이 완료되었어요.`, 'success');
       navigate('/signin');
     },
     onError: (error) => {
-      toast(`비밀번호 변경에 실패했어요. ${error.message}`, 'error');
+      toast(getApiErrorMessage(error, '비밀번호 변경에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
 

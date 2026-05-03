@@ -9,6 +9,7 @@ import { patchEmailVerificationCode, postEmailVerification, postSignUp } from '@
 import { useNavigate } from 'react-router-dom';
 import RoundedButton from '@components/RoundedButton';
 import { useToast } from '@hooks/useToast';
+import { getApiErrorMessage } from '@utils/error';
 
 const SignUpForm = () => {
   const { formState, updateField, formError, validate } = useSignUpFormState();
@@ -17,12 +18,12 @@ const SignUpForm = () => {
 
   const mutation = useMutation({
     mutationFn: postSignUp,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast('회원가입이 완료되었어요.', 'success');
       navigate('/signin'); // TODO: 회원가입 완료 시 자동 로그인
     },
-    onError: (error: any) => {
-      toast(`${error?.response.data.message}` || '회원가입에 실패했어요.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '회원가입에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
 

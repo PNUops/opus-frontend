@@ -77,7 +77,7 @@ const ProfileCard = () => {
       toast('GitHub 계정이 연결되었어요.', 'success');
     },
     onError: (err) => {
-      toast(`${err?.message}` || 'GitHub 계정 연결에 실패했어요. 다시 시도해주세요.', 'error');
+      toast(getApiErrorMessage(err, 'GitHub 계정 연결에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
 
@@ -583,7 +583,7 @@ const AccountManagementSection = () => {
       }, 1500);
     },
     onError: (err) => {
-      toast(`${err?.message}` || '계정 삭제에 실패했어요. 다시 시도해주세요.', 'error');
+      toast(getApiErrorMessage(err, '계정 삭제에 실패했어요. 다시 시도해주세요.'), 'error');
     },
   });
   return (

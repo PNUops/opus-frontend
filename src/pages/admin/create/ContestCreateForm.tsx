@@ -9,6 +9,7 @@ import { useToast } from '@hooks/useToast';
 import QueryWrapper from '@providers/QueryWrapper';
 import { useContestCreate } from './ContestCreateContext';
 import CategorySelect from '../CategorySelect';
+import { getApiErrorMessage } from '@utils/error';
 
 const ContestCreateForm = () => {
   const [categoryId, setCategoryId] = useState<string>('');
@@ -40,8 +41,8 @@ const ContestCreateForm = () => {
           setContestId(res.contestId);
           setCurrentStep(2);
         },
-        onError: (error: any) => {
-          toast(error.response?.data?.message || `${currentStepName}에 실패했습니다.`, 'error');
+        onError: (error) => {
+          toast(getApiErrorMessage(error, `${currentStepName}에 실패했습니다.`), 'error');
         },
       },
     );
