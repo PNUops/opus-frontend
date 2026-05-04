@@ -65,16 +65,9 @@ export interface CommentEditResponseDto {
   description: string;
 }
 
-export interface LikeUpdateRequestDto {
-  teamId: number;
-  isLiked: boolean;
-}
-export interface LikeUpdateResponseDto {
-  teamId: number;
-  isLiked: boolean;
-  message: string;
-  remainingLikeCount: number;
-  maxLikeCount: number;
+export interface TeamVoteResponseDto {
+  remainingVotesCount: number;
+  maxVotesLimit: number;
 }
 
 export interface PreviewImage {
