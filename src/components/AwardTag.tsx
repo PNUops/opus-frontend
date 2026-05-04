@@ -15,7 +15,6 @@ const AwardTag = ({ awardName, awardColor, onClick, onRemove }: AwardTagProps) =
       style={{
         backgroundColor: awardColor,
         borderColor: awardColor,
-        boxShadow: `0 0 6px 2px ${awardColor}50, 0 0 4px 4px ${awardColor}20`,
       }}
       onClick={onClick}
     >

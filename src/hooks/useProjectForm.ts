@@ -28,6 +28,7 @@ import {
 } from '@apis/projectEditor';
 
 import { canEditTeamPage } from '@utils/auth';
+import { getApiErrorMessage } from '@utils/error';
 import { isValidGithubUrl, isValidProjectUrl, isValidYoutubeUrl } from '@pages/project-editor/urlValidators';
 import { defaultRequiredFields } from '@constants/requiredFields';
 import { ProjectDetailsEditDto } from '@dto/projectEditorDto';
@@ -409,8 +410,8 @@ export const useProjectForm = () => {
 
   const validateInputs = () => {
     const payload = buildProjectPayload(formState, projectData, isCreateMode ? true : isAdmin);
-    if (!payload) return '대회와 트랙을 선택해야 해요';
-    if (!isAdmin && requiredFields.trackRequired && formState.trackId === null) return '트랙을 선택해야 해요';
+    if (!payload) return '대회와 분과를 선택해야 해요';
+    if (!isAdmin && requiredFields.trackRequired && formState.trackId === null) return '분과을 선택해야 해요';
     if (!isAdmin && isEditMode && isEditorOfThisTeam && requiredFields.imagesRequired) {
       if (!imageState.thumbnail || imageState.previews.length === 0) return '썸네일 포함 2장 이상 이미지가 필요해요';
     }
@@ -583,7 +584,7 @@ export const useProjectForm = () => {
       toast('수정이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${teamId}`);
     } catch (error: any) {
-      toast(error?.response?.data?.message ?? '저장 중 오류가 발생했어요', 'error');
+      toast(getApiErrorMessage(error, '프로젝트 수정에 실패했어요.'), 'error');
     }
   }, [
     teamId,
@@ -607,7 +608,7 @@ export const useProjectForm = () => {
 
     const payload = buildProjectPayload(formState, undefined, true);
     if (!payload) {
-      toast('대회와 트랙을 선택해주세요.', 'error');
+      toast('대회와 분과를 선택해주세요.', 'error');
       return;
     }
 
@@ -632,7 +633,7 @@ export const useProjectForm = () => {
       toast('생성이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${createdTeamId}`);
     } catch (error: any) {
-      toast(error?.response?.data?.message ?? '생성 도중 실패했어요', 'error');
+      toast(getApiErrorMessage(error, '프로젝트 생성에 실패했어요.'), 'error');
     }
   }, [validateInputs, toast, formState, syncImages, navigate, contestId]);
 

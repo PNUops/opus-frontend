@@ -19,7 +19,7 @@ export const mockMyCommentsContent = (params: {
         contestId: 1,
         contestName: '제6회창의융합해커톤대회',
         categoryName: '해커톤',
-        trackName: '창업트랙',
+        trackName: '창업분과',
         teamId: 5,
         teamName: 'TeamName',
         projectName: 'Project Name',
