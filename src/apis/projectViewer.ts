@@ -3,13 +3,12 @@ import axios from 'axios';
 import apiClient from './apiClient';
 import {
   PreviewImagesResponseDto,
-  LikeUpdateRequestDto,
   CommentCreateRequestDto,
   CommentDeleteRequestDto,
   CommentEditRequestDto,
   CommentDto,
   PreviewResult,
-  LikeUpdateResponseDto,
+  TeamVoteResponseDto,
 } from '@dto/projectViewerDto';
 import { TeamDetailDto } from '@dto/teams/teamsDto';
 
@@ -64,14 +63,21 @@ export const getPreviewImages = async (teamId: number, imageIds: number[]): Prom
   return { imageResults };
 };
 
-export const putLikeToggle = async (request: LikeUpdateRequestDto): Promise<LikeUpdateResponseDto> => {
-  const { teamId, isLiked } = request;
-  const response = await apiClient.put(`/teams/${teamId}/likes`, { isLiked });
+export const addLike = async (teamId: number): Promise<void> => {
+  await apiClient.put(`/teams/${teamId}/likes`);
+};
+
+export const removeLike = async (teamId: number): Promise<void> => {
+  await apiClient.delete(`/teams/${teamId}/likes`);
+};
+
+export const addVote = async (teamId: number): Promise<TeamVoteResponseDto> => {
+  const response = await apiClient.put(`/teams/${teamId}/votes`);
   return response.data;
 };
 
-export const putVoteToggle = async (teamId: number, isVoted: boolean) => {
-  const response = await apiClient.put(`/teams/${teamId}/votes`, { isVoted });
+export const removeVote = async (teamId: number): Promise<TeamVoteResponseDto> => {
+  const response = await apiClient.delete(`/teams/${teamId}/votes`);
   return response.data;
 };
 
