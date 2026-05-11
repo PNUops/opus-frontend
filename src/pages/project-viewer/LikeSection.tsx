@@ -5,7 +5,7 @@ import { FaHeart } from 'react-icons/fa';
 import { MdHowToVote } from 'react-icons/md';
 
 import { getMyContestVoteStatus } from '@apis/vote';
-import { putLikeToggle, putVoteToggle } from '@apis/projectViewer';
+import { addLike, removeLike, addVote, removeVote } from '@apis/projectViewer';
 import Backdrop from '@components/Backdrop';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import useAuth from '@hooks/useAuth';
@@ -67,7 +67,7 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
   }, [myContestVoteStatus]);
 
   const likeMutation = useMutation({
-    mutationFn: (nextIsLiked: boolean) => putLikeToggle({ teamId, isLiked: nextIsLiked }),
+    mutationFn: (nextIsLiked: boolean) => (nextIsLiked ? addLike(teamId) : removeLike(teamId)),
     onSuccess: (_, nextIsLiked) => {
       invalidateVoteLikeQueries();
       toast(nextIsLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
@@ -78,14 +78,11 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
   });
 
   const voteMutation = useMutation({
-    mutationFn: (nextIsVoted: boolean) => putVoteToggle(teamId, nextIsVoted),
-    onSuccess: (_, nextIsVoted) => {
+    mutationFn: (nextIsVoted: boolean) => (nextIsVoted ? addVote(teamId) : removeVote(teamId)),
+    onSuccess: (data, nextIsVoted) => {
       invalidateVoteLikeQueries();
       toast(nextIsVoted ? '투표를 완료했어요' : '투표를 취소했어요');
-
-      if (remainingVotesCount !== null && maxVotesLimit !== null) {
-        showVoteTooltip(remainingVotesCount + (nextIsVoted ? -1 : 1), maxVotesLimit);
-      }
+      showVoteTooltip(data.remainingVotesCount, data.maxVotesLimit);
     },
     onError: (err: any) => {
       toast(err.response?.data?.message ?? '요청에 실패했어요.', 'error');
