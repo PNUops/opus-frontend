@@ -1,6 +1,6 @@
 import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 import { SubmissionStatusResponseDto } from '@dto/teams/submissionStatusDto';
-import { PatchAwardRequestDto, GetTeamAwardsResponseDto } from '@dto/contestsDto';
+import { GetTeamAwardsResponseDto } from '@dto/contestsDto';
 import apiClient from './apiClient';
 import { API_BASE_URL } from '@constants/env';
 
@@ -37,17 +37,16 @@ export const deleteTeam = async (teamId: number) => {
 };
 
 export const getTeamAwards = async (teamId: number): Promise<GetTeamAwardsResponseDto> => {
-  const res = await apiClient.get(`admin/teams/${teamId}/awards`);
-  return res.data;
+  const res = await apiClient.get(`/admin/teams/${teamId}/awards`);
+  return res.data.awards;
 };
 
 export const deleteTeamAward = async (teamId: number) => {
-  const payload: PatchAwardRequestDto = { awardName: null, awardColor: null };
-  const res = await apiClient.patch(`admin/teams/${teamId}/awards`, payload);
+  const res = await apiClient.delete(`/admin/teams/${teamId}/awards`);
   return res.data;
 };
 
 export const updateTeamAward = async (teamId: number, awardIds: number[]) => {
-  const res = await apiClient.patch(`admin/teams/${teamId}/awards`, awardIds);
+  const res = await apiClient.put(`/admin/teams/${teamId}/awards`, { awardIds });
   return res.data;
 };
