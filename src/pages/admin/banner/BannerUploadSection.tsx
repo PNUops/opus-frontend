@@ -8,6 +8,7 @@ import { cn } from '@components/lib/utils';
 import { bannerOption } from '@queries/banner';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { AdminActionButton, AdminHeader } from '@components/admin';
+import { getApiErrorMessage } from '@utils/error';
 
 const BannerUploadSection = () => {
   const contestId = useContestIdOrRedirect();
@@ -94,8 +95,8 @@ const BannerUploadSection = () => {
         setNewBannerPreview(null);
         queryClient.resetQueries({ queryKey: bannerOption(contestId).queryKey });
       },
-      onError: (error: any) => {
-        toast(error.response?.data?.message || '배너 등록에 실패했습니다.', 'error');
+      onError: (error) => {
+        toast(getApiErrorMessage(error, '배너 등록에 실패했습니다.'), 'error');
       },
     });
   };

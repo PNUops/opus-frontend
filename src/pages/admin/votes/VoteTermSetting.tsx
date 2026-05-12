@@ -10,6 +10,7 @@ import { useContestIdOrRedirect } from '@hooks/useId';
 import { AdminActionButton, AdminHeader } from '@components/admin';
 import { voteTermOption } from '@queries/votes';
 import QueryWrapper from '@providers/QueryWrapper';
+import { getApiErrorMessage } from '@utils/error';
 
 const VoteTermSetting = () => {
   const contestId = useContestIdOrRedirect();
@@ -38,8 +39,8 @@ const VoteTermSetting = () => {
         await queryClient.invalidateQueries({ queryKey: voteTermOption(contestId).queryKey });
         toast('투표 기간을 수정했습니다.', 'success');
       },
-      onError: (error: any) => {
-        toast(error.response?.data?.message || '투표 기간 수정에 실패했습니다.', 'error');
+      onError: (error) => {
+        toast(getApiErrorMessage(error, '투표 기간 수정에 실패했습니다.'), 'error');
       },
     });
   };

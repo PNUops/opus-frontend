@@ -16,7 +16,9 @@ export const useImageBlob = <TQueryFnData, TError, TQueryKey extends QueryKey = 
       return () => {
         URL.revokeObjectURL(newUrl);
       };
-    } else setImageURL(null);
+    }
+
+    setImageURL(null);
   }, [query.data]);
 
   useEffect(() => {

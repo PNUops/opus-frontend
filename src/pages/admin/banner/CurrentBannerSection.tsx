@@ -7,6 +7,7 @@ import { bannerOption } from '@queries/banner';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import QueryWrapper from '@providers/QueryWrapper';
 import { AdminActionButton, AdminHeader } from '@components/admin';
+import { getApiErrorMessage } from '@utils/error';
 
 const CurrentBannerSection = () => {
   const contestId = useContestIdOrRedirect();
@@ -26,8 +27,8 @@ const CurrentBannerSection = () => {
         await queryClient.invalidateQueries({ queryKey: bannerOption(contestId).queryKey });
         toast('배너가 삭제되었습니다', 'success');
       },
-      onError: (error: any) => {
-        toast(error.response?.data?.message || '배너 삭제에 실패했습니다.', 'error');
+      onError: (error) => {
+        toast(getApiErrorMessage(error, '배너 삭제에 실패했습니다.'), 'error');
       },
     });
   };
