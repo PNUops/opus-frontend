@@ -10,9 +10,8 @@ import { useImageBlob } from '@hooks/useImageBlob';
 import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 import AltProfile from '@pages/me/account/components/AltProfile';
-import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from '@apis/member';
-import { patchPasswordReset } from '@apis/signIn';
-import { PasswordResetRequestDto } from '@dto/signInDto';
+import { updateProfileVisibility, patchMyStudentId, deleteMyAccount, patchMyPassword } from '@apis/member';
+import { PatchMyPasswordRequestDto } from '@dto/memberDto';
 import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from '@queries/member';
 import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from '@apis/me';
 import { createImageFormData, imageValidator } from '@utils/image';
@@ -571,17 +570,13 @@ const StudentIdEditSection = () => {
 };
 
 interface PasswordFormValues {
-  email: string;
+  currentPassword: string;
   newPassword: string;
   confirmPassword: string;
 }
 
-const getPasswordValidationError = ({ email, newPassword, confirmPassword }: PasswordFormValues) => {
-  if (!email) {
-    return '계정 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.';
-  }
-
-  if (!newPassword || !confirmPassword) {
+const getPasswordValidationError = ({ currentPassword, newPassword, confirmPassword }: PasswordFormValues) => {
+  if (!currentPassword || !newPassword || !confirmPassword) {
     return '모든 항목을 입력해주세요.';
   }
 
@@ -597,16 +592,15 @@ const getPasswordValidationError = ({ email, newPassword, confirmPassword }: Pas
 };
 
 const PasswordEditSection = () => {
-  const { data: profile } = useQuery(myAccountOption());
-  const email = profile?.email ?? '';
-
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
   const resetPasswordForm = () => {
+    setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
     setError('');
@@ -618,8 +612,8 @@ const PasswordEditSection = () => {
   };
 
   const { mutate: changePassword, isPending: isChangingPassword } = useMutation({
-    mutationFn: (request: PasswordResetRequestDto) => {
-      return patchPasswordReset(request);
+    mutationFn: (request: PatchMyPasswordRequestDto) => {
+      return patchMyPassword(request);
     },
     onSuccess: () => {
       toast('비밀번호가 성공적으로 변경되었어요.', 'success');
@@ -638,14 +632,14 @@ const PasswordEditSection = () => {
   };
 
   const handleSubmit = () => {
-    const validationError = getPasswordValidationError({ email, newPassword, confirmPassword });
+    const validationError = getPasswordValidationError({ currentPassword, newPassword, confirmPassword });
     if (validationError) {
       setError(validationError);
       return;
     }
 
     setError('');
-    changePassword({ email, newPassword });
+    changePassword({ password: currentPassword, newPassword });
   };
 
   return (
@@ -657,14 +651,30 @@ const PasswordEditSection = () => {
         </button>
         {isModalOpen && (
           <AccountModal title="비밀번호 변경" onClose={closeModal}>
-            <div className="flex flex-col gap-3">
+            <form
+              className="flex flex-col gap-3"
+              autoComplete="off"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
               <PasswordInput
+                name="account-current-password"
+                autoComplete="new-password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="현재 비밀번호"
+              />
+              <PasswordInput
+                name="account-new-password"
                 autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="새 비밀번호"
               />
               <PasswordInput
+                name="account-new-password-confirm"
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -672,14 +682,13 @@ const PasswordEditSection = () => {
               />
               {error && <div className="text-mainRed mt-1 text-xs">{error}</div>}
               <button
-                type="button"
+                type="submit"
                 className="bg-mainBlue disabled:bg-midGray mt-2 rounded-lg px-3 py-1.5 text-white"
-                onClick={handleSubmit}
                 disabled={isChangingPassword}
               >
                 {isChangingPassword ? <Spinner className="size-5" /> : '변경하기'}
               </button>
-            </div>
+            </form>
           </AccountModal>
         )}
       </MyPageSection.Body>

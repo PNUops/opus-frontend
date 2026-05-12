@@ -1,5 +1,10 @@
 import apiClient from './apiClient';
-import { GetMyProfileResponseDto, UpdateProfileVisibilityRequestDto, PatchMyStudentIdRequestDto } from '@dto/memberDto';
+import {
+  GetMyProfileResponseDto,
+  UpdateProfileVisibilityRequestDto,
+  PatchMyStudentIdRequestDto,
+  PatchMyPasswordRequestDto,
+} from '@dto/memberDto';
 
 export const deleteMyAccount = async () => {
   const res = await apiClient.delete('/members/me');
@@ -23,5 +28,10 @@ export const updateProfileVisibility = async (payload: UpdateProfileVisibilityRe
 
 export const patchMyStudentId = async (payload: PatchMyStudentIdRequestDto) => {
   const res = await apiClient.patch('/members/me/student-id', payload);
+  return res.data;
+};
+
+export const patchMyPassword = async (payload: PatchMyPasswordRequestDto): Promise<void> => {
+  const res = await apiClient.patch('/members/me/password-reset', payload);
   return res.data;
 };
