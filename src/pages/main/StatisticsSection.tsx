@@ -19,7 +19,7 @@ const StatisticsSection = () => {
         <Divider />
         <StatItem label="총 좋아요 수" value={data.totalLikes} />
         <Divider />
-        <StatItem label="총 가입자 수" value={0} />
+        <StatItem label="총 가입자 수" value={data.totalMembers} />
       </div>
     </section>
   );

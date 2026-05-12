@@ -1,4 +1,5 @@
 export interface MainStatsDto {
+  totalMembers: number;
   totalProjects: number;
   totalLikes: number;
   totalContests: number;
