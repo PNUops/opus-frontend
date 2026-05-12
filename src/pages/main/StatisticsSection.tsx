@@ -8,16 +8,18 @@ const StatisticsSection = () => {
   });
 
   return (
-    <section className="flex flex-col gap-10 rounded-2xl p-12.5 shadow-lg">
+    <section className="flex flex-col gap-10 rounded-2xl p-8 shadow-lg md:p-12.5">
       <div className="text-center text-xl font-semibold">
         부산대학교 SW 프로젝트 관리 시스템은 이렇게 성장하고 있어요 🚀
       </div>
       <div className="flex w-full flex-col justify-around gap-8 sm:flex-row sm:gap-0">
-        <StatItem label="진행된 대회 수" value={data.totalContests} />
+        <StatItem label="전체 대회 수" value={`${data.totalContests}개`} />
         <Divider />
-        <StatItem label="프로젝트 등록 수" value={data.totalProjects} />
+        <StatItem label="프로젝트 등록 수" value={`${data.totalProjects}개`} />
         <Divider />
-        <StatItem label="총 좋아요 수" value={data.totalLikes} />
+        <StatItem label="총 좋아요 수" value={`${data.totalLikes}개`} />
+        <Divider />
+        <StatItem label="총 가입자 수" value={`${data.totalMembers}명`} />
       </div>
     </section>
   );
@@ -25,9 +27,9 @@ const StatisticsSection = () => {
 
 export default StatisticsSection;
 
-const StatItem = ({ label, value }: { label: string; value: number }) => (
+const StatItem = ({ label, value }: { label: string; value: string }) => (
   <div className="bg--color-subGreen flex flex-1 flex-col items-center justify-center gap-2 text-center">
-    <span className="text-2xl font-bold sm:text-3xl">{`${value.toLocaleString()}개`}</span>
+    <span className="text-2xl font-bold sm:text-3xl">{`${value.toLocaleString()}`}</span>
     <span className="text-midGray text-sm font-medium">{label}</span>
   </div>
 );
