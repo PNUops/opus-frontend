@@ -6,9 +6,8 @@ import { useToast } from '@hooks/useToast';
 import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 import AltProfile from '@pages/me/account/components/AltProfile';
-import { updateProfileVisibility, patchMyStudentId, deleteMyAccount } from '@apis/member';
-import { patchPasswordReset } from '@apis/signIn';
-import { PasswordResetRequestDto } from '@dto/signInDto';
+import { updateProfileVisibility, patchMyStudentId, deleteMyAccount, patchMyPassword } from '@apis/member';
+import { PatchMyPasswordRequestDto } from '@dto/memberDto';
 import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from '@queries/member';
 import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from '@apis/me';
 import { MdEdit } from 'react-icons/md';
@@ -429,23 +428,27 @@ const StudentIdEditSection = () => {
 };
 
 const PasswordEditSection = () => {
-  const { data: profile } = useQuery(myAccountOption());
-  const email = profile?.email ?? '';
-
   const toast = useToast();
   const [open, setOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  const { mutate } = useMutation({
-    mutationFn: (request: PasswordResetRequestDto) => {
-      return patchPasswordReset(request);
+  const resetPasswordForm = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setError('');
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (request: PatchMyPasswordRequestDto) => {
+      return patchMyPassword(request);
     },
     onSuccess: () => {
-      setError('');
-      setNewPassword('');
-      setConfirmPassword('');
+      resetPasswordForm();
+      setOpen(false);
       toast('비밀번호가 성공적으로 변경되었어요.', 'success');
     },
     onError: (err) => {
@@ -456,20 +459,14 @@ const PasswordEditSection = () => {
 
   const handleOpen = () => {
     setOpen(true);
-    setNewPassword('');
-    setConfirmPassword('');
-    setError('');
+    resetPasswordForm();
   };
   const handleClose = () => {
     setOpen(false);
+    resetPasswordForm();
   };
   const handleSubmit = () => {
-    console.log('submit', { newPassword, confirmPassword });
-    if (!email) {
-      setError('계정 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.');
-      return;
-    }
-    if (!newPassword || !confirmPassword) {
+    if (!currentPassword || !newPassword || !confirmPassword) {
       setError('모든 항목을 입력해주세요.');
       return;
     }
@@ -482,9 +479,8 @@ const PasswordEditSection = () => {
       return;
     }
 
-    mutate({ email, newPassword });
+    mutate({ password: currentPassword, newPassword });
     setError('');
-    setOpen(false);
   };
 
   return (
@@ -505,24 +501,44 @@ const PasswordEditSection = () => {
                 ×
               </button>
               <h3 className="mb-4 text-center text-lg font-semibold">비밀번호 변경</h3>
-              <div className="flex flex-col gap-3">
+              <form
+                className="flex flex-col gap-3"
+                autoComplete="off"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+              >
                 <PasswordInput
+                  name="account-current-password"
+                  autoComplete="new-password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="현재 비밀번호"
+                />
+                <PasswordInput
+                  name="account-new-password"
                   autoComplete="new-password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="새 비밀번호"
                 />
                 <PasswordInput
+                  name="account-new-password-confirm"
                   autoComplete="new-password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="비밀번호 확인"
                 />
                 {error && <div className="text-mainRed mt-1 text-xs">{error}</div>}
-                <button className="bg-mainBlue mt-2 rounded-lg px-3 py-1.5 text-white" onClick={handleSubmit}>
-                  변경하기
+                <button
+                  type="submit"
+                  className="bg-mainBlue mt-2 rounded-lg px-3 py-1.5 text-white disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isPending}
+                >
+                  {isPending ? '변경 중...' : '변경하기'}
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         )}

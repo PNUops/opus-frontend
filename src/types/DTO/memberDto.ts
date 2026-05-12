@@ -13,3 +13,8 @@ export interface UpdateProfileVisibilityRequestDto {
 export interface PatchMyStudentIdRequestDto {
   studentId: string;
 }
+
+export interface PatchMyPasswordRequestDto {
+  password: string;
+  newPassword: string;
+}
