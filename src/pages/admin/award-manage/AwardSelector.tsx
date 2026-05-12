@@ -8,6 +8,7 @@ import { AwardDto, ContestAwardDto, TeamAwardDto } from '@dto/awardsDto';
 import { AWRD_PALETTE } from '@constants/palette';
 import useDebounce from '@hooks/useDebounce';
 import { useToast } from '@hooks/useToast';
+import { getApiErrorMessage } from '@utils/error';
 
 interface AwardSelectorProps {
   contestId: number;
@@ -48,8 +49,8 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
     onSuccess: () => {
       invalidateAwardQueries();
     },
-    onError: (error: any) => {
-      toast(error.response?.data?.message || '팀 수상 수정에 실패했습니다.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '팀 수상 수정에 실패했습니다.'), 'error');
     },
   });
 
@@ -61,8 +62,8 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
       setNewAwardName('');
       toast('새 상훈을 추가했습니다.');
     },
-    onError: (error: any) => {
-      toast(error.response?.data?.message || '상훈 추가에 실패했습니다.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '상훈 추가에 실패했습니다.'), 'error');
     },
   });
 
@@ -72,8 +73,8 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
       invalidateAwardQueries();
       toast('상훈을 삭제했습니다.');
     },
-    onError: (error: any) => {
-      toast(error.response?.data?.message || '상훈 삭제에 실패했습니다.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '상훈 삭제에 실패했습니다.'), 'error');
     },
   });
 

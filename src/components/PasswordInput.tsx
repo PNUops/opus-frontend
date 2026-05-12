@@ -11,7 +11,7 @@ const PasswordInput = ({ value, ...rest }: Props) => {
 
   return (
     <div className="relative w-full">
-      <Input type={showPassword ? 'text' : 'password'} placeholder="비밀번호" {...rest} />
+      <Input type={showPassword ? 'text' : 'password'} placeholder="비밀번호" value={value} {...rest} />
       <button
         type="button"
         onClick={() => setShowPassword(!showPassword)}

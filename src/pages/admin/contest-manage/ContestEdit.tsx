@@ -9,6 +9,7 @@ import { ContestRequestDto } from '@dto/contestsDto';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import QueryWrapper from '@providers/QueryWrapper';
 import { AdminActionButton } from '@components/admin';
+import { getApiErrorMessage } from '@utils/error';
 
 const ContestEdit = () => {
   const contestId = useContestIdOrRedirect();
@@ -42,8 +43,8 @@ const ContestEdit = () => {
           await queryClient.invalidateQueries({ queryKey: ['contests'] });
           toast('대회가 수정되었습니다.', 'success');
         },
-        onError: (error: any) => {
-          toast(error.response?.data?.message || '대회 수정에 실패했습니다.', 'error');
+        onError: (error) => {
+          toast(getApiErrorMessage(error, '대회 수정에 실패했습니다.'), 'error');
         },
       },
     );

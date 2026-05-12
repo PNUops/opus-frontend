@@ -10,6 +10,7 @@ import { useToast } from '@hooks/useToast';
 
 import Divider from './SocialSignIn/Divider';
 import GoogleSignInButton from './SocialSignIn/GoogleSignInButton';
+import { getApiErrorMessage } from '@utils/error';
 
 const SignInForm = () => {
   const [email, setEmail] = useState('');
@@ -26,8 +27,8 @@ const SignInForm = () => {
       queryClient.invalidateQueries({ queryKey: ['teams'] });
       navigate('/');
     },
-    onError: (error: any) => {
-      toast(error.response.data.message || '로그인에 실패했어요.', 'error');
+    onError: (error) => {
+      toast(getApiErrorMessage(error, '로그인에 실패했어요.'), 'error');
     },
   });
 

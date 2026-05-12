@@ -11,7 +11,6 @@ import ProjectDetailSection from './ProjectDetailSection';
 import GithubCard from './MediaSection/GithubCard';
 import CommentSection from './CommentSection/CommentSection';
 
-import { useIsVoteTerm } from '@hooks/useVoteTerm';
 import { teamDetailOption } from '@queries/team';
 import { getPoster, PosterResult } from '@apis/projectEditor';
 import { getRequiredFields } from '@apis/requiredFields';
@@ -51,7 +50,6 @@ const ProjectDetailPage = () => {
     enabled: !!data?.contestId,
   });
 
-  const { isVoteTerm } = useIsVoteTerm(data?.contestId);
   const requiredFields = requiredFieldsData ?? defaultRequiredFields;
   const isEditorOfThisTeam = data ? canEditTeamPage(memberId ?? -1, data.teamMembers, isAdmin) : false;
   const posterUrl = posterResult?.status === 'success' ? posterResult.url : null;
@@ -124,9 +122,7 @@ const ProjectDetailPage = () => {
         imagesRequired={requiredFields.imagesRequired}
       />
       <div className="h-10" />
-      {isVoteTerm ? (
-        <LikeSection contestId={data.contestId} teamId={data.teamId} isLiked={data.isLiked} isVoted={data.isVoted} />
-      ) : null}
+      <LikeSection contestId={data.contestId} teamId={data.teamId} isLiked={data.isLiked} isVoted={data.isVoted} />
       <div className="h-10" />
       <ProjectDetailSection data={data} />
       <div className="h-10" />

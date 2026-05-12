@@ -46,39 +46,15 @@ export const patchMyProfileImage = async (formData: FormData) => {
   return res.data;
 };
 
-type ProfileResult =
-  | { id?: number; status: 'success'; url: string }
-  | { status: 'processing'; code: 'PROCESSING' }
-  | { status: 'error'; code: 'NOTFOUND' | 'ERR_ETC' };
-
-export const getMyProfileImage = async (): Promise<ProfileResult> => {
+export const getMyProfileImage = async (): Promise<Blob | null> => {
   try {
     const res = await apiClient.get('/members/me/images/profile', {
       responseType: 'blob',
-      validateStatus: (status) => [200, 202, 404].includes(status),
     });
 
-    if (res.status === 200) {
-      const blobUrl = URL.createObjectURL(res.data);
-      return {
-        status: 'success',
-        url: blobUrl,
-      };
-    }
-
-    if (res.status === 202) {
-      return {
-        status: 'processing',
-        code: 'PROCESSING',
-      };
-    }
-
-    return {
-      status: 'error',
-      code: 'NOTFOUND',
-    };
+    return res.data;
   } catch {
-    return { status: 'error', code: 'ERR_ETC' };
+    return null;
   }
 };
 
