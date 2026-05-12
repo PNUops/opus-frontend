@@ -9,6 +9,7 @@ import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import QueryWrapper from '@providers/QueryWrapper';
 import VoteLimitSelector from './VoteLimitSelector';
+import { getApiErrorMessage } from '@utils/error';
 
 const MaxVoteLimitSetting = () => {
   const contestId = useContestIdOrRedirect();
@@ -33,8 +34,8 @@ const MaxVoteLimitSetting = () => {
           await queryClient.invalidateQueries({ queryKey: ['maxVotesLimit', contestId] });
           toast('투표권 수를 수정했습니다.', 'success');
         },
-        onError: (error: any) => {
-          toast(error.response?.data?.message || '투표권 수 수정에 실패했습니다.', 'error');
+        onError: (error) => {
+          toast(getApiErrorMessage(error, '투표권 수 수정에 실패했습니다.'), 'error');
         },
       },
     );

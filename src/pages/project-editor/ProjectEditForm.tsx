@@ -178,7 +178,7 @@ const BasicInfoSection = ({ isAdmin, formState, setContestId, setField, required
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-10">
         <div className="text-midGray flex w-25 gap-1">
           <span className={`mr-1 ${requiredFields.trackRequired ? 'text-red-500' : 'text-transparent'}`}>*</span>
-          <span className="w-full">트랙</span>
+          <span className="w-full">분과</span>
         </div>
         <div className="flex flex-1 flex-col">
           <CategoryMenu

@@ -8,6 +8,7 @@ import useContestName from '@hooks/useContestName';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { Dialog } from '@components/ui/dialog';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
+import { getApiErrorMessage } from '@utils/error';
 
 const ContestDelete = () => {
   const contestId = useContestIdOrRedirect();
@@ -30,8 +31,8 @@ const ContestDelete = () => {
           toast('대회가 삭제되었습니다.', 'success');
           navigate('/admin');
         },
-        onError: (error: any) => {
-          toast(error.response?.data?.message || '대회 삭제에 실패했습니다.', 'error');
+        onError: (error) => {
+          toast(getApiErrorMessage(error, '대회 삭제에 실패했습니다.'), 'error');
         },
       },
     );
