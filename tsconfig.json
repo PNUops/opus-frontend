@@ -18,5 +18,6 @@
     "jsx": "react-jsx",
     "incremental": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/mocks", "src/mocks/**/*"]
 }
