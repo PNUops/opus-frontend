@@ -2,6 +2,7 @@ import { MainStatsDto, VoteLogItemDto, VoteRankingDto, VoteStatsDto } from '@dto
 import { PaginationResponseDto } from '@dto/commonDto';
 
 export const mockMainStats: MainStatsDto = {
+  totalMembers: 2500,
   totalProjects: 1250,
   totalLikes: 45800,
   totalContests: 42,
