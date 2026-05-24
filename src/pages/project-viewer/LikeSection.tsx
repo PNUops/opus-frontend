@@ -124,9 +124,9 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
   };
 
   return (
-    <VoteAbuseToolTip>
-      <div className="flex items-center justify-center gap-3">
-        {isVoteTerm ? (
+    <div className="flex items-center justify-center gap-3">
+      {isVoteTerm ? (
+        <VoteAbuseToolTip>
           <VoteCountToolTip
             isOpen={showVoteCountTooltip}
             remainingVotesCount={remainingVotesCount}
@@ -145,20 +145,20 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
               <span className="hidden sm:inline">투표</span>
             </button>
           </VoteCountToolTip>
-        ) : (
-          <button
-            onClick={handleLikeClick}
-            disabled={likeMutation.isPending}
-            className={`${
-              likedState ? 'bg-mainGreen text-white hover:bg-emerald-600' : 'bg-lightGray text-white hover:bg-gray-300'
-            } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
-          >
-            <FaHeart className={`${likedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
-            <span className="hidden sm:inline">좋아요</span>
-          </button>
-        )}
-      </div>
-    </VoteAbuseToolTip>
+        </VoteAbuseToolTip>
+      ) : (
+        <button
+          onClick={handleLikeClick}
+          disabled={likeMutation.isPending}
+          className={`${
+            likedState ? 'bg-mainGreen text-white hover:bg-emerald-600' : 'bg-lightGray text-white hover:bg-gray-300'
+          } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
+        >
+          <FaHeart className={`${likedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
+          <span className="hidden sm:inline">좋아요</span>
+        </button>
+      )}
+    </div>
   );
 };
 
