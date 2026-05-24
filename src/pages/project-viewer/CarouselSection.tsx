@@ -256,10 +256,6 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequi
   const rawImages = useMemo(() => {
     const images: MediaType[] = [];
 
-    if (thumbnailResult) {
-      images.push(thumbnailResult);
-    }
-
     if (embedUrl) {
       images.push('youtube');
     }
@@ -277,7 +273,7 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequi
     }
 
     return images;
-  }, [embedUrl, previewData, thumbnailResult]);
+  }, [embedUrl, previewData]);
 
   const visibleImages = useMemo(() => {
     return rawImages.filter((media): media is Exclude<MediaType, null> => {
