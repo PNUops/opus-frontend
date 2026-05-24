@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { FiX } from 'react-icons/fi';
 import { useToast } from '@hooks/useToast';
+import { useImageObjectUrl } from '@hooks/useImageBlob';
 import { postBanner } from '@apis/banner';
 import { cn } from '@components/lib/utils';
 import { bannerOption } from '@queries/banner';
@@ -15,7 +16,7 @@ const BannerUploadSection = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [newBannerFile, setNewBannerFile] = useState<File | null>(null);
-  const [newBannerPreview, setNewBannerPreview] = useState<string | null>(null);
+  const newBannerPreview = useImageObjectUrl(newBannerFile);
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -23,12 +24,6 @@ const BannerUploadSection = () => {
     mutationKey: ['bannerUpload'],
     mutationFn: (formData: FormData) => postBanner(contestId, formData),
   });
-
-  useEffect(() => {
-    return () => {
-      if (newBannerPreview) URL.revokeObjectURL(newBannerPreview);
-    };
-  }, [newBannerPreview]);
 
   const setFileAndPreview = (file?: File) => {
     if (!file) return;
@@ -45,7 +40,6 @@ const BannerUploadSection = () => {
     }
 
     setNewBannerFile(file);
-    setNewBannerPreview(URL.createObjectURL(file));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +72,6 @@ const BannerUploadSection = () => {
   const handleRemoveFile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setNewBannerFile(null);
-    setNewBannerPreview(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -92,7 +85,6 @@ const BannerUploadSection = () => {
     uploadMutation.mutate(formData, {
       onSuccess: () => {
         setNewBannerFile(null);
-        setNewBannerPreview(null);
         queryClient.resetQueries({ queryKey: bannerOption(contestId).queryKey });
       },
       onError: (error) => {
