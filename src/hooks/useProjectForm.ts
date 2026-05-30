@@ -4,10 +4,12 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import useAuth from '@hooks/useAuth';
 import { useContestIdOrRedirect, useTeamId } from '@hooks/useId';
+import { teamThumbnailQueryKey } from '@hooks/useTeamThumbnail';
 import { useToast } from '@hooks/useToast';
 import { useProjectEditorMode } from '@pages/project-editor/useProjectEditorMode';
 
 import { teamDetailOption } from '@queries/team';
+import { invalidateMyActivityQueries } from '@queries/me';
 import { getRequiredFields } from '@apis/requiredFields';
 import { getPreviewImages } from '@apis/projectViewer';
 import {
@@ -280,7 +282,7 @@ export const useProjectForm = () => {
   const requiredFields = requiredFieldsData ?? defaultRequiredFields;
 
   const { data: thumbnailResult } = useQuery<ThumbnailResult>({
-    queryKey: ['thumbnail', teamId],
+    queryKey: teamThumbnailQueryKey(teamId),
     queryFn: async () => {
       if (teamId === null) throw new Error('teamId is null');
       return getThumbnail(teamId);
@@ -576,9 +578,10 @@ export const useProjectForm = () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['contests'] }),
         queryClient.invalidateQueries({ queryKey: ['poster', teamId] }),
-        queryClient.invalidateQueries({ queryKey: ['thumbnail', teamId] }),
+        queryClient.invalidateQueries({ queryKey: teamThumbnailQueryKey(teamId) }),
         queryClient.invalidateQueries({ queryKey: ['previewImages', teamId] }),
-        queryClient.invalidateQueries({ queryKey: ['projectDetails', teamId] }),
+        queryClient.invalidateQueries({ queryKey: teamDetailOption(teamId).queryKey }),
+        invalidateMyActivityQueries(queryClient),
       ]);
 
       toast('수정이 완료되었어요', 'success');
@@ -630,12 +633,18 @@ export const useProjectForm = () => {
 
       await syncImages(createdTeamId);
 
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['contests'] }),
+        queryClient.invalidateQueries({ queryKey: teamThumbnailQueryKey(createdTeamId) }),
+        invalidateMyActivityQueries(queryClient),
+      ]);
+
       toast('생성이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${createdTeamId}`);
     } catch (error: any) {
       toast(getApiErrorMessage(error, '프로젝트 생성에 실패했어요.'), 'error');
     }
-  }, [validateInputs, toast, formState, syncImages, navigate, contestId]);
+  }, [validateInputs, toast, formState, syncImages, queryClient, navigate, contestId]);
 
   const handleSave = useCallback(async () => {
     if (isSaved) return;

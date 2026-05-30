@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import useAuth from '@hooks/useAuth';
 import { useToast } from '@hooks/useToast';
 import { useIsVoteTerm } from '@hooks/useVoteTerm';
+import { invalidateMyLikeActivityQueries, invalidateMyVoteActivityQueries } from '@queries/me';
 import { getApiErrorMessage } from '@utils/error';
 
 interface LikeSectionProps {
@@ -71,6 +72,7 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
     mutationFn: (nextIsLiked: boolean) => (nextIsLiked ? addLike(teamId) : removeLike(teamId)),
     onSuccess: (_, nextIsLiked) => {
       invalidateVoteLikeQueries();
+      invalidateMyLikeActivityQueries(queryClient);
       toast(nextIsLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
     },
     onError: (err) => {
@@ -82,6 +84,7 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
     mutationFn: (nextIsVoted: boolean) => (nextIsVoted ? addVote(teamId) : removeVote(teamId)),
     onSuccess: (data, nextIsVoted) => {
       invalidateVoteLikeQueries();
+      invalidateMyVoteActivityQueries(queryClient);
       toast(nextIsVoted ? '투표를 완료했어요' : '투표를 취소했어요');
       showVoteTooltip(data.remainingVotesCount, data.maxVotesLimit);
     },

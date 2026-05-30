@@ -16,6 +16,7 @@ import {
 import { getColorClassForLabel } from '@utils/color';
 import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
+import { invalidateMyActivityQueries } from '@queries/me';
 
 const ProjectManagePage = () => {
   const queryClient = useQueryClient();
@@ -39,6 +40,7 @@ const ProjectManagePage = () => {
     mutationFn: (teamId: number) => deleteTeam(teamId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects', contestId] });
+      invalidateMyActivityQueries(queryClient);
     },
     onError: () => toast('팀 삭제에 실패했어요', 'error'),
   });

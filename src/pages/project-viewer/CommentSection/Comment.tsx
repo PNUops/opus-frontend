@@ -8,6 +8,7 @@ import { deleteComment, editComment } from '@apis/projectViewer';
 import { useToast } from '@hooks/useToast';
 import { useTeamId } from '@hooks/useId';
 import useAuth from '@hooks/useAuth';
+import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
 
 interface CommentProps {
   comment: CommentDto;
@@ -41,6 +42,7 @@ const Comment = ({ comment }: CommentProps) => {
     mutationFn: (request: CommentDeleteRequestDto) => deleteComment(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
+      queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 삭제되었어요.');
       setShowConfirm(false);
     },
@@ -52,6 +54,7 @@ const Comment = ({ comment }: CommentProps) => {
     onSuccess: () => {
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
+      queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 편집되었어요.');
     },
     onError: () => toast('댓글 편집에 실패했어요.'),

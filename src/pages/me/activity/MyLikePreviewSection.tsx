@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyLikesPreview } from '@apis/me';
+import { MY_LIKES_PREVIEW_QUERY_KEY } from '@queries/me';
 import type { GetMyLikesPreviewResponseDto } from '@dto/meDto';
 import { RiHeart3Line } from 'react-icons/ri';
 import { FaChevronRight } from 'react-icons/fa6';
@@ -29,7 +30,7 @@ export default MyLikePreviewSection;
 
 const MyLikeList = () => {
   const { data: myLikesPreview } = useQuery<GetMyLikesPreviewResponseDto>({
-    queryKey: ['myLikesPreview'],
+    queryKey: MY_LIKES_PREVIEW_QUERY_KEY,
     queryFn: getMyLikesPreview,
     staleTime: 5 * 60 * 1000,
   });
@@ -40,9 +41,8 @@ const MyLikeList = () => {
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {myLikesPreview?.map((like) => (
-        <div className="box-border flex h-full max-w-[260px] min-w-[220px] sm:max-w-65 sm:min-w-55">
+        <div key={like.teamId} className="box-border flex h-full max-w-[260px] min-w-[220px] sm:max-w-65 sm:min-w-55">
           <TeamCard
-            key={like.teamId}
             contestId={like.contestId}
             teamId={like.teamId}
             teamName={like.teamName}
