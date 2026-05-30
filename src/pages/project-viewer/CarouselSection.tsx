@@ -7,6 +7,7 @@ import { getPreviewImages } from '@apis/projectViewer';
 import Spinner from '@components/Spinner';
 import DefaultImage from '@assets/basicThumbnail.jpg';
 import { PreviewImagesResponseDto, PreviewResult } from '@dto/projectViewerDto';
+import { teamThumbnailQueryKey } from '@hooks/useTeamThumbnail';
 import { useToast } from '@hooks/useToast';
 
 import { FaSadTear } from 'react-icons/fa';
@@ -198,7 +199,7 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequi
   const imageNotFoundToast = useRef(false);
 
   const { data: thumbnailResult } = useQuery<ThumbnailResult>({
-    queryKey: ['thumbnail', teamId],
+    queryKey: teamThumbnailQueryKey(teamId),
     queryFn: () => getThumbnail(teamId),
     refetchInterval: (query) => (query.state.data?.status === 'processing' ? 1500 : false),
   });
