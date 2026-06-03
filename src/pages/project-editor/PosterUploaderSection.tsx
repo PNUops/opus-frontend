@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react';
 import { FiX } from 'react-icons/fi';
 import { MdBrokenImage, MdOutlineFileUpload } from 'react-icons/md';
 import { CgSandClock } from 'react-icons/cg';
 import { HiInformationCircle } from 'react-icons/hi';
 
 import { PosterResult } from '@apis/projectEditor';
+import { useImageObjectUrl } from '@hooks/useImageBlob';
 import { useToast } from '@hooks/useToast';
 import { imageValidator } from '@utils/image';
 
@@ -22,21 +22,8 @@ const PosterUploaderSection = ({
   required = false,
 }: PosterUploaderSectionProps) => {
   const toast = useToast();
-
-  const posterUrl = useMemo(() => {
-    if (!poster) return '';
-    if (poster instanceof File) return URL.createObjectURL(poster);
-    if (poster.status === 'success') return poster.url;
-    return '';
-  }, [poster]);
-
-  useEffect(() => {
-    return () => {
-      if (posterUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(posterUrl);
-      }
-    };
-  }, [posterUrl]);
+  const posterFileUrl = useImageObjectUrl(poster instanceof File ? poster : null);
+  const posterUrl = poster instanceof File ? (posterFileUrl ?? '') : poster?.status === 'success' ? poster.url : '';
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
