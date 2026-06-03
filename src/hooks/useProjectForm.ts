@@ -16,8 +16,10 @@ import {
   deleteMember,
   deletePreview,
   deleteThumbnail,
+  getPreviewBlob,
   getPoster,
   getThumbnail,
+  getThumbnailBlob,
   patchTeamDetail,
   postMember,
   postPoster,
@@ -55,8 +57,10 @@ interface ProjectImageState {
   posterToDelete: boolean;
   thumbnail: ThumbnailResult | File | undefined;
   thumbnailToDelete: boolean;
+  thumbnailDirty: boolean;
   previews: (PreviewResult | File)[];
   previewsToDelete: number[];
+  previewsDirty: boolean;
 }
 
 type ProjectFormAction =
@@ -78,7 +82,8 @@ type ProjectImageAction =
   | { type: 'SET_PREVIEWS'; payload: (PreviewResult | File)[] }
   | { type: 'SET_PREVIEWS_FROM_QUERY'; payload: PreviewResult[] }
   | { type: 'ADD_PREVIEWS_FILES'; payload: File[] }
-  | { type: 'MARK_PREVIEW_FOR_DELETE'; payload: number };
+  | { type: 'MARK_PREVIEW_FOR_DELETE'; payload: number }
+  | { type: 'RESET_IMAGES_AFTER_SAVE' };
 
 type TeamMemberRoleType = Extract<MemberType, 'ROLE_팀장' | 'ROLE_팀원'>;
 
@@ -152,6 +157,17 @@ const projectFormReducer = (state: ProjectFormState, action: ProjectFormAction):
   }
 };
 
+const createInitialProjectImageState = (): ProjectImageState => ({
+  poster: undefined,
+  posterToDelete: false,
+  thumbnail: undefined,
+  thumbnailToDelete: false,
+  thumbnailDirty: false,
+  previews: [],
+  previewsToDelete: [],
+  previewsDirty: false,
+});
+
 const projectImageReducer = (state: ProjectImageState, action: ProjectImageAction): ProjectImageState => {
   switch (action.type) {
     case 'SET_POSTER':
@@ -163,24 +179,32 @@ const projectImageReducer = (state: ProjectImageState, action: ProjectImageActio
     case 'MARK_POSTER_FOR_DELETE':
       return { ...state, posterToDelete: true, poster: undefined };
     case 'SET_THUMBNAIL':
-      return { ...state, thumbnail: action.payload };
+      return {
+        ...state,
+        thumbnail: action.payload,
+        thumbnailToDelete: action.payload ? false : state.thumbnailToDelete,
+        thumbnailDirty: true,
+      };
     case 'SET_THUMBNAIL_FROM_QUERY':
+      if (state.thumbnailDirty) return state;
       return { ...state, thumbnail: action.payload, thumbnailToDelete: false };
     case 'SET_THUMBNAIL_FILE':
-      return { ...state, thumbnail: action.payload, thumbnailToDelete: false };
+      return { ...state, thumbnail: action.payload, thumbnailToDelete: false, thumbnailDirty: true };
     case 'MARK_THUMBNAIL_FOR_DELETE':
-      return { ...state, thumbnailToDelete: true, thumbnail: undefined };
+      return { ...state, thumbnailToDelete: true, thumbnail: undefined, thumbnailDirty: true };
     case 'SET_PREVIEWS':
-      return { ...state, previews: action.payload };
+      return { ...state, previews: action.payload, previewsDirty: true };
     case 'SET_PREVIEWS_FROM_QUERY':
+      if (state.previewsDirty) return state;
       return { ...state, previews: action.payload };
     case 'ADD_PREVIEWS_FILES':
-      return { ...state, previews: [...state.previews, ...action.payload] };
+      return { ...state, previews: [...state.previews, ...action.payload], previewsDirty: true };
     case 'MARK_PREVIEW_FOR_DELETE': {
       const id = action.payload;
       return {
         ...state,
         previewsToDelete: [...state.previewsToDelete, id],
+        previewsDirty: true,
         previews: state.previews.filter((preview) => {
           if (preview instanceof File) return true;
           if (preview.status !== 'success') return true;
@@ -188,6 +212,8 @@ const projectImageReducer = (state: ProjectImageState, action: ProjectImageActio
         }),
       };
     }
+    case 'RESET_IMAGES_AFTER_SAVE':
+      return createInitialProjectImageState();
     default:
       return state;
   }
@@ -223,6 +249,30 @@ const buildProjectPayload = (
   };
 };
 
+type ProjectImageOrderItem = ThumbnailResult | PreviewResult | File | undefined;
+
+const getPreviewId = (image: ProjectImageOrderItem): number | null => {
+  if (!image || image instanceof File) return null;
+  if (image.status !== 'success') return null;
+  if ('id' in image && typeof image.id === 'number') return image.id;
+  return null;
+};
+
+const getImageOrderKey = (image: ProjectImageOrderItem) => {
+  if (!image) return 'empty';
+  if (image instanceof File) return `file:${image.name}:${image.size}:${image.lastModified}`;
+
+  if (image.status === 'success') {
+    const previewId = getPreviewId(image);
+    return previewId !== null ? `preview:${previewId}` : `thumbnail:${image.url}`;
+  }
+
+  return `${image.status}:${image.code}`;
+};
+
+const getImageOrderSignature = (thumbnail: ThumbnailResult | File | undefined, previews: (PreviewResult | File)[]) =>
+  [getImageOrderKey(thumbnail), ...previews.map(getImageOrderKey)].join('|');
+
 export const useProjectForm = () => {
   const { user, isAdmin } = useAuth();
   const memberId = user?.id ?? null;
@@ -248,14 +298,7 @@ export const useProjectForm = () => {
     overview: '',
   });
 
-  const [imageState, dispatchImage] = useReducer(projectImageReducer, {
-    poster: undefined,
-    posterToDelete: false,
-    thumbnail: undefined,
-    thumbnailToDelete: false,
-    previews: [],
-    previewsToDelete: [],
-  });
+  const [imageState, dispatchImage] = useReducer(projectImageReducer, createInitialProjectImageState());
 
   const {
     data: projectData,
@@ -313,6 +356,34 @@ export const useProjectForm = () => {
     },
   });
 
+  const originalImageOrderSignature = useMemo(() => {
+    if (!projectData || !thumbnailResult) return null;
+    if (stablePreviewIds.length > 0 && !previewData?.imageResults) return null;
+
+    const originalThumbnail = thumbnailResult.status === 'error' ? undefined : thumbnailResult;
+    return getImageOrderSignature(originalThumbnail, previewData?.imageResults ?? []);
+  }, [projectData, previewData?.imageResults, stablePreviewIds.length, thumbnailResult]);
+
+  const originalPreviewOrderSignature = useMemo(() => {
+    if (!projectData) return null;
+    if (stablePreviewIds.length > 0 && !previewData?.imageResults) return null;
+    return (previewData?.imageResults ?? []).map(getImageOrderKey).join('|');
+  }, [projectData, previewData?.imageResults, stablePreviewIds.length]);
+
+  const currentImageOrderSignature = useMemo(
+    () => getImageOrderSignature(imageState.thumbnail, imageState.previews),
+    [imageState.thumbnail, imageState.previews],
+  );
+  const currentPreviewOrderSignature = useMemo(
+    () => imageState.previews.map(getImageOrderKey).join('|'),
+    [imageState.previews],
+  );
+
+  const imageOrderChanged =
+    originalImageOrderSignature !== null && currentImageOrderSignature !== originalImageOrderSignature;
+  const previewOrderChanged =
+    originalPreviewOrderSignature !== null && currentPreviewOrderSignature !== originalPreviewOrderSignature;
+
   useEffect(() => {
     if (isEditMode && teamId === null) {
       navigate('/', { replace: true });
@@ -344,6 +415,7 @@ export const useProjectForm = () => {
   }, [previewData]);
 
   const isEditorOfThisTeam = canEditTeamPage(memberId ?? -1, projectData?.teamMembers ?? [], isAdmin);
+  const canSortImages = isCreateMode || isEditorOfThisTeam;
   const missingContestForCreate = isCreateMode && !formState.contestId;
   const missingTeamForEdit = isEditMode && !teamId;
   const isEmpty = (value?: string | null) => !value || value.trim() === '';
@@ -533,30 +605,98 @@ export const useProjectForm = () => {
         await postPoster(currentTeamId, formData);
       }
 
-      if (imageState.thumbnailToDelete) {
-        const response = await deleteThumbnail(currentTeamId);
-        if (response.status === 202) toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
-      }
+      const previousPreviewIds = projectData?.previewIds ?? [];
+      const explicitPreviewIdsToDelete = [...new Set(imageState.previewsToDelete)];
+      const nextThumbnailPreviewId = getPreviewId(imageState.thumbnail);
+      let nextThumbnailBlob: Blob | null =
+        nextThumbnailPreviewId !== null ? await getPreviewBlob(currentTeamId, nextThumbnailPreviewId) : null;
 
-      if (imageState.thumbnail instanceof File) {
+      type PreviewUpload = { type: 'file'; file: File } | { type: 'blob'; blob: Blob; filename: string };
+
+      const hasPreviewFile = imageState.previews.some((preview) => preview instanceof File);
+      const hasThumbnailMovedToPreview = imageState.previews.some(
+        (preview) => !(preview instanceof File) && preview.status === 'success' && getPreviewId(preview) === null,
+      );
+      const shouldRewritePreviews =
+        previewOrderChanged || hasPreviewFile || explicitPreviewIdsToDelete.length > 0 || hasThumbnailMovedToPreview;
+
+      const getPreviewUploads = async () => {
+        const uploads: PreviewUpload[] = [];
+
+        for (const preview of imageState.previews) {
+          if (preview instanceof File) {
+            uploads.push({ type: 'file', file: preview });
+            continue;
+          }
+
+          if (preview.status !== 'success') {
+            throw new Error('압축 중이거나 오류가 있는 상세 이미지는 저장할 수 없어요');
+          }
+
+          const previewId = getPreviewId(preview);
+          if (previewId !== null) {
+            const blob = await getPreviewBlob(currentTeamId, previewId);
+            uploads.push({ type: 'blob', blob, filename: `preview-${previewId}` });
+            continue;
+          }
+
+          const thumbnailBlob = await getThumbnailBlob(currentTeamId);
+          uploads.push({ type: 'blob', blob: thumbnailBlob, filename: 'thumbnail-preview' });
+        }
+
+        return uploads;
+      };
+
+      const postPreviewUploads = async (uploads: PreviewUpload[]) => {
+        if (uploads.length === 0) return;
+
         const formData = new FormData();
-        formData.append('image', imageState.thumbnail);
-        await postThumbnail(currentTeamId, formData);
-      }
+        uploads.forEach((upload) => {
+          if (upload.type === 'file') {
+            formData.append('images', upload.file);
+            return;
+          }
+          formData.append('images', upload.blob, upload.filename);
+        });
 
-      if (imageState.previewsToDelete.length > 0) {
-        const response = await deletePreview(currentTeamId, { imageIds: imageState.previewsToDelete });
-        if (response.status === 202) toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
-      }
-
-      const newFiles = imageState.previews.filter((preview): preview is File => preview instanceof File);
-      if (newFiles.length > 0) {
-        const formData = new FormData();
-        newFiles.forEach((file) => formData.append('images', file));
         await postPreview(currentTeamId, formData);
+      };
+
+      const previewUploads = shouldRewritePreviews ? await getPreviewUploads() : [];
+
+      try {
+        if (
+          imageState.thumbnailToDelete &&
+          !(imageState.thumbnail instanceof File) &&
+          nextThumbnailPreviewId === null
+        ) {
+          const response = await deleteThumbnail(currentTeamId);
+          if (response.status === 202) toast('압축 중인 이미지는 삭제할 수 없어요', 'error');
+        }
+
+        if (imageState.thumbnail instanceof File) {
+          const formData = new FormData();
+          formData.append('image', imageState.thumbnail);
+          await postThumbnail(currentTeamId, formData);
+        } else if (nextThumbnailPreviewId !== null && nextThumbnailBlob) {
+          const formData = new FormData();
+          formData.append('image', nextThumbnailBlob, `preview-${nextThumbnailPreviewId}`);
+          await postThumbnail(currentTeamId, formData);
+        }
+
+        if (shouldRewritePreviews) {
+          if (previousPreviewIds.length > 0) {
+            const response = await deletePreview(currentTeamId, { imageIds: previousPreviewIds });
+            if (response.status === 202) throw new Error('압축 중인 이미지는 삭제할 수 없어요');
+          }
+          await postPreviewUploads(previewUploads);
+        }
+      } finally {
+        nextThumbnailBlob = null;
+        previewUploads.length = 0;
       }
     },
-    [imageState, toast],
+    [imageState, previewOrderChanged, projectData?.previewIds, toast],
   );
 
   const handleEdit = useCallback(async () => {
@@ -581,6 +721,7 @@ export const useProjectForm = () => {
         queryClient.invalidateQueries({ queryKey: ['projectDetails', teamId] }),
       ]);
 
+      dispatchImage({ type: 'RESET_IMAGES_AFTER_SAVE' });
       toast('수정이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${teamId}`);
     } catch (error: any) {
@@ -630,6 +771,7 @@ export const useProjectForm = () => {
 
       await syncImages(createdTeamId);
 
+      dispatchImage({ type: 'RESET_IMAGES_AFTER_SAVE' });
       toast('생성이 완료되었어요', 'success');
       navigate(`/contest/${contestId}/teams/view/${createdTeamId}`);
     } catch (error: any) {
@@ -681,7 +823,8 @@ export const useProjectForm = () => {
       imageState.thumbnailToDelete ||
       imageState.thumbnail instanceof File ||
       imageState.previews.some((preview) => preview instanceof File) ||
-      imageState.previewsToDelete.length > 0
+      imageState.previewsToDelete.length > 0 ||
+      (canSortImages && imageOrderChanged)
     );
   };
 
@@ -690,6 +833,7 @@ export const useProjectForm = () => {
     isEditMode,
     isAdmin,
     isEditorOfThisTeam,
+    canSortImages,
     missingContestForCreate,
     missingTeamForEdit,
     isProjectLoading,
