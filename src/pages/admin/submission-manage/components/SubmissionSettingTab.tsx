@@ -89,6 +89,7 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <FilterDropDown<StatusFilter>
+          variant="select"
           label={statusFilter === '' ? '운영 상태' : statusFilterLabel}
           value={statusFilter}
           options={OPERATION_STATUS_FILTER_OPTIONS}

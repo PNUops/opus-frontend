@@ -112,12 +112,14 @@ export const SubmissionDownloadTab = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FilterDropDown
+            variant="select"
             label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출물 종류'}
             value={typeFilter}
             options={typeOptions}
             onChange={setTypeFilter}
           />
           <FilterDropDown
+            variant="select"
             label={trackOptions.find((o) => o.value === trackFilter)?.label ?? '분과'}
             value={trackFilter}
             options={trackOptions}
@@ -127,9 +129,9 @@ export const SubmissionDownloadTab = () => {
             type="button"
             onClick={handleReset}
             aria-label="필터 초기화"
-            className="border-lightGray text-midGray flex h-7 w-7 items-center justify-center rounded-sm border transition-colors hover:bg-gray-100"
+            className="border-lightGray text-midGray flex h-8.5 w-8.5 items-center justify-center rounded-sm border transition-colors hover:bg-gray-100"
           >
-            <RefreshCw size={14} />
+            <RefreshCw size={16} />
           </button>
         </div>
         <AdminActionButton size="sm" onClick={handleDownloadSelected} disabled={selectedKeys.size === 0}>
