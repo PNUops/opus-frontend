@@ -1,16 +1,13 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useToast } from '@hooks/useToast';
 import { imageValidator } from '@utils/image';
 import { ThumbnailResult } from '@apis/projectEditor';
 import { PreviewResult } from '@dto/projectViewerDto';
+import SortableImages, { MAX_IMAGES } from './SortableImages';
+import type { ImageSlot } from './SortableImages';
 
 import { HiInformationCircle } from 'react-icons/hi';
-import { FiX } from 'react-icons/fi';
-import { AiFillPicture } from 'react-icons/ai';
-import { MdOutlineFileUpload, MdBrokenImage } from 'react-icons/md';
-import { CgSandClock } from 'react-icons/cg';
-
-const PREVIEW_BOX_TAGS = ['썸네일', '상세 이미지'];
+import { MdOutlineFileUpload } from 'react-icons/md';
 
 interface ImageUploaderSectionProps {
   thumbnail: ThumbnailResult | File | undefined;
@@ -18,22 +15,10 @@ interface ImageUploaderSectionProps {
   previews: (PreviewResult | File)[];
   setPreviews: React.Dispatch<React.SetStateAction<(PreviewResult | File)[]>>;
   setThumbnailToDelete: (value: boolean) => void;
-  previewsToDelete: number[];
   setPreviewsToDelete: React.Dispatch<React.SetStateAction<number[]>>;
+  canSort?: boolean;
   required?: boolean;
 }
-
-const getImageSrc = (data: File | ThumbnailResult | PreviewResult): string => {
-  if (data instanceof File) {
-    return URL.createObjectURL(data);
-  }
-  if ('status' in data && data.status === 'success' && typeof data.url === 'string') {
-    return data.url;
-  }
-  return '';
-};
-
-const MAX_IMAGES = 6;
 
 const ImageUploaderSection = ({
   thumbnail,
@@ -41,18 +26,18 @@ const ImageUploaderSection = ({
   previews,
   setPreviews,
   setThumbnailToDelete,
-  previewsToDelete,
   setPreviewsToDelete,
+  canSort = true,
   required = false,
 }: ImageUploaderSectionProps) => {
   const toast = useToast();
 
-  const images: (ThumbnailResult | PreviewResult | File | undefined)[] = useMemo(() => {
+  const images: ImageSlot[] = useMemo(() => {
     const thumbnailSlot: ThumbnailResult | File | undefined =
       thumbnail && (thumbnail instanceof File || (thumbnail as ThumbnailResult).status !== 'error')
         ? thumbnail
         : undefined;
-    const result: (ThumbnailResult | PreviewResult | File | undefined)[] = [thumbnailSlot, ...previews];
+    const result: ImageSlot[] = [thumbnailSlot, ...previews];
     return result.slice(0, MAX_IMAGES);
   }, [thumbnail, previews]);
 
@@ -130,23 +115,10 @@ const ImageUploaderSection = ({
     toast('프리뷰 이미지를 삭제했어요', 'info');
   };
 
-  useEffect(() => {
-    if (
-      thumbnail &&
-      typeof thumbnail === 'object' &&
-      'url' in thumbnail &&
-      typeof thumbnail.url === 'string' &&
-      thumbnail.url.startsWith('blob:')
-    ) {
-      URL.revokeObjectURL(thumbnail.url);
-    }
-
-    previews.forEach((p) => {
-      if (typeof p === 'object' && 'url' in p && typeof p.url === 'string' && p.url.startsWith('blob:')) {
-        URL.revokeObjectURL(p.url);
-      }
-    });
-  }, [thumbnail, previews]);
+  const handleReorder = (nextThumbnail: ThumbnailResult | File | undefined, nextPreviews: (PreviewResult | File)[]) => {
+    setThumbnail(nextThumbnail);
+    setPreviews(nextPreviews);
+  };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -194,9 +166,6 @@ const ImageUploaderSection = ({
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
 
-  const paddedImages: (ThumbnailResult | PreviewResult | File | undefined)[] = [...images];
-  while (paddedImages.length < MAX_IMAGES) paddedImages.push(undefined);
-
   return (
     <div className="flex flex-col gap-3 text-sm sm:flex-row sm:gap-10">
       <div className="text-exsm flex items-start justify-between gap-3 sm:flex-col sm:justify-normal sm:pt-3 sm:text-sm">
@@ -237,86 +206,13 @@ const ImageUploaderSection = ({
             <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
           </label>
         </div>
-        <div className="grid flex-1 grid-cols-2 gap-3 text-center">
-          {paddedImages.map((img, index) => {
-            if (!img) {
-              return (
-                <div
-                  key={index}
-                  className="border-lightGray text-title text-lightGray relative flex aspect-[3/2] w-full items-center justify-center rounded border border-dashed"
-                >
-                  <AiFillPicture />
-                  {index === 0 || index === 1 ? (
-                    <span className="absolute bottom-1 left-1 rounded bg-green-100 px-2 py-0.5 text-xs text-green-600">
-                      {PREVIEW_BOX_TAGS[index]}
-                    </span>
-                  ) : null}
-                </div>
-              );
-            }
-
-            let displayContent;
-            if (img instanceof File) {
-              displayContent = (
-                <img
-                  src={getImageSrc(img)}
-                  alt={`image-${index}`}
-                  className="absolute inset-0 h-full w-full object-contain"
-                />
-              );
-            } else if ('status' in img) {
-              if (img.status === 'processing') {
-                displayContent = (
-                  <div className="text-lightGray flex h-full w-full animate-pulse flex-col items-center justify-center gap-5">
-                    <CgSandClock size={25} />
-                    <span className="text-center text-xs">
-                      서버에서 이미지를 압축 중이에요<br></br>조금만 기다려주세요!
-                    </span>
-                  </div>
-                );
-              } else if (img.status === 'error') {
-                displayContent = <MdBrokenImage size={30} className="text-red-300" />;
-              } else if (img.status === 'success') {
-                if (typeof img.url === 'string') {
-                  displayContent = (
-                    <img
-                      src={getImageSrc(img)}
-                      alt={`image-${index}`}
-                      className="absolute inset-0 h-full w-full object-contain"
-                    />
-                  );
-                } else {
-                  displayContent = <MdBrokenImage size={30} className="text-red-300" />;
-                }
-              } else {
-                displayContent = <MdBrokenImage size={30} className="text-red-300" />;
-              }
-            } else {
-              displayContent = <MdBrokenImage size={30} className="text-red-300" />;
-            }
-
-            return (
-              <div
-                key={index}
-                className="border-lightGray text-lightGray relative flex aspect-[3/2] w-full items-center justify-center overflow-hidden rounded border text-xs"
-              >
-                {displayContent}
-
-                {index === 0 && (
-                  <span className="absolute bottom-1 left-1 rounded bg-green-100 px-2 py-0.5 text-xs text-green-600">
-                    썸네일
-                  </span>
-                )}
-                <button
-                  onClick={() => handleRemove(index)}
-                  className="border-lightGray bg-whiteGray absolute top-1 right-1 rounded-full border p-1"
-                >
-                  <FiX size={13} className="text-midGray hover:cursor-pointer" />
-                </button>
-              </div>
-            );
-          })}
-        </div>
+        <SortableImages
+          images={images}
+          onRemove={handleRemove}
+          onReorder={handleReorder}
+          onMoveBlocked={(message) => toast(message, 'info')}
+          sortable={canSort}
+        />
       </div>
     </div>
   );

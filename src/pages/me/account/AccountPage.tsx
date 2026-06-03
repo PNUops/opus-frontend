@@ -6,7 +6,7 @@ import Spinner from '@components/Spinner';
 import PasswordInput from '@components/PasswordInput';
 import Divider from '@components/ui/divider';
 import { useToast } from '@hooks/useToast';
-import { useImageBlob } from '@hooks/useImageBlob';
+import { useImageBlob, useImageObjectUrl } from '@hooks/useImageBlob';
 import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
 import AltProfile from '@pages/me/account/components/AltProfile';
@@ -36,18 +36,6 @@ const myProfileImageOption = () => {
     queryKey: PROFILE_IMAGE_QUERY_KEY,
     queryFn: getMyProfileImage,
   });
-};
-
-const revokeBlobUrl = (url: string | null | undefined) => {
-  if (url?.startsWith('blob:')) {
-    URL.revokeObjectURL(url);
-  }
-};
-
-const useBlobUrlCleanup = (url: string | null) => {
-  useEffect(() => {
-    return () => revokeBlobUrl(url);
-  }, [url]);
 };
 
 interface AccountModalProps {
@@ -311,15 +299,11 @@ const ProfileImageEditModal = ({ name, profileImageUrl, onClose }: ProfileImageE
   const toast = useToast();
   const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const selectedFileUrl = useImageObjectUrl(selectedFile);
   const isImageSelected = Boolean(selectedFile);
 
-  useBlobUrlCleanup(previewUrl);
-
   const resetSelectedImage = () => {
-    revokeBlobUrl(previewUrl);
     setSelectedFile(null);
-    setPreviewUrl(null);
   };
 
   const closeModal = () => {
@@ -353,9 +337,7 @@ const ProfileImageEditModal = ({ name, profileImageUrl, onClose }: ProfileImageE
   });
 
   const replacePreviewImage = (file: File) => {
-    revokeBlobUrl(previewUrl);
     setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -385,7 +367,7 @@ const ProfileImageEditModal = ({ name, profileImageUrl, onClose }: ProfileImageE
     <AccountModal title="프로필 이미지 수정" onClose={closeModal} className="h-70 w-90 rounded-lg p-8">
       <div className="mb-10 flex justify-center">
         <div className="h-20 w-20 overflow-hidden rounded-full">
-          <AltProfile seed={name} imageUrl={previewUrl || profileImageUrl} size={80} />
+          <AltProfile seed={name} imageUrl={selectedFileUrl || profileImageUrl} size={80} />
         </div>
       </div>
 
