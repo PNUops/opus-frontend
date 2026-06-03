@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyProjects } from '@apis/me';
+import { MY_PROJECTS_QUERY_KEY } from '@queries/me';
 import type { MyProjectDto, GetMyProjectsResponseDto } from '@dto/meDto';
 import TeamCard from '@pages/contest/TeamCard';
 
@@ -21,7 +22,7 @@ export default MyProjectSection;
 
 const MyProjectPreviewList = () => {
   const { data: myProjects } = useQuery<GetMyProjectsResponseDto>({
-    queryKey: ['myProjects'],
+    queryKey: MY_PROJECTS_QUERY_KEY,
     queryFn: getMyProjects,
     staleTime: 5 * 60 * 1000,
   });
@@ -32,7 +33,7 @@ const MyProjectPreviewList = () => {
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {myProjects?.map((project) => (
-        <MyProjectPreview key={project.projectName} project={project} />
+        <MyProjectPreview key={project.teamId} project={project} />
       ))}
     </div>
   );
@@ -46,14 +47,7 @@ const MyProjectPreview = ({ project }: { project: MyProjectDto }) => {
       <h3 className="mb-2 truncate text-sm font-medium sm:text-base" title={contestName}>
         {contestName}
       </h3>
-      <TeamCard
-        key={teamId}
-        contestId={contestId}
-        teamId={teamId}
-        teamName={teamName}
-        projectName={projectName}
-        awards={awards}
-      />
+      <TeamCard contestId={contestId} teamId={teamId} teamName={teamName} projectName={projectName} awards={awards} />
     </div>
   );
 };

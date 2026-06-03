@@ -4,6 +4,7 @@ import useAuth from '@hooks/useAuth';
 import { useToast } from '@hooks/useToast';
 import { CommentCreateRequestDto, CommentDto } from '@dto/projectViewerDto';
 import { postCommentForm } from '@apis/projectViewer';
+import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
 interface CommentFormSection {
   teamId: number;
 }
@@ -49,6 +50,7 @@ const CommentFormSection = ({ teamId }: CommentFormSection) => {
       toast('댓글 등록에 실패했어요.');
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 등록되었어요.');
     },
     onSettled: () => {

@@ -2,7 +2,6 @@ import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 import { SubmissionStatusResponseDto } from '@dto/teams/submissionStatusDto';
 import { GetTeamAwardsResponseDto } from '@dto/contestsDto';
 import apiClient from './apiClient';
-import { API_BASE_URL } from '@constants/env';
 
 export const getAllTeams = async (contestId: number): Promise<TeamListItemResponseDto[]> => {
   const res = await apiClient.get(`/contests/${contestId}/teams`);
@@ -12,23 +11,6 @@ export const getAllTeams = async (contestId: number): Promise<TeamListItemRespon
 export const getSubmissionStatus = async (): Promise<SubmissionStatusResponseDto> => {
   const res = await apiClient.get('/teams/submission-status');
   return res.data;
-};
-
-export const getThumbnailTeams = async (teamId: number) => {
-  try {
-    const response = await apiClient.get(`/teams/${teamId}/image/thumbnail`);
-
-    if (response.status === 200) {
-      return `${API_BASE_URL}/api/teams/${teamId}/image/thumbnail`;
-    } else if (response.status === 202) {
-      return null;
-    }
-    return null;
-  } catch (error: any) {
-    if (error.response?.status === 404) {
-      return null;
-    }
-  }
 };
 
 export const deleteTeam = async (teamId: number) => {
