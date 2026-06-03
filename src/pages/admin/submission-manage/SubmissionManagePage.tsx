@@ -4,6 +4,7 @@ import { AdminHeader } from '@components/admin';
 
 import { SubmissionTabBar } from './components/SubmissionTabBar';
 import { SubmissionSettingTab } from './components/SubmissionSettingTab';
+import { SubmissionDownloadTab } from './components/SubmissionDownloadTab';
 import type { SubmissionTabKey } from './types/submission';
 
 const SubmissionManagePage = () => {
@@ -22,7 +23,7 @@ const SubmissionManagePage = () => {
 
       {activeTab === 'setting' && <SubmissionSettingTab onViewStatus={handleViewStatus} />}
       {activeTab === 'status' && <ComingSoon label="제출 현황" />}
-      {activeTab === 'download' && <ComingSoon label="제출 파일 다운로드" />}
+      {activeTab === 'download' && <SubmissionDownloadTab />}
     </div>
   );
 };

@@ -31,6 +31,27 @@ export interface SubmissionItemResponseDto {
 
 export type GetSubmissionItemsResponseDto = SubmissionItemResponseDto[];
 
+/** 제출 파일 다운로드 - 아카이브(제출물 종류 x 분과) 항목 */
+export interface SubmissionArchiveResponseDto {
+  /** 제출물 종류 ID */
+  submissionTypeId: number;
+  /** 제출물 종류명 */
+  submissionTypeName: string;
+  /** 분과 ID */
+  trackId: number;
+  /** 분과명 */
+  trackName: string;
+  /** 제출 팀 수 */
+  submittedTeamCount: number;
+  /** 예상 용량 (bytes) */
+  estimatedSize: number;
+}
+
+/** 제출 파일 다운로드 목록 응답 */
+export interface GetSubmissionArchivesResponseDto {
+  archives: SubmissionArchiveResponseDto[];
+}
+
 /** 제출물 추가/수정 요청 */
 export interface SubmissionItemRequestDto {
   /** 제출물 종류 이름 */
