@@ -1,3 +1,5 @@
+import type { PaginationResponseDto } from './commonDto';
+
 /** 제출물 운영 상태 */
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
@@ -30,6 +32,98 @@ export interface SubmissionItemResponseDto {
 }
 
 export type GetSubmissionItemsResponseDto = SubmissionItemResponseDto[];
+
+/** 제출 상태 (계산값) */
+export type SubmissionStatus = 'SUBMITTED' | 'LATE' | 'NOT_SUBMITTED' | 'NOT_SUBMITTED_AFTER_DEADLINE';
+
+/** 제출 현황 목록 항목 */
+export interface SubmissionStatusResponseDto {
+  /** 제출 ID, 미제출이면 null */
+  submissionId: number | null;
+  /** 팀 ID */
+  teamId: number;
+  /** 팀 이름 */
+  teamName: string;
+  /** 분과명 */
+  trackName: string;
+  /** 제출물 종류명 */
+  submissionTypeName: string;
+  /** 제출 상태 */
+  status: SubmissionStatus;
+  /** 최초 제출일시, 미제출이면 null */
+  firstSubmittedAt: string | null;
+  /** 마지막 수정일시, 미제출이면 null */
+  lastModifiedAt: string | null;
+}
+
+/** 제출 현황 목록 응답 (Spring Page) */
+export type GetSubmissionStatusesResponseDto = PaginationResponseDto<SubmissionStatusResponseDto>;
+
+/** 제출 파일 */
+export interface SubmissionFileResponseDto {
+  /** 파일 ID */
+  fileId: number;
+  /** 파일명 */
+  fileName: string;
+  /** 파일 용량 (byte) */
+  fileSize: number;
+}
+
+/** 코멘트 작성자 역할 */
+export type CommentAuthorRole = 'MENTOR' | 'PROFESSOR' | 'ADMIN';
+
+/** 제출물 코멘트 */
+export interface SubmissionCommentResponseDto {
+  /** 코멘트 ID */
+  commentId: number;
+  /** 작성자 ID */
+  memberId: number;
+  /** 작성자 이름 */
+  memberName: string;
+  /** 작성자 역할 */
+  memberRole: CommentAuthorRole;
+  /** 코멘트 본문 */
+  description: string;
+  /** 작성 시각 */
+  createdAt: string;
+  /** 마지막 수정 시각 */
+  updatedAt: string;
+  /** 첨부파일 목록 */
+  files: SubmissionFileResponseDto[];
+}
+
+/** 코멘트 목록 조회 응답 */
+export interface GetSubmissionCommentsResponseDto {
+  comments: SubmissionCommentResponseDto[];
+}
+
+/** 제출물 상세 조회 응답 */
+export interface SubmissionDetailResponseDto {
+  /** 제출 ID */
+  submissionId: number;
+  /** 팀 ID */
+  teamId: number;
+  /** 팀 이름 */
+  teamName: string;
+  /** 프로젝트 설명 */
+  projectOverview: string;
+  /** 분과명 */
+  trackName: string;
+  /** 제출물 종류명 */
+  submissionTypeName: string;
+  /** 제출 상태 */
+  status: SubmissionStatus;
+  /** 제출 마감일시 */
+  deadlineAt: string;
+  /** 최초 제출일시 */
+  firstSubmittedAt: string | null;
+  /** 마지막 수정일시 */
+  lastModifiedAt: string | null;
+  /** 제출 파일 목록 */
+  files: SubmissionFileResponseDto[];
+  /** 코멘트 개수 */
+  commentCount: number;
+}
 
 /** 제출 파일 다운로드 - 아카이브(제출물 종류 x 분과) 항목 */
 export interface SubmissionArchiveResponseDto {

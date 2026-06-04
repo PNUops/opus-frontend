@@ -1,4 +1,10 @@
-import type { SubmissionFileFormat, SubmissionOperationStatus, SubmissionVisibility } from '@dto/submissionDto';
+import type {
+  CommentAuthorRole,
+  SubmissionFileFormat,
+  SubmissionOperationStatus,
+  SubmissionStatus,
+  SubmissionVisibility,
+} from '@dto/submissionDto';
 import type { SubmissionTabKey } from '@pages/admin/submission-manage/types/submission';
 
 /** 제출물 관리 탭 목록 */
@@ -13,6 +19,30 @@ export const OPERATION_STATUS_META: Record<SubmissionOperationStatus, { label: s
   IN_PROGRESS: { label: '진행 중', className: 'bg-subGreen text-mainGreen' },
   CLOSED: { label: '마감', className: 'bg-whiteGray text-midGray' },
   SCHEDULED: { label: '예정', className: 'bg-yellow-50 text-yellow-600' },
+};
+
+/** 제출 상태 라벨/뱃지 색상 */
+export const SUBMISSION_STATUS_META: Record<SubmissionStatus, { label: string; className: string }> = {
+  SUBMITTED: { label: '제출 완료', className: 'bg-subGreen text-mainGreen' },
+  LATE: { label: '지각 제출', className: 'bg-blue-50 text-mainBlue' },
+  NOT_SUBMITTED: { label: '미제출', className: 'bg-whiteGray text-midGray' },
+  NOT_SUBMITTED_AFTER_DEADLINE: { label: '마감 후 미제출', className: 'bg-red-50 text-mainRed' },
+};
+
+/** 제출 상태 필터 옵션 */
+export const SUBMISSION_STATUS_FILTER_OPTIONS: { label: string; value: SubmissionStatus | '' }[] = [
+  { label: '제출 상태', value: '' },
+  { label: '제출 완료', value: 'SUBMITTED' },
+  { label: '지각 제출', value: 'LATE' },
+  { label: '미제출', value: 'NOT_SUBMITTED' },
+  { label: '마감 후 미제출', value: 'NOT_SUBMITTED_AFTER_DEADLINE' },
+];
+
+/** 코멘트 작성자 역할 라벨 */
+export const COMMENT_ROLE_LABEL: Record<CommentAuthorRole, string> = {
+  MENTOR: '멘토',
+  PROFESSOR: '지도교수',
+  ADMIN: '관리자',
 };
 
 /** 공개 범위 라벨 */
