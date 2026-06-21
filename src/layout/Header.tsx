@@ -1,12 +1,15 @@
 import useAuth from 'hooks/useAuth';
 import { BiCog } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
+import { useEffect, useRef, useState } from 'react';
 import { HiMenu } from 'react-icons/hi';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from 'hooks/useToast';
 import { useSidebar } from './SidebarContext';
 import Button from '@components/Button';
+import AltProfile from '@components/AltProfile';
+import { useNotificationsQuery } from 'hooks/useNotifications';
+import NotificationPanel from './NotificationPanel';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -14,6 +17,12 @@ const Header = () => {
   const toast = useToast();
   const location = useLocation();
   const { toggle } = useSidebar();
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const { data: notifications = [] } = useNotificationsQuery(isSignedIn);
+
+  const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
+  const unreadCount = notifications.filter((notification) => !notification.isRead).length;
 
   const handleLogout = () => {
     toast('로그아웃 되었습니다.', 'success');
@@ -21,7 +30,27 @@ const Header = () => {
     navigate('/');
   };
 
-  const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
+  useEffect(() => {
+    setIsNotificationOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isNotificationOpen) return;
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (!notificationRef.current || notificationRef.current.contains(event.target as Node)) return;
+
+      setIsNotificationOpen(false);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isNotificationOpen]);
 
   return (
     <header className="border-lightGray lg:h-header md:h-header xs:h-8 shadow-b-lg z-20 flex w-full min-w-[350px] items-center justify-between border-b bg-white px-3 py-2 sm:h-20">
@@ -50,6 +79,27 @@ const Header = () => {
 
         <div className="flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
           <div className="flex items-center gap-0.5 md:gap-1">
+            {isSignedIn && (
+              <div ref={notificationRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsNotificationOpen((prev) => !prev)}
+                  className="hover:bg-whiteGray relative rounded-full px-4 py-2 text-sm text-[#374151] transition-colors hover:cursor-pointer"
+                  aria-label={unreadCount > 0 ? `알림 ${unreadCount}개` : '알림'}
+                  aria-haspopup="true"
+                  aria-expanded={isNotificationOpen}
+                  aria-controls="header-notification-panel"
+                >
+                  알림
+                  {unreadCount > 0 && (
+                    <span className="bg-mainGreen absolute top-1 right-1 h-2.5 w-2.5 rounded-full ring-2 ring-white" />
+                  )}
+                </button>
+                {isNotificationOpen && (
+                  <NotificationPanel id="header-notification-panel" onClose={() => setIsNotificationOpen(false)} />
+                )}
+              </div>
+            )}
             {isAdmin && (
               <Link
                 to="/admin"
@@ -69,6 +119,11 @@ const Header = () => {
               </Link>
             )}
           </div>
+          {isSignedIn && (
+            <Link to="/me" aria-label="내 계정" className="hidden rounded-full sm:block">
+              <AltProfile seed={user?.name} size={32} />
+            </Link>
+          )}
           <Button
             onClick={isSignedIn ? handleLogout : () => navigate('/signin')}
             className="border-lightGray rounded-full border text-sm text-nowrap text-black hover:cursor-pointer"

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import useContests from 'hooks/useContests';
 import { ContestResponseDto } from 'types/DTO/contestsDto';

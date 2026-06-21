@@ -8,8 +8,10 @@ import queryClient from 'stores/queryClient';
 import { RouterProvider } from 'react-router-dom';
 import AppRoutes from '@route/AppRoutes';
 
-if (process.env.NODE_ENV === 'development') {
-  //   await worker.start();
+if (import.meta.env.MODE === 'development') {
+  await worker.start({
+    onUnhandledRequest: 'bypass',
+  });
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

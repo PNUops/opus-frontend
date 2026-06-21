@@ -1,19 +1,17 @@
 import { Outlet } from 'react-router-dom';
-import LayoutTopBar from './LayoutTopBar';
-import LayoutSideBar from './LayoutSideBar';
-import FullContainerLayout from '@layout/FullContainerLayout';
+
+import AdminContestSidebar from './AdminContestSidebar';
 
 const AdminContestLayout = () => {
   return (
-    <>
-      <LayoutTopBar />
-      <div className="flex">
-        <LayoutSideBar />
-        <div className="flex-1 border-l">
-          <FullContainerLayout />
+    <div className="min-h-[calc(100vh-var(--h-header,80px))] bg-white">
+      <AdminContestSidebar />
+      <main className="ml-[272px] min-w-0 overflow-x-auto">
+        <div className="mx-auto w-full max-w-[1456px] px-6 py-6 sm:px-10 xl:px-[60px]">
+          <Outlet />
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 

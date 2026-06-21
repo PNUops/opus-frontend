@@ -30,6 +30,8 @@ import NotFoundPage from '@pages/common/NotFoundPage';
 import VoteManagePage from '@pages/admin/votes/VoteManagePage';
 import ContestSettingsPage from '@pages/admin/settings/ContestSettingsPage';
 import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
+import RoleAssignmentPage from '@pages/admin/role-assignment/RoleAssignmentPage';
+import NotificationPanel from '@layout/NotificationPanel';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -55,6 +57,7 @@ const AppRoutes = () =>
             { path: 'oauth/google/callback', element: <GoogleOAuthCallback /> },
             { path: 'notices/:noticeId', element: <NoticeDetail /> },
             { path: 'me', element: <MyPage /> },
+            { path: 'notification', element: <NotificationPanel variant="page" /> },
           ],
         },
         {
@@ -92,6 +95,7 @@ const AppRoutes = () =>
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
                 // 대회
                 { path: 'settings', element: <ContestSettingsPage /> },
+                { path: 'roles', element: <RoleAssignmentPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },
