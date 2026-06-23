@@ -1,4 +1,4 @@
-import Avatar from '@components/Avatar';
+import ProfileAvatar from '@components/ProfileAvatar';
 
 interface ProfileButtonProps {
   onClick?: () => void;
@@ -19,15 +19,7 @@ const ProfileButton = ({ onClick, username, imageUrl, isOpen = false, menuId }: 
       aria-expanded={isOpen}
       aria-controls={isOpen ? menuId : undefined}
     >
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={username ? `${username} 프로필 이미지` : '프로필 이미지'}
-          className="size-full object-cover"
-        />
-      ) : (
-        <Avatar name={username} />
-      )}
+      <ProfileAvatar name={username} imageUrl={imageUrl} />
     </button>
   );
 };

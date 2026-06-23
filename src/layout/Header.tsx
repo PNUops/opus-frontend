@@ -9,7 +9,7 @@ import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
 import { useSidebar } from './SidebarContext';
 import ProfileButton from './ProfileButton';
 import Button from '@components/Button';
-import Avatar from '@components/Avatar';
+import ProfileAvatar from '@components/ProfileAvatar';
 import { myProfileImageOption } from '@queries/me';
 
 const PROFILE_MENU_ID = 'header-profile-menu';
@@ -105,11 +105,7 @@ const HeaderProfileMenu = ({ username, isAdmin, onSignout, onNotificationClick }
       >
         <div className="flex items-center gap-3">
           <div className="size-10 shrink-0 overflow-hidden rounded-full bg-gray-200">
-            {imageURL ? (
-              <img src={imageURL} alt={`${displayName} 프로필 이미지`} className="size-full object-cover" />
-            ) : (
-              <Avatar name={displayName} size={40} />
-            )}
+            <ProfileAvatar name={displayName} imageUrl={imageURL} size={40} />
           </div>
           <p className="min-w-0 truncate text-base font-semibold text-neutral-900">{displayName}</p>
         </div>

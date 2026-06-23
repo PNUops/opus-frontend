@@ -9,7 +9,7 @@ import { useToast } from '@hooks/useToast';
 import { useImageBlob, useImageObjectUrl } from '@hooks/useImageBlob';
 import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
-import AltProfile from '@pages/me/account/components/AltProfile';
+import ProfileAvatar from '@components/ProfileAvatar';
 import { updateProfileVisibility, patchMyStudentId, deleteMyAccount, patchMyPassword } from '@apis/member';
 import { PatchMyPasswordRequestDto } from '@dto/memberDto';
 import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from '@queries/member';
@@ -269,7 +269,7 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
         onClick={() => setIsModalOpen(true)}
         aria-label="프로필 이미지 수정"
       >
-        <AltProfile seed={name} imageUrl={profileImageUrl} />
+        <ProfileAvatar name={name} imageUrl={profileImageUrl} size={64} />
         <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35 group-focus-visible:bg-black/35">
           <MdEdit className="text-xl text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
         </div>
@@ -360,7 +360,7 @@ const ProfileImageEditModal = ({ name, profileImageUrl, onClose }: ProfileImageE
     <AccountModal title="프로필 이미지 수정" onClose={closeModal} className="h-70 w-90 rounded-lg p-8">
       <div className="mb-10 flex justify-center">
         <div className="h-20 w-20 overflow-hidden rounded-full">
-          <AltProfile seed={name} imageUrl={selectedFileUrl || profileImageUrl} size={80} />
+          <ProfileAvatar name={name} imageUrl={selectedFileUrl || profileImageUrl} size={80} />
         </div>
       </div>
 
