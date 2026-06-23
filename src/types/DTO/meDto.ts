@@ -1,4 +1,5 @@
 import { AwardDto } from './awardsDto';
+import type { SubmissionStatus } from './submissionDto';
 
 export interface MyProjectDto {
   contestId: number;
@@ -32,6 +33,32 @@ interface MyLikeGridPagination extends PaginationResponseDto<MyLikeDto> {
 }
 
 export type GetMyProjectsResponseDto = MyProjectDto[];
+
+/** 나의 활동 - 제출물 상태 요약 */
+export interface MySubmissionSummaryDto {
+  /** 전체 제출물 수 */
+  totalCount: number;
+  /** 제출 완료 수 */
+  submittedCount: number;
+  /** 피드백 수 */
+  feedbackCount: number;
+}
+
+export type GetMySubmissionSummaryResponseDto = MySubmissionSummaryDto;
+
+/** 나의 활동 - 제출 타임라인 항목 */
+export interface MySubmissionTimelineItemDto {
+  /** 제출물 id */
+  id: number;
+  /** 제출물 항목 */
+  title: string;
+  /** 제출 마감일 (LocalDate) */
+  dueDate: string;
+  /** 제출 상태 */
+  status: SubmissionStatus;
+}
+
+export type GetMySubmissionTimelineResponseDto = MySubmissionTimelineItemDto[];
 
 export type GetMyVotesResponseDto = MyVoteDto[];
 

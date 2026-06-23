@@ -35,6 +35,7 @@ import ActivityPage from '@pages/me/activity/ActivityPage';
 import AccountPage from '@pages/me/account/AccountPage';
 import MyLikePage from '@pages/me/activity/sub/MyLikePage';
 import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
+import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
 import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
 
 const AppRoutes = () =>
@@ -70,6 +71,7 @@ const AppRoutes = () =>
             { path: 'activity', element: <ActivityPage /> },
             { path: 'activity/likes', element: <MyLikePage /> },
             { path: 'activity/comments', element: <MyCommentPage /> },
+            { path: 'activity/:teamId/submission', element: <MySubmissionPage /> },
             { path: 'account', element: <AccountPage /> },
           ],
         },
