@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useToast } from '@hooks/useToast';
 import { useSidebar } from './SidebarContext';
+import ProfileButton from './ProfileButton';
 import Button from '@components/Button';
 
 const Header = () => {
@@ -59,7 +60,7 @@ const Header = () => {
                 <span className="hidden text-sm text-nowrap lg:inline">관리자 페이지</span>
               </Link>
             )}
-            {user?.name && (
+            {user && (
               <Link
                 to="/me/activity"
                 className="hover:bg-whiteGray flex items-center gap-2 rounded-full px-4 py-2 hover:cursor-pointer"
@@ -69,12 +70,16 @@ const Header = () => {
               </Link>
             )}
           </div>
-          <Button
-            onClick={isSignedIn ? handleLogout : () => navigate('/signin')}
-            className="border-lightGray rounded-full border text-sm text-nowrap text-black hover:cursor-pointer"
-          >
-            {isSignedIn ? '로그아웃' : '로그인 / 회원가입'}
-          </Button>
+          {isSignedIn ? (
+            <ProfileButton username={user?.name} />
+          ) : (
+            <Button
+              onClick={isSignedIn ? handleLogout : () => navigate('/signin')}
+              className="border-lightGray rounded-full border text-sm text-nowrap text-black hover:cursor-pointer"
+            >
+              로그인 / 회원가입
+            </Button>
+          )}
         </div>
       </div>
     </header>
