@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
+
 import useAuth from '@hooks/useAuth';
+import AdminSidebar from './AdminSidebar';
 
 const AdminLayout = () => {
   const { isAdmin } = useAuth();
@@ -12,7 +14,14 @@ const AdminLayout = () => {
     );
   }
 
-  return <Outlet />;
+  return (
+    <div className="min-h-[calc(100vh_-_var(--h-header))] bg-white">
+      <AdminSidebar />
+      <main className="ml-[272px] min-h-[calc(100vh_-_var(--h-header))] min-w-[752px] bg-white">
+        <Outlet />
+      </main>
+    </div>
+  );
 };
 
 export default AdminLayout;
