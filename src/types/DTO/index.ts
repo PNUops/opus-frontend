@@ -11,6 +11,7 @@ export * from './commentDto';
 export * from './noticeDto';
 export * from './meDto';
 export * from './memberDto';
+export * from './submissionDto';
 
 export type { DashboardTeamResponseDto } from './dashboardDto';
 export type { TeamLikeResponseDto } from './teamsLikeDto';

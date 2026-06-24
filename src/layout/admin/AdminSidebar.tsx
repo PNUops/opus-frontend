@@ -41,7 +41,7 @@ const adminSidebarSections: AdminSidebarSection[] = [
     title: '제출 관리',
     links: [
       { to: 'projects', label: '프로젝트 관리' },
-      { label: '제출 자료 관리', disabled: true },
+      { to: 'submission-manage', label: '제출 자료 관리' },
       { to: 'sort', label: '공개 목록 정렬' },
     ],
   },

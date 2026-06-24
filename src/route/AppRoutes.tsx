@@ -35,6 +35,8 @@ import ActivityPage from '@pages/me/activity/ActivityPage';
 import AccountPage from '@pages/me/account/AccountPage';
 import MyLikePage from '@pages/me/activity/sub/MyLikePage';
 import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
+import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
+import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -69,6 +71,7 @@ const AppRoutes = () =>
             { path: 'activity', element: <ActivityPage /> },
             { path: 'activity/likes', element: <MyLikePage /> },
             { path: 'activity/comments', element: <MyCommentPage /> },
+            { path: 'activity/:teamId/submission', element: <MySubmissionPage /> },
             { path: 'account', element: <AccountPage /> },
           ],
         },
@@ -101,6 +104,8 @@ const AppRoutes = () =>
                 { path: 'projects', element: <ProjectManagePage /> },
                 // 프로젝트 생성
                 { path: 'projects/create', element: <ProjectEditPage /> },
+                // 제출 자료
+                { path: 'submission-manage', element: <SubmissionManagePage /> },
                 { path: 'sort', element: <SortManagePage /> },
                 { path: 'awards', element: <AwardManagePage /> },
                 { path: 'required-fields', element: <RequiredFieldsPage /> },
