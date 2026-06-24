@@ -32,6 +32,7 @@ const ProjectEditForm = () => {
     hasCreatorInputs,
     hasEditorChanges,
     requiredFields,
+    canSortImages,
     isSaved,
   } = useProjectForm();
 
@@ -86,6 +87,8 @@ const ProjectEditForm = () => {
             setThumbnailFile(value);
           } else if (!value) {
             setThumbnail(undefined);
+          } else {
+            setThumbnail(value);
           }
         }}
         previews={imageState.previews}
@@ -101,7 +104,6 @@ const ProjectEditForm = () => {
         setThumbnailToDelete={() => {
           markThumbnailForDelete();
         }}
-        previewsToDelete={imageState.previewsToDelete}
         setPreviewsToDelete={(updater) => {
           if (typeof updater === 'function') {
             const prev = imageState.previewsToDelete;
@@ -112,6 +114,7 @@ const ProjectEditForm = () => {
           const prev = imageState.previewsToDelete;
           updater.filter((id) => !prev.includes(id)).forEach((id) => markPreviewForDelete(id));
         }}
+        canSort={canSortImages}
         required={requiredFields.imagesRequired}
       />
       <div className="h-15" />

@@ -8,6 +8,7 @@ import { AwardDto, ContestAwardDto, TeamAwardDto } from '@dto/awardsDto';
 import { AWRD_PALETTE } from '@constants/palette';
 import useDebounce from '@hooks/useDebounce';
 import { useToast } from '@hooks/useToast';
+import { invalidateMyActivityQueries } from '@queries/me';
 import { getApiErrorMessage } from '@utils/error';
 
 interface AwardSelectorProps {
@@ -42,6 +43,7 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
     queryClient.invalidateQueries({ queryKey: ['teamAwards', teamId] });
     queryClient.invalidateQueries({ queryKey: ['contestAwards', contestId] });
     queryClient.invalidateQueries({ queryKey: ['teams', contestId] });
+    invalidateMyActivityQueries(queryClient);
   };
 
   const { mutate: mutateTeamAwards, isPending: isUpdatingTeamAwards } = useMutation({

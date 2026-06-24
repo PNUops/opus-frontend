@@ -64,6 +64,13 @@ export const postThumbnail = async (teamId: number, formData: FormData) => {
   return response.data;
 };
 
+export const getThumbnailBlob = async (teamId: number): Promise<Blob> => {
+  const response = await apiClient.get(`/teams/${teamId}/image/thumbnail`, {
+    responseType: 'blob',
+  });
+  return response.data;
+};
+
 export const deleteThumbnail = async (teamId: number) => {
   const response = await apiClient.delete(`/teams/${teamId}/image/thumbnail`);
   return response;
@@ -72,6 +79,13 @@ export const deleteThumbnail = async (teamId: number) => {
 export const postPreview = async (teamId: number, formData: FormData) => {
   const response = await apiClient.post(`/teams/${teamId}/image`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
+};
+
+export const getPreviewBlob = async (teamId: number, imageId: number): Promise<Blob> => {
+  const response = await apiClient.get(`/teams/${teamId}/image/${imageId}`, {
+    responseType: 'blob',
   });
   return response.data;
 };
