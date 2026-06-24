@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { MyPageSection } from '@pages/me/mypageSection';
 import { getMyVotes } from '@apis/me';
+import { MY_VOTES_QUERY_KEY } from '@queries/me';
 import type { GetMyVotesResponseDto } from '@dto/meDto';
 import TeamCard from '@pages/contest/TeamCard';
 import { LuVote } from 'react-icons/lu';
@@ -24,7 +25,7 @@ export default MyVoteSection;
 
 const MyVoteList = () => {
   const { data: myVotes } = useQuery<GetMyVotesResponseDto>({
-    queryKey: ['myVotes'],
+    queryKey: MY_VOTES_QUERY_KEY,
     queryFn: getMyVotes,
     staleTime: 5 * 60 * 1000,
   });
@@ -35,9 +36,8 @@ const MyVoteList = () => {
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {myVotes?.map((vote) => (
-        <div className="box-border flex h-full max-w-[260px] min-w-[220px] sm:max-w-65 sm:min-w-55">
+        <div key={vote.teamId} className="box-border flex h-full max-w-[260px] min-w-[220px] sm:max-w-65 sm:min-w-55">
           <TeamCard
-            key={vote.teamId}
             contestId={vote.contestId}
             teamId={vote.teamId}
             teamName={vote.teamName}

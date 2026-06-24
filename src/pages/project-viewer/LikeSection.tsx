@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import useAuth from '@hooks/useAuth';
 import { useToast } from '@hooks/useToast';
 import { useIsVoteTerm } from '@hooks/useVoteTerm';
+import { invalidateMyLikeActivityQueries, invalidateMyVoteActivityQueries } from '@queries/me';
 import { getApiErrorMessage } from '@utils/error';
 
 interface LikeSectionProps {
@@ -71,6 +72,7 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
     mutationFn: (nextIsLiked: boolean) => (nextIsLiked ? addLike(teamId) : removeLike(teamId)),
     onSuccess: (_, nextIsLiked) => {
       invalidateVoteLikeQueries();
+      invalidateMyLikeActivityQueries(queryClient);
       toast(nextIsLiked ? '좋아요를 눌렀어요' : '좋아요를 취소했어요');
     },
     onError: (err) => {
@@ -82,6 +84,7 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
     mutationFn: (nextIsVoted: boolean) => (nextIsVoted ? addVote(teamId) : removeVote(teamId)),
     onSuccess: (data, nextIsVoted) => {
       invalidateVoteLikeQueries();
+      invalidateMyVoteActivityQueries(queryClient);
       toast(nextIsVoted ? '투표를 완료했어요' : '투표를 취소했어요');
       showVoteTooltip(data.remainingVotesCount, data.maxVotesLimit);
     },
@@ -124,9 +127,9 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
   };
 
   return (
-    <VoteAbuseToolTip>
-      <div className="flex items-center justify-center gap-3">
-        {isVoteTerm ? (
+    <div className="flex items-center justify-center gap-3">
+      {isVoteTerm ? (
+        <VoteAbuseToolTip>
           <VoteCountToolTip
             isOpen={showVoteCountTooltip}
             remainingVotesCount={remainingVotesCount}
@@ -145,20 +148,20 @@ const LikeSection = ({ contestId, teamId, isLiked, isVoted }: LikeSectionProps) 
               <span className="hidden sm:inline">투표</span>
             </button>
           </VoteCountToolTip>
-        ) : (
-          <button
-            onClick={handleLikeClick}
-            disabled={likeMutation.isPending}
-            className={`${
-              likedState ? 'bg-mainGreen text-white hover:bg-emerald-600' : 'bg-lightGray text-white hover:bg-gray-300'
-            } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
-          >
-            <FaHeart className={`${likedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
-            <span className="hidden sm:inline">좋아요</span>
-          </button>
-        )}
-      </div>
-    </VoteAbuseToolTip>
+        </VoteAbuseToolTip>
+      ) : (
+        <button
+          onClick={handleLikeClick}
+          disabled={likeMutation.isPending}
+          className={`${
+            likedState ? 'bg-mainGreen text-white hover:bg-emerald-600' : 'bg-lightGray text-white hover:bg-gray-300'
+          } relative flex cursor-pointer items-center gap-5 justify-self-center rounded-full p-4 text-sm sm:px-8 sm:py-3`}
+        >
+          <FaHeart className={`${likedState ? 'text-white' : 'text-whiteGray'}`} size={20} />
+          <span className="hidden sm:inline">좋아요</span>
+        </button>
+      )}
+    </div>
   );
 };
 

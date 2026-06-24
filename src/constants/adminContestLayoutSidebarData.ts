@@ -9,6 +9,10 @@ const adminContestSidebarData = [
     ],
   },
   {
+    title: '제출 관리',
+    links: [{ to: 'submission-manage', label: '제출 자료 관리' }],
+  },
+  {
     title: '대회',
     links: [
       { to: 'manage', label: '대회 관리' },
