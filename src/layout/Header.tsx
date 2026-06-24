@@ -162,13 +162,18 @@ const Header = () => {
     toast('알림 기능은 준비 중이에요.', 'info');
   };
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
   const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
 
   return (
-    <header className="border-lightGray lg:h-header md:h-header xs:h-8 shadow-b-lg z-20 flex w-full min-w-[350px] items-center justify-between border-b bg-white px-3 py-2 sm:h-20">
+    <header
+      className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between bg-white px-3 py-2 sm:h-20 ${
+        isAdminRoute ? 'min-w-[1024px] pl-[272px]' : 'shadow-b-lg min-w-[350px]'
+      }`}
+    >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
         <div className="flex items-center gap-2">
-          {isSidebarRoute && (
+          {isSidebarRoute && !isAdminRoute && (
             <Button
               onClick={toggle}
               className="flex h-9 w-9 items-center justify-center p-0 text-black lg:hidden"
@@ -177,16 +182,24 @@ const Header = () => {
               <HiMenu className="h-4 w-4" />
             </Button>
           )}
-          <Link to="/" className="max-sm:hidden">
-            <img className="w-auto sm:h-6 md:h-7 lg:h-8" src="/Logo.svg" alt="부산대학교 SW프로젝트관리시스템 로고" />
-          </Link>
-          <Link to="/" className="items-center sm:hidden">
-            <img
-              className="h-7 w-auto"
-              src="/swOpsLogo-sm.png"
-              alt="부산대학교 SW프로젝트관리시스템 로고 (작은 버전)"
-            />
-          </Link>
+          {!isAdminRoute && (
+            <>
+              <Link to="/" className="max-sm:hidden">
+                <img
+                  className="w-auto sm:h-6 md:h-7 lg:h-8"
+                  src="/Logo.svg"
+                  alt="부산대학교 SW프로젝트관리시스템 로고"
+                />
+              </Link>
+              <Link to="/" className="items-center sm:hidden">
+                <img
+                  className="h-7 w-auto"
+                  src="/swOpsLogo-sm.png"
+                  alt="부산대학교 SW프로젝트관리시스템 로고 (작은 버전)"
+                />
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="flex items-center justify-end gap-2 md:gap-4 lg:gap-8">

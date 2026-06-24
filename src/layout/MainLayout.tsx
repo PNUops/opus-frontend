@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import Header from './Header';
@@ -13,6 +13,8 @@ import { SidebarProvider } from './SidebarContext';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
   useScrollToTop();
 
   if (!isAuthInit) return <></>;
@@ -25,7 +27,7 @@ const MainLayout = () => {
           <div>
             <Outlet />
           </div>
-          <Footer />
+          {!isAdminRoute && <Footer />}
         </div>
       </SidebarProvider>
       <Toaster />
