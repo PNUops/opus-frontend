@@ -2,7 +2,7 @@ import type { PaginationResponseDto } from '../../types/DTO/commonDto';
 import type { MainStatsDto, VoteLogItemDto, VoteRankingDto, VoteStatsDto } from '../../types/DTO/statisticsDto';
 
 export const mockMainStats: MainStatsDto = {
-  totalMembers: 3200,
+  totalMembers: 2500,
   totalProjects: 1250,
   totalLikes: 45800,
   totalContests: 42,
