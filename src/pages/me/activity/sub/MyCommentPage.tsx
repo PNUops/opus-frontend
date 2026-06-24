@@ -8,7 +8,7 @@ import { getMyComments } from '@apis/me';
 import { MyCommentItemDto, GetCommentsPaginationResponseDto } from '@dto/commentDto';
 import { FaRegCommentAlt } from 'react-icons/fa';
 import useTeamThumbnail from '@hooks/useTeamThumbnail';
-import AltProfile from '@pages/me/account/components/AltProfile';
+import Avatar from '@components/Avatar';
 
 const MyCommentPage = () => {
   const { state, update, reset, apiParams, queryKey } = useMyCommentsFilter();
@@ -108,7 +108,7 @@ const MyCommentCard = ({ comment, project }: MyCommentItemDto) => {
 
       <div className="ml-6 flex items-start gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
-          <AltProfile seed={comment.memberName} size={40} />
+          <Avatar name={comment.memberName} size={40} />
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-2">

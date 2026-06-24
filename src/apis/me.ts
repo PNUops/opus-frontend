@@ -1,4 +1,5 @@
 import apiClient from './apiClient';
+import axios from 'axios';
 import {
   GetMyProjectsResponseDto,
   GetMyVotesResponseDto,
@@ -48,13 +49,17 @@ export const patchMyProfileImage = async (formData: FormData) => {
 
 export const getMyProfileImage = async (): Promise<Blob | null> => {
   try {
-    const res = await apiClient.get('/members/me/images/profile', {
+    const res = await apiClient.get<Blob>('/members/me/images/profile', {
       responseType: 'blob',
     });
 
     return res.data;
-  } catch {
-    return null;
+  } catch (error) {
+    if (axios.isAxiosError(error) && [401, 403, 404].includes(error.response?.status ?? 0)) {
+      return null;
+    }
+
+    throw error;
   }
 };
 

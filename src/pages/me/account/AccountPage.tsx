@@ -1,5 +1,5 @@
 import { type ChangeEvent, type ReactNode, useEffect, useState } from 'react';
-import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MdEdit } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
 import Spinner from '@components/Spinner';
@@ -9,18 +9,18 @@ import { useToast } from '@hooks/useToast';
 import { useImageBlob, useImageObjectUrl } from '@hooks/useImageBlob';
 import { isValidPassword } from '@utils/password';
 import { MyPageSection } from '@pages/me/mypageSection';
-import AltProfile from '@pages/me/account/components/AltProfile';
+import ProfileAvatar from '@components/ProfileAvatar';
 import { updateProfileVisibility, patchMyStudentId, deleteMyAccount, patchMyPassword } from '@apis/member';
 import { PatchMyPasswordRequestDto } from '@dto/memberDto';
 import { MY_ACCOUNT_QUERY_KEY, myAccountOption } from '@queries/member';
-import { deleteMyProfileImage, getMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from '@apis/me';
+import { PROFILE_IMAGE_QUERY_KEY, myProfileImageOption } from '@queries/me';
+import { deleteMyProfileImage, patchMyGithubUrl, patchMyProfileImage } from '@apis/me';
 import { createImageFormData, imageValidator } from '@utils/image';
 import { isValidGithubUrl } from '@pages/project-editor/urlValidators';
 import { getApiErrorMessage } from '@utils/error';
 import { useTokenStore } from '@stores/useTokenStore';
 import QueryWrapper from '@providers/QueryWrapper';
 
-const PROFILE_IMAGE_QUERY_KEY = ['profileImage', 'me'] as const;
 const SECTION_STACK_CLASS = 'flex flex-col gap-8 sm:gap-10 md:gap-12';
 
 const PROFILE_VISIBILITY_OPTIONS = [
@@ -30,13 +30,6 @@ const PROFILE_VISIBILITY_OPTIONS = [
 
 const PASSWORD_CHANGE_ERROR_MESSAGE = '비밀번호 변경에 실패했어요. 다시 시도해주세요.';
 const PASSWORD_REQUIREMENT_MESSAGE = '8~16자, 영어, 숫자, 특수문자(@$!%*#?&~)를 포함하여야 합니다.';
-
-const myProfileImageOption = () => {
-  return queryOptions({
-    queryKey: PROFILE_IMAGE_QUERY_KEY,
-    queryFn: getMyProfileImage,
-  });
-};
 
 interface AccountModalProps {
   title: string;
@@ -276,7 +269,7 @@ const EditableProfileImage = ({ name, profileImageUrl }: EditableProfileImagePro
         onClick={() => setIsModalOpen(true)}
         aria-label="프로필 이미지 수정"
       >
-        <AltProfile seed={name} imageUrl={profileImageUrl} />
+        <ProfileAvatar name={name} imageUrl={profileImageUrl} size={64} />
         <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35 group-focus-visible:bg-black/35">
           <MdEdit className="text-xl text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
         </div>
@@ -367,7 +360,7 @@ const ProfileImageEditModal = ({ name, profileImageUrl, onClose }: ProfileImageE
     <AccountModal title="프로필 이미지 수정" onClose={closeModal} className="h-70 w-90 rounded-lg p-8">
       <div className="mb-10 flex justify-center">
         <div className="h-20 w-20 overflow-hidden rounded-full">
-          <AltProfile seed={name} imageUrl={selectedFileUrl || profileImageUrl} size={80} />
+          <ProfileAvatar name={name} imageUrl={selectedFileUrl || profileImageUrl} size={80} />
         </div>
       </div>
 
