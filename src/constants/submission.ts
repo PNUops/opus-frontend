@@ -94,6 +94,12 @@ export const FILE_FORMAT_GROUPS: {
   { key: 'VIDEO', label: '영상 파일', extensions: ['.mp4', '.mov', '.webm'], example: '발표 영상, 시연 영상' },
 ];
 
+/** 파일 형식(enum) 목록 → 확장자 목록 (중복 제거) */
+export const getFileFormatExtensions = (formats: SubmissionFileFormat[]): string[] => {
+  const extensions = formats.flatMap((format) => FILE_FORMAT_GROUPS.find((g) => g.key === format)?.extensions ?? []);
+  return [...new Set(extensions)];
+};
+
 /** 최대 파일 크기 옵션 (MB) */
 export const FILE_SIZE_OPTIONS: { label: string; value: number }[] = [
   { label: '10MB', value: 10 },

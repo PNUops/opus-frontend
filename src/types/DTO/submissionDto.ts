@@ -169,3 +169,6 @@ export interface SubmissionItemRequestDto {
   /** 공개 범위 */
   visibility: SubmissionVisibility;
 }
+
+/** 제출물 설정값 확인 응답 (추가/수정 요청과 동일 필드) */
+export type SubmissionItemSettingResponseDto = SubmissionItemRequestDto;
