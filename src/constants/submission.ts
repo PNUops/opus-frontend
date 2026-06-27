@@ -1,5 +1,4 @@
 import type {
-  FeedbackAuthorRole,
   SubmissionFileFormat,
   SubmissionOperationStatus,
   SubmissionStatus,
@@ -38,12 +37,8 @@ export const SUBMISSION_STATUS_FILTER_OPTIONS: { label: string; value: Submissio
   { label: '마감 후 미제출', value: 'NOT_SUBMITTED_AFTER_DEADLINE' },
 ];
 
-/** 피드백 작성자 역할 라벨 */
-export const FEEDBACK_ROLE_LABEL: Record<FeedbackAuthorRole, string> = {
-  MENTOR: '멘토',
-  PROFESSOR: '지도교수',
-  ADMIN: '관리자',
-};
+/** 피드백 작성자 역할 라벨 ('ROLE_팀장' → '팀장') */
+export const getFeedbackRoleLabel = (roleType: string): string => roleType.replace(/^ROLE_/, '');
 
 /** 공개 범위 라벨 */
 export const VISIBILITY_LABEL: Record<SubmissionVisibility, string> = {

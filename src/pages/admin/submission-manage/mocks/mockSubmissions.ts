@@ -164,7 +164,7 @@ export const buildMockFeedbacks = (row: SubmissionStatusResponseDto): Submission
     feedbackId: index + 1,
     memberId: index + 1,
     memberName: '김민수',
-    roleType: 'MENTOR',
+    roleType: 'ROLE_팀장',
     description: COMMENT_BODY,
     createdAt: '2026-05-14T21:47:00',
     updatedAt: '2026-05-14T21:47:00',

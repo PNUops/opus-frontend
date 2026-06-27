@@ -1,4 +1,4 @@
-import { FEEDBACK_ROLE_LABEL } from '@constants/submission';
+import { getFeedbackRoleLabel } from '@constants/submission';
 import type { SubmissionFeedbackResponseDto, SubmissionFileResponseDto } from '@dto/submissionDto';
 
 import { formatDateTime } from '../utils/format';
@@ -27,7 +27,7 @@ export const FeedbackList = ({ feedbacks, onDownloadFile }: FeedbackListProps) =
               <div className="bg-lightGray h-8 w-8 shrink-0 rounded-full" />
               <span className="text-darkGray text-sm font-semibold">{feedback.memberName}</span>
               <span className="bg-whiteGray text-midGray rounded-md px-2 py-0.5 text-xs">
-                {FEEDBACK_ROLE_LABEL[feedback.roleType]}
+                {getFeedbackRoleLabel(feedback.roleType)}
               </span>
             </div>
             <span className="text-midGray shrink-0 text-xs">{formatDateTime(feedback.createdAt)}</span>
