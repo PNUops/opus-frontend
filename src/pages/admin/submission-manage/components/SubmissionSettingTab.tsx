@@ -46,8 +46,9 @@ const TABLE_HEADERS = ['운영 상태', '제출물 종류', '분과', '시작일
 const formatDateTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm');
 
 interface SubmissionSettingTabProps {
-  // "제출 현황 보기" 클릭 시 제출 현황 탭으로 이동
-  onViewStatus: (submissionId: number) => void;
+  // "제출 현황 보기" 클릭 시 해당 제출물 종류명으로 제출 현황 탭 필터링하며 이동
+  // TODO: API 연동 시 submissionItemId 기준으로 전환
+  onViewStatus: (submissionTypeName: string) => void;
 }
 
 export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps) => {
@@ -151,7 +152,7 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
                   </td>
                   <td className="px-4 py-4 text-center">
                     <button
-                      onClick={() => onViewStatus(submission.contestSubmissionItemId)}
+                      onClick={() => onViewStatus(submission.name)}
                       className="border-mainBlue text-mainBlue rounded-md border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors hover:bg-blue-50"
                     >
                       제출 현황 보기

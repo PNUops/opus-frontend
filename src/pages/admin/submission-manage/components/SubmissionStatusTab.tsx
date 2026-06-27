@@ -30,9 +30,14 @@ const toNameOptions = (values: string[], placeholder: string) => [
 
 const percent = (count: number, total: number) => (total === 0 ? 0 : Math.round((count / total) * 1000) / 10);
 
-export const SubmissionStatusTab = () => {
+interface SubmissionStatusTabProps {
+  /** 제출물 설정 탭에서 "제출 현황 보기"로 진입 시 초기 제출물 필터 (제출물 종류명) */
+  initialTypeFilter?: string;
+}
+
+export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatusTabProps) => {
   const toast = useToast();
-  const [typeFilter, setTypeFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState(initialTypeFilter);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
   const [trackFilter, setTrackFilter] = useState('');
   const [search, setSearch] = useState('');
