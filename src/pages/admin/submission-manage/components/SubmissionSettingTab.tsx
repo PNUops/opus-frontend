@@ -30,7 +30,7 @@ const toFormValues = (item: SubmissionItemResponseDto): SubmissionFormValues => 
   name: item.name,
   trackId: MOCK_TRACKS.find((track) => track.trackName === item.trackName)?.trackId ?? null,
   description: '',
-  fileFormat: null,
+  fileFormats: [],
   maxFileSizeMb: 500,
   maxFileCount: 1,
   startAt: item.startAt,

@@ -34,7 +34,7 @@ export const MOCK_SUBMISSIONS: SubmissionItemResponseDto[] = [
     startAt: '2026-04-14T23:59:00',
     endAt: '2026-04-15T23:59:00',
     allowLateSubmission: false,
-    visibility: 'STAFF',
+    visibility: 'PUBLIC',
   },
   {
     contestSubmissionItemId: 3,

@@ -4,12 +4,22 @@ import type { PaginationResponseDto } from './commonDto';
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
 /** 제출물 공개 범위 (SubmissionVisibility Enum) */
-// TODO: 백엔드 enum 키 확정되면 동기화
-export type SubmissionVisibility = 'PRIVATE' | 'STAFF' | 'MEMBER' | 'PUBLIC';
+export type SubmissionVisibility = 'PUBLIC' | 'PRIVATE';
 
 /** 허용 파일 형식 (SubmissionFileFormat Enum) */
-// TODO: 백엔드 enum 키 확정되면 동기화
-export type SubmissionFileFormat = 'DOCUMENT' | 'PRESENTATION' | 'ARCHIVE' | 'IMAGE' | 'SPREADSHEET' | 'VIDEO';
+export type SubmissionFileFormat =
+  | 'PDF'
+  | 'ZIP'
+  | 'PNG'
+  | 'JPG'
+  | 'JPEG'
+  | 'GIF'
+  | 'MP4'
+  | 'PPT'
+  | 'PPTX'
+  | 'DOC'
+  | 'DOCX'
+  | 'HWP';
 
 /** 제출물 항목 응답 */
 export interface SubmissionItemResponseDto {

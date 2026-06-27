@@ -101,13 +101,13 @@ export const getMockSubmissionSetting = (_submissionItemId: number): SubmissionI
   name: '중간발표 자료2',
   contestTrackId: 1,
   description: '프로젝트 진행 상황을 확인할 수 있는 발표자료입니다.',
-  allowedFileFormats: ['DOCUMENT'],
+  allowedFileFormats: ['PDF', 'PPT', 'PPTX'],
   maxFileSizeMb: 500,
   maxFileCount: 3,
   startAt: '2026-06-18T23:59:00',
   endAt: '2026-07-18T23:59:00',
   allowLateSubmission: true,
-  visibility: 'STAFF',
+  visibility: 'PUBLIC',
 });
 
 /** submissionId별 확인 메모 목데이터 (메모 없으면 null) */

@@ -47,58 +47,54 @@ export const COMMENT_ROLE_LABEL: Record<CommentAuthorRole, string> = {
 
 /** 공개 범위 라벨 */
 export const VISIBILITY_LABEL: Record<SubmissionVisibility, string> = {
-  PRIVATE: '제출 팀만',
-  STAFF: '대회 관계자',
-  MEMBER: '회원 전체',
-  PUBLIC: '전체 공개',
+  PUBLIC: '공개',
+  PRIVATE: '비공개',
 };
 
 /** 공개 범위 선택 옵션 순서 */
-export const VISIBILITY_OPTIONS: SubmissionVisibility[] = ['PRIVATE', 'STAFF', 'MEMBER', 'PUBLIC'];
+export const VISIBILITY_OPTIONS: SubmissionVisibility[] = ['PUBLIC', 'PRIVATE'];
 
 /** 공개 범위 설명 (툴팁용) */
 export const VISIBILITY_DESCRIPTION: Record<SubmissionVisibility, string> = {
+  PUBLIC: '제출 팀 외 회원도 제출물을 열람할 수 있습니다.',
   PRIVATE: '제출 팀의 팀원과 관리자만 열람할 수 있습니다.',
-  STAFF: '팀원, 지도교수, 심사위원, 멘토, 관리자가 열람할 수 있습니다.',
-  MEMBER: '로그인한 모든 회원이 열람할 수 있습니다.',
-  PUBLIC: '비회원도 열람할 수 있습니다.',
 };
 
-/** 허용 파일 형식 그룹 (제출물 추가/수정 폼용) */
-export const FILE_FORMAT_GROUPS: {
-  key: SubmissionFileFormat;
-  label: string;
-  extensions: string[];
-  example: string;
-}[] = [
-  {
-    key: 'DOCUMENT',
-    label: '문서 파일',
-    extensions: ['.pdf', '.doc', '.docx', '.hwp'],
-    example: '보고서, 계획서, 결과보고서',
-  },
-  { key: 'PRESENTATION', label: '발표자료', extensions: ['.ppt', '.pptx', '.pdf'], example: '중간발표, 최종발표 자료' },
-  { key: 'ARCHIVE', label: '압축 파일', extensions: ['.zip', '.7z', '.tar', '.gz'], example: '소스코드, 결과물 묶음' },
-  {
-    key: 'IMAGE',
-    label: '이미지 파일',
-    extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg'],
-    example: '포스터, 썸네일, 이미지 산출물',
-  },
-  {
-    key: 'SPREADSHEET',
-    label: '스프레드시트',
-    extensions: ['.xls', '.xlsx', '.csv'],
-    example: '명단, 평가표, 데이터 파일',
-  },
-  { key: 'VIDEO', label: '영상 파일', extensions: ['.mp4', '.mov', '.webm'], example: '발표 영상, 시연 영상' },
+/** 허용 파일 형식(enum) → 확장자 */
+export const FILE_FORMAT_EXTENSION: Record<SubmissionFileFormat, string> = {
+  PDF: '.pdf',
+  DOC: '.doc',
+  DOCX: '.docx',
+  HWP: '.hwp',
+  PPT: '.ppt',
+  PPTX: '.pptx',
+  ZIP: '.zip',
+  PNG: '.png',
+  JPG: '.jpg',
+  JPEG: '.jpeg',
+  GIF: '.gif',
+  MP4: '.mp4',
+};
+
+/** 허용 파일 형식 선택 옵션 순서 (제출물 추가/수정 폼용) */
+export const FILE_FORMAT_OPTIONS: SubmissionFileFormat[] = [
+  'PDF',
+  'DOC',
+  'DOCX',
+  'HWP',
+  'PPT',
+  'PPTX',
+  'ZIP',
+  'PNG',
+  'JPG',
+  'JPEG',
+  'GIF',
+  'MP4',
 ];
 
-/** 파일 형식(enum) 목록 → 확장자 목록 (중복 제거) */
-export const getFileFormatExtensions = (formats: SubmissionFileFormat[]): string[] => {
-  const extensions = formats.flatMap((format) => FILE_FORMAT_GROUPS.find((g) => g.key === format)?.extensions ?? []);
-  return [...new Set(extensions)];
-};
+/** 파일 형식(enum) 목록 → 확장자 목록 */
+export const getFileFormatExtensions = (formats: SubmissionFileFormat[]): string[] =>
+  formats.map((format) => FILE_FORMAT_EXTENSION[format]);
 
 /** 최대 파일 크기 옵션 (MB) */
 export const FILE_SIZE_OPTIONS: { label: string; value: number }[] = [
