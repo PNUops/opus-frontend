@@ -29,8 +29,11 @@ export const ConfirmMemo = ({ memo, onSave, onDelete }: ConfirmMemoProps) => {
     setIsEditing(false);
   };
 
+  const isEmpty = content.trim().length === 0;
+
   const handleSave = () => {
-    onSave(content);
+    if (isEmpty) return;
+    onSave(content.trim());
     setIsEditing(false);
   };
 
@@ -53,7 +56,12 @@ export const ConfirmMemo = ({ memo, onSave, onDelete }: ConfirmMemoProps) => {
             <AdminActionButton variant="outline" size="sm" onClick={handleCancel}>
               취소하기
             </AdminActionButton>
-            <AdminActionButton size="sm" className="bg-mainGreen hover:bg-green-700" onClick={handleSave}>
+            <AdminActionButton
+              size="sm"
+              className="bg-mainGreen hover:bg-green-700"
+              onClick={handleSave}
+              disabled={isEmpty}
+            >
               저장하기
             </AdminActionButton>
           </div>

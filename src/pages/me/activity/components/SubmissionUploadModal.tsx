@@ -5,8 +5,14 @@ import { CalendarDays, Eye, FileCheck, FileText, UploadCloud, X } from 'lucide-r
 
 import { AdminActionButton } from '@components/admin';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
+import { useToast } from '@hooks/useToast';
 import { getFileFormatExtensions, VISIBILITY_LABEL } from '@constants/submission';
 import type { SubmissionFileResponseDto, SubmissionItemSettingResponseDto } from '@dto/submissionDto';
+
+const getExtension = (fileName: string) => {
+  const dotIndex = fileName.lastIndexOf('.');
+  return dotIndex < 0 ? '' : fileName.slice(dotIndex).toLowerCase();
+};
 
 const formatDateTimeWithDay = (value: string) => dayjs(value).locale('ko').format('YYYY.MM.DD (ddd) HH:mm');
 const formatFileSize = (bytes: number) => {
@@ -37,16 +43,36 @@ export const SubmissionUploadModal = ({
   onSave,
   onRemoveExistingFile,
 }: SubmissionUploadModalProps) => {
+  const toast = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [newFiles, setNewFiles] = useState<File[]>([]);
 
   const allowedFormats = getFileFormatExtensions(setting.allowedFileFormats);
+  const maxSizeBytes = setting.maxFileSizeMb * 1024 * 1024;
   const totalCount = existingFiles.length + newFiles.length;
   const remaining = Math.max(0, setting.maxFileCount - totalCount);
 
   const addFiles = (fileList: FileList | null) => {
     if (!fileList) return;
-    const picked = Array.from(fileList).slice(0, remaining);
+
+    // 형식·크기 검증 (위반 파일은 제외하고 안내)
+    const valid = Array.from(fileList).filter((file) => {
+      if (allowedFormats.length > 0 && !allowedFormats.includes(getExtension(file.name))) {
+        toast(`${file.name}은(는) 허용되지 않는 파일 형식이에요.`, 'error');
+        return false;
+      }
+      if (file.size > maxSizeBytes) {
+        toast(`${file.name}은(는) 최대 크기 ${setting.maxFileSizeMb}MB를 초과했어요.`, 'error');
+        return false;
+      }
+      return true;
+    });
+
+    // 개수 제한
+    if (valid.length > remaining) {
+      toast(`파일은 최대 ${setting.maxFileCount}개까지 첨부할 수 있어요.`, 'error');
+    }
+    const picked = valid.slice(0, remaining);
     if (picked.length > 0) setNewFiles((prev) => [...prev, ...picked]);
   };
 

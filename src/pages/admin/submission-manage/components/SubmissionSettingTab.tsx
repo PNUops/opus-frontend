@@ -13,10 +13,11 @@ import { Dialog } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
 
 import { OPERATION_STATUS_FILTER_OPTIONS, VISIBILITY_LABEL } from '@constants/submission';
-import { MOCK_SUBMISSIONS, MOCK_TRACKS } from '../mocks/mockSubmissions';
+import { getMockSubmissionItemSetting, MOCK_SUBMISSIONS, MOCK_TRACKS } from '../mocks/mockSubmissions';
 import type {
   SubmissionItemRequestDto,
   SubmissionItemResponseDto,
+  SubmissionItemSettingResponseDto,
   SubmissionOperationStatus,
 } from '@dto/submissionDto';
 import type { SubmissionFormValues } from '../types/submission';
@@ -25,18 +26,18 @@ import { SubmissionFormModal } from './SubmissionFormModal';
 
 type ModalState = { mode: 'create' } | { mode: 'edit'; item: SubmissionItemResponseDto } | null;
 
-/** 수정 모달 진입 시 행 데이터를 폼 값으로 변환 (목데이터에 없는 항목은 기본값) */
-const toFormValues = (item: SubmissionItemResponseDto): SubmissionFormValues => ({
-  name: item.name,
-  trackId: MOCK_TRACKS.find((track) => track.trackName === item.trackName)?.trackId ?? null,
-  description: '',
-  fileFormats: [],
-  maxFileSizeMb: 500,
-  maxFileCount: 1,
-  startAt: item.startAt,
-  endAt: item.endAt,
-  allowLateSubmission: item.allowLateSubmission,
-  visibility: item.visibility,
+/** 설정값 확인 응답을 수정 폼 값으로 변환 */
+const settingToFormValues = (setting: SubmissionItemSettingResponseDto): SubmissionFormValues => ({
+  name: setting.name,
+  trackId: setting.contestTrackId ?? null,
+  description: setting.description ?? '',
+  fileFormats: setting.allowedFileFormats,
+  maxFileSizeMb: setting.maxFileSizeMb,
+  maxFileCount: setting.maxFileCount,
+  startAt: setting.startAt,
+  endAt: setting.endAt,
+  allowLateSubmission: setting.allowLateSubmission,
+  visibility: setting.visibility,
 });
 
 type StatusFilter = SubmissionOperationStatus | '';
@@ -180,7 +181,11 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
           <SubmissionFormModal
             mode={modalState.mode}
             tracks={MOCK_TRACKS}
-            initialValues={modalState.mode === 'edit' ? toFormValues(modalState.item) : undefined}
+            initialValues={
+              modalState.mode === 'edit'
+                ? settingToFormValues(getMockSubmissionItemSetting(modalState.item.contestSubmissionItemId))
+                : undefined
+            }
             onSubmit={handleSubmit}
             onClose={() => setModalState(null)}
           />
