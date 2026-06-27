@@ -47,7 +47,14 @@ const MyProjectPreview = ({ project }: { project: MyProjectDto }) => {
       <h3 className="mb-2 truncate text-sm font-medium sm:text-base" title={contestName}>
         {contestName}
       </h3>
-      <TeamCard contestId={contestId} teamId={teamId} teamName={teamName} projectName={projectName} awards={awards} />
+      <TeamCard
+        contestId={contestId}
+        teamId={teamId}
+        teamName={teamName}
+        projectName={projectName}
+        awards={awards}
+        to={`/me/contests/${contestId}/teams/${teamId}/dashboard`}
+      />
     </div>
   );
 };

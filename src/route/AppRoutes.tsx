@@ -37,6 +37,8 @@ import MyLikePage from '@pages/me/activity/sub/MyLikePage';
 import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
 import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
 import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
+import TeamDashboardPage from '@pages/me/team/TeamDashboardPage';
+import TeamPagePlaceholder from '@pages/me/team/TeamPagePlaceholder';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -68,10 +70,21 @@ const AppRoutes = () =>
           path: 'me',
           element: <MyPageLayout />,
           children: [
+            { index: true, element: <Navigate to="activity" replace /> },
             { path: 'activity', element: <ActivityPage /> },
             { path: 'activity/likes', element: <MyLikePage /> },
             { path: 'activity/comments', element: <MyCommentPage /> },
             { path: 'activity/:teamId/submission', element: <MySubmissionPage /> },
+            {
+              path: 'contests/:contestId/teams/:teamId',
+              element: <Navigate to="dashboard" replace />,
+            },
+            { path: 'contests/:contestId/teams/:teamId/dashboard', element: <TeamDashboardPage /> },
+            { path: 'contests/:contestId/teams/:teamId/submissions', element: <TeamPagePlaceholder title="제출물" /> },
+            {
+              path: 'contests/:contestId/teams/:teamId/project-info',
+              element: <TeamPagePlaceholder title="프로젝트 정보" />,
+            },
             { path: 'account', element: <AccountPage /> },
           ],
         },
