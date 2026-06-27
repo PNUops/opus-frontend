@@ -1,23 +1,23 @@
 import { FileText, PanelRightClose } from 'lucide-react';
 
 import { SheetClose, SheetTitle } from '@components/ui/sheet';
-import { COMMENT_ROLE_LABEL } from '@constants/submission';
+import { FEEDBACK_ROLE_LABEL } from '@constants/submission';
 import type {
-  SubmissionCommentResponseDto,
   SubmissionDetailResponseDto,
+  SubmissionFeedbackResponseDto,
   SubmissionFileResponseDto,
 } from '@dto/submissionDto';
 
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { SubmissionTeamSummary } from './SubmissionTeamSummary';
 
-interface SubmissionCommentDrawerProps {
+interface SubmissionFeedbackDrawerProps {
   detail: SubmissionDetailResponseDto;
-  comments: SubmissionCommentResponseDto[];
+  feedbacks: SubmissionFeedbackResponseDto[];
   onDownloadFile: (file: SubmissionFileResponseDto) => void;
 }
 
-export const SubmissionCommentDrawer = ({ detail, comments, onDownloadFile }: SubmissionCommentDrawerProps) => {
+export const SubmissionFeedbackDrawer = ({ detail, feedbacks, onDownloadFile }: SubmissionFeedbackDrawerProps) => {
   return (
     <div className="flex h-full flex-col">
       {/* 헤더 */}
@@ -27,7 +27,7 @@ export const SubmissionCommentDrawer = ({ detail, comments, onDownloadFile }: Su
             <PanelRightClose size={20} />
           </button>
         </SheetClose>
-        <SheetTitle className="text-base font-semibold">코멘트 보기</SheetTitle>
+        <SheetTitle className="text-base font-semibold">피드백 보기</SheetTitle>
       </div>
 
       {/* 본문 (스크롤) */}
@@ -35,13 +35,13 @@ export const SubmissionCommentDrawer = ({ detail, comments, onDownloadFile }: Su
         <SubmissionTeamSummary detail={detail} />
 
         <div className="flex flex-col gap-3">
-          {comments.length === 0 ? (
+          {feedbacks.length === 0 ? (
             <div className="text-midGray border-lightGray rounded-xl border py-10 text-center text-sm">
-              아직 코멘트가 없어요.
+              아직 피드백이 없어요.
             </div>
           ) : (
-            comments.map((comment) => (
-              <CommentItem key={comment.commentId} comment={comment} onDownloadFile={onDownloadFile} />
+            feedbacks.map((feedback) => (
+              <FeedbackItem key={feedback.feedbackId} feedback={feedback} onDownloadFile={onDownloadFile} />
             ))
           )}
         </div>
@@ -50,30 +50,30 @@ export const SubmissionCommentDrawer = ({ detail, comments, onDownloadFile }: Su
   );
 };
 
-interface CommentItemProps {
-  comment: SubmissionCommentResponseDto;
+interface FeedbackItemProps {
+  feedback: SubmissionFeedbackResponseDto;
   onDownloadFile: (file: SubmissionFileResponseDto) => void;
 }
 
-const CommentItem = ({ comment, onDownloadFile }: CommentItemProps) => {
+const FeedbackItem = ({ feedback, onDownloadFile }: FeedbackItemProps) => {
   return (
     <div className="border-lightGray rounded-xl border p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
           <div className="bg-lightGray h-8 w-8 shrink-0 rounded-full" />
-          <span className="text-darkGray text-sm font-semibold">{comment.memberName}</span>
+          <span className="text-darkGray text-sm font-semibold">{feedback.memberName}</span>
           <span className="bg-whiteGray text-midGray rounded-md px-2 py-0.5 text-xs">
-            {COMMENT_ROLE_LABEL[comment.memberRole]}
+            {FEEDBACK_ROLE_LABEL[feedback.roleType]}
           </span>
         </div>
-        <span className="text-midGray shrink-0 text-xs">{formatDateTime(comment.createdAt)}</span>
+        <span className="text-midGray shrink-0 text-xs">{formatDateTime(feedback.createdAt)}</span>
       </div>
 
-      <p className="text-darkGray mt-3 text-sm leading-relaxed whitespace-pre-wrap">{comment.description}</p>
+      <p className="text-darkGray mt-3 text-sm leading-relaxed whitespace-pre-wrap">{feedback.description}</p>
 
-      {comment.files.length > 0 && (
+      {feedback.files.length > 0 && (
         <div className="mt-3 flex flex-col gap-1">
-          {comment.files.map((file) => (
+          {feedback.files.map((file) => (
             <button
               key={file.fileId}
               type="button"

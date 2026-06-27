@@ -1,7 +1,7 @@
 import type {
   SubmissionArchiveResponseDto,
-  SubmissionCommentResponseDto,
   SubmissionDetailResponseDto,
+  SubmissionFeedbackResponseDto,
   SubmissionItemResponseDto,
   SubmissionStatus,
   SubmissionStatusResponseDto,
@@ -152,19 +152,19 @@ export const buildMockSubmissionDetail = (row: SubmissionStatusResponseDto): Sub
     fileName: `AI데이터_${row.teamName}_최종발표자료_v2.pdf`,
     fileSize: 13002342,
   })),
-  commentCount: 3,
+  feedbackCount: 3,
 });
 
 const COMMENT_BODY =
   '자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요. 자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요.';
 
-/** TODO: API 연동 전 임시 코멘트 목데이터 (제출 ID 기반으로 합성) */
-export const buildMockComments = (row: SubmissionStatusResponseDto): SubmissionCommentResponseDto[] =>
+/** TODO: API 연동 전 임시 피드백 목데이터 (제출 ID 기반으로 합성) */
+export const buildMockFeedbacks = (row: SubmissionStatusResponseDto): SubmissionFeedbackResponseDto[] =>
   Array.from({ length: 3 }, (_, index) => ({
-    commentId: index + 1,
+    feedbackId: index + 1,
     memberId: index + 1,
     memberName: '김민수',
-    memberRole: 'MENTOR',
+    roleType: 'MENTOR',
     description: COMMENT_BODY,
     createdAt: '2026-05-14T21:47:00',
     updatedAt: '2026-05-14T21:47:00',

@@ -1,5 +1,5 @@
 import type {
-  CommentAuthorRole,
+  FeedbackAuthorRole,
   SubmissionFileFormat,
   SubmissionOperationStatus,
   SubmissionStatus,
@@ -38,8 +38,8 @@ export const SUBMISSION_STATUS_FILTER_OPTIONS: { label: string; value: Submissio
   { label: '마감 후 미제출', value: 'NOT_SUBMITTED_AFTER_DEADLINE' },
 ];
 
-/** 코멘트 작성자 역할 라벨 */
-export const COMMENT_ROLE_LABEL: Record<CommentAuthorRole, string> = {
+/** 피드백 작성자 역할 라벨 */
+export const FEEDBACK_ROLE_LABEL: Record<FeedbackAuthorRole, string> = {
   MENTOR: '멘토',
   PROFESSOR: '지도교수',
   ADMIN: '관리자',

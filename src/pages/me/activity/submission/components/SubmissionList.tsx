@@ -4,7 +4,7 @@ import { useToast } from '@hooks/useToast';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
 import type { SubmissionFileResponseDto } from '@dto/submissionDto';
 
-import { getMockConfirmMemo, getMockMyComments, getMockMySubmissionDetail } from '../mocks/mockMySubmission';
+import { getMockConfirmMemo, getMockMyFeedbacks, getMockMySubmissionDetail } from '../mocks/mockMySubmission';
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { StatusBadge } from './StatusBadge';
 import { SubmissionDetailPanel } from './SubmissionDetailPanel';
@@ -98,7 +98,7 @@ export const SubmissionList = ({ items }: { items: MySubmissionListItemDto[] }) 
                       <SubmissionDetailPanel
                         item={item}
                         detail={getMockMySubmissionDetail(item)}
-                        comments={getMockMyComments(item.submissionId ?? 0)}
+                        feedbacks={getMockMyFeedbacks(item.submissionId ?? 0)}
                         memo={memos[item.submissionItemId] ?? null}
                         onDownloadFile={handleDownloadFile}
                         onSaveMemo={(content) => handleSaveMemo(item, content)}

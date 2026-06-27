@@ -79,33 +79,32 @@ export interface SubmissionFileResponseDto {
   fileSize: number;
 }
 
-/** 코멘트 작성자 역할 */
-export type CommentAuthorRole = 'MENTOR' | 'PROFESSOR' | 'ADMIN';
+/** 피드백 작성자 역할 (roleType) */
+// TODO: 백엔드 enum 키 확정되면 동기화
+export type FeedbackAuthorRole = 'MENTOR' | 'PROFESSOR' | 'ADMIN';
 
-/** 제출물 코멘트 */
-export interface SubmissionCommentResponseDto {
-  /** 코멘트 ID */
-  commentId: number;
+/** 제출물 피드백 */
+export interface SubmissionFeedbackResponseDto {
+  /** 피드백 ID */
+  feedbackId: number;
   /** 작성자 ID */
   memberId: number;
   /** 작성자 이름 */
   memberName: string;
-  /** 작성자 역할 */
-  memberRole: CommentAuthorRole;
-  /** 코멘트 본문 */
+  /** 피드백 본문 */
   description: string;
   /** 작성 시각 */
   createdAt: string;
   /** 마지막 수정 시각 */
   updatedAt: string;
+  /** 작성자 역할 */
+  roleType: FeedbackAuthorRole;
   /** 첨부파일 목록 */
   files: SubmissionFileResponseDto[];
 }
 
-/** 코멘트 목록 조회 응답 */
-export interface GetSubmissionCommentsResponseDto {
-  comments: SubmissionCommentResponseDto[];
-}
+/** 피드백 목록 조회 응답 */
+export type GetSubmissionFeedbacksResponseDto = SubmissionFeedbackResponseDto[];
 
 /** 제출물 상세 조회 응답 */
 export interface SubmissionDetailResponseDto {
@@ -131,8 +130,8 @@ export interface SubmissionDetailResponseDto {
   lastModifiedAt: string | null;
   /** 제출 파일 목록 */
   files: SubmissionFileResponseDto[];
-  /** 코멘트 개수 */
-  commentCount: number;
+  /** 피드백 개수 */
+  feedbackCount: number;
 }
 
 /** 제출 파일 다운로드 - 아카이브(제출물 종류 x 분과) 항목 */

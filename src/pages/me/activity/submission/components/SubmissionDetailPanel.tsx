@@ -6,15 +6,15 @@ import { useToast } from '@hooks/useToast';
 import { VISIBILITY_LABEL } from '@constants/submission';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
 import type {
-  SubmissionCommentResponseDto,
   SubmissionDetailResponseDto,
+  SubmissionFeedbackResponseDto,
   SubmissionFileResponseDto,
 } from '@dto/submissionDto';
 
 import { SubmissionUploadModal } from '../../components/SubmissionUploadModal';
 import { getMockSubmissionSetting } from '../mocks/mockMySubmission';
 import { formatDateTimeWithDay } from '../utils/format';
-import { CommentList } from './CommentList';
+import { FeedbackList } from './FeedbackList';
 import { ConfirmMemo } from './ConfirmMemo';
 import { FileChips } from './FileChips';
 import { StatusBadge } from './StatusBadge';
@@ -22,7 +22,7 @@ import { StatusBadge } from './StatusBadge';
 interface SubmissionDetailPanelProps {
   item: MySubmissionListItemDto;
   detail: SubmissionDetailResponseDto;
-  comments: SubmissionCommentResponseDto[];
+  feedbacks: SubmissionFeedbackResponseDto[];
   memo: ConfirmMemoResponseDto | null;
   onDownloadFile: (file: SubmissionFileResponseDto) => void;
   onSaveMemo: (content: string) => void;
@@ -32,7 +32,7 @@ interface SubmissionDetailPanelProps {
 export const SubmissionDetailPanel = ({
   item,
   detail,
-  comments,
+  feedbacks,
   memo,
   onDownloadFile,
   onSaveMemo,
@@ -93,7 +93,7 @@ export const SubmissionDetailPanel = ({
       {/* 피드백 */}
       <section className="flex flex-col gap-3">
         <h4 className="text-darkGray text-base font-bold">피드백</h4>
-        <CommentList comments={comments} onDownloadFile={onDownloadFile} />
+        <FeedbackList feedbacks={feedbacks} onDownloadFile={onDownloadFile} />
       </section>
 
       {/* 확인 메모 */}

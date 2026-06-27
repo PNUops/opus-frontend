@@ -11,10 +11,10 @@ import { cn } from '@components/lib/utils';
 import { SUBMISSION_STATUS_FILTER_OPTIONS } from '@constants/submission';
 import type { SubmissionStatus, SubmissionStatusResponseDto } from '@dto/submissionDto';
 
-import { buildMockComments, buildMockSubmissionDetail, MOCK_SUBMISSION_STATUSES } from '../mocks/mockSubmissions';
+import { buildMockFeedbacks, buildMockSubmissionDetail, MOCK_SUBMISSION_STATUSES } from '../mocks/mockSubmissions';
 import { SubmissionStatusBadge } from './SubmissionBadges';
 import { SubmissionDetailDrawer } from './SubmissionDetailDrawer';
-import { SubmissionCommentDrawer } from './SubmissionCommentDrawer';
+import { SubmissionFeedbackDrawer } from './SubmissionFeedbackDrawer';
 
 const TABLE_HEADERS = ['팀 이름', '분과', '제출물 항목', '제출 상태', '최초 제출일시', '최종 제출일시'];
 const PAGE_SIZE = 10;
@@ -38,7 +38,7 @@ export const SubmissionStatusTab = () => {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [detailTarget, setDetailTarget] = useState<SubmissionStatusResponseDto | null>(null);
-  const [commentTarget, setCommentTarget] = useState<SubmissionStatusResponseDto | null>(null);
+  const [feedbackTarget, setFeedbackTarget] = useState<SubmissionStatusResponseDto | null>(null);
 
   // TODO: API 연동 시 목데이터 대체
   const submissions = MOCK_SUBMISSION_STATUSES;
@@ -230,10 +230,10 @@ export const SubmissionStatusTab = () => {
                         onClick={() => setDetailTarget(submission)}
                       />
                       <ActionIconButton
-                        label="코멘트"
+                        label="피드백"
                         icon={<MessageSquare size={16} />}
                         disabled={submission.submissionId === null}
-                        onClick={() => setCommentTarget(submission)}
+                        onClick={() => setFeedbackTarget(submission)}
                       />
                       <ActionIconButton
                         label="다운로드"
@@ -263,8 +263,8 @@ export const SubmissionStatusTab = () => {
           {detailTarget && (
             <SubmissionDetailDrawer
               detail={buildMockSubmissionDetail(detailTarget)}
-              onViewComments={() => {
-                setCommentTarget(detailTarget);
+              onViewFeedbacks={() => {
+                setFeedbackTarget(detailTarget);
                 setDetailTarget(null);
               }}
             />
@@ -272,13 +272,13 @@ export const SubmissionStatusTab = () => {
         </SheetContent>
       </Sheet>
 
-      {/* 코멘트 Drawer */}
-      <Sheet open={commentTarget !== null} onOpenChange={(open) => !open && setCommentTarget(null)}>
+      {/* 피드백 Drawer */}
+      <Sheet open={feedbackTarget !== null} onOpenChange={(open) => !open && setFeedbackTarget(null)}>
         <SheetContent className="gap-0 p-0">
-          {commentTarget && (
-            <SubmissionCommentDrawer
-              detail={buildMockSubmissionDetail(commentTarget)}
-              comments={buildMockComments(commentTarget)}
+          {feedbackTarget && (
+            <SubmissionFeedbackDrawer
+              detail={buildMockSubmissionDetail(feedbackTarget)}
+              feedbacks={buildMockFeedbacks(feedbackTarget)}
               onDownloadFile={(file: SubmissionFileResponseDto) =>
                 toast(`${file.fileName} 다운로드를 시작합니다.`, 'success')
               }

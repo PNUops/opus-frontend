@@ -5,8 +5,8 @@ import type {
   MySubmissionTimelineItemDto,
 } from '@dto/meDto';
 import type {
-  SubmissionCommentResponseDto,
   SubmissionDetailResponseDto,
+  SubmissionFeedbackResponseDto,
   SubmissionItemSettingResponseDto,
 } from '@dto/submissionDto';
 
@@ -66,30 +66,30 @@ export const getMockMySubmissionDetail = (item: MySubmissionListItemDto): Submis
   firstSubmittedAt: '2026-07-18T23:55:00',
   lastModifiedAt: '2026-07-18T23:55:00',
   files: mockFiles('참고자료'),
-  commentCount: 2,
+  feedbackCount: 2,
 });
 
-const COMMENT_BODY =
+const FEEDBACK_BODY =
   '자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요. 자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요.';
 
-/** TODO: API 연동 전 임시 코멘트(피드백) 목데이터 (어드민과 동일 DTO) */
-export const getMockMyComments = (_submissionId: number): SubmissionCommentResponseDto[] => [
+/** TODO: API 연동 전 임시 피드백 목데이터 (어드민과 동일 DTO) */
+export const getMockMyFeedbacks = (_submissionId: number): SubmissionFeedbackResponseDto[] => [
   {
-    commentId: 1,
+    feedbackId: 1,
     memberId: 1,
     memberName: '김민수',
-    memberRole: 'MENTOR',
-    description: COMMENT_BODY,
+    roleType: 'MENTOR',
+    description: FEEDBACK_BODY,
     createdAt: '2026-05-14T21:47:00',
     updatedAt: '2026-05-14T21:47:00',
     files: mockFiles('참고자료'),
   },
   {
-    commentId: 2,
+    feedbackId: 2,
     memberId: 2,
     memberName: '김민수',
-    memberRole: 'PROFESSOR',
-    description: COMMENT_BODY,
+    roleType: 'PROFESSOR',
+    description: FEEDBACK_BODY,
     createdAt: '2026-05-14T21:47:00',
     updatedAt: '2026-05-14T21:47:00',
     files: mockFiles('참고자료'),
