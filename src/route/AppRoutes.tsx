@@ -37,6 +37,7 @@ import MyLikePage from '@pages/me/activity/sub/MyLikePage';
 import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
 import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
 import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
+import RoleAssignmentPage from '@pages/admin/role-assignment/RoleAssignmentPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -112,6 +113,7 @@ const AppRoutes = () =>
                 // 대회
                 { path: 'manage', element: <ContestManagePage /> },
                 { path: 'team-setting', element: <TeamSettingPage /> },
+                { path: 'roles', element: <RoleAssignmentPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },
