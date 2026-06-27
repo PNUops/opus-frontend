@@ -7,6 +7,7 @@ import logoOpusAdmin from './logo-opus-admin.svg';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { cn } from '@components/lib/utils';
 import { useContestId } from '@hooks/useId';
+import { useToast } from '@hooks/useToast';
 import QueryWrapper from '@providers/QueryWrapper';
 import { contestsOption } from '@queries/contest';
 
@@ -34,7 +35,7 @@ const adminSidebarSections: AdminSidebarSection[] = [
     title: '참여자/역할',
     links: [
       { to: 'team-setting', label: '팀 일괄 등록' },
-      { label: '지도교수 및 멘토 지정', disabled: true },
+      { to: 'roles', label: '지도교수 및 멘토 지정' },
     ],
   },
   {
@@ -137,7 +138,7 @@ const AdminContestSidebarContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { data: contests } = useSuspenseQuery(contestsOption());
-  const selectedContestId = contestId?.toString() ?? contests[0]?.contestId.toString();
+  const selectedContestId = contestId?.toString();
   const activeSectionTitle = getActiveSectionTitle(location.pathname, selectedContestId);
   const [openSectionTitle, setOpenSectionTitle] = useState<string | null>(activeSectionTitle);
 
@@ -242,17 +243,33 @@ const AdminSidebarSection = ({ contestId, isActive, isOpen, section, onClose, on
 };
 
 const AdminSidebarItem = ({ contestId, link }: { contestId?: string; link: AdminSidebarLink }) => {
-  if (!contestId || link.disabled || !link.to) {
+  const toast = useToast();
+  const { to, disabled, label } = link;
+
+  if (!contestId && to && !disabled) {
+    return (
+      <button
+        type="button"
+        className="flex h-9 w-full cursor-not-allowed items-center border-l-[3px] border-l-transparent px-5 text-left text-[14px] font-medium text-gray-500"
+        aria-disabled="true"
+        onClick={() => toast('대회를 선택해주세요', 'info')}
+      >
+        {label}
+      </button>
+    );
+  }
+
+  if (disabled || !to) {
     return (
       <span className="flex h-9 cursor-not-allowed items-center border-l-[3px] border-l-transparent px-5 text-[14px] font-medium text-gray-500">
-        {link.label}
+        {label}
       </span>
     );
   }
 
   return (
-    <NavLink to={getContestLinkPath(contestId, link.to)} className={contestLinkClass}>
-      {link.label}
+    <NavLink to={getContestLinkPath(contestId!, to)} className={contestLinkClass}>
+      {label}
     </NavLink>
   );
 };
