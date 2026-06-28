@@ -71,7 +71,7 @@ const AppRoutes = () =>
             { path: 'activity', element: <ActivityPage /> },
             { path: 'activity/likes', element: <MyLikePage /> },
             { path: 'activity/comments', element: <MyCommentPage /> },
-            { path: 'activity/:teamId/submission', element: <MySubmissionPage /> },
+            { path: 'activity/:contestId/:teamId/submission', element: <MySubmissionPage /> },
             { path: 'account', element: <AccountPage /> },
           ],
         },

@@ -4,11 +4,7 @@ import type {
   MySubmissionSummaryDto,
   MySubmissionTimelineItemDto,
 } from '@dto/meDto';
-import type {
-  SubmissionDetailResponseDto,
-  SubmissionFeedbackResponseDto,
-  SubmissionItemSettingResponseDto,
-} from '@dto/submissionDto';
+import type { SubmissionFeedbackResponseDto, SubmissionItemSettingResponseDto } from '@dto/submissionDto';
 
 /** TODO: API 연동 전 임시 제출물 상태 요약 목데이터 */
 export const getMockMySubmissionSummary = (_teamId: number): MySubmissionSummaryDto => ({
@@ -52,22 +48,6 @@ export const getMockMySubmissionList = (_teamId: number): MySubmissionListItemDt
     files: [{ fileId: 1, fileName: '창업트랙_artify_중간발표자료2.pptx', fileSize: 13002342 }],
   },
 ];
-
-/** TODO: API 연동 전 임시 제출물 상세 (어드민과 동일 DTO) */
-export const getMockMySubmissionDetail = (item: MySubmissionListItemDto): SubmissionDetailResponseDto => ({
-  submissionId: item.submissionId ?? 0,
-  teamId: 0,
-  teamName: '퓨처메이커스',
-  projectOverview: item.description,
-  trackName: 'AI/데이터',
-  submissionTypeName: item.submissionTypeName,
-  status: item.status,
-  deadlineAt: item.deadlineAt,
-  firstSubmittedAt: '2026-07-18T23:55:00',
-  lastModifiedAt: '2026-07-18T23:55:00',
-  files: mockFiles('참고자료'),
-  feedbackCount: 2,
-});
 
 const FEEDBACK_BODY =
   '자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요. 자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요.';

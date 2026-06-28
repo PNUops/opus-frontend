@@ -1,4 +1,4 @@
-import { useTeamId } from '@hooks/useId';
+import { useContestId, useTeamId } from '@hooks/useId';
 
 import {
   getMockMySubmissionList,
@@ -10,6 +10,7 @@ import { SubmissionTimeline } from './components/SubmissionTimeline';
 import { SubmissionList } from './components/SubmissionList';
 
 const MySubmissionPage = () => {
+  const contestId = useContestId() ?? 0;
   const teamId = useTeamId() ?? 0;
 
   // TODO: API 연동 시 teamId로 조회
@@ -36,7 +37,7 @@ const MySubmissionPage = () => {
         </div>
       </section>
 
-      <SubmissionList items={submissions} />
+      <SubmissionList contestId={contestId} items={submissions} />
     </div>
   );
 };

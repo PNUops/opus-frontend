@@ -1,6 +1,5 @@
 import type {
   SubmissionArchiveResponseDto,
-  SubmissionDetailResponseDto,
   SubmissionFeedbackResponseDto,
   SubmissionItemResponseDto,
   SubmissionItemSettingResponseDto,
@@ -148,26 +147,6 @@ export const MOCK_SUBMISSION_STATUSES: SubmissionStatusResponseDto[] = Array.fro
     firstSubmittedAt: isSubmitted ? '2026-05-15T23:59:00' : null,
     lastModifiedAt: isSubmitted ? '2026-05-15T23:59:00' : null,
   };
-});
-
-/** TODO: API 연동 전 임시 제출물 상세 목데이터 (목록 행 기반으로 합성) */
-export const buildMockSubmissionDetail = (row: SubmissionStatusResponseDto): SubmissionDetailResponseDto => ({
-  submissionId: row.submissionId ?? 0,
-  teamId: row.teamId,
-  teamName: row.teamName,
-  projectOverview: '퓨처를 메이킹하는 프로젝트',
-  trackName: row.trackName,
-  submissionTypeName: row.submissionTypeName,
-  status: row.status,
-  deadlineAt: '2026-05-15T23:59:00',
-  firstSubmittedAt: row.firstSubmittedAt,
-  lastModifiedAt: row.lastModifiedAt,
-  files: Array.from({ length: 4 }, (_, index) => ({
-    fileId: index + 1,
-    fileName: `AI데이터_${row.teamName}_최종발표자료_v2.pdf`,
-    fileSize: 13002342,
-  })),
-  feedbackCount: 3,
 });
 
 const COMMENT_BODY =

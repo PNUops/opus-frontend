@@ -1,15 +1,12 @@
 import { ReactNode, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { CalendarDays, Clock, Eye, FileCheck } from 'lucide-react';
 
 import { Dialog } from '@components/ui/dialog';
-import { useToast } from '@hooks/useToast';
-import { VISIBILITY_LABEL } from '@constants/submission';
+import { submissionDetailOption } from '@queries/submission';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
-import type {
-  SubmissionDetailResponseDto,
-  SubmissionFeedbackResponseDto,
-  SubmissionFileResponseDto,
-} from '@dto/submissionDto';
+import type { SubmissionFeedbackResponseDto, SubmissionFileResponseDto } from '@dto/submissionDto';
+import { VISIBILITY_LABEL } from '@constants/submission';
 
 import { SubmissionUploadModal } from '../../components/SubmissionUploadModal';
 import { getMockSubmissionSetting } from '../mocks/mockMySubmission';
@@ -20,8 +17,8 @@ import { FileChips } from './FileChips';
 import { StatusBadge } from './StatusBadge';
 
 interface SubmissionDetailPanelProps {
+  contestId: number;
   item: MySubmissionListItemDto;
-  detail: SubmissionDetailResponseDto;
   feedbacks: SubmissionFeedbackResponseDto[];
   memo: ConfirmMemoResponseDto | null;
   onDownloadFile: (file: SubmissionFileResponseDto) => void;
@@ -30,19 +27,22 @@ interface SubmissionDetailPanelProps {
 }
 
 export const SubmissionDetailPanel = ({
+  contestId,
   item,
-  detail,
   feedbacks,
   memo,
   onDownloadFile,
   onSaveMemo,
   onDeleteMemo,
 }: SubmissionDetailPanelProps) => {
-  const toast = useToast();
   const [uploadOpen, setUploadOpen] = useState(false);
 
   // 제출물 설정값 확인 API에서 시작/마감일시, 지각 제출, 공개 범위, 파일 제약을 가져옴
   const setting = getMockSubmissionSetting(item.submissionItemId);
+
+  // 제출물 상세 조회 — 제출 ID가 있을 때만 (미제출이면 최초 제출 플로우)
+  const { data: detail } = useQuery(submissionDetailOption(contestId, item.submissionId ?? 0));
+  const files = detail?.files ?? [];
 
   return (
     <div className="border-subGreen flex flex-col gap-6 rounded-xl border bg-green-50/30 p-5">
@@ -58,7 +58,7 @@ export const SubmissionDetailPanel = ({
             onClick={() => setUploadOpen(true)}
             className="border-mainGreen text-mainGreen shrink-0 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-green-50"
           >
-            다시 제출하기
+            {item.submissionId === null ? '제출하기' : '다시 제출하기'}
           </button>
         </div>
 
@@ -74,19 +74,23 @@ export const SubmissionDetailPanel = ({
           <InfoItem
             icon={<Clock size={16} />}
             label="최초 제출일시"
-            value={formatDateTimeWithDay(detail.firstSubmittedAt)}
+            value={formatDateTimeWithDay(detail?.firstSubmittedAt ?? null)}
           />
           <InfoItem
             icon={<Clock size={16} />}
             label="최종 수정일시"
-            value={formatDateTimeWithDay(detail.lastModifiedAt)}
+            value={formatDateTimeWithDay(detail?.lastModifiedAt ?? null)}
           />
-          <InfoItem icon={<Clock size={16} />} label="제출 상태" value={<StatusBadge status={detail.status} />} />
+          <InfoItem
+            icon={<Clock size={16} />}
+            label="제출 상태"
+            value={<StatusBadge status={detail?.status ?? item.status} />}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
           <span className="text-midGray text-sm">제출 파일</span>
-          <FileChips files={detail.files} onDownload={onDownloadFile} />
+          <FileChips files={files} onDownload={onDownloadFile} />
         </div>
       </section>
 
@@ -107,20 +111,14 @@ export const SubmissionDetailPanel = ({
       <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
         {uploadOpen && (
           <SubmissionUploadModal
+            contestId={contestId}
+            submissionItemId={item.submissionItemId}
+            submissionId={item.submissionId}
             submissionTypeName={item.submissionTypeName}
             description={item.description}
             setting={setting}
-            existingFiles={detail.files}
+            existingFiles={files}
             onClose={() => setUploadOpen(false)}
-            onSave={(files) => {
-              // TODO: API 연동 (초기 업로드 / 파일 첨부)
-              toast(`${files.length}개 파일을 업로드했어요.`, 'success');
-              setUploadOpen(false);
-            }}
-            onRemoveExistingFile={() => {
-              // TODO: API 연동 (제출 파일 삭제)
-              toast('파일을 삭제했어요.', 'success');
-            }}
           />
         )}
       </Dialog>

@@ -4,14 +4,14 @@ import { useToast } from '@hooks/useToast';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
 import type { SubmissionFileResponseDto } from '@dto/submissionDto';
 
-import { getMockConfirmMemo, getMockMyFeedbacks, getMockMySubmissionDetail } from '../mocks/mockMySubmission';
+import { getMockConfirmMemo, getMockMyFeedbacks } from '../mocks/mockMySubmission';
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { StatusBadge } from './StatusBadge';
 import { SubmissionDetailPanel } from './SubmissionDetailPanel';
 
 const GRID_COLS = 'grid grid-cols-[1fr_160px_110px_200px_110px] items-center gap-4';
 
-export const SubmissionList = ({ items }: { items: MySubmissionListItemDto[] }) => {
+export const SubmissionList = ({ contestId, items }: { contestId: number; items: MySubmissionListItemDto[] }) => {
   const toast = useToast();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   // TODO: API 연동 시 서버 상태로 대체. 저장한 메모가 다시 펼칠 때 보이도록 로컬 상태로 보관
@@ -96,8 +96,8 @@ export const SubmissionList = ({ items }: { items: MySubmissionListItemDto[] }) 
                   {isExpanded && (
                     <div className="px-4 pb-4">
                       <SubmissionDetailPanel
+                        contestId={contestId}
                         item={item}
-                        detail={getMockMySubmissionDetail(item)}
                         feedbacks={getMockMyFeedbacks(item.submissionId ?? 0)}
                         memo={memos[item.submissionItemId] ?? null}
                         onDownloadFile={handleDownloadFile}

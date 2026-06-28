@@ -177,3 +177,9 @@ export interface SubmissionItemRequestDto {
 
 /** 제출물 설정값 확인 응답 (추가/수정 요청과 동일 필드) */
 export type SubmissionItemSettingResponseDto = SubmissionItemRequestDto;
+
+/** 제출물 제출 응답 (생성된 제출 ID) */
+export interface SubmitSubmissionResponseDto {
+  /** 생성된 제출 ID */
+  submissionId: number;
+}

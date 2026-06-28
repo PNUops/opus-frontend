@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { CalendarDays, Eye, FileCheck, FileText, UploadCloud, X } from 'lucide-react';
@@ -6,6 +7,9 @@ import { CalendarDays, Eye, FileCheck, FileText, UploadCloud, X } from 'lucide-r
 import { AdminActionButton } from '@components/admin';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
+import { deleteSubmissionFile, postSubmission, postSubmissionFiles } from '@apis/submission';
+import { submissionDetailOption } from '@queries/submission';
+import { getApiErrorMessage } from '@utils/error';
 import { getFileFormatExtensions, VISIBILITY_LABEL } from '@constants/submission';
 import type { SubmissionFileResponseDto, SubmissionItemSettingResponseDto } from '@dto/submissionDto';
 
@@ -21,6 +25,12 @@ const formatFileSize = (bytes: number) => {
 };
 
 interface SubmissionUploadModalProps {
+  /** 공모전 ID (제출/파일 API 경로) */
+  contestId: number;
+  /** 제출 항목 ID (최초 제출 시 사용) */
+  submissionItemId: number;
+  /** 기존 제출 ID — null이면 최초 제출, 값이 있으면 파일 추가/삭제 */
+  submissionId: number | null;
   submissionTypeName: string;
   description: string;
   /** 제출물 설정값 (설정값 확인 API) — 시작/마감일시, 지각 제출, 공개 범위, 파일 제약 */
@@ -28,22 +38,23 @@ interface SubmissionUploadModalProps {
   /** 기존 제출 파일 (재제출 시) */
   existingFiles: SubmissionFileResponseDto[];
   onClose: () => void;
-  /** 저장 (초기 업로드 / 파일 첨부) */
-  onSave: (files: File[]) => void;
-  /** 기존 파일 삭제 */
-  onRemoveExistingFile: (file: SubmissionFileResponseDto) => void;
+  /** 제출/파일 변경 성공 시 (부모 목록 갱신 등) */
+  onSuccess?: () => void;
 }
 
 export const SubmissionUploadModal = ({
+  contestId,
+  submissionItemId,
+  submissionId,
   submissionTypeName,
   description,
   setting,
   existingFiles,
   onClose,
-  onSave,
-  onRemoveExistingFile,
+  onSuccess,
 }: SubmissionUploadModalProps) => {
   const toast = useToast();
+  const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [newFiles, setNewFiles] = useState<File[]>([]);
 
@@ -51,6 +62,59 @@ export const SubmissionUploadModal = ({
   const maxSizeBytes = setting.maxFileSizeMb * 1024 * 1024;
   const totalCount = existingFiles.length + newFiles.length;
   const remaining = Math.max(0, setting.maxFileCount - totalCount);
+
+  const invalidateDetail = () => {
+    if (submissionId !== null) {
+      queryClient.invalidateQueries({ queryKey: submissionDetailOption(contestId, submissionId).queryKey });
+    }
+    onSuccess?.();
+  };
+
+  // 최초 제출 (제출 항목 → 파일 제출)
+  const submitMutation = useMutation({
+    mutationFn: (files: File[]) => postSubmission(contestId, submissionItemId, files),
+    onSuccess: () => {
+      toast('제출물을 제출했어요.', 'success');
+      invalidateDetail();
+      onClose();
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '제출에 실패했어요.'), 'error'),
+  });
+
+  // 파일 추가 (이미 제출된 제출물)
+  const addFilesMutation = useMutation({
+    mutationFn: (files: File[]) => postSubmissionFiles(contestId, submissionId ?? 0, files),
+    onSuccess: () => {
+      toast('파일을 추가했어요.', 'success');
+      invalidateDetail();
+      onClose();
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '파일 추가에 실패했어요.'), 'error'),
+  });
+
+  // 기존 파일 삭제
+  const deleteFileMutation = useMutation({
+    mutationFn: (fileId: number) => deleteSubmissionFile(contestId, submissionId ?? 0, fileId),
+    onSuccess: () => {
+      toast('파일을 삭제했어요.', 'success');
+      invalidateDetail();
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '파일 삭제에 실패했어요.'), 'error'),
+  });
+
+  const isSaving = submitMutation.isPending || addFilesMutation.isPending;
+
+  const handleSave = () => {
+    if (newFiles.length === 0) {
+      toast('첨부할 파일을 선택해주세요.', 'error');
+      return;
+    }
+    if (submissionId === null) {
+      submitMutation.mutate(newFiles);
+    } else {
+      addFilesMutation.mutate(newFiles);
+    }
+  };
 
   const addFiles = (fileList: FileList | null) => {
     if (!fileList) return;
@@ -142,7 +206,7 @@ export const SubmissionUploadModal = ({
               key={`existing-${file.fileId}`}
               name={file.fileName}
               size={formatFileSize(file.fileSize)}
-              onRemove={() => onRemoveExistingFile(file)}
+              onRemove={() => deleteFileMutation.mutate(file.fileId)}
             />
           ))}
           {newFiles.map((file, index) => (
@@ -163,8 +227,8 @@ export const SubmissionUploadModal = ({
             취소
           </AdminActionButton>
         </DialogClose>
-        <AdminActionButton className="bg-mainGreen hover:bg-green-700" onClick={() => onSave(newFiles)}>
-          저장
+        <AdminActionButton className="bg-mainGreen hover:bg-green-700" onClick={handleSave} disabled={isSaving}>
+          {isSaving ? '저장 중...' : '저장'}
         </AdminActionButton>
       </div>
     </DialogContent>
