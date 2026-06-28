@@ -5,11 +5,11 @@ import { CalendarDays, Clock, Eye, FileCheck } from 'lucide-react';
 import { Dialog } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
 import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
-import { submissionDetailOption } from '@queries/submission';
+import { submissionDetailOption, submissionFeedbacksOption } from '@queries/submission';
 import { downloadFromResponse } from '@utils/download';
 import { getApiErrorMessage } from '@utils/error';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
-import type { SubmissionFeedbackResponseDto, SubmissionFileResponseDto } from '@dto/submissionDto';
+import type { SubmissionFileResponseDto } from '@dto/submissionDto';
 import { VISIBILITY_LABEL } from '@constants/submission';
 
 import { SubmissionUploadModal } from '../../components/SubmissionUploadModal';
@@ -23,7 +23,6 @@ import { StatusBadge } from './StatusBadge';
 interface SubmissionDetailPanelProps {
   contestId: number;
   item: MySubmissionListItemDto;
-  feedbacks: SubmissionFeedbackResponseDto[];
   memo: ConfirmMemoResponseDto | null;
   onSaveMemo: (content: string) => void;
   onDeleteMemo: () => void;
@@ -32,7 +31,6 @@ interface SubmissionDetailPanelProps {
 export const SubmissionDetailPanel = ({
   contestId,
   item,
-  feedbacks,
   memo,
   onSaveMemo,
   onDeleteMemo,
@@ -46,6 +44,9 @@ export const SubmissionDetailPanel = ({
   // 제출물 상세 조회 — 제출 ID가 있을 때만 (미제출이면 최초 제출 플로우)
   const { data: detail } = useQuery(submissionDetailOption(contestId, item.submissionId ?? 0));
   const files = detail?.files ?? [];
+
+  // 피드백 목록 조회
+  const { data: feedbacks = [] } = useQuery(submissionFeedbacksOption(contestId, item.submissionId ?? 0));
 
   // 제출 파일 단건 다운로드
   const handleDownloadFile = async (file: SubmissionFileResponseDto) => {

@@ -85,14 +85,14 @@ export interface SubmissionFeedbackResponseDto {
   memberId: number;
   /** 작성자 이름 */
   memberName: string;
+  /** 작성자 역할 (예: 'ROLE_팀장', 'ROLE_팀원') */
+  memberRoleType: string;
   /** 피드백 본문 */
   description: string;
   /** 작성 시각 */
   createdAt: string;
   /** 마지막 수정 시각 */
   updatedAt: string;
-  /** 작성자 역할 (예: 'ROLE_팀장', 'ROLE_팀원') */
-  roleType: string;
   /** 첨부파일 목록 */
   files: SubmissionFileResponseDto[];
 }

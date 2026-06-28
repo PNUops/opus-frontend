@@ -11,13 +11,12 @@ import { useToast } from '@hooks/useToast';
 import { useContestId } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
 import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
-import { submissionDetailOption, submissionStatusesOption } from '@queries/submission';
+import { submissionDetailOption, submissionFeedbacksOption, submissionStatusesOption } from '@queries/submission';
 import { downloadFromResponse } from '@utils/download';
 import { getApiErrorMessage } from '@utils/error';
 import { SUBMISSION_STATUS_FILTER_OPTIONS } from '@constants/submission';
 import type { SubmissionStatus, SubmissionStatusResponseDto } from '@dto/submissionDto';
 
-import { buildMockFeedbacks } from '../mocks/mockSubmissions';
 import { SubmissionStatusBadge } from './SubmissionBadges';
 import { SubmissionDetailDrawer } from './SubmissionDetailDrawer';
 import { SubmissionFeedbackDrawer } from './SubmissionFeedbackDrawer';
@@ -58,6 +57,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   // 제출 상세 조회 (상세보기 / 피드백 Drawer 공용)
   const { data: detailData } = useQuery(submissionDetailOption(contestId, detailTarget?.submissionId ?? 0));
   const { data: feedbackDetailData } = useQuery(submissionDetailOption(contestId, feedbackTarget?.submissionId ?? 0));
+  const { data: feedbacks = [] } = useQuery(submissionFeedbacksOption(contestId, feedbackTarget?.submissionId ?? 0));
 
   // 제출 파일 단건 다운로드
   const handleDownloadFile = async (submissionId: number, file: SubmissionFileResponseDto) => {
@@ -323,7 +323,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
             (feedbackDetailData ? (
               <SubmissionFeedbackDrawer
                 detail={feedbackDetailData}
-                feedbacks={buildMockFeedbacks(feedbackTarget)}
+                feedbacks={feedbacks}
                 onDownloadFile={(feedbackId, file) =>
                   handleDownloadFeedbackFile(feedbackTarget.submissionId ?? 0, feedbackId, file)
                 }

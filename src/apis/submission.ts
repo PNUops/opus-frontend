@@ -2,6 +2,7 @@ import apiClient from './apiClient';
 import type { GetMySubmissionListResponseDto } from '@dto/meDto';
 import type {
   GetSubmissionArchivesResponseDto,
+  GetSubmissionFeedbacksResponseDto,
   GetSubmissionItemsResponseDto,
   GetSubmissionStatusesResponseDto,
   SubmissionDetailResponseDto,
@@ -64,6 +65,14 @@ export const getMySubmissions = async (contestId: number, teamId: number) => {
 /** 제출물 상세 조회 */
 export const getSubmissionDetail = async (contestId: number, submissionId: number) => {
   const res = await apiClient.get<SubmissionDetailResponseDto>(`/contests/${contestId}/submissions/${submissionId}`);
+  return res.data;
+};
+
+/** 피드백 목록 조회 (어드민 피드백 Drawer / 멤버 제출물 자세히보기 공용) */
+export const getSubmissionFeedbacks = async (contestId: number, submissionId: number) => {
+  const res = await apiClient.get<GetSubmissionFeedbacksResponseDto>(
+    `/contests/${contestId}/submissions/${submissionId}/feedbacks`,
+  );
   return res.data;
 };
 

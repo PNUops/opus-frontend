@@ -3,6 +3,7 @@ import {
   getMySubmissions,
   getSubmissionDetail,
   getSubmissionDownloads,
+  getSubmissionFeedbacks,
   getSubmissionItems,
   getSubmissionItemSetting,
   getSubmissionStatuses,
@@ -12,6 +13,7 @@ export const SUBMISSION_ITEMS_QUERY_KEY = 'submissionItems';
 export const SUBMISSION_ITEM_SETTING_QUERY_KEY = 'submissionItemSetting';
 export const SUBMISSION_STATUSES_QUERY_KEY = 'submissionStatuses';
 export const SUBMISSION_DOWNLOADS_QUERY_KEY = 'submissionDownloads';
+export const SUBMISSION_FEEDBACKS_QUERY_KEY = 'submissionFeedbacks';
 export const MY_SUBMISSION_LIST_QUERY_KEY = 'mySubmissionList';
 export const SUBMISSION_DETAIL_QUERY_KEY = 'submissionDetail';
 
@@ -27,6 +29,13 @@ export const submissionDownloadsOption = (contestId: number) =>
     queryKey: [SUBMISSION_DOWNLOADS_QUERY_KEY, contestId],
     queryFn: () => getSubmissionDownloads(contestId),
     enabled: !!contestId,
+  });
+
+export const submissionFeedbacksOption = (contestId: number, submissionId: number) =>
+  queryOptions({
+    queryKey: [SUBMISSION_FEEDBACKS_QUERY_KEY, contestId, submissionId],
+    queryFn: () => getSubmissionFeedbacks(contestId, submissionId),
+    enabled: !!contestId && !!submissionId,
   });
 
 export const submissionItemsOption = (contestId: number) =>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useToast } from '@hooks/useToast';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
 
-import { getMockConfirmMemo, getMockMyFeedbacks } from '../mocks/mockMySubmission';
+import { getMockConfirmMemo } from '../mocks/mockMySubmission';
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { StatusBadge } from './StatusBadge';
 import { SubmissionDetailPanel } from './SubmissionDetailPanel';
@@ -92,7 +92,6 @@ export const SubmissionList = ({ contestId, items }: { contestId: number; items:
                       <SubmissionDetailPanel
                         contestId={contestId}
                         item={item}
-                        feedbacks={getMockMyFeedbacks(item.submissionId ?? 0)}
                         memo={memos[item.submissionItemId] ?? null}
                         onSaveMemo={(content) => handleSaveMemo(item, content)}
                         onDeleteMemo={() => handleDeleteMemo(item)}

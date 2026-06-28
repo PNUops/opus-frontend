@@ -1,5 +1,5 @@
 import type { ConfirmMemoResponseDto, MySubmissionSummaryDto, MySubmissionTimelineItemDto } from '@dto/meDto';
-import type { SubmissionFeedbackResponseDto, SubmissionItemSettingResponseDto } from '@dto/submissionDto';
+import type { SubmissionItemSettingResponseDto } from '@dto/submissionDto';
 
 /** TODO: API 연동 전 임시 제출물 상태 요약 목데이터 */
 export const getMockMySubmissionSummary = (_teamId: number): MySubmissionSummaryDto => ({
@@ -13,40 +13,6 @@ export const getMockMySubmissionTimeline = (_teamId: number): MySubmissionTimeli
   { id: 1, title: '착수보고서', dueDate: '2026-06-30', status: 'SUBMITTED' },
   { id: 2, title: '중간보고서', dueDate: '2026-07-01', status: 'NOT_SUBMITTED' },
   { id: 3, title: '최종보고서', dueDate: '2026-08-01', status: 'NOT_SUBMITTED' },
-];
-
-const mockFiles = (label: string) =>
-  Array.from({ length: 3 }, (_, index) => ({
-    fileId: index + 1,
-    fileName: `AI데이터_퓨처메이커스_${label}.pdf`,
-    fileSize: 13002342,
-  }));
-
-const FEEDBACK_BODY =
-  '자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요. 자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요.';
-
-/** TODO: API 연동 전 임시 피드백 목데이터 (어드민과 동일 DTO) */
-export const getMockMyFeedbacks = (_submissionId: number): SubmissionFeedbackResponseDto[] => [
-  {
-    feedbackId: 1,
-    memberId: 1,
-    memberName: '김민수',
-    roleType: 'ROLE_팀장',
-    description: FEEDBACK_BODY,
-    createdAt: '2026-05-14T21:47:00',
-    updatedAt: '2026-05-14T21:47:00',
-    files: mockFiles('참고자료'),
-  },
-  {
-    feedbackId: 2,
-    memberId: 2,
-    memberName: '김민수',
-    roleType: 'ROLE_팀원',
-    description: FEEDBACK_BODY,
-    createdAt: '2026-05-14T21:47:00',
-    updatedAt: '2026-05-14T21:47:00',
-    files: mockFiles('참고자료'),
-  },
 ];
 
 /** TODO: API 연동 전 임시 제출물 설정값 확인 (어드민과 동일 DTO) */
