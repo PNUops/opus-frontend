@@ -1,31 +1,9 @@
 import type {
   SubmissionArchiveResponseDto,
   SubmissionFeedbackResponseDto,
-  SubmissionItemSettingResponseDto,
   SubmissionStatus,
   SubmissionStatusResponseDto,
 } from '@dto/submissionDto';
-
-/** TODO: API 연동 전 임시 분과 목데이터 (대상 분과 선택용) */
-export const MOCK_TRACKS: { trackId: number; trackName: string }[] = [
-  { trackId: 1, trackName: 'AI+X' },
-  { trackId: 2, trackName: '보안' },
-  { trackId: 3, trackName: '네트워크' },
-];
-
-/** TODO: API 연동 전 임시 제출물 설정값 확인 목데이터 (수정 모달 초기값용, 추가/수정 요청과 동일 DTO) */
-export const getMockSubmissionItemSetting = (_contestSubmissionItemId: number): SubmissionItemSettingResponseDto => ({
-  name: '중간발표 자료',
-  contestTrackId: 1,
-  description: '프로젝트 진행 상황을 확인할 수 있는 발표자료입니다.',
-  allowedFileFormats: ['PDF', 'PPT', 'PPTX'],
-  maxFileSizeMb: 500,
-  maxFileCount: 3,
-  startAt: '2025-05-14T23:59:00',
-  endAt: '2026-05-15T23:59:00',
-  allowLateSubmission: true,
-  visibility: 'PUBLIC',
-});
 
 /** TODO: API 연동 전 임시 제출 파일 다운로드 목데이터 */
 export const MOCK_ARCHIVES: SubmissionArchiveResponseDto[] = [

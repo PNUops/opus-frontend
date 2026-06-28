@@ -3,12 +3,44 @@ import type { GetMySubmissionListResponseDto } from '@dto/meDto';
 import type {
   GetSubmissionItemsResponseDto,
   SubmissionDetailResponseDto,
+  SubmissionItemRequestDto,
+  SubmissionItemSettingResponseDto,
   SubmitSubmissionResponseDto,
 } from '@dto/submissionDto';
 
-/** 제출물 항목 목록 조회 (어드민 제출물 설정 탭) */
+/** 제출 항목 목록 조회 (어드민 제출 항목 설정 탭) */
 export const getSubmissionItems = async (contestId: number) => {
   const res = await apiClient.get<GetSubmissionItemsResponseDto>(`/contests/${contestId}/submission-items`);
+  return res.data;
+};
+
+/** 제출 항목 추가 */
+export const postSubmissionItem = async (contestId: number, body: SubmissionItemRequestDto) => {
+  const res = await apiClient.post(`/contests/${contestId}/submission-items`, body);
+  return res.data;
+};
+
+/** 제출 항목 설정값(상세) 조회 */
+export const getSubmissionItemSetting = async (contestId: number, submissionItemId: number) => {
+  const res = await apiClient.get<SubmissionItemSettingResponseDto>(
+    `/contests/${contestId}/submission-items/${submissionItemId}`,
+  );
+  return res.data;
+};
+
+/** 제출 항목 수정 */
+export const patchSubmissionItem = async (
+  contestId: number,
+  submissionItemId: number,
+  body: SubmissionItemRequestDto,
+) => {
+  const res = await apiClient.patch(`/contests/${contestId}/submission-items/${submissionItemId}`, body);
+  return res.data;
+};
+
+/** 제출 항목 삭제 */
+export const deleteSubmissionItem = async (contestId: number, submissionItemId: number) => {
+  const res = await apiClient.delete(`/contests/${contestId}/submission-items/${submissionItemId}`);
   return res.data;
 };
 

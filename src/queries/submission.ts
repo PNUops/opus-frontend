@@ -1,7 +1,8 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getMySubmissions, getSubmissionDetail, getSubmissionItems } from '@apis/submission';
+import { getMySubmissions, getSubmissionDetail, getSubmissionItems, getSubmissionItemSetting } from '@apis/submission';
 
 export const SUBMISSION_ITEMS_QUERY_KEY = 'submissionItems';
+export const SUBMISSION_ITEM_SETTING_QUERY_KEY = 'submissionItemSetting';
 export const MY_SUBMISSION_LIST_QUERY_KEY = 'mySubmissionList';
 export const SUBMISSION_DETAIL_QUERY_KEY = 'submissionDetail';
 
@@ -10,6 +11,13 @@ export const submissionItemsOption = (contestId: number) =>
     queryKey: [SUBMISSION_ITEMS_QUERY_KEY, contestId],
     queryFn: () => getSubmissionItems(contestId),
     enabled: !!contestId,
+  });
+
+export const submissionItemSettingOption = (contestId: number, submissionItemId: number) =>
+  queryOptions({
+    queryKey: [SUBMISSION_ITEM_SETTING_QUERY_KEY, contestId, submissionItemId],
+    queryFn: () => getSubmissionItemSetting(contestId, submissionItemId),
+    enabled: !!contestId && !!submissionItemId,
   });
 
 export const mySubmissionsOption = (contestId: number, teamId: number) =>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
 import {
@@ -10,13 +10,15 @@ import {
   AdminPopoverMenu,
 } from '@components/admin';
 import FilterDropDown from '@components/FilterDropDown';
-import { Dialog } from '@components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
 import { useContestId } from '@hooks/useId';
-import { submissionItemsOption } from '@queries/submission';
+import { deleteSubmissionItem, patchSubmissionItem, postSubmissionItem } from '@apis/submission';
+import { getContestTracks } from '@apis/track';
+import { submissionItemSettingOption, submissionItemsOption } from '@queries/submission';
+import { getApiErrorMessage } from '@utils/error';
 
 import { OPERATION_STATUS_FILTER_OPTIONS, VISIBILITY_LABEL } from '@constants/submission';
-import { getMockSubmissionItemSetting, MOCK_TRACKS } from '../mocks/mockSubmissions';
 import type {
   SubmissionItemRequestDto,
   SubmissionItemResponseDto,
@@ -45,7 +47,7 @@ const settingToFormValues = (setting: SubmissionItemSettingResponseDto): Submiss
 
 type StatusFilter = SubmissionOperationStatus | '';
 
-const TABLE_HEADERS = ['운영 상태', '제출물 종류', '분과', '시작일시', '마감일시', '지각 제출 허용', '공개 범위', ''];
+const TABLE_HEADERS = ['운영 상태', '제출 항목', '분과', '시작일시', '마감일시', '지각 제출 허용', '공개 범위', ''];
 
 const formatDateTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm');
 
@@ -58,11 +60,56 @@ interface SubmissionSettingTabProps {
 export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps) => {
   const toast = useToast();
   const contestId = useContestId() ?? 0;
+  const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
   const [modalState, setModalState] = useState<ModalState>(null);
   const [deleteTarget, setDeleteTarget] = useState<SubmissionItemResponseDto | null>(null);
 
   const { data: submissions = [] } = useQuery(submissionItemsOption(contestId));
+
+  // 대상 분과 선택용 분과 목록
+  const { data: tracks = [] } = useQuery({
+    queryKey: ['tracks', contestId],
+    queryFn: () => getContestTracks(contestId),
+    enabled: !!contestId,
+  });
+
+  // 수정 모드일 때 기존 설정값 조회 (모달 초기값)
+  const editItemId = modalState?.mode === 'edit' ? modalState.item.contestSubmissionItemId : 0;
+  const { data: editSetting } = useQuery(submissionItemSettingOption(contestId, editItemId));
+
+  const invalidateList = () => queryClient.invalidateQueries({ queryKey: submissionItemsOption(contestId).queryKey });
+
+  const createMutation = useMutation({
+    mutationFn: (payload: SubmissionItemRequestDto) => postSubmissionItem(contestId, payload),
+    onSuccess: () => {
+      toast('제출 항목을 추가했어요.', 'success');
+      invalidateList();
+      setModalState(null);
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '제출 항목 추가에 실패했어요.'), 'error'),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: number; payload: SubmissionItemRequestDto }) =>
+      patchSubmissionItem(contestId, id, payload),
+    onSuccess: () => {
+      toast('제출 항목을 수정했어요.', 'success');
+      invalidateList();
+      setModalState(null);
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '제출 항목 수정에 실패했어요.'), 'error'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteSubmissionItem(contestId, id),
+    onSuccess: () => {
+      toast('제출 항목을 삭제했어요.', 'success');
+      invalidateList();
+      setDeleteTarget(null);
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '제출 항목 삭제에 실패했어요.'), 'error'),
+  });
 
   const filteredSubmissions = useMemo(
     () => (statusFilter === '' ? submissions : submissions.filter((item) => item.operationStatus === statusFilter)),
@@ -78,16 +125,15 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
 
   const handleDeleteConfirm = () => {
     if (!deleteTarget) return;
-    // TODO: API 연동 (삭제)
-    toast('제출물을 삭제했어요.', 'success');
-    setDeleteTarget(null);
+    deleteMutation.mutate(deleteTarget.contestSubmissionItemId);
   };
 
   const handleSubmit = (payload: SubmissionItemRequestDto) => {
-    // TODO: API 연동 (생성/수정)
-    toast(modalState?.mode === 'edit' ? '제출물을 수정했어요.' : '제출물을 추가했어요.', 'success');
-    setModalState(null);
-    void payload;
+    if (modalState?.mode === 'edit') {
+      updateMutation.mutate({ id: modalState.item.contestSubmissionItemId, payload });
+    } else {
+      createMutation.mutate(payload);
+    }
   };
 
   return (
@@ -106,7 +152,7 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
           className="border-mainBlue text-mainBlue hover:bg-blue-50"
           onClick={() => setModalState({ mode: 'create' })}
         >
-          + 제출물 추가
+          + 제출 항목 추가
         </AdminActionButton>
       </div>
 
@@ -129,7 +175,7 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
             {filteredSubmissions.length === 0 ? (
               <tr>
                 <td colSpan={TABLE_HEADERS.length + 1} className="text-midGray py-12 text-center text-sm">
-                  등록된 제출물이 없어요.
+                  등록된 제출 항목이 없어요.
                 </td>
               </tr>
             ) : (
@@ -177,28 +223,34 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
         </table>
       </div>
 
-      <p className="text-midGray text-xs">제출물이 설정된 최신 순서대로 표시됩니다.</p>
+      <p className="text-midGray text-xs">제출 항목이 설정된 최신 순서대로 표시됩니다.</p>
 
       <Dialog open={modalState !== null} onOpenChange={(open) => !open && setModalState(null)}>
-        {modalState && (
-          <SubmissionFormModal
-            mode={modalState.mode}
-            tracks={MOCK_TRACKS}
-            initialValues={
-              modalState.mode === 'edit'
-                ? settingToFormValues(getMockSubmissionItemSetting(modalState.item.contestSubmissionItemId))
-                : undefined
-            }
-            onSubmit={handleSubmit}
-            onClose={() => setModalState(null)}
-          />
-        )}
+        {modalState &&
+          (modalState.mode === 'create' ? (
+            <SubmissionFormModal
+              mode="create"
+              tracks={tracks}
+              onSubmit={handleSubmit}
+              onClose={() => setModalState(null)}
+            />
+          ) : editSetting ? (
+            <SubmissionFormModal
+              mode="edit"
+              tracks={tracks}
+              initialValues={settingToFormValues(editSetting)}
+              onSubmit={handleSubmit}
+              onClose={() => setModalState(null)}
+            />
+          ) : (
+            <FormModalLoading />
+          ))}
       </Dialog>
 
       <Dialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         {deleteTarget && (
           <AdminDeleteConfirmModal
-            title={`'${deleteTarget.name}' 제출물을 삭제하시겠어요?`}
+            title={`'${deleteTarget.name}' 제출 항목을 삭제하시겠어요?`}
             onDelete={handleDeleteConfirm}
           />
         )}
@@ -206,3 +258,10 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
     </div>
   );
 };
+
+const FormModalLoading = () => (
+  <DialogContent className="w-[600px] max-w-[92vw] items-stretch gap-5">
+    <DialogTitle className="text-xl font-bold text-gray-900">제출 항목 수정</DialogTitle>
+    <p className="text-midGray py-10 text-center text-sm">설정값을 불러오고 있어요.</p>
+  </DialogContent>
+);
