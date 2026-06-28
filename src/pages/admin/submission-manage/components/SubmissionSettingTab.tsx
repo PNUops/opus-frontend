@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
 import {
@@ -11,9 +12,11 @@ import {
 import FilterDropDown from '@components/FilterDropDown';
 import { Dialog } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
+import { useContestId } from '@hooks/useId';
+import { submissionItemsOption } from '@queries/submission';
 
 import { OPERATION_STATUS_FILTER_OPTIONS, VISIBILITY_LABEL } from '@constants/submission';
-import { getMockSubmissionItemSetting, MOCK_SUBMISSIONS, MOCK_TRACKS } from '../mocks/mockSubmissions';
+import { getMockSubmissionItemSetting, MOCK_TRACKS } from '../mocks/mockSubmissions';
 import type {
   SubmissionItemRequestDto,
   SubmissionItemResponseDto,
@@ -54,12 +57,12 @@ interface SubmissionSettingTabProps {
 
 export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps) => {
   const toast = useToast();
+  const contestId = useContestId() ?? 0;
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
   const [modalState, setModalState] = useState<ModalState>(null);
   const [deleteTarget, setDeleteTarget] = useState<SubmissionItemResponseDto | null>(null);
 
-  // TODO: API 연동 시 목데이터 대체
-  const submissions = MOCK_SUBMISSIONS;
+  const { data: submissions = [] } = useQuery(submissionItemsOption(contestId));
 
   const filteredSubmissions = useMemo(
     () => (statusFilter === '' ? submissions : submissions.filter((item) => item.operationStatus === statusFilter)),

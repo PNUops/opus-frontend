@@ -1,10 +1,9 @@
-import { useContestId, useTeamId } from '@hooks/useId';
+import { useQuery } from '@tanstack/react-query';
 
-import {
-  getMockMySubmissionList,
-  getMockMySubmissionSummary,
-  getMockMySubmissionTimeline,
-} from './mocks/mockMySubmission';
+import { useContestId, useTeamId } from '@hooks/useId';
+import { mySubmissionsOption } from '@queries/submission';
+
+import { getMockMySubmissionSummary, getMockMySubmissionTimeline } from './mocks/mockMySubmission';
 import { SubmissionSummaryCards } from './components/SubmissionSummaryCards';
 import { SubmissionTimeline } from './components/SubmissionTimeline';
 import { SubmissionList } from './components/SubmissionList';
@@ -16,7 +15,7 @@ const MySubmissionPage = () => {
   // TODO: API 연동 시 teamId로 조회
   const summary = getMockMySubmissionSummary(teamId);
   const timeline = getMockMySubmissionTimeline(teamId);
-  const submissions = getMockMySubmissionList(teamId);
+  const { data: submissions = [] } = useQuery(mySubmissionsOption(contestId, teamId));
 
   return (
     <div className="flex flex-col gap-10">

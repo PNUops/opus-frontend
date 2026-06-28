@@ -1,9 +1,4 @@
-import type {
-  ConfirmMemoResponseDto,
-  MySubmissionListItemDto,
-  MySubmissionSummaryDto,
-  MySubmissionTimelineItemDto,
-} from '@dto/meDto';
+import type { ConfirmMemoResponseDto, MySubmissionSummaryDto, MySubmissionTimelineItemDto } from '@dto/meDto';
 import type { SubmissionFeedbackResponseDto, SubmissionItemSettingResponseDto } from '@dto/submissionDto';
 
 /** TODO: API 연동 전 임시 제출물 상태 요약 목데이터 */
@@ -26,28 +21,6 @@ const mockFiles = (label: string) =>
     fileName: `AI데이터_퓨처메이커스_${label}.pdf`,
     fileSize: 13002342,
   }));
-
-/** TODO: API 연동 전 임시 제출물 목록 목데이터 */
-export const getMockMySubmissionList = (_teamId: number): MySubmissionListItemDto[] => [
-  {
-    submissionItemId: 1,
-    submissionId: 101,
-    submissionTypeName: '중간발표 자료',
-    description: '프로젝트 진행 상황을 확인할 수 있는 발표자료',
-    deadlineAt: '2026-05-15T23:59:00',
-    status: 'LATE',
-    files: [{ fileId: 1, fileName: '창업트랙_artify_중간발표자료.pptx', fileSize: 13002342 }],
-  },
-  {
-    submissionItemId: 2,
-    submissionId: 102,
-    submissionTypeName: '중간발표 자료2',
-    description: '프로젝트 진행 상황을 확인할 수 있는 발표자료',
-    deadlineAt: '2026-05-15T23:59:00',
-    status: 'LATE',
-    files: [{ fileId: 1, fileName: '창업트랙_artify_중간발표자료2.pptx', fileSize: 13002342 }],
-  },
-];
 
 const FEEDBACK_BODY =
   '자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요. 자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요.';

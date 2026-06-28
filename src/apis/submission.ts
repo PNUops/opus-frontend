@@ -1,5 +1,24 @@
 import apiClient from './apiClient';
-import type { SubmissionDetailResponseDto, SubmitSubmissionResponseDto } from '@dto/submissionDto';
+import type { GetMySubmissionListResponseDto } from '@dto/meDto';
+import type {
+  GetSubmissionItemsResponseDto,
+  SubmissionDetailResponseDto,
+  SubmitSubmissionResponseDto,
+} from '@dto/submissionDto';
+
+/** 제출물 항목 목록 조회 (어드민 제출물 설정 탭) */
+export const getSubmissionItems = async (contestId: number) => {
+  const res = await apiClient.get<GetSubmissionItemsResponseDto>(`/contests/${contestId}/submission-items`);
+  return res.data;
+};
+
+/** 내 프로젝트 - 팀 제출물 목록 조회 (teamId는 쿼리 파라미터) */
+export const getMySubmissions = async (contestId: number, teamId: number) => {
+  const res = await apiClient.get<GetMySubmissionListResponseDto>(`/contests/${contestId}/submissions`, {
+    params: { teamId },
+  });
+  return res.data;
+};
 
 /** 제출물 상세 조회 */
 export const getSubmissionDetail = async (contestId: number, submissionId: number) => {
