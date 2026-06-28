@@ -1,9 +1,11 @@
 import apiClient from './apiClient';
 import type { GetMySubmissionListResponseDto } from '@dto/meDto';
 import type {
+  GetSubmissionArchivesResponseDto,
   GetSubmissionItemsResponseDto,
   GetSubmissionStatusesResponseDto,
   SubmissionDetailResponseDto,
+  SubmissionDownloadTargetDto,
   SubmissionItemRequestDto,
   SubmissionItemSettingResponseDto,
   SubmitSubmissionResponseDto,
@@ -94,3 +96,23 @@ export const deleteSubmissionFile = async (contestId: number, submissionId: numb
   const res = await apiClient.delete(`/contests/${contestId}/submissions/${submissionId}/files/${fileId}`);
   return res.data;
 };
+
+/** 제출 파일 다운로드 목록 조회 (제출 항목 종류 x 분과) */
+export const getSubmissionDownloads = async (contestId: number) => {
+  const res = await apiClient.get<GetSubmissionArchivesResponseDto>(`/contests/${contestId}/submissions/downloads`);
+  return res.data;
+};
+
+/** 제출 파일 여러개 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+export const postSubmissionDownloads = (contestId: number, targets: SubmissionDownloadTargetDto[]) =>
+  apiClient.post<Blob>(`/contests/${contestId}/submissions/downloads`, { targets }, { responseType: 'blob' });
+
+/** 제출 파일 단건 다운로드 (blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+export const getSubmissionFileDownload = (contestId: number, submissionId: number, fileId: number) =>
+  apiClient.get<Blob>(`/contests/${contestId}/submissions/${submissionId}/files/${fileId}`, { responseType: 'blob' });
+
+/** 피드백 첨부파일 단건 다운로드 (blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+export const getFeedbackFileDownload = (contestId: number, submissionId: number, feedbackId: number, fileId: number) =>
+  apiClient.get<Blob>(`/contests/${contestId}/submissions/${submissionId}/feedbacks/${feedbackId}/files/${fileId}`, {
+    responseType: 'blob',
+  });

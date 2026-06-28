@@ -146,7 +146,20 @@ export interface SubmissionArchiveResponseDto {
 
 /** 제출 파일 다운로드 목록 응답 */
 export interface GetSubmissionArchivesResponseDto {
-  archives: SubmissionArchiveResponseDto[];
+  targets: SubmissionArchiveResponseDto[];
+}
+
+/** 제출 파일 다운로드 대상 (제출 항목 종류 x 분과) */
+export interface SubmissionDownloadTargetDto {
+  /** 제출물 종류 ID */
+  submissionTypeId: number;
+  /** 분과 ID */
+  trackId: number;
+}
+
+/** 제출 파일 여러개 다운로드 요청 */
+export interface SubmissionDownloadsRequestDto {
+  targets: SubmissionDownloadTargetDto[];
 }
 
 /** 제출물 추가/수정 요청 */

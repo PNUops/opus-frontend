@@ -3,7 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { CalendarDays, Clock, Eye, FileCheck } from 'lucide-react';
 
 import { Dialog } from '@components/ui/dialog';
+import { useToast } from '@hooks/useToast';
+import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
 import { submissionDetailOption } from '@queries/submission';
+import { downloadFromResponse } from '@utils/download';
+import { getApiErrorMessage } from '@utils/error';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
 import type { SubmissionFeedbackResponseDto, SubmissionFileResponseDto } from '@dto/submissionDto';
 import { VISIBILITY_LABEL } from '@constants/submission';
@@ -21,7 +25,6 @@ interface SubmissionDetailPanelProps {
   item: MySubmissionListItemDto;
   feedbacks: SubmissionFeedbackResponseDto[];
   memo: ConfirmMemoResponseDto | null;
-  onDownloadFile: (file: SubmissionFileResponseDto) => void;
   onSaveMemo: (content: string) => void;
   onDeleteMemo: () => void;
 }
@@ -31,10 +34,10 @@ export const SubmissionDetailPanel = ({
   item,
   feedbacks,
   memo,
-  onDownloadFile,
   onSaveMemo,
   onDeleteMemo,
 }: SubmissionDetailPanelProps) => {
+  const toast = useToast();
   const [uploadOpen, setUploadOpen] = useState(false);
 
   // 제출물 설정값 확인 API에서 시작/마감일시, 지각 제출, 공개 범위, 파일 제약을 가져옴
@@ -43,6 +46,28 @@ export const SubmissionDetailPanel = ({
   // 제출물 상세 조회 — 제출 ID가 있을 때만 (미제출이면 최초 제출 플로우)
   const { data: detail } = useQuery(submissionDetailOption(contestId, item.submissionId ?? 0));
   const files = detail?.files ?? [];
+
+  // 제출 파일 단건 다운로드
+  const handleDownloadFile = async (file: SubmissionFileResponseDto) => {
+    if (item.submissionId === null) return;
+    try {
+      const response = await getSubmissionFileDownload(contestId, item.submissionId, file.fileId);
+      downloadFromResponse(response, file.fileName);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
+
+  // 피드백 첨부파일 단건 다운로드
+  const handleDownloadFeedbackFile = async (feedbackId: number, file: SubmissionFileResponseDto) => {
+    if (item.submissionId === null) return;
+    try {
+      const response = await getFeedbackFileDownload(contestId, item.submissionId, feedbackId, file.fileId);
+      downloadFromResponse(response, file.fileName);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
 
   return (
     <div className="border-subGreen flex flex-col gap-6 rounded-xl border bg-green-50/30 p-5">
@@ -90,14 +115,14 @@ export const SubmissionDetailPanel = ({
 
         <div className="flex flex-col gap-2">
           <span className="text-midGray text-sm">제출 파일</span>
-          <FileChips files={files} onDownload={onDownloadFile} />
+          <FileChips files={files} onDownload={handleDownloadFile} />
         </div>
       </section>
 
       {/* 피드백 */}
       <section className="flex flex-col gap-3">
         <h4 className="text-darkGray text-base font-bold">피드백</h4>
-        <FeedbackList feedbacks={feedbacks} onDownloadFile={onDownloadFile} />
+        <FeedbackList feedbacks={feedbacks} onDownloadFile={handleDownloadFeedbackFile} />
       </section>
 
       {/* 확인 메모 */}

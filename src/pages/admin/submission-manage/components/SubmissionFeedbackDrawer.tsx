@@ -14,7 +14,7 @@ import { SubmissionTeamSummary } from './SubmissionTeamSummary';
 interface SubmissionFeedbackDrawerProps {
   detail: SubmissionDetailResponseDto;
   feedbacks: SubmissionFeedbackResponseDto[];
-  onDownloadFile: (file: SubmissionFileResponseDto) => void;
+  onDownloadFile: (feedbackId: number, file: SubmissionFileResponseDto) => void;
 }
 
 export const SubmissionFeedbackDrawer = ({ detail, feedbacks, onDownloadFile }: SubmissionFeedbackDrawerProps) => {
@@ -52,7 +52,7 @@ export const SubmissionFeedbackDrawer = ({ detail, feedbacks, onDownloadFile }: 
 
 interface FeedbackItemProps {
   feedback: SubmissionFeedbackResponseDto;
-  onDownloadFile: (file: SubmissionFileResponseDto) => void;
+  onDownloadFile: (feedbackId: number, file: SubmissionFileResponseDto) => void;
 }
 
 const FeedbackItem = ({ feedback, onDownloadFile }: FeedbackItemProps) => {
@@ -77,7 +77,7 @@ const FeedbackItem = ({ feedback, onDownloadFile }: FeedbackItemProps) => {
             <button
               key={file.fileId}
               type="button"
-              onClick={() => onDownloadFile(file)}
+              onClick={() => onDownloadFile(feedback.feedbackId, file)}
               className="bg-whiteGray hover:bg-lightGray flex items-center gap-3 rounded-md px-3 py-2 text-left transition-colors"
             >
               <FileText size={16} className="text-midGray shrink-0" />

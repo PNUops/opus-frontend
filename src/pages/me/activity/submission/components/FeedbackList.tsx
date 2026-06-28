@@ -6,7 +6,7 @@ import { FileChips } from './FileChips';
 
 interface FeedbackListProps {
   feedbacks: SubmissionFeedbackResponseDto[];
-  onDownloadFile: (file: SubmissionFileResponseDto) => void;
+  onDownloadFile: (feedbackId: number, file: SubmissionFileResponseDto) => void;
 }
 
 export const FeedbackList = ({ feedbacks, onDownloadFile }: FeedbackListProps) => {
@@ -38,7 +38,7 @@ export const FeedbackList = ({ feedbacks, onDownloadFile }: FeedbackListProps) =
           {feedback.files.length > 0 && (
             <div className="mt-3">
               <p className="text-midGray mb-1.5 text-xs">첨부파일</p>
-              <FileChips files={feedback.files} onDownload={onDownloadFile} />
+              <FileChips files={feedback.files} onDownload={(file) => onDownloadFile(feedback.feedbackId, file)} />
             </div>
           )}
         </div>

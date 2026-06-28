@@ -2,6 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 import {
   getMySubmissions,
   getSubmissionDetail,
+  getSubmissionDownloads,
   getSubmissionItems,
   getSubmissionItemSetting,
   getSubmissionStatuses,
@@ -10,6 +11,7 @@ import {
 export const SUBMISSION_ITEMS_QUERY_KEY = 'submissionItems';
 export const SUBMISSION_ITEM_SETTING_QUERY_KEY = 'submissionItemSetting';
 export const SUBMISSION_STATUSES_QUERY_KEY = 'submissionStatuses';
+export const SUBMISSION_DOWNLOADS_QUERY_KEY = 'submissionDownloads';
 export const MY_SUBMISSION_LIST_QUERY_KEY = 'mySubmissionList';
 export const SUBMISSION_DETAIL_QUERY_KEY = 'submissionDetail';
 
@@ -17,6 +19,13 @@ export const submissionStatusesOption = (contestId: number) =>
   queryOptions({
     queryKey: [SUBMISSION_STATUSES_QUERY_KEY, contestId],
     queryFn: () => getSubmissionStatuses(contestId),
+    enabled: !!contestId,
+  });
+
+export const submissionDownloadsOption = (contestId: number) =>
+  queryOptions({
+    queryKey: [SUBMISSION_DOWNLOADS_QUERY_KEY, contestId],
+    queryFn: () => getSubmissionDownloads(contestId),
     enabled: !!contestId,
   });
 

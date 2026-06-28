@@ -10,7 +10,10 @@ import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
 import { useContestId } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
+import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
 import { submissionDetailOption, submissionStatusesOption } from '@queries/submission';
+import { downloadFromResponse } from '@utils/download';
+import { getApiErrorMessage } from '@utils/error';
 import { SUBMISSION_STATUS_FILTER_OPTIONS } from '@constants/submission';
 import type { SubmissionStatus, SubmissionStatusResponseDto } from '@dto/submissionDto';
 
@@ -55,6 +58,30 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   // 제출 상세 조회 (상세보기 / 피드백 Drawer 공용)
   const { data: detailData } = useQuery(submissionDetailOption(contestId, detailTarget?.submissionId ?? 0));
   const { data: feedbackDetailData } = useQuery(submissionDetailOption(contestId, feedbackTarget?.submissionId ?? 0));
+
+  // 제출 파일 단건 다운로드
+  const handleDownloadFile = async (submissionId: number, file: SubmissionFileResponseDto) => {
+    try {
+      const response = await getSubmissionFileDownload(contestId, submissionId, file.fileId);
+      downloadFromResponse(response, file.fileName);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
+
+  // 피드백 첨부파일 단건 다운로드
+  const handleDownloadFeedbackFile = async (
+    submissionId: number,
+    feedbackId: number,
+    file: SubmissionFileResponseDto,
+  ) => {
+    try {
+      const response = await getFeedbackFileDownload(contestId, submissionId, feedbackId, file.fileId);
+      downloadFromResponse(response, file.fileName);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
 
   const typeOptions = useMemo(
     () =>
@@ -281,6 +308,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
                   setFeedbackTarget(detailTarget);
                   setDetailTarget(null);
                 }}
+                onDownloadFile={(file) => handleDownloadFile(detailTarget.submissionId ?? 0, file)}
               />
             ) : (
               <DrawerLoading />
@@ -296,8 +324,8 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
               <SubmissionFeedbackDrawer
                 detail={feedbackDetailData}
                 feedbacks={buildMockFeedbacks(feedbackTarget)}
-                onDownloadFile={(file: SubmissionFileResponseDto) =>
-                  toast(`${file.fileName} 다운로드를 시작합니다.`, 'success')
+                onDownloadFile={(feedbackId, file) =>
+                  handleDownloadFeedbackFile(feedbackTarget.submissionId ?? 0, feedbackId, file)
                 }
               />
             ) : (

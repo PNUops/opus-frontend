@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { useToast } from '@hooks/useToast';
 import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
-import type { SubmissionFileResponseDto } from '@dto/submissionDto';
 
 import { getMockConfirmMemo, getMockMyFeedbacks } from '../mocks/mockMySubmission';
 import { formatDateTime, formatFileSize } from '../utils/format';
@@ -18,11 +17,6 @@ export const SubmissionList = ({ contestId, items }: { contestId: number; items:
   const [memos, setMemos] = useState<Record<number, ConfirmMemoResponseDto | null>>(() =>
     Object.fromEntries(items.map((item) => [item.submissionItemId, getMockConfirmMemo(item.submissionId ?? 0)])),
   );
-
-  const handleDownloadFile = (file: SubmissionFileResponseDto) => {
-    // TODO: API 연동 (파일 다운로드)
-    toast(`${file.fileName} 다운로드를 시작합니다.`, 'success');
-  };
 
   const handleSaveMemo = (item: MySubmissionListItemDto, content: string) => {
     // TODO: API 연동 (메모 생성/수정). 기존 메모 있으면 수정, 없으면 생성
@@ -100,7 +94,6 @@ export const SubmissionList = ({ contestId, items }: { contestId: number; items:
                         item={item}
                         feedbacks={getMockMyFeedbacks(item.submissionId ?? 0)}
                         memo={memos[item.submissionItemId] ?? null}
-                        onDownloadFile={handleDownloadFile}
                         onSaveMemo={(content) => handleSaveMemo(item, content)}
                         onDeleteMemo={() => handleDeleteMemo(item)}
                       />
