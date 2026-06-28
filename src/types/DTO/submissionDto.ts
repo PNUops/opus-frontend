@@ -4,12 +4,22 @@ import type { PaginationResponseDto } from './commonDto';
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
 /** 제출물 공개 범위 (SubmissionVisibility Enum) */
-// TODO: 백엔드 enum 키 확정되면 동기화
-export type SubmissionVisibility = 'PRIVATE' | 'STAFF' | 'MEMBER' | 'PUBLIC';
+export type SubmissionVisibility = 'PUBLIC' | 'PRIVATE';
 
 /** 허용 파일 형식 (SubmissionFileFormat Enum) */
-// TODO: 백엔드 enum 키 확정되면 동기화
-export type SubmissionFileFormat = 'DOCUMENT' | 'PRESENTATION' | 'ARCHIVE' | 'IMAGE' | 'SPREADSHEET' | 'VIDEO';
+export type SubmissionFileFormat =
+  | 'PDF'
+  | 'ZIP'
+  | 'PNG'
+  | 'JPG'
+  | 'JPEG'
+  | 'GIF'
+  | 'MP4'
+  | 'PPT'
+  | 'PPTX'
+  | 'DOC'
+  | 'DOCX'
+  | 'HWP';
 
 /** 제출물 항목 응답 */
 export interface SubmissionItemResponseDto {
@@ -69,33 +79,28 @@ export interface SubmissionFileResponseDto {
   fileSize: number;
 }
 
-/** 코멘트 작성자 역할 */
-export type CommentAuthorRole = 'MENTOR' | 'PROFESSOR' | 'ADMIN';
-
-/** 제출물 코멘트 */
-export interface SubmissionCommentResponseDto {
-  /** 코멘트 ID */
-  commentId: number;
+/** 제출물 피드백 */
+export interface SubmissionFeedbackResponseDto {
+  /** 피드백 ID */
+  feedbackId: number;
   /** 작성자 ID */
   memberId: number;
   /** 작성자 이름 */
   memberName: string;
-  /** 작성자 역할 */
-  memberRole: CommentAuthorRole;
-  /** 코멘트 본문 */
+  /** 피드백 본문 */
   description: string;
   /** 작성 시각 */
   createdAt: string;
   /** 마지막 수정 시각 */
   updatedAt: string;
+  /** 작성자 역할 (예: 'ROLE_팀장', 'ROLE_팀원') */
+  roleType: string;
   /** 첨부파일 목록 */
   files: SubmissionFileResponseDto[];
 }
 
-/** 코멘트 목록 조회 응답 */
-export interface GetSubmissionCommentsResponseDto {
-  comments: SubmissionCommentResponseDto[];
-}
+/** 피드백 목록 조회 응답 */
+export type GetSubmissionFeedbacksResponseDto = SubmissionFeedbackResponseDto[];
 
 /** 제출물 상세 조회 응답 */
 export interface SubmissionDetailResponseDto {
@@ -121,8 +126,8 @@ export interface SubmissionDetailResponseDto {
   lastModifiedAt: string | null;
   /** 제출 파일 목록 */
   files: SubmissionFileResponseDto[];
-  /** 코멘트 개수 */
-  commentCount: number;
+  /** 피드백 개수 */
+  feedbackCount: number;
 }
 
 /** 제출 파일 다운로드 - 아카이브(제출물 종류 x 분과) 항목 */
@@ -169,3 +174,6 @@ export interface SubmissionItemRequestDto {
   /** 공개 범위 */
   visibility: SubmissionVisibility;
 }
+
+/** 제출물 설정값 확인 응답 (추가/수정 요청과 동일 필드) */
+export type SubmissionItemSettingResponseDto = SubmissionItemRequestDto;

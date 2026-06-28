@@ -11,8 +11,8 @@ export interface SubmissionFormValues {
   trackId: number | null;
   /** 설명 */
   description: string;
-  /** 허용 파일 형식 */
-  fileFormat: SubmissionFileFormat | null;
+  /** 허용 파일 형식 (다중) */
+  fileFormats: SubmissionFileFormat[];
   /** 최대 파일 크기 (MB) */
   maxFileSizeMb: number;
   /** 최대 파일 수 */

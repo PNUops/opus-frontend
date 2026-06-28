@@ -1,26 +1,41 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import { FILE_FORMAT_GROUPS } from '@constants/submission';
+import { cn } from '@components/lib/utils';
+import { FILE_FORMAT_EXTENSION, FILE_FORMAT_OPTIONS } from '@constants/submission';
 import type { SubmissionFileFormat } from '@dto/submissionDto';
 
 interface FileFormatSelectProps {
-  value: SubmissionFileFormat | null;
-  onChange: (value: SubmissionFileFormat) => void;
+  value: SubmissionFileFormat[];
+  onChange: (value: SubmissionFileFormat[]) => void;
 }
 
 export const FileFormatSelect = ({ value, onChange }: FileFormatSelectProps) => {
+  const toggle = (format: SubmissionFileFormat) => {
+    if (value.includes(format)) {
+      onChange(value.filter((v) => v !== format));
+    } else {
+      onChange([...value, format]);
+    }
+  };
+
   return (
-    <Select value={value ?? undefined} onValueChange={(v) => onChange(v as SubmissionFileFormat)}>
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="파일 형식 선택" />
-      </SelectTrigger>
-      <SelectContent>
-        {FILE_FORMAT_GROUPS.map((group) => (
-          <SelectItem key={group.key} value={group.key}>
-            <span className="font-medium">{group.label}</span>
-            <span className="text-midGray ml-2 text-xs">{group.extensions.join(', ')}</span>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="flex flex-wrap gap-2">
+      {FILE_FORMAT_OPTIONS.map((format) => {
+        const active = value.includes(format);
+        return (
+          <button
+            key={format}
+            type="button"
+            onClick={() => toggle(format)}
+            className={cn(
+              'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
+              active
+                ? 'border-mainBlue text-mainBlue bg-blue-50'
+                : 'border-input text-midGray bg-white hover:bg-gray-50',
+            )}
+          >
+            {FILE_FORMAT_EXTENSION[format]}
+          </button>
+        );
+      })}
+    </div>
   );
 };

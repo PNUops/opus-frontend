@@ -8,10 +8,10 @@ import { SubmissionTeamSummary } from './SubmissionTeamSummary';
 
 interface SubmissionDetailDrawerProps {
   detail: SubmissionDetailResponseDto;
-  onViewComments: () => void;
+  onViewFeedbacks: () => void;
 }
 
-export const SubmissionDetailDrawer = ({ detail, onViewComments }: SubmissionDetailDrawerProps) => {
+export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks }: SubmissionDetailDrawerProps) => {
   return (
     <div className="flex h-full flex-col">
       {/* 헤더 */}
@@ -45,18 +45,18 @@ export const SubmissionDetailDrawer = ({ detail, onViewComments }: SubmissionDet
           </div>
         </section>
 
-        {/* 코멘트 */}
+        {/* 피드백 */}
         <section className="border-lightGray flex items-center justify-between gap-4 rounded-xl border p-4">
           <h4 className="flex items-center gap-2 text-sm font-semibold">
-            코멘트
-            <span className="text-mainBlue">{detail.commentCount}</span>
+            피드백
+            <span className="text-mainBlue">{detail.feedbackCount}</span>
           </h4>
           <button
             type="button"
-            onClick={onViewComments}
+            onClick={onViewFeedbacks}
             className="border-mainBlue text-mainBlue rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-blue-50"
           >
-            코멘트 보기
+            피드백 보기
           </button>
         </section>
       </div>
