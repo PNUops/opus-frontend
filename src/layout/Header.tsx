@@ -1,5 +1,6 @@
 import { type ReactNode, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import useAuth from '@hooks/useAuth';
 import { useImageBlob } from '@hooks/useImageBlob';
 import { useOutsideClick } from '@hooks/useOutsideClick';
@@ -8,9 +9,11 @@ import { HiMenu } from 'react-icons/hi';
 import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
 import { useSidebar } from './SidebarContext';
 import ProfileButton from './ProfileButton';
+import NotificationOverlay from './NotificationOverlay';
 import Button from '@components/Button';
 import ProfileAvatar from '@components/ProfileAvatar';
 import { myProfileImageOption } from '@queries/me';
+import { notificationOption } from '@queries/notification';
 
 const PROFILE_MENU_ID = 'header-profile-menu';
 
@@ -35,15 +38,17 @@ const ProfileMenuLink = ({ to, icon, children, onClick }: ProfileMenuLinkProps) 
 
 interface ProfileMenuButtonProps {
   icon: ReactNode;
-  children: string;
+  children: ReactNode;
   onClick: () => void;
+  rightContent?: ReactNode;
 }
 
-const ProfileMenuButton = ({ icon, children, onClick }: ProfileMenuButtonProps) => {
+const ProfileMenuButton = ({ icon, children, onClick, rightContent }: ProfileMenuButtonProps) => {
   return (
     <button type="button" role="menuitem" className={profileMenuItemClass} onClick={onClick}>
       {icon}
       <span>{children}</span>
+      {rightContent && <span className="ml-auto shrink-0">{rightContent}</span>}
     </button>
   );
 };
@@ -51,15 +56,24 @@ const ProfileMenuButton = ({ icon, children, onClick }: ProfileMenuButtonProps) 
 interface HeaderProfileMenuProps {
   username?: string;
   isAdmin: boolean;
+  unreadNotificationCount: number;
   onSignout: () => void;
   onNotificationClick: () => void;
 }
 
-const HeaderProfileMenu = ({ username, isAdmin, onSignout, onNotificationClick }: HeaderProfileMenuProps) => {
+const HeaderProfileMenu = ({
+  username,
+  isAdmin,
+  unreadNotificationCount,
+  onSignout,
+  onNotificationClick,
+}: HeaderProfileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
   const { imageURL } = useImageBlob(myProfileImageOption());
   const displayName = username?.trim() || '사용자';
+  const hasUnreadNotification = unreadNotificationCount > 0;
+  const unreadNotificationLabel = unreadNotificationCount > 99 ? '99+' : String(unreadNotificationCount);
 
   useOutsideClick(profileMenuRef, () => setIsOpen(false));
 
@@ -88,6 +102,7 @@ const HeaderProfileMenu = ({ username, isAdmin, onSignout, onNotificationClick }
         imageUrl={imageURL}
         isOpen={isOpen}
         menuId={PROFILE_MENU_ID}
+        unreadNotificationCount={unreadNotificationCount}
         onClick={toggleMenu}
       />
 
@@ -122,7 +137,24 @@ const HeaderProfileMenu = ({ username, isAdmin, onSignout, onNotificationClick }
           >
             마이페이지
           </ProfileMenuLink>
-          <ProfileMenuButton icon={<Bell className="h-4 w-4 text-neutral-500" />} onClick={handleNotificationClick}>
+          <ProfileMenuButton
+            icon={
+              <span className="relative shrink-0">
+                <Bell className="h-4 w-4 text-neutral-500" />
+                {hasUnreadNotification && (
+                  <span className="bg-mainRed absolute -top-0.5 -right-0.5 size-1.5 rounded-full" />
+                )}
+              </span>
+            }
+            onClick={handleNotificationClick}
+            rightContent={
+              hasUnreadNotification ? (
+                <span className="bg-mainRed inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] leading-none font-bold text-white">
+                  {unreadNotificationLabel}
+                </span>
+              ) : undefined
+            }
+          >
             알림
           </ProfileMenuButton>
         </div>
@@ -151,15 +183,25 @@ const Header = () => {
   const toast = useToast();
   const location = useLocation();
   const { toggle } = useSidebar();
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationQuery = useQuery({
+    ...notificationOption(),
+    enabled: isSignedIn,
+    refetchInterval: isSignedIn ? 60 * 1000 : false,
+  });
+  const notifications = notificationQuery.data ?? [];
+  const unreadNotificationCount = notifications.filter((notification) => !notification.isRead).length;
 
   const handleSignout = () => {
+    setIsNotificationOpen(false);
     toast('로그아웃 되었습니다.', 'success');
     signOut();
     navigate('/');
   };
 
-  const handleNotificationClick = () => {
-    toast('알림 기능은 준비 중이에요.', 'info');
+  const handleNotificationOpen = () => {
+    setIsNotificationOpen(true);
+    void notificationQuery.refetch();
   };
 
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -202,14 +244,27 @@ const Header = () => {
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
+        <div className="relative flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
           {isSignedIn ? (
-            <HeaderProfileMenu
-              username={user?.name}
-              isAdmin={isAdmin}
-              onSignout={handleSignout}
-              onNotificationClick={handleNotificationClick}
-            />
+            <>
+              <HeaderProfileMenu
+                username={user?.name}
+                isAdmin={isAdmin}
+                unreadNotificationCount={unreadNotificationCount}
+                onSignout={handleSignout}
+                onNotificationClick={handleNotificationOpen}
+              />
+              <NotificationOverlay
+                isOpen={isNotificationOpen}
+                notifications={notifications}
+                isLoading={notificationQuery.isPending}
+                isError={notificationQuery.isError}
+                onClose={() => setIsNotificationOpen(false)}
+                onRetry={() => {
+                  void notificationQuery.refetch();
+                }}
+              />
+            </>
           ) : (
             <Button
               onClick={isSignedIn ? handleSignout : () => navigate('/signin')}
