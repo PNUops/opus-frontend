@@ -10,16 +10,16 @@ import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
 import { useContestId } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
-import { submissionDetailOption } from '@queries/submission';
+import { submissionDetailOption, submissionStatusesOption } from '@queries/submission';
 import { SUBMISSION_STATUS_FILTER_OPTIONS } from '@constants/submission';
 import type { SubmissionStatus, SubmissionStatusResponseDto } from '@dto/submissionDto';
 
-import { buildMockFeedbacks, MOCK_SUBMISSION_STATUSES } from '../mocks/mockSubmissions';
+import { buildMockFeedbacks } from '../mocks/mockSubmissions';
 import { SubmissionStatusBadge } from './SubmissionBadges';
 import { SubmissionDetailDrawer } from './SubmissionDetailDrawer';
 import { SubmissionFeedbackDrawer } from './SubmissionFeedbackDrawer';
 
-const TABLE_HEADERS = ['팀 이름', '분과', '제출물 항목', '제출 상태', '최초 제출일시', '최종 제출일시'];
+const TABLE_HEADERS = ['팀 이름', '분과', '제출 항목', '제출 상태', '최초 제출일시', '최종 제출일시'];
 const PAGE_SIZE = 10;
 
 type StatusFilter = SubmissionStatus | '';
@@ -49,8 +49,8 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   const [detailTarget, setDetailTarget] = useState<SubmissionStatusResponseDto | null>(null);
   const [feedbackTarget, setFeedbackTarget] = useState<SubmissionStatusResponseDto | null>(null);
 
-  // TODO: API 연동 시 목데이터 대체
-  const submissions = MOCK_SUBMISSION_STATUSES;
+  // 제출 현황 전체 목록 (필터·페이지네이션은 아래 State에서 처리)
+  const { data: submissions = [] } = useQuery(submissionStatusesOption(contestId));
 
   // 제출 상세 조회 (상세보기 / 피드백 Drawer 공용)
   const { data: detailData } = useQuery(submissionDetailOption(contestId, detailTarget?.submissionId ?? 0));
@@ -60,7 +60,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
     () =>
       toNameOptions(
         submissions.map((s) => s.submissionTypeName),
-        '제출물',
+        '제출 항목',
       ),
     [submissions],
   );
@@ -115,7 +115,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
       <div className="flex flex-wrap items-center gap-2">
         <FilterDropDown
           variant="select"
-          label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출물'}
+          label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
           value={typeFilter}
           options={typeOptions}
           onChange={(v) => {

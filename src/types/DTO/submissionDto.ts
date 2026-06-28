@@ -1,5 +1,3 @@
-import type { PaginationResponseDto } from './commonDto';
-
 /** 제출물 운영 상태 */
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
@@ -66,8 +64,8 @@ export interface SubmissionStatusResponseDto {
   lastModifiedAt: string | null;
 }
 
-/** 제출 현황 목록 응답 (Spring Page) */
-export type GetSubmissionStatusesResponseDto = PaginationResponseDto<SubmissionStatusResponseDto>;
+/** 제출 현황 목록 응답 (전체 목록, 페이지네이션·필터는 클라이언트 State에서 처리) */
+export type GetSubmissionStatusesResponseDto = SubmissionStatusResponseDto[];
 
 /** 제출 파일 */
 export interface SubmissionFileResponseDto {

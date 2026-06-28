@@ -21,7 +21,7 @@ const SubmissionManagePage = () => {
 
   return (
     <div className="flex w-full flex-col gap-10">
-      <AdminHeader title="제출 자료 관리" description="대회별 제출 자료의 설정, 제출 현황, 다운로드를 관리합니다." />
+      <AdminHeader title="제출 자료 관리" description="대회별 제출 항목의 설정, 제출 현황, 다운로드를 관리합니다." />
 
       <SubmissionTabBar
         activeTab={activeTab}

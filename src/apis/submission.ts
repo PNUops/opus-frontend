@@ -2,11 +2,18 @@ import apiClient from './apiClient';
 import type { GetMySubmissionListResponseDto } from '@dto/meDto';
 import type {
   GetSubmissionItemsResponseDto,
+  GetSubmissionStatusesResponseDto,
   SubmissionDetailResponseDto,
   SubmissionItemRequestDto,
   SubmissionItemSettingResponseDto,
   SubmitSubmissionResponseDto,
 } from '@dto/submissionDto';
+
+/** 제출 현황 목록 조회 (어드민) — 페이지네이션·필터는 클라이언트에서 처리 */
+export const getSubmissionStatuses = async (contestId: number) => {
+  const res = await apiClient.get<GetSubmissionStatusesResponseDto>(`/admin/contests/${contestId}/submissions`);
+  return res.data;
+};
 
 /** 제출 항목 목록 조회 (어드민 제출 항목 설정 탭) */
 export const getSubmissionItems = async (contestId: number) => {

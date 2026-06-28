@@ -1,7 +1,6 @@
 import type {
   SubmissionArchiveResponseDto,
   SubmissionFeedbackResponseDto,
-  SubmissionStatus,
   SubmissionStatusResponseDto,
 } from '@dto/submissionDto';
 
@@ -64,33 +63,6 @@ export const MOCK_ARCHIVES: SubmissionArchiveResponseDto[] = [
     estimatedSize: 1288490188,
   },
 ];
-
-const STATUS_CYCLE: SubmissionStatus[] = [
-  'SUBMITTED',
-  'SUBMITTED',
-  'SUBMITTED',
-  'LATE',
-  'NOT_SUBMITTED',
-  'NOT_SUBMITTED_AFTER_DEADLINE',
-];
-const STATUS_TRACKS = ['AI/데이터', '웹/모바일', '보안'];
-const STATUS_TYPES = ['최종발표 자료', '중간발표 자료', '시연 영상'];
-
-/** TODO: API 연동 전 임시 제출 현황 목데이터 */
-export const MOCK_SUBMISSION_STATUSES: SubmissionStatusResponseDto[] = Array.from({ length: 23 }, (_, index) => {
-  const status = STATUS_CYCLE[index % STATUS_CYCLE.length];
-  const isSubmitted = status === 'SUBMITTED' || status === 'LATE';
-  return {
-    submissionId: isSubmitted ? index + 1 : null,
-    teamId: index + 1,
-    teamName: `퓨처메이커스 ${index + 1}`,
-    trackName: STATUS_TRACKS[index % STATUS_TRACKS.length],
-    submissionTypeName: STATUS_TYPES[index % STATUS_TYPES.length],
-    status,
-    firstSubmittedAt: isSubmitted ? '2026-05-15T23:59:00' : null,
-    lastModifiedAt: isSubmitted ? '2026-05-15T23:59:00' : null,
-  };
-});
 
 const COMMENT_BODY =
   '자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요. 자료 흐름은 명확하지만 실험 결과 설명이 조금 더 필요합니다. 예시로 첨부 파일을 참고해주세요.';
