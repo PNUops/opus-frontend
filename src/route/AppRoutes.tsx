@@ -38,7 +38,6 @@ import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
 import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
 import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
 import TeamDashboardPage from '@pages/me/team/TeamDashboardPage';
-import TeamPagePlaceholder from '@pages/me/team/TeamPagePlaceholder';
 import RoleAssignmentPage from '@pages/admin/role-assignment/RoleAssignmentPage';
 
 const AppRoutes = () =>
@@ -81,11 +80,7 @@ const AppRoutes = () =>
               element: <Navigate to="dashboard" replace />,
             },
             { path: 'contests/:contestId/teams/:teamId/dashboard', element: <TeamDashboardPage /> },
-            { path: 'contests/:contestId/teams/:teamId/submissions', element: <TeamPagePlaceholder title="제출물" /> },
-            {
-              path: 'contests/:contestId/teams/:teamId/project-info',
-              element: <TeamPagePlaceholder title="프로젝트 정보" />,
-            },
+            { path: 'contests/:contestId/teams/:teamId/submissions', element: <MySubmissionPage /> },
             { path: 'account', element: <AccountPage /> },
           ],
         },
