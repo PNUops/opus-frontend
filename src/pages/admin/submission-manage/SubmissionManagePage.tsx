@@ -11,7 +11,6 @@ import type { SubmissionTabKey } from './types/submission';
 const SubmissionManagePage = () => {
   const [activeTab, setActiveTab] = useState<SubmissionTabKey>('setting');
   // "제출 현황 보기"로 진입 시 제출 현황 탭에 적용할 초기 제출물 필터 (제출물 종류명)
-  // TODO: API 연동 시 submissionItemId 기준 필터로 전환
   const [statusTypeFilter, setStatusTypeFilter] = useState('');
 
   const handleViewStatus = (submissionTypeName: string) => {

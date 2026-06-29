@@ -53,7 +53,6 @@ const formatDateTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm'
 
 interface SubmissionSettingTabProps {
   // "제출 현황 보기" 클릭 시 해당 제출물 종류명으로 제출 현황 탭 필터링하며 이동
-  // TODO: API 연동 시 submissionItemId 기준으로 전환
   onViewStatus: (submissionTypeName: string) => void;
 }
 

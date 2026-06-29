@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useContestId, useTeamId } from '@hooks/useId';
-import { mySubmissionsOption } from '@queries/submission';
+import { mySubmissionsOption, mySubmissionSummaryOption, mySubmissionTimelineOption } from '@queries/submission';
 
-import { getMockMySubmissionSummary, getMockMySubmissionTimeline } from './mocks/mockMySubmission';
 import { SubmissionSummaryCards } from './components/SubmissionSummaryCards';
 import { SubmissionTimeline } from './components/SubmissionTimeline';
 import { SubmissionList } from './components/SubmissionList';
@@ -12,9 +11,8 @@ const MySubmissionPage = () => {
   const contestId = useContestId() ?? 0;
   const teamId = useTeamId() ?? 0;
 
-  // TODO: API 연동 시 teamId로 조회
-  const summary = getMockMySubmissionSummary(teamId);
-  const timeline = getMockMySubmissionTimeline(teamId);
+  const { data: summary } = useQuery(mySubmissionSummaryOption(contestId, teamId));
+  const { data: timeline = [] } = useQuery(mySubmissionTimelineOption(contestId, teamId));
   const { data: submissions = [] } = useQuery(mySubmissionsOption(contestId, teamId));
 
   return (
@@ -27,7 +25,7 @@ const MySubmissionPage = () => {
               프로젝트 참여에 필요한 제출 항목을 확인하고, 제출 상태를 관리할 수 있습니다.
             </p>
           </div>
-          <SubmissionSummaryCards summary={summary} />
+          {summary && <SubmissionSummaryCards summary={summary} />}
         </div>
         <div className="overflow-x-auto pt-2 pb-1">
           <div className="min-w-[640px]">

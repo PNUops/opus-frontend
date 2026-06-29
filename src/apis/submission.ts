@@ -1,5 +1,10 @@
 import apiClient from './apiClient';
-import type { ConfirmMemoResponseDto, GetMySubmissionListResponseDto } from '@dto/meDto';
+import type {
+  ConfirmMemoResponseDto,
+  GetMySubmissionListResponseDto,
+  GetMySubmissionSummaryResponseDto,
+  GetMySubmissionTimelineResponseDto,
+} from '@dto/meDto';
 import type {
   GetSubmissionArchivesResponseDto,
   GetSubmissionFeedbacksResponseDto,
@@ -59,6 +64,22 @@ export const getMySubmissions = async (contestId: number, teamId: number) => {
   const res = await apiClient.get<GetMySubmissionListResponseDto>(`/contests/${contestId}/submissions`, {
     params: { teamId },
   });
+  return res.data;
+};
+
+/** 내 프로젝트 - 제출물 상태 요약 조회 */
+export const getMySubmissionSummary = async (contestId: number, teamId: number) => {
+  const res = await apiClient.get<GetMySubmissionSummaryResponseDto>(
+    `/contests/${contestId}/teams/${teamId}/submissions/summary`,
+  );
+  return res.data;
+};
+
+/** 내 프로젝트 - 제출 타임라인 조회 */
+export const getMySubmissionTimeline = async (contestId: number, teamId: number) => {
+  const res = await apiClient.get<GetMySubmissionTimelineResponseDto>(
+    `/contests/${contestId}/teams/${teamId}/submissions/timeline`,
+  );
   return res.data;
 };
 

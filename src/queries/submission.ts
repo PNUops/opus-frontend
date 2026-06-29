@@ -2,6 +2,8 @@ import { queryOptions } from '@tanstack/react-query';
 import {
   getConfirmMemo,
   getMySubmissions,
+  getMySubmissionSummary,
+  getMySubmissionTimeline,
   getSubmissionDetail,
   getSubmissionDownloads,
   getSubmissionFeedbacks,
@@ -16,6 +18,8 @@ export const SUBMISSION_STATUSES_QUERY_KEY = 'submissionStatuses';
 export const SUBMISSION_DOWNLOADS_QUERY_KEY = 'submissionDownloads';
 export const SUBMISSION_FEEDBACKS_QUERY_KEY = 'submissionFeedbacks';
 export const MY_SUBMISSION_LIST_QUERY_KEY = 'mySubmissionList';
+export const MY_SUBMISSION_SUMMARY_QUERY_KEY = 'mySubmissionSummary';
+export const MY_SUBMISSION_TIMELINE_QUERY_KEY = 'mySubmissionTimeline';
 export const SUBMISSION_DETAIL_QUERY_KEY = 'submissionDetail';
 export const CONFIRM_MEMO_QUERY_KEY = 'confirmMemo';
 
@@ -58,6 +62,20 @@ export const mySubmissionsOption = (contestId: number, teamId: number) =>
   queryOptions({
     queryKey: [MY_SUBMISSION_LIST_QUERY_KEY, contestId, teamId],
     queryFn: () => getMySubmissions(contestId, teamId),
+    enabled: !!contestId && !!teamId,
+  });
+
+export const mySubmissionSummaryOption = (contestId: number, teamId: number) =>
+  queryOptions({
+    queryKey: [MY_SUBMISSION_SUMMARY_QUERY_KEY, contestId, teamId],
+    queryFn: () => getMySubmissionSummary(contestId, teamId),
+    enabled: !!contestId && !!teamId,
+  });
+
+export const mySubmissionTimelineOption = (contestId: number, teamId: number) =>
+  queryOptions({
+    queryKey: [MY_SUBMISSION_TIMELINE_QUERY_KEY, contestId, teamId],
+    queryFn: () => getMySubmissionTimeline(contestId, teamId),
     enabled: !!contestId && !!teamId,
   });
 
