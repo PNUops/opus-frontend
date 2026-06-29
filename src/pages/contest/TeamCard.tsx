@@ -15,6 +15,7 @@ interface TeamCardProps {
   isLiked?: boolean;
   isVoted?: boolean;
   isVoteTerm?: boolean;
+  to?: string;
 }
 
 const TeamCard = ({
@@ -26,6 +27,7 @@ const TeamCard = ({
   isVoted,
   awards,
   isVoteTerm,
+  to,
 }: TeamCardProps) => {
   const { thumbnailUrl } = useTeamThumbnail(teamId);
   const awardsList = awards ?? [];
@@ -33,7 +35,7 @@ const TeamCard = ({
   const remainingAwardsCount = Math.max(awardsList.length - 1, 0);
 
   return (
-    <Link to={`/contest/${contestId}/teams/view/${teamId}`} className="flex aspect-[7/8] w-full flex-col">
+    <Link to={to ?? `/contest/${contestId}/teams/view/${teamId}`} className="flex aspect-[7/8] w-full flex-col">
       <div className="border-lightGray relative aspect-[3/2] flex-shrink-0 cursor-pointer overflow-hidden rounded-md border transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
         <img src={thumbnailUrl ?? basicThumbnail} alt="썸네일" className="h-full w-full object-contain" />
         {firstAward && (

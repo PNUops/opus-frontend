@@ -11,18 +11,18 @@ interface CommentSectionProps {
 const CommentSection = ({ teamId }: CommentSectionProps) => {
   const { isSignedIn } = useAuth();
 
-  if (!isSignedIn) {
-    return <CommentSigninPrompt />;
-  }
-
   return (
-    <>
-      <div className="flex flex-col">
-        <CommentFormSection teamId={teamId} />
-        <div className="h-20" />
-        <CommentListSection teamId={teamId} />
-      </div>
-    </>
+    <div id="comments" className="flex scroll-mt-24 flex-col">
+      {isSignedIn ? (
+        <>
+          <CommentFormSection teamId={teamId} />
+          <div className="h-20" />
+          <CommentListSection teamId={teamId} />
+        </>
+      ) : (
+        <CommentSigninPrompt />
+      )}
+    </div>
   );
 };
 
