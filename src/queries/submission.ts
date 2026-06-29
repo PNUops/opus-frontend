@@ -12,83 +12,88 @@ import {
   getSubmissionStatuses,
 } from '@apis/submission';
 
-export const SUBMISSION_ITEMS_QUERY_KEY = 'submissionItems';
-export const SUBMISSION_ITEM_SETTING_QUERY_KEY = 'submissionItemSetting';
-export const SUBMISSION_STATUSES_QUERY_KEY = 'submissionStatuses';
-export const SUBMISSION_DOWNLOADS_QUERY_KEY = 'submissionDownloads';
-export const SUBMISSION_FEEDBACKS_QUERY_KEY = 'submissionFeedbacks';
-export const MY_SUBMISSION_LIST_QUERY_KEY = 'mySubmissionList';
-export const MY_SUBMISSION_SUMMARY_QUERY_KEY = 'mySubmissionSummary';
-export const MY_SUBMISSION_TIMELINE_QUERY_KEY = 'mySubmissionTimeline';
-export const SUBMISSION_DETAIL_QUERY_KEY = 'submissionDetail';
-export const CONFIRM_MEMO_QUERY_KEY = 'confirmMemo';
+/** 제출물 도메인 쿼리 키 팩토리 */
+export const submissionKeys = {
+  items: (contestId: number) => ['submissionItems', contestId] as const,
+  itemSetting: (contestId: number, submissionItemId: number) =>
+    ['submissionItemSetting', contestId, submissionItemId] as const,
+  statuses: (contestId: number) => ['submissionStatuses', contestId] as const,
+  downloads: (contestId: number) => ['submissionDownloads', contestId] as const,
+  feedbacks: (contestId: number, submissionId: number) => ['submissionFeedbacks', contestId, submissionId] as const,
+  myList: (contestId: number, teamId: number) => ['mySubmissionList', contestId, teamId] as const,
+  mySummary: (contestId: number, teamId: number) => ['mySubmissionSummary', contestId, teamId] as const,
+  myTimeline: (contestId: number, teamId: number) => ['mySubmissionTimeline', contestId, teamId] as const,
+  detail: (contestId: number, submissionId: number) => ['submissionDetail', contestId, submissionId] as const,
+  confirmMemo: (contestId: number, teamId: number, submissionId: number) =>
+    ['confirmMemo', contestId, teamId, submissionId] as const,
+};
 
 export const submissionStatusesOption = (contestId: number) =>
   queryOptions({
-    queryKey: [SUBMISSION_STATUSES_QUERY_KEY, contestId],
+    queryKey: submissionKeys.statuses(contestId),
     queryFn: () => getSubmissionStatuses(contestId),
     enabled: !!contestId,
   });
 
 export const submissionDownloadsOption = (contestId: number) =>
   queryOptions({
-    queryKey: [SUBMISSION_DOWNLOADS_QUERY_KEY, contestId],
+    queryKey: submissionKeys.downloads(contestId),
     queryFn: () => getSubmissionDownloads(contestId),
     enabled: !!contestId,
   });
 
 export const submissionFeedbacksOption = (contestId: number, submissionId: number) =>
   queryOptions({
-    queryKey: [SUBMISSION_FEEDBACKS_QUERY_KEY, contestId, submissionId],
+    queryKey: submissionKeys.feedbacks(contestId, submissionId),
     queryFn: () => getSubmissionFeedbacks(contestId, submissionId),
     enabled: !!contestId && !!submissionId,
   });
 
 export const submissionItemsOption = (contestId: number) =>
   queryOptions({
-    queryKey: [SUBMISSION_ITEMS_QUERY_KEY, contestId],
+    queryKey: submissionKeys.items(contestId),
     queryFn: () => getSubmissionItems(contestId),
     enabled: !!contestId,
   });
 
 export const submissionItemSettingOption = (contestId: number, submissionItemId: number) =>
   queryOptions({
-    queryKey: [SUBMISSION_ITEM_SETTING_QUERY_KEY, contestId, submissionItemId],
+    queryKey: submissionKeys.itemSetting(contestId, submissionItemId),
     queryFn: () => getSubmissionItemSetting(contestId, submissionItemId),
     enabled: !!contestId && !!submissionItemId,
   });
 
 export const mySubmissionsOption = (contestId: number, teamId: number) =>
   queryOptions({
-    queryKey: [MY_SUBMISSION_LIST_QUERY_KEY, contestId, teamId],
+    queryKey: submissionKeys.myList(contestId, teamId),
     queryFn: () => getMySubmissions(contestId, teamId),
     enabled: !!contestId && !!teamId,
   });
 
 export const mySubmissionSummaryOption = (contestId: number, teamId: number) =>
   queryOptions({
-    queryKey: [MY_SUBMISSION_SUMMARY_QUERY_KEY, contestId, teamId],
+    queryKey: submissionKeys.mySummary(contestId, teamId),
     queryFn: () => getMySubmissionSummary(contestId, teamId),
     enabled: !!contestId && !!teamId,
   });
 
 export const mySubmissionTimelineOption = (contestId: number, teamId: number) =>
   queryOptions({
-    queryKey: [MY_SUBMISSION_TIMELINE_QUERY_KEY, contestId, teamId],
+    queryKey: submissionKeys.myTimeline(contestId, teamId),
     queryFn: () => getMySubmissionTimeline(contestId, teamId),
     enabled: !!contestId && !!teamId,
   });
 
 export const submissionDetailOption = (contestId: number, submissionId: number) =>
   queryOptions({
-    queryKey: [SUBMISSION_DETAIL_QUERY_KEY, contestId, submissionId],
+    queryKey: submissionKeys.detail(contestId, submissionId),
     queryFn: () => getSubmissionDetail(contestId, submissionId),
     enabled: !!contestId && !!submissionId,
   });
 
 export const confirmMemoOption = (contestId: number, teamId: number, submissionId: number) =>
   queryOptions({
-    queryKey: [CONFIRM_MEMO_QUERY_KEY, contestId, teamId, submissionId],
+    queryKey: submissionKeys.confirmMemo(contestId, teamId, submissionId),
     queryFn: () => getConfirmMemo(contestId, teamId, submissionId),
     enabled: !!contestId && !!teamId && !!submissionId,
   });
