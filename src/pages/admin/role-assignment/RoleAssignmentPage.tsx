@@ -5,7 +5,6 @@ import { AdminHeader } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
 import { deleteContestStaff, getContestStaff } from '@apis/contestStaff';
 import { getProjectsAdmin } from '@apis/contest';
-import { getContestTracks } from '@apis/track';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { useToast } from '@hooks/useToast';
 import { getApiErrorMessage } from '@utils/error';
@@ -34,11 +33,6 @@ const RoleAssignmentPage = () => {
   const { data: projects = [] } = useQuery({
     queryKey: ['projects', contestId],
     queryFn: () => getProjectsAdmin(contestId),
-  });
-
-  const { data: tracks = [] } = useQuery({
-    queryKey: ['tracks', contestId],
-    queryFn: () => getContestTracks(contestId),
   });
 
   const assignableTeams = useMemo(
@@ -88,7 +82,6 @@ const RoleAssignmentPage = () => {
             contestId={contestId}
             defaultRole={modalRole}
             teams={assignableTeams}
-            tracks={tracks}
             onClose={() => setModalRole(null)}
           />
         )}

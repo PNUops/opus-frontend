@@ -33,15 +33,3 @@ export interface UpdateContestStaffRequest {
   addTeamIds: number[];
   deleteTeamIds: number[];
 }
-
-export interface SearchStaffMembersParams {
-  keyword: string;
-  memberType?: ContestStaffMemberType;
-}
-
-export interface StaffMemberSearchResult {
-  memberId: number;
-  name: string;
-  email: string;
-  roleType: ContestStaffMemberType;
-}

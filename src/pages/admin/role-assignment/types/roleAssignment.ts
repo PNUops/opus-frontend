@@ -1,9 +1,5 @@
-import type {
-  ContestStaff,
-  ContestStaffMemberType,
-  ContestStaffTeam,
-  StaffMemberSearchResult,
-} from '@dto/contestStaffDto';
+import type { ContestStaff, ContestStaffMemberType, ContestStaffTeam } from '@dto/contestStaffDto';
+import type { AdminMemberSearchResultDto } from '@dto/memberDto';
 
 export type RoleType = ContestStaffMemberType;
 
@@ -12,21 +8,12 @@ export type AssignedTeam = ContestStaffTeam;
 export type RoleAssignment = ContestStaff;
 
 export interface AssignableTeam extends AssignedTeam {
-  trackName: string;
+  trackName: string | null;
 }
 
-export type AssignableMember = StaffMemberSearchResult;
-
-export interface ContestTrack {
-  trackId: number;
-  trackName: string;
-}
+export type AssignableMember = AdminMemberSearchResultDto;
 
 export interface RoleAssignmentFormValues {
-  memberId: number | null;
   memberEmailQuery: string;
-  roleType: RoleType;
-  trackName: string | null;
-  teamSearch: string;
   teamIds: number[];
 }
