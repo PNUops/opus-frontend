@@ -1,5 +1,5 @@
 import { AwardDto } from './awardsDto';
-import type { SubmissionStatus } from './submissionDto';
+import type { SubmissionFileResponseDto, SubmissionStatus } from './submissionDto';
 
 export interface MyProjectDto {
   contestId: number;
@@ -59,6 +59,40 @@ export interface MySubmissionTimelineItemDto {
 }
 
 export type GetMySubmissionTimelineResponseDto = MySubmissionTimelineItemDto[];
+
+/** 나의 활동 - 제출물 목록 항목 */
+export interface MySubmissionListItemDto {
+  /** 제출 항목 ID */
+  submissionItemId: number;
+  /** 제출 ID, 미제출이면 null */
+  submissionId: number | null;
+  /** 제출물 종류명 */
+  submissionTypeName: string;
+  /** 제출 항목 설명 */
+  description: string;
+  /** 제출 마감일시 */
+  deadlineAt: string;
+  /** 제출 상태 */
+  status: SubmissionStatus;
+  /** 제출 파일 (미제출이면 빈 배열) */
+  files: SubmissionFileResponseDto[];
+}
+
+export type GetMySubmissionListResponseDto = MySubmissionListItemDto[];
+
+/** 확인 메모 조회 응답 (메모 없으면 null) */
+export interface ConfirmMemoResponseDto {
+  /** 메모 id */
+  id: number;
+  /** 메모 내용 */
+  content: string;
+}
+
+/** 확인 메모 생성/수정 요청 */
+export interface ConfirmMemoRequestDto {
+  /** 메모 내용 */
+  content: string;
+}
 
 export type GetMyVotesResponseDto = MyVoteDto[];
 

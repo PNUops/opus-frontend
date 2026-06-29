@@ -39,6 +39,7 @@ import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
 import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
 import TeamDashboardPage from '@pages/me/team/TeamDashboardPage';
 import TeamPagePlaceholder from '@pages/me/team/TeamPagePlaceholder';
+import RoleAssignmentPage from '@pages/admin/role-assignment/RoleAssignmentPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -125,6 +126,7 @@ const AppRoutes = () =>
                 // 대회
                 { path: 'manage', element: <ContestManagePage /> },
                 { path: 'team-setting', element: <TeamSettingPage /> },
+                { path: 'roles', element: <RoleAssignmentPage /> },
                 { path: 'tracks', element: <TrackManagePage /> },
                 { path: 'votes', element: <VoteManagePage /> },
                 { path: 'notices', element: <NoticeManagePage /> },

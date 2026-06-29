@@ -36,7 +36,7 @@ const createDefaultValues = (): SubmissionFormValues => ({
   name: '',
   trackId: null,
   description: '',
-  fileFormat: null,
+  fileFormats: [],
   maxFileSizeMb: 500,
   maxFileCount: 1,
   startAt: dayjs().hour(0).minute(0).second(0).format(LOCAL_DATETIME_FORMAT),
@@ -50,7 +50,7 @@ const toRequestDto = (values: SubmissionFormValues): SubmissionItemRequestDto =>
   name: values.name.trim(),
   ...(values.trackId !== null && { contestTrackId: values.trackId }),
   ...(values.description.trim() && { description: values.description.trim() }),
-  allowedFileFormats: values.fileFormat ? [values.fileFormat] : [],
+  allowedFileFormats: values.fileFormats,
   maxFileSizeMb: values.maxFileSizeMb,
   maxFileCount: values.maxFileCount,
   startAt: values.startAt,
@@ -72,7 +72,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
       toast('제출물 이름을 입력해주세요.', 'error');
       return;
     }
-    if (values.fileFormat === null) {
+    if (values.fileFormats.length === 0) {
       toast('파일 형식을 선택해주세요.', 'error');
       return;
     }
@@ -132,8 +132,8 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
           />
         </FormRow>
 
-        <FormRow label="파일 형식">
-          <FileFormatSelect value={values.fileFormat} onChange={(v) => update('fileFormat', v)} />
+        <FormRow label="파일 형식" align="start">
+          <FileFormatSelect value={values.fileFormats} onChange={(v) => update('fileFormats', v)} />
         </FormRow>
 
         <FormRow label="파일 크기">
