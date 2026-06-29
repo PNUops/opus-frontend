@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import {
+  getConfirmMemo,
   getMySubmissions,
   getSubmissionDetail,
   getSubmissionDownloads,
@@ -16,6 +17,7 @@ export const SUBMISSION_DOWNLOADS_QUERY_KEY = 'submissionDownloads';
 export const SUBMISSION_FEEDBACKS_QUERY_KEY = 'submissionFeedbacks';
 export const MY_SUBMISSION_LIST_QUERY_KEY = 'mySubmissionList';
 export const SUBMISSION_DETAIL_QUERY_KEY = 'submissionDetail';
+export const CONFIRM_MEMO_QUERY_KEY = 'confirmMemo';
 
 export const submissionStatusesOption = (contestId: number) =>
   queryOptions({
@@ -64,4 +66,11 @@ export const submissionDetailOption = (contestId: number, submissionId: number) 
     queryKey: [SUBMISSION_DETAIL_QUERY_KEY, contestId, submissionId],
     queryFn: () => getSubmissionDetail(contestId, submissionId),
     enabled: !!contestId && !!submissionId,
+  });
+
+export const confirmMemoOption = (contestId: number, teamId: number, submissionId: number) =>
+  queryOptions({
+    queryKey: [CONFIRM_MEMO_QUERY_KEY, contestId, teamId, submissionId],
+    queryFn: () => getConfirmMemo(contestId, teamId, submissionId),
+    enabled: !!contestId && !!teamId && !!submissionId,
   });

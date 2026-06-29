@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-import type { GetMySubmissionListResponseDto } from '@dto/meDto';
+import type { ConfirmMemoResponseDto, GetMySubmissionListResponseDto } from '@dto/meDto';
 import type {
   GetSubmissionArchivesResponseDto,
   GetSubmissionFeedbacksResponseDto,
@@ -103,6 +103,36 @@ export const postSubmissionFiles = async (contestId: number, submissionId: numbe
 /** 제출된 제출물의 파일 삭제 */
 export const deleteSubmissionFile = async (contestId: number, submissionId: number, fileId: number) => {
   const res = await apiClient.delete(`/contests/${contestId}/submissions/${submissionId}/files/${fileId}`);
+  return res.data;
+};
+
+/** 확인 메모 조회 (멤버 제출물 자세히보기) — 메모 없으면 null */
+export const getConfirmMemo = async (contestId: number, teamId: number, submissionId: number) => {
+  const res = await apiClient.get<ConfirmMemoResponseDto | null>(
+    `/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`,
+  );
+  return res.data;
+};
+
+/** 확인 메모 생성 */
+export const postConfirmMemo = async (contestId: number, teamId: number, submissionId: number, content: string) => {
+  const res = await apiClient.post(`/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`, {
+    content,
+  });
+  return res.data;
+};
+
+/** 확인 메모 수정 */
+export const patchConfirmMemo = async (contestId: number, teamId: number, submissionId: number, content: string) => {
+  const res = await apiClient.patch(`/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`, {
+    content,
+  });
+  return res.data;
+};
+
+/** 확인 메모 삭제 */
+export const deleteConfirmMemo = async (contestId: number, teamId: number, submissionId: number) => {
+  const res = await apiClient.delete(`/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`);
   return res.data;
 };
 

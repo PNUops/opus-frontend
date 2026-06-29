@@ -36,7 +36,7 @@ const MySubmissionPage = () => {
         </div>
       </section>
 
-      <SubmissionList contestId={contestId} items={submissions} />
+      <SubmissionList contestId={contestId} teamId={teamId} items={submissions} />
     </div>
   );
 };
