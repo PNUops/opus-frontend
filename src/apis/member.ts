@@ -1,6 +1,8 @@
 import apiClient from './apiClient';
 import {
   GetMyProfileResponseDto,
+  SearchAdminMembersParams,
+  SearchAdminMembersResponseDto,
   UpdateProfileVisibilityRequestDto,
   PatchMyStudentIdRequestDto,
   PatchMyPasswordRequestDto,
@@ -33,5 +35,19 @@ export const patchMyStudentId = async (payload: PatchMyStudentIdRequestDto) => {
 
 export const patchMyPassword = async (payload: PatchMyPasswordRequestDto): Promise<void> => {
   const res = await apiClient.patch('/members/me/password-reset', payload);
+  return res.data;
+};
+
+export const searchAdminMembers = async ({
+  keyword,
+  roleType,
+}: SearchAdminMembersParams): Promise<SearchAdminMembersResponseDto> => {
+  const res = await apiClient.get<SearchAdminMembersResponseDto>('/admin/members/search', {
+    params: {
+      keyword,
+      roleType,
+    },
+  });
+
   return res.data;
 };
