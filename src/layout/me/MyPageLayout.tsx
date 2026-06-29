@@ -7,29 +7,16 @@ import { createMyPageSidebarData } from '@constants/myPageSidebarData';
 import useAuth from '@hooks/useAuth';
 import { getMyProjects } from '@apis/me';
 import { MY_PROJECTS_QUERY_KEY } from '@queries/me';
-import { mockMyProjects } from '@pages/me/team/mockTeamDashboard';
 
 const MyPageLayout = () => {
   const { isSignedIn } = useAuth();
-  const {
-    data: fetchedMyProjects,
-    isError: isMyProjectsError,
-    isFetched: isMyProjectsFetched,
-  } = useQuery({
+  const { data: fetchedMyProjects } = useQuery({
     queryKey: MY_PROJECTS_QUERY_KEY,
     queryFn: getMyProjects,
     enabled: isSignedIn,
     staleTime: 5 * 60 * 1000,
   });
-  const myProjects = useMemo(() => {
-    const projects = fetchedMyProjects ?? [];
-
-    if (import.meta.env.DEV && (isMyProjectsError || (isMyProjectsFetched && projects.length === 0))) {
-      return mockMyProjects;
-    }
-
-    return projects;
-  }, [fetchedMyProjects, isMyProjectsError, isMyProjectsFetched]);
+  const myProjects = useMemo(() => fetchedMyProjects ?? [], [fetchedMyProjects]);
   const sidebarSections = useMemo(() => createMyPageSidebarData(myProjects), [myProjects]);
 
   if (!isSignedIn) {
