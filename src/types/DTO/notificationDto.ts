@@ -1,8 +1,7 @@
-// TODO: Recheck this union against the Notion v2 notification spec once connector auth is refreshed.
-export type NotificationTargetType = 'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARD';
+export type NotificationTargetType = 'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARD' | 'TEAM_AWARDS';
 
 export interface NotificationDto {
-  id: number;
+  notificationId: number;
   title: string;
   content: string;
   targetType: NotificationTargetType;

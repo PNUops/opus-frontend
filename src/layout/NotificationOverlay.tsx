@@ -1,15 +1,21 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import dayjs from 'dayjs';
 import { Bell, CheckCheck, ChevronRight, RotateCw } from 'lucide-react';
 
 import { markAllNotificationsAsRead, markNotificationAsRead } from '@apis/notification';
 import Spinner from '@components/Spinner';
 import { cn } from '@components/lib/utils';
 import { useOutsideClick } from '@hooks/useOutsideClick';
-import { invalidateNotificationQueries } from '@queries/notification';
+import { invalidateNotificationQueries, NOTIFICATIONS_QUERY_KEY } from '@queries/notification';
 import type { NotificationDto } from '@dto/notificationDto';
+import {
+  formatNotificationCreatedAt,
+  markAllNotificationsAsReadInCache,
+  markNotificationAsReadInCache,
+  notificationTargetTypeLabel,
+  resolveNotificationTargetPath,
+} from '@utils/notification';
 
 interface NotificationOverlayProps {
   isOpen: boolean;
@@ -19,17 +25,6 @@ interface NotificationOverlayProps {
   onClose: () => void;
   onRetry: () => void;
 }
-
-const targetTypeLabel: Record<NotificationDto['targetType'], string> = {
-  TEAM: '프로젝트',
-  TEAM_COMMENT: '댓글',
-  TEAM_AWARD: '수상',
-};
-
-const formatCreatedAt = (value: string) => {
-  const date = dayjs(value);
-  return date.isValid() ? date.format('YYYY.MM.DD HH:mm') : '-';
-};
 
 const NotificationOverlay = ({
   isOpen,
@@ -52,6 +47,15 @@ const NotificationOverlay = ({
 
   const markAsReadMutation = useMutation({
     mutationFn: markNotificationAsRead,
+    onMutate: (notificationId) => {
+      const previousNotifications = queryClient.getQueryData<NotificationDto[]>(NOTIFICATIONS_QUERY_KEY);
+      markNotificationAsReadInCache(queryClient, notificationId);
+
+      return { previousNotifications };
+    },
+    onError: (_error, _notificationId, context) => {
+      queryClient.setQueryData(NOTIFICATIONS_QUERY_KEY, context?.previousNotifications);
+    },
     onSettled: () => {
       void invalidateNotificationQueries(queryClient);
     },
@@ -59,25 +63,40 @@ const NotificationOverlay = ({
 
   const markAllAsReadMutation = useMutation({
     mutationFn: markAllNotificationsAsRead,
+    onMutate: () => {
+      const previousNotifications = queryClient.getQueryData<NotificationDto[]>(NOTIFICATIONS_QUERY_KEY);
+      markAllNotificationsAsReadInCache(queryClient);
+
+      return { previousNotifications };
+    },
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(NOTIFICATIONS_QUERY_KEY, context?.previousNotifications);
+    },
     onSettled: () => {
       void invalidateNotificationQueries(queryClient);
     },
   });
 
   const handleNotificationClick = (notification: NotificationDto) => {
-    const moveToTarget = () => {
+    const moveToTarget = async () => {
+      const targetPathPromise = resolveNotificationTargetPath(queryClient, notification);
+
+      if (!notification.isRead) {
+        try {
+          await markAsReadMutation.mutateAsync(notification.notificationId);
+        } catch {
+          void invalidateNotificationQueries(queryClient);
+        }
+      }
+
+      const targetPath = await targetPathPromise;
       onClose();
-      navigate(notification.redirectUrl);
+      if (targetPath) {
+        navigate(targetPath);
+      }
     };
 
-    if (notification.isRead) {
-      moveToTarget();
-      return;
-    }
-
-    markAsReadMutation.mutate(notification.id, {
-      onSettled: moveToTarget,
-    });
+    void moveToTarget();
   };
 
   const handleMarkAllAsRead = () => {
@@ -122,7 +141,7 @@ const NotificationOverlay = ({
           <ul className="divide-lightGray divide-y">
             {notifications.map((notification) => (
               <NotificationItem
-                key={notification.id}
+                key={notification.notificationId}
                 notification={notification}
                 isPending={markAsReadMutation.isPending}
                 onClick={() => handleNotificationClick(notification)}
@@ -163,7 +182,7 @@ const NotificationItem = ({
               {notification.title}
             </span>
             <span className="bg-whiteGray shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium text-neutral-600">
-              {targetTypeLabel[notification.targetType]}
+              {notificationTargetTypeLabel[notification.targetType]}
             </span>
           </span>
           <span
@@ -174,7 +193,7 @@ const NotificationItem = ({
           >
             {notification.content}
           </span>
-          <span className="text-midGray mt-2 block text-xs">{formatCreatedAt(notification.createdAt)}</span>
+          <span className="text-midGray mt-2 block text-xs">{formatNotificationCreatedAt(notification.createdAt)}</span>
         </span>
         <ChevronRight className="text-midGray mt-1 size-4 shrink-0" />
       </button>

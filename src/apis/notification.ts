@@ -7,9 +7,9 @@ export const getNotifications = async (): Promise<GetNotificationsResponseDto> =
 };
 
 export const markNotificationAsRead = async (notificationId: number): Promise<void> => {
-  await apiClient.post(`/notifications/${notificationId}/read`);
+  await apiClient.patch(`/notifications/${notificationId}`);
 };
 
 export const markAllNotificationsAsRead = async (): Promise<void> => {
-  await apiClient.post('/notifications/read-all');
+  await apiClient.patch('/notifications/read-all');
 };
