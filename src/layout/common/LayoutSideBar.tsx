@@ -27,6 +27,30 @@ const LayoutSideBar = ({ sections }: LayoutSideBarProps) => {
   const baseStyle = 'flex min-w-0 items-center gap-3 truncate transition-all hover:text-mainGreen';
   const activeLinkStyle = 'font-semibold text-mainGreen';
 
+  const getResolvedPath = (to?: string) => {
+    if (!to) {
+      return null;
+    }
+
+    if (to.startsWith('/')) {
+      return to;
+    }
+
+    const basePath = pathname.split('/').filter(Boolean)[0];
+    return basePath ? `/${basePath}/${to}` : `/${to}`;
+  };
+
+  const isCurrentLink = (link: LayoutSidebarLink) => {
+    const matchesActivePath = link.activePaths?.some((path) => pathname.startsWith(path)) ?? false;
+    const resolvedPath = getResolvedPath(link.to);
+
+    return matchesActivePath || (resolvedPath !== null && pathname.startsWith(resolvedPath));
+  };
+
+  const hasActiveDescendant = (link: LayoutSidebarLink): boolean => {
+    return isCurrentLink(link) || !!link.links?.some((child) => hasActiveDescendant(child));
+  };
+
   const renderIcon = (icon?: LayoutSidebarIcon) => {
     if (icon === 'activity') {
       return <Activity size={20} className="shrink-0" />;
@@ -41,16 +65,16 @@ const LayoutSideBar = ({ sections }: LayoutSideBarProps) => {
 
   const renderLink = (link: LayoutSidebarLink, depth = 0) => {
     const hasChildren = !!link.links?.length;
+    const childActive = hasChildren && hasActiveDescendant(link);
     const parentStyle =
       depth === 0
         ? 'rounded-lg px-4 py-3 text-base font-semibold'
         : depth === 1
           ? 'py-1 text-sm font-semibold text-neutral-900'
           : 'py-0.5 text-sm text-neutral-700';
-    const matchesActivePath = link.activePaths?.some((path) => pathname.startsWith(path)) ?? false;
 
     const getLinkClass = ({ isActive }: { isActive: boolean }) => {
-      const active = isActive || matchesActivePath;
+      const active = isActive || isCurrentLink(link) || childActive;
       return cn(
         baseStyle,
         parentStyle,
@@ -60,7 +84,10 @@ const LayoutSideBar = ({ sections }: LayoutSideBarProps) => {
     };
 
     return (
-      <li key={`${depth}-${link.key ?? link.to ?? link.label}`} className={cn(hasChildren && 'flex flex-col gap-2')}>
+      <li
+        key={`${depth}-${link.key ?? link.to ?? link.label}`}
+        className={cn(hasChildren && 'group/sidebar-link flex flex-col gap-2')}
+      >
         {link.to ? (
           <NavLink to={link.to} className={getLinkClass} title={link.label}>
             {renderIcon(link.icon)}
@@ -81,7 +108,17 @@ const LayoutSideBar = ({ sections }: LayoutSideBarProps) => {
           </p>
         )}
         {hasChildren && (
-          <ul className={cn('border-mainGreen/30 flex flex-col gap-2 border-l pl-4', depth === 0 ? 'ml-5' : 'ml-2')}>
+          <ul
+            className={cn(
+              'border-mainGreen/30 flex flex-col gap-2 overflow-hidden border-l pl-4 transition-all duration-200 ease-out',
+              depth === 0 && 'ml-5',
+              depth > 0 && 'ml-2',
+              depth === 1 &&
+                !childActive &&
+                'max-h-0 opacity-0 group-focus-within/sidebar-link:max-h-40 group-focus-within/sidebar-link:opacity-100 group-hover/sidebar-link:max-h-40 group-hover/sidebar-link:opacity-100',
+              (depth !== 1 || childActive) && 'max-h-96 opacity-100',
+            )}
+          >
             {link.links?.map((child) => renderLink(child, depth + 1))}
           </ul>
         )}
