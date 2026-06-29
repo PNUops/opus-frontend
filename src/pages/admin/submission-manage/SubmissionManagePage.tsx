@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { AdminHeader } from '@components/admin';
+import QueryWrapper from '@providers/QueryWrapper';
 
 import { SubmissionTabBar } from './components/SubmissionTabBar';
 import { SubmissionSettingTab } from './components/SubmissionSettingTab';
@@ -30,9 +31,11 @@ const SubmissionManagePage = () => {
         }}
       />
 
-      {activeTab === 'setting' && <SubmissionSettingTab onViewStatus={handleViewStatus} />}
-      {activeTab === 'status' && <SubmissionStatusTab initialTypeFilter={statusTypeFilter} />}
-      {activeTab === 'download' && <SubmissionDownloadTab />}
+      <QueryWrapper key={activeTab} loadingStyle="h-96 rounded-md my-0" errorStyle="h-96">
+        {activeTab === 'setting' && <SubmissionSettingTab onViewStatus={handleViewStatus} />}
+        {activeTab === 'status' && <SubmissionStatusTab initialTypeFilter={statusTypeFilter} />}
+        {activeTab === 'download' && <SubmissionDownloadTab />}
+      </QueryWrapper>
     </div>
   );
 };

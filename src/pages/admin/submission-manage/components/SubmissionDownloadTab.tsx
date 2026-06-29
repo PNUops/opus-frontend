@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Download, RefreshCw } from 'lucide-react';
 
 import { AdminActionButton } from '@components/admin';
 import Checkbox from '@components/ui/Checkbox';
 import FilterDropDown from '@components/FilterDropDown';
 import { useToast } from '@hooks/useToast';
-import { useContestId } from '@hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { postSubmissionDownloads } from '@apis/submission';
 import { submissionDownloadsOption } from '@queries/submission';
 import { downloadFromResponse } from '@utils/download';
@@ -37,13 +37,13 @@ const toUniqueOptions = (
 
 export const SubmissionDownloadTab = () => {
   const toast = useToast();
-  const contestId = useContestId() ?? 0;
+  const contestId = useContestIdOrRedirect();
   const [typeFilter, setTypeFilter] = useState('');
   const [trackFilter, setTrackFilter] = useState('');
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 
-  const { data } = useQuery(submissionDownloadsOption(contestId));
-  const archives = data?.targets ?? [];
+  const { data } = useSuspenseQuery(submissionDownloadsOption(contestId));
+  const archives = data.targets;
 
   const downloadMutation = useMutation({
     mutationFn: (targets: SubmissionDownloadTargetDto[]) => postSubmissionDownloads(contestId, targets),

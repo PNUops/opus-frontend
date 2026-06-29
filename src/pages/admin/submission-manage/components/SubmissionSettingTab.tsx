@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 
 import {
@@ -12,7 +12,7 @@ import {
 import FilterDropDown from '@components/FilterDropDown';
 import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
-import { useContestId } from '@hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { deleteSubmissionItem, patchSubmissionItem, postSubmissionItem } from '@apis/submission';
 import { getContestTracks } from '@apis/track';
 import { submissionItemSettingOption, submissionItemsOption } from '@queries/submission';
@@ -58,13 +58,13 @@ interface SubmissionSettingTabProps {
 
 export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps) => {
   const toast = useToast();
-  const contestId = useContestId() ?? 0;
+  const contestId = useContestIdOrRedirect();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
   const [modalState, setModalState] = useState<ModalState>(null);
   const [deleteTarget, setDeleteTarget] = useState<SubmissionItemResponseDto | null>(null);
 
-  const { data: submissions = [] } = useQuery(submissionItemsOption(contestId));
+  const { data: submissions } = useSuspenseQuery(submissionItemsOption(contestId));
 
   // 대상 분과 선택용 분과 목록
   const { data: tracks = [] } = useQuery({

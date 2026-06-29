@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import type { MySubmissionListItemDto } from '@dto/meDto';
+import { useContestIdOrRedirect, useTeamIdOrRedirect } from '@hooks/useId';
+import { mySubmissionsOption } from '@queries/submission';
 
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { StatusBadge } from './StatusBadge';
@@ -8,14 +10,12 @@ import { SubmissionDetailPanel } from './SubmissionDetailPanel';
 
 const GRID_COLS = 'grid grid-cols-[1fr_160px_110px_200px_110px] items-center gap-4';
 
-interface SubmissionListProps {
-  contestId: number;
-  teamId: number;
-  items: MySubmissionListItemDto[];
-}
-
-export const SubmissionList = ({ contestId, teamId, items }: SubmissionListProps) => {
+export const SubmissionList = () => {
+  const contestId = useContestIdOrRedirect();
+  const teamId = useTeamIdOrRedirect();
   const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const { data: items } = useSuspenseQuery(mySubmissionsOption(contestId, teamId));
 
   return (
     <section className="flex flex-col gap-3">

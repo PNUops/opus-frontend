@@ -32,14 +32,12 @@ export const submissionStatusesOption = (contestId: number) =>
   queryOptions({
     queryKey: submissionKeys.statuses(contestId),
     queryFn: () => getSubmissionStatuses(contestId),
-    enabled: !!contestId,
   });
 
 export const submissionDownloadsOption = (contestId: number) =>
   queryOptions({
     queryKey: submissionKeys.downloads(contestId),
     queryFn: () => getSubmissionDownloads(contestId),
-    enabled: !!contestId,
   });
 
 export const submissionFeedbacksOption = (contestId: number, submissionId: number) =>
@@ -53,7 +51,6 @@ export const submissionItemsOption = (contestId: number) =>
   queryOptions({
     queryKey: submissionKeys.items(contestId),
     queryFn: () => getSubmissionItems(contestId),
-    enabled: !!contestId,
   });
 
 export const submissionItemSettingOption = (contestId: number, submissionItemId: number) =>
@@ -67,21 +64,18 @@ export const mySubmissionsOption = (contestId: number, teamId: number) =>
   queryOptions({
     queryKey: submissionKeys.myList(contestId, teamId),
     queryFn: () => getMySubmissions(contestId, teamId),
-    enabled: !!contestId && !!teamId,
   });
 
 export const mySubmissionSummaryOption = (contestId: number, teamId: number) =>
   queryOptions({
     queryKey: submissionKeys.mySummary(contestId, teamId),
     queryFn: () => getMySubmissionSummary(contestId, teamId),
-    enabled: !!contestId && !!teamId,
   });
 
 export const mySubmissionTimelineOption = (contestId: number, teamId: number) =>
   queryOptions({
     queryKey: submissionKeys.myTimeline(contestId, teamId),
     queryFn: () => getMySubmissionTimeline(contestId, teamId),
-    enabled: !!contestId && !!teamId,
   });
 
 export const submissionDetailOption = (contestId: number, submissionId: number) =>

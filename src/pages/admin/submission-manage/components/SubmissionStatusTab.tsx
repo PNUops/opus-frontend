@@ -1,5 +1,5 @@
 import { ReactNode, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Clock, Download, Eye, MessageSquare, RefreshCw, Search, Users } from 'lucide-react';
 import type { SubmissionFileResponseDto } from '@dto/submissionDto';
@@ -8,7 +8,7 @@ import FilterDropDown from '@components/FilterDropDown';
 import Pagination from '@components/Pagination';
 import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
-import { useContestId } from '@hooks/useId';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
 import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
 import { submissionDetailOption, submissionFeedbacksOption, submissionStatusesOption } from '@queries/submission';
@@ -42,7 +42,7 @@ interface SubmissionStatusTabProps {
 
 export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatusTabProps) => {
   const toast = useToast();
-  const contestId = useContestId() ?? 0;
+  const contestId = useContestIdOrRedirect();
   const [typeFilter, setTypeFilter] = useState(initialTypeFilter);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
   const [trackFilter, setTrackFilter] = useState('');
@@ -52,7 +52,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   const [feedbackTarget, setFeedbackTarget] = useState<SubmissionStatusResponseDto | null>(null);
 
   // 제출 현황 전체 목록 (필터·페이지네이션은 아래 State에서 처리)
-  const { data: submissions = [] } = useQuery(submissionStatusesOption(contestId));
+  const { data: submissions } = useSuspenseQuery(submissionStatusesOption(contestId));
 
   // 제출 상세 조회 (상세보기 / 피드백 Drawer 공용)
   const { data: detailData } = useQuery(submissionDetailOption(contestId, detailTarget?.submissionId ?? 0));
