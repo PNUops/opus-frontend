@@ -1,22 +1,27 @@
 import { ReactNode, useMemo, useState } from 'react';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Clock, Download, Eye, MessageSquare, RefreshCw, Search, Users } from 'lucide-react';
 import type { SubmissionFileResponseDto } from '@dto/submissionDto';
 
 import FilterDropDown from '@components/FilterDropDown';
 import Pagination from '@components/Pagination';
-import { Sheet, SheetContent } from '@components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
+import { useContestIdOrRedirect } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
+import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
+import { submissionDetailOption, submissionFeedbacksOption, submissionStatusesOption } from '@queries/submission';
+import { downloadFromResponse } from '@utils/download';
+import { getApiErrorMessage } from '@utils/error';
 import { SUBMISSION_STATUS_FILTER_OPTIONS } from '@constants/submission';
 import type { SubmissionStatus, SubmissionStatusResponseDto } from '@dto/submissionDto';
 
-import { buildMockFeedbacks, buildMockSubmissionDetail, MOCK_SUBMISSION_STATUSES } from '../mocks/mockSubmissions';
 import { SubmissionStatusBadge } from './SubmissionBadges';
 import { SubmissionDetailDrawer } from './SubmissionDetailDrawer';
 import { SubmissionFeedbackDrawer } from './SubmissionFeedbackDrawer';
 
-const TABLE_HEADERS = ['팀 이름', '분과', '제출물 항목', '제출 상태', '최초 제출일시', '최종 제출일시'];
+const TABLE_HEADERS = ['팀 이름', '분과', '제출 항목', '제출 상태', '최초 제출일시', '최종 제출일시'];
 const PAGE_SIZE = 10;
 
 type StatusFilter = SubmissionStatus | '';
@@ -37,6 +42,7 @@ interface SubmissionStatusTabProps {
 
 export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatusTabProps) => {
   const toast = useToast();
+  const contestId = useContestIdOrRedirect();
   const [typeFilter, setTypeFilter] = useState(initialTypeFilter);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
   const [trackFilter, setTrackFilter] = useState('');
@@ -45,14 +51,43 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   const [detailTarget, setDetailTarget] = useState<SubmissionStatusResponseDto | null>(null);
   const [feedbackTarget, setFeedbackTarget] = useState<SubmissionStatusResponseDto | null>(null);
 
-  // TODO: API 연동 시 목데이터 대체
-  const submissions = MOCK_SUBMISSION_STATUSES;
+  // 제출 현황 전체 목록 (필터·페이지네이션은 아래 State에서 처리)
+  const { data: submissions } = useSuspenseQuery(submissionStatusesOption(contestId));
+
+  // 제출 상세 조회 (상세보기 / 피드백 Drawer 공용)
+  const { data: detailData } = useQuery(submissionDetailOption(contestId, detailTarget?.submissionId ?? 0));
+  const { data: feedbackDetailData } = useQuery(submissionDetailOption(contestId, feedbackTarget?.submissionId ?? 0));
+  const { data: feedbacks = [] } = useQuery(submissionFeedbacksOption(contestId, feedbackTarget?.submissionId ?? 0));
+
+  // 제출 파일 단건 다운로드
+  const handleDownloadFile = async (submissionId: number, file: SubmissionFileResponseDto) => {
+    try {
+      const response = await getSubmissionFileDownload(contestId, submissionId, file.fileId);
+      downloadFromResponse(response, file.fileName);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
+
+  // 피드백 첨부파일 단건 다운로드
+  const handleDownloadFeedbackFile = async (
+    submissionId: number,
+    feedbackId: number,
+    file: SubmissionFileResponseDto,
+  ) => {
+    try {
+      const response = await getFeedbackFileDownload(contestId, submissionId, feedbackId, file.fileId);
+      downloadFromResponse(response, file.fileName);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
 
   const typeOptions = useMemo(
     () =>
       toNameOptions(
         submissions.map((s) => s.submissionTypeName),
-        '제출물',
+        '제출 항목',
       ),
     [submissions],
   );
@@ -107,7 +142,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
       <div className="flex flex-wrap items-center gap-2">
         <FilterDropDown
           variant="select"
-          label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출물'}
+          label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
           value={typeFilter}
           options={typeOptions}
           onChange={(v) => {
@@ -265,30 +300,37 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
       {/* 상세보기 Drawer */}
       <Sheet open={detailTarget !== null} onOpenChange={(open) => !open && setDetailTarget(null)}>
         <SheetContent className="gap-0 p-0">
-          {detailTarget && (
-            <SubmissionDetailDrawer
-              detail={buildMockSubmissionDetail(detailTarget)}
-              onViewFeedbacks={() => {
-                setFeedbackTarget(detailTarget);
-                setDetailTarget(null);
-              }}
-            />
-          )}
+          {detailTarget &&
+            (detailData ? (
+              <SubmissionDetailDrawer
+                detail={detailData}
+                onViewFeedbacks={() => {
+                  setFeedbackTarget(detailTarget);
+                  setDetailTarget(null);
+                }}
+                onDownloadFile={(file) => handleDownloadFile(detailTarget.submissionId ?? 0, file)}
+              />
+            ) : (
+              <DrawerLoading />
+            ))}
         </SheetContent>
       </Sheet>
 
       {/* 피드백 Drawer */}
       <Sheet open={feedbackTarget !== null} onOpenChange={(open) => !open && setFeedbackTarget(null)}>
         <SheetContent className="gap-0 p-0">
-          {feedbackTarget && (
-            <SubmissionFeedbackDrawer
-              detail={buildMockSubmissionDetail(feedbackTarget)}
-              feedbacks={buildMockFeedbacks(feedbackTarget)}
-              onDownloadFile={(file: SubmissionFileResponseDto) =>
-                toast(`${file.fileName} 다운로드를 시작합니다.`, 'success')
-              }
-            />
-          )}
+          {feedbackTarget &&
+            (feedbackDetailData ? (
+              <SubmissionFeedbackDrawer
+                detail={feedbackDetailData}
+                feedbacks={feedbacks}
+                onDownloadFile={(feedbackId, file) =>
+                  handleDownloadFeedbackFile(feedbackTarget.submissionId ?? 0, feedbackId, file)
+                }
+              />
+            ) : (
+              <DrawerLoading />
+            ))}
         </SheetContent>
       </Sheet>
     </div>
@@ -324,6 +366,15 @@ interface ActionIconButtonProps {
   variant?: 'soft' | 'solid';
   disabled?: boolean;
 }
+
+const DrawerLoading = () => (
+  <div className="flex h-full flex-col">
+    <div className="border-lightGray flex items-center gap-2 border-b px-5 py-4">
+      <SheetTitle className="text-base font-semibold">불러오는 중...</SheetTitle>
+    </div>
+    <div className="text-midGray flex flex-1 items-center justify-center text-sm">제출 정보를 불러오고 있어요.</div>
+  </div>
+);
 
 const ActionIconButton = ({ label, icon, onClick, variant = 'soft', disabled = false }: ActionIconButtonProps) => {
   return (

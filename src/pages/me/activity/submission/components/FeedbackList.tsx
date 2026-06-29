@@ -6,7 +6,7 @@ import { FileChips } from './FileChips';
 
 interface FeedbackListProps {
   feedbacks: SubmissionFeedbackResponseDto[];
-  onDownloadFile: (file: SubmissionFileResponseDto) => void;
+  onDownloadFile: (feedbackId: number, file: SubmissionFileResponseDto) => void;
 }
 
 export const FeedbackList = ({ feedbacks, onDownloadFile }: FeedbackListProps) => {
@@ -27,7 +27,7 @@ export const FeedbackList = ({ feedbacks, onDownloadFile }: FeedbackListProps) =
               <div className="bg-lightGray h-8 w-8 shrink-0 rounded-full" />
               <span className="text-darkGray text-sm font-semibold">{feedback.memberName}</span>
               <span className="bg-whiteGray text-midGray rounded-md px-2 py-0.5 text-xs">
-                {getFeedbackRoleLabel(feedback.roleType)}
+                {getFeedbackRoleLabel(feedback.memberRoleType)}
               </span>
             </div>
             <span className="text-midGray shrink-0 text-xs">{formatDateTime(feedback.createdAt)}</span>
@@ -38,7 +38,7 @@ export const FeedbackList = ({ feedbacks, onDownloadFile }: FeedbackListProps) =
           {feedback.files.length > 0 && (
             <div className="mt-3">
               <p className="text-midGray mb-1.5 text-xs">첨부파일</p>
-              <FileChips files={feedback.files} onDownload={onDownloadFile} />
+              <FileChips files={feedback.files} onDownload={(file) => onDownloadFile(feedback.feedbackId, file)} />
             </div>
           )}
         </div>
