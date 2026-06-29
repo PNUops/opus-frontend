@@ -1,5 +1,3 @@
-import type { PaginationResponseDto } from './commonDto';
-
 /** 제출물 운영 상태 */
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
@@ -66,8 +64,8 @@ export interface SubmissionStatusResponseDto {
   lastModifiedAt: string | null;
 }
 
-/** 제출 현황 목록 응답 (Spring Page) */
-export type GetSubmissionStatusesResponseDto = PaginationResponseDto<SubmissionStatusResponseDto>;
+/** 제출 현황 목록 응답 (전체 목록, 페이지네이션·필터는 클라이언트 State에서 처리) */
+export type GetSubmissionStatusesResponseDto = SubmissionStatusResponseDto[];
 
 /** 제출 파일 */
 export interface SubmissionFileResponseDto {
@@ -87,14 +85,14 @@ export interface SubmissionFeedbackResponseDto {
   memberId: number;
   /** 작성자 이름 */
   memberName: string;
+  /** 작성자 역할 (예: 'ROLE_팀장', 'ROLE_팀원') */
+  memberRoleType: string;
   /** 피드백 본문 */
   description: string;
   /** 작성 시각 */
   createdAt: string;
   /** 마지막 수정 시각 */
   updatedAt: string;
-  /** 작성자 역할 (예: 'ROLE_팀장', 'ROLE_팀원') */
-  roleType: string;
   /** 첨부파일 목록 */
   files: SubmissionFileResponseDto[];
 }
@@ -148,7 +146,20 @@ export interface SubmissionArchiveResponseDto {
 
 /** 제출 파일 다운로드 목록 응답 */
 export interface GetSubmissionArchivesResponseDto {
-  archives: SubmissionArchiveResponseDto[];
+  targets: SubmissionArchiveResponseDto[];
+}
+
+/** 제출 파일 다운로드 대상 (제출 항목 종류 x 분과) */
+export interface SubmissionDownloadTargetDto {
+  /** 제출물 종류 ID */
+  submissionTypeId: number;
+  /** 분과 ID */
+  trackId: number;
+}
+
+/** 제출 파일 여러개 다운로드 요청 */
+export interface SubmissionDownloadsRequestDto {
+  targets: SubmissionDownloadTargetDto[];
 }
 
 /** 제출물 추가/수정 요청 */
@@ -177,3 +188,9 @@ export interface SubmissionItemRequestDto {
 
 /** 제출물 설정값 확인 응답 (추가/수정 요청과 동일 필드) */
 export type SubmissionItemSettingResponseDto = SubmissionItemRequestDto;
+
+/** 제출물 제출 응답 (생성된 제출 ID) */
+export interface SubmitSubmissionResponseDto {
+  /** 생성된 제출 ID */
+  submissionId: number;
+}

@@ -69,7 +69,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
 
   const handleSubmit = () => {
     if (!values.name.trim()) {
-      toast('제출물 이름을 입력해주세요.', 'error');
+      toast('제출 항목 이름을 입력해주세요.', 'error');
       return;
     }
     if (values.fileFormats.length === 0) {
@@ -87,18 +87,18 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
     <DialogContent className="w-[600px] max-w-[92vw] items-stretch gap-5">
       <div className="flex flex-col gap-1">
         <DialogTitle className="text-xl font-bold text-gray-900">
-          {mode === 'create' ? '제출물 추가' : '제출물 수정'}
+          {mode === 'create' ? '제출 항목 추가' : '제출 항목 수정'}
         </DialogTitle>
         <p className="text-midGray text-sm">대회에서 제출받을 자료의 종류와 제출 정책을 설정할 수 있어요.</p>
       </div>
 
       <div className="flex flex-col gap-4">
-        <FormRow label="제출물 이름">
+        <FormRow label="제출 항목 이름">
           <input
             type="text"
             value={values.name}
             onChange={(e) => update('name', e.target.value)}
-            placeholder="제출물 이름"
+            placeholder="제출 항목 이름"
             className="border-input placeholder:text-midGray h-9 w-full rounded-md border px-3 text-sm focus:outline-none"
           />
         </FormRow>
@@ -126,7 +126,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
           <textarea
             value={values.description}
             onChange={(e) => update('description', e.target.value)}
-            placeholder="제출물에 대한 설명을 입력해주세요."
+            placeholder="제출 항목에 대한 설명을 입력해주세요."
             rows={4}
             className="border-input placeholder:text-midGray w-full resize-none rounded-md border p-3 text-sm focus:outline-none"
           />

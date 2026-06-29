@@ -1,7 +1,7 @@
 import { FileText, PanelRightClose } from 'lucide-react';
 
 import { SheetClose, SheetTitle } from '@components/ui/sheet';
-import type { SubmissionDetailResponseDto } from '@dto/submissionDto';
+import type { SubmissionDetailResponseDto, SubmissionFileResponseDto } from '@dto/submissionDto';
 
 import { formatFileSize } from '../utils/format';
 import { SubmissionTeamSummary } from './SubmissionTeamSummary';
@@ -9,9 +9,10 @@ import { SubmissionTeamSummary } from './SubmissionTeamSummary';
 interface SubmissionDetailDrawerProps {
   detail: SubmissionDetailResponseDto;
   onViewFeedbacks: () => void;
+  onDownloadFile: (file: SubmissionFileResponseDto) => void;
 }
 
-export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks }: SubmissionDetailDrawerProps) => {
+export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile }: SubmissionDetailDrawerProps) => {
   return (
     <div className="flex h-full flex-col">
       {/* 헤더 */}
@@ -36,11 +37,16 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks }: SubmissionDe
           </h4>
           <div className="flex flex-col">
             {detail.files.map((file) => (
-              <div key={file.fileId} className="flex items-center gap-3 py-2">
+              <button
+                key={file.fileId}
+                type="button"
+                onClick={() => onDownloadFile(file)}
+                className="hover:bg-whiteGray flex items-center gap-3 rounded-md py-2 text-left transition-colors"
+              >
                 <FileText size={18} className="text-midGray shrink-0" />
                 <span className="text-darkGray flex-1 truncate text-sm">{file.fileName}</span>
                 <span className="text-midGray shrink-0 text-xs">{formatFileSize(file.fileSize)}</span>
-              </div>
+              </button>
             ))}
           </div>
         </section>

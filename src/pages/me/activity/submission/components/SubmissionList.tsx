@@ -1,43 +1,21 @@
 import { useState } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import { useToast } from '@hooks/useToast';
-import type { ConfirmMemoResponseDto, MySubmissionListItemDto } from '@dto/meDto';
-import type { SubmissionFileResponseDto } from '@dto/submissionDto';
+import { useContestIdOrRedirect, useTeamIdOrRedirect } from '@hooks/useId';
+import { mySubmissionsOption } from '@queries/submission';
 
-import { getMockConfirmMemo, getMockMyFeedbacks, getMockMySubmissionDetail } from '../mocks/mockMySubmission';
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { StatusBadge } from './StatusBadge';
 import { SubmissionDetailPanel } from './SubmissionDetailPanel';
 
 const GRID_COLS = 'grid grid-cols-[1fr_160px_110px_200px_110px] items-center gap-4';
 
-export const SubmissionList = ({ items }: { items: MySubmissionListItemDto[] }) => {
-  const toast = useToast();
+export const SubmissionList = () => {
+  const contestId = useContestIdOrRedirect();
+  const teamId = useTeamIdOrRedirect();
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  // TODO: API 연동 시 서버 상태로 대체. 저장한 메모가 다시 펼칠 때 보이도록 로컬 상태로 보관
-  const [memos, setMemos] = useState<Record<number, ConfirmMemoResponseDto | null>>(() =>
-    Object.fromEntries(items.map((item) => [item.submissionItemId, getMockConfirmMemo(item.submissionId ?? 0)])),
-  );
 
-  const handleDownloadFile = (file: SubmissionFileResponseDto) => {
-    // TODO: API 연동 (파일 다운로드)
-    toast(`${file.fileName} 다운로드를 시작합니다.`, 'success');
-  };
-
-  const handleSaveMemo = (item: MySubmissionListItemDto, content: string) => {
-    // TODO: API 연동 (메모 생성/수정). 기존 메모 있으면 수정, 없으면 생성
-    setMemos((prev) => {
-      const existing = prev[item.submissionItemId];
-      return { ...prev, [item.submissionItemId]: { id: existing?.id ?? Date.now(), content } };
-    });
-    toast(memos[item.submissionItemId] ? '메모를 수정했어요.' : '메모를 저장했어요.', 'success');
-  };
-
-  const handleDeleteMemo = (item: MySubmissionListItemDto) => {
-    // TODO: API 연동 (메모 삭제)
-    setMemos((prev) => ({ ...prev, [item.submissionItemId]: null }));
-    toast('메모를 삭제했어요.', 'success');
-  };
+  const { data: items } = useSuspenseQuery(mySubmissionsOption(contestId, teamId));
 
   return (
     <section className="flex flex-col gap-3">
@@ -95,15 +73,7 @@ export const SubmissionList = ({ items }: { items: MySubmissionListItemDto[] }) 
 
                   {isExpanded && (
                     <div className="px-4 pb-4">
-                      <SubmissionDetailPanel
-                        item={item}
-                        detail={getMockMySubmissionDetail(item)}
-                        feedbacks={getMockMyFeedbacks(item.submissionId ?? 0)}
-                        memo={memos[item.submissionItemId] ?? null}
-                        onDownloadFile={handleDownloadFile}
-                        onSaveMemo={(content) => handleSaveMemo(item, content)}
-                        onDeleteMemo={() => handleDeleteMemo(item)}
-                      />
+                      <SubmissionDetailPanel contestId={contestId} teamId={teamId} item={item} />
                     </div>
                   )}
                 </div>

@@ -1,15 +1,19 @@
 import { useMemo, useState } from 'react';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Download, RefreshCw } from 'lucide-react';
 
 import { AdminActionButton } from '@components/admin';
 import Checkbox from '@components/ui/Checkbox';
 import FilterDropDown from '@components/FilterDropDown';
 import { useToast } from '@hooks/useToast';
-import type { SubmissionArchiveResponseDto } from '@dto/submissionDto';
+import { useContestIdOrRedirect } from '@hooks/useId';
+import { postSubmissionDownloads } from '@apis/submission';
+import { submissionDownloadsOption } from '@queries/submission';
+import { downloadFromResponse } from '@utils/download';
+import { getApiErrorMessage } from '@utils/error';
+import type { SubmissionArchiveResponseDto, SubmissionDownloadTargetDto } from '@dto/submissionDto';
 
-import { MOCK_ARCHIVES } from '../mocks/mockSubmissions';
-
-const TABLE_HEADERS = ['제출물 종류', '분과', '제출 팀 수', '예상 용량'];
+const TABLE_HEADERS = ['제출 항목', '분과', '제출 팀 수', '예상 용량'];
 
 const rowKey = (archive: SubmissionArchiveResponseDto) => `${archive.submissionTypeId}-${archive.trackId}`;
 
@@ -33,12 +37,27 @@ const toUniqueOptions = (
 
 export const SubmissionDownloadTab = () => {
   const toast = useToast();
+  const contestId = useContestIdOrRedirect();
   const [typeFilter, setTypeFilter] = useState('');
   const [trackFilter, setTrackFilter] = useState('');
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 
-  // TODO: API 연동 시 목데이터 대체
-  const archives = MOCK_ARCHIVES;
+  const { data } = useSuspenseQuery(submissionDownloadsOption(contestId));
+  const archives = data.targets;
+
+  const downloadMutation = useMutation({
+    mutationFn: (targets: SubmissionDownloadTargetDto[]) => postSubmissionDownloads(contestId, targets),
+    onSuccess: (response) => {
+      downloadFromResponse(response, '제출파일.zip');
+      toast('다운로드를 시작했어요.', 'success');
+    },
+    onError: (error) => toast(getApiErrorMessage(error, '다운로드에 실패했어요.'), 'error'),
+  });
+
+  const toTarget = (archive: SubmissionArchiveResponseDto): SubmissionDownloadTargetDto => ({
+    submissionTypeId: archive.submissionTypeId,
+    trackId: archive.trackId,
+  });
 
   const typeOptions = useMemo(
     () =>
@@ -46,7 +65,7 @@ export const SubmissionDownloadTab = () => {
         archives,
         (a) => a.submissionTypeId,
         (a) => a.submissionTypeName,
-        '제출물 종류',
+        '제출 항목',
       ),
     [archives],
   );
@@ -98,13 +117,12 @@ export const SubmissionDownloadTab = () => {
 
   const handleDownloadSelected = () => {
     if (selectedKeys.size === 0) return;
-    // TODO: API 연동 (선택 다운로드)
-    toast(`${selectedKeys.size}개 제출물을 다운로드 했습니다.`, 'success');
+    const targets = archives.filter((a) => selectedKeys.has(rowKey(a))).map(toTarget);
+    downloadMutation.mutate(targets);
   };
 
-  const handleDownloadRow = (_archive: SubmissionArchiveResponseDto) => {
-    // TODO: API 연동 (단일 다운로드)
-    toast('제출물을 다운로드했습니다.', 'success');
+  const handleDownloadRow = (archive: SubmissionArchiveResponseDto) => {
+    downloadMutation.mutate([toTarget(archive)]);
   };
 
   return (
@@ -113,7 +131,7 @@ export const SubmissionDownloadTab = () => {
         <div className="flex items-center gap-2">
           <FilterDropDown
             variant="select"
-            label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출물 종류'}
+            label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
             value={typeFilter}
             options={typeOptions}
             onChange={setTypeFilter}
@@ -134,7 +152,11 @@ export const SubmissionDownloadTab = () => {
             <RefreshCw size={16} />
           </button>
         </div>
-        <AdminActionButton size="sm" onClick={handleDownloadSelected} disabled={selectedKeys.size === 0}>
+        <AdminActionButton
+          size="sm"
+          onClick={handleDownloadSelected}
+          disabled={selectedKeys.size === 0 || downloadMutation.isPending}
+        >
           <Download size={16} />
           선택 다운로드
         </AdminActionButton>

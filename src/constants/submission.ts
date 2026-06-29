@@ -8,7 +8,7 @@ import type { SubmissionTabKey } from '@pages/admin/submission-manage/types/subm
 
 /** 제출물 관리 탭 목록 */
 export const SUBMISSION_TABS: { key: SubmissionTabKey; label: string }[] = [
-  { key: 'setting', label: '제출물 설정' },
+  { key: 'setting', label: '제출 항목 설정' },
   { key: 'status', label: '제출 현황' },
   { key: 'download', label: '제출 파일 다운로드' },
 ];
