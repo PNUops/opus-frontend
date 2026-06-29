@@ -1,9 +1,11 @@
 import { useCallback, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUserStore } from '@stores/useUserStore';
 import { useTokenStore } from '@stores/useTokenStore';
 import { getUserFromToken } from '@utils/token';
 
 const useAuth = () => {
+  const queryClient = useQueryClient();
   const { user, setUser } = useUserStore();
   const { token, setToken, clearToken } = useTokenStore();
 
@@ -15,7 +17,8 @@ const useAuth = () => {
   const signOut = useCallback(() => {
     clearToken();
     setUser(null);
-  }, [clearToken, setUser]);
+    queryClient.clear();
+  }, [clearToken, setUser, queryClient]);
 
   const signIn = useCallback(
     (accessToken: string) => {
