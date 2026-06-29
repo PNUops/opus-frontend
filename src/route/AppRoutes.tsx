@@ -39,6 +39,7 @@ import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
 import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
 import TeamDashboardPage from '@pages/me/team/TeamDashboardPage';
 import RoleAssignmentPage from '@pages/admin/role-assignment/RoleAssignmentPage';
+import AdvisorActivityPage from '@pages/me/advisor-activity/AdvisorActivityPage';
 
 const AppRoutes = () =>
   createBrowserRouter([
@@ -75,6 +76,8 @@ const AppRoutes = () =>
             { path: 'activity/likes', element: <MyLikePage /> },
             { path: 'activity/comments', element: <MyCommentPage /> },
             { path: 'activity/:teamId/submission', element: <MySubmissionPage /> },
+            { path: 'advisor-activity', element: <AdvisorActivityPage /> },
+            { path: 'advisor-activity/contests/:contestId', element: <AdvisorActivityPage /> },
             {
               path: 'contests/:contestId/teams/:teamId',
               element: <Navigate to="dashboard" replace />,
