@@ -9,7 +9,7 @@ import { getMyProjects } from '@apis/me';
 import { MY_PROJECTS_QUERY_KEY } from '@queries/me';
 
 const MyPageLayout = () => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isAdvisor } = useAuth();
   const { data: fetchedMyProjects } = useQuery({
     queryKey: MY_PROJECTS_QUERY_KEY,
     queryFn: getMyProjects,
@@ -17,7 +17,10 @@ const MyPageLayout = () => {
     staleTime: 5 * 60 * 1000,
   });
   const myProjects = useMemo(() => fetchedMyProjects ?? [], [fetchedMyProjects]);
-  const sidebarSections = useMemo(() => createMyPageSidebarData(myProjects), [myProjects]);
+  const sidebarSections = useMemo(
+    () => createMyPageSidebarData(myProjects, { showAdvisorActivity: isAdvisor }),
+    [isAdvisor, myProjects],
+  );
 
   if (!isSignedIn) {
     return (
