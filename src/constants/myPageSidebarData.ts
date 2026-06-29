@@ -38,8 +38,8 @@ export const createMyPageSidebarData = (projects: MyProjectDto[]): LayoutSidebar
               label: '제출물',
             },
             {
-              to: `contests/${contestId}/teams/${teamId}/project-info`,
-              label: '프로젝트 정보',
+              to: `/contest/${contestId}/teams/view/${teamId}`,
+              label: '프로젝트 상세',
             },
           ],
         })),
