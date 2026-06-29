@@ -1,10 +1,23 @@
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
 import FullContainerLayout from '@layout/FullContainerLayout';
 import LayoutSideBar from '@layout/common/LayoutSideBar';
-import myPageSidebarData from '@constants/myPageSidebarData';
+import { createMyPageSidebarData } from '@constants/myPageSidebarData';
 import useAuth from '@hooks/useAuth';
+import { getMyProjects } from '@apis/me';
+import { MY_PROJECTS_QUERY_KEY } from '@queries/me';
 
 const MyPageLayout = () => {
   const { isSignedIn } = useAuth();
+  const { data: fetchedMyProjects } = useQuery({
+    queryKey: MY_PROJECTS_QUERY_KEY,
+    queryFn: getMyProjects,
+    enabled: isSignedIn,
+    staleTime: 5 * 60 * 1000,
+  });
+  const myProjects = useMemo(() => fetchedMyProjects ?? [], [fetchedMyProjects]);
+  const sidebarSections = useMemo(() => createMyPageSidebarData(myProjects), [myProjects]);
 
   if (!isSignedIn) {
     return (
@@ -16,10 +29,10 @@ const MyPageLayout = () => {
 
   return (
     <div className="flex w-full flex-col md:flex-row">
-      <div className="w-full md:w-auto md:max-w-65 md:min-w-55">
-        <LayoutSideBar sections={myPageSidebarData} />
+      <div className="w-full md:w-[272px] md:max-w-[272px] md:min-w-[272px]">
+        <LayoutSideBar sections={sidebarSections} />
       </div>
-      <div className="flex-1 md:border-t-0 md:border-l">
+      <div className="flex-1">
         <FullContainerLayout />
       </div>
     </div>
