@@ -4,6 +4,7 @@ import { FaGithub, FaYoutube } from 'react-icons/fa';
 import { FaEdit } from 'react-icons/fa';
 import { RiLink } from 'react-icons/ri';
 import { FiExternalLink } from 'react-icons/fi';
+import AwardTag from '@components/AwardTag';
 import { TeamDetailDto } from '@dto/teams/teamsDto';
 
 interface ProjectIntroSectionProps {
@@ -36,6 +37,7 @@ const UrlButton = ({ url }: { url: string }) => {
       rel="noopener noreferrer"
       className="border-mainGreen text-mainGreen hover:border-mainGreen inline-flex h-10 w-auto items-center justify-center gap-2 rounded-full border px-5 transition-colors duration-200 hover:bg-[#D1F3E1]/60 focus:outline-none"
     >
+      {icon}
       <span className="text-exsm font-medium whitespace-nowrap">{text}</span>
       <FiExternalLink className="text-subGreen shrink-0" />
     </a>
@@ -44,13 +46,21 @@ const UrlButton = ({ url }: { url: string }) => {
 
 const ProjectIntroSection = ({ data, isEditor }: ProjectIntroSectionProps) => {
   const navigate = useNavigate();
-  const { contestId, teamId, teamName, projectName, productionPath } = data;
+  const { awards, contestId, teamId, teamName, projectName, productionPath } = data;
+  const visibleAwards = awards.filter((award) => award.awardName && award.awardColor);
 
   return (
     <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between">
       <div className="flex flex-col items-start gap-2 self-start md:self-auto">
         <div className="sm:text-title pt-1 text-xl leading-none font-bold">{projectName}</div>
         <div className="text-midGray text-exsm font-bold sm:text-sm">{teamName}</div>
+        {visibleAwards.length > 0 && (
+          <div id="awards" className="flex max-w-full scroll-mt-24 flex-wrap gap-2 pt-1">
+            {visibleAwards.map((award) => (
+              <AwardTag key={award.awardId} awardName={award.awardName} awardColor={award.awardColor} />
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-3">
         {isEditor && (
