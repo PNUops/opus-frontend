@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { ChevronRight, ExternalLink, PencilLine, RefreshCw } from 'lucide-react';
 
-import Spinner from '@components/Spinner';
 import { NoData } from '@components/NoData';
 import { cn } from '@components/lib/utils';
 import { SUBMISSION_STATUS_META } from '@constants/submission';
@@ -13,7 +12,6 @@ import { teamDetailOption } from '@queries/team';
 import { teamDashboardSummaryOption, upcomingSubmissionsOption } from '@queries/teamDashboard';
 import type { TeamDetailDto } from '@dto/teams/teamsDto';
 import type { UpcomingSubmissionItemResponseDto, UpcomingSubmissionStatus } from '@dto/teamDashboardDto';
-import { mockTeamDashboardSummary, mockTeamDetail, mockUpcomingSubmissions } from './mockTeamDashboard';
 
 const formatDateTime = (value?: string | null) => {
   if (!value) {
@@ -42,19 +40,8 @@ const TeamDashboardPage = () => {
   const teamDetailQuery = useQuery(teamDetailOption(teamId));
   const summaryQuery = useQuery(teamDashboardSummaryOption(contestId, teamId));
   const upcomingQuery = useQuery(upcomingSubmissionsOption(contestId, teamId));
-  const shouldUseMockData =
-    import.meta.env.DEV &&
-    (teamDetailQuery.isError ||
-      summaryQuery.isError ||
-      upcomingQuery.isError ||
-      (!teamDetailQuery.isLoading && !summaryQuery.isLoading && !teamDetailQuery.data) ||
-      (!summaryQuery.isLoading && !summaryQuery.data));
 
-  if (!shouldUseMockData && (teamDetailQuery.isLoading || summaryQuery.isLoading || upcomingQuery.isLoading)) {
-    return <TeamDashboardLoading />;
-  }
-
-  if (!shouldUseMockData && (teamDetailQuery.isError || summaryQuery.isError || upcomingQuery.isError)) {
+  if (teamDetailQuery.isError || summaryQuery.isError || upcomingQuery.isError) {
     return (
       <TeamDashboardError
         onRetry={() => {
@@ -66,33 +53,31 @@ const TeamDashboardPage = () => {
     );
   }
 
-  const teamDetail = shouldUseMockData ? mockTeamDetail : teamDetailQuery.data;
-  const dashboardSummary = shouldUseMockData ? mockTeamDashboardSummary : summaryQuery.data;
-  const upcomingSubmissions = shouldUseMockData ? mockUpcomingSubmissions : (upcomingQuery.data ?? []);
-
-  if (!dashboardSummary || !teamDetail) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-8 md:px-12">
-        <NoData className="border-lightGray min-h-60 rounded-lg border" />
-      </div>
-    );
-  }
-
-  const { submissionSummary, feedbackSummary } = dashboardSummary;
-  const latestFeedback = feedbackSummary.latestFeedback;
+  const teamDetail = teamDetailQuery.data;
+  const dashboardSummary = summaryQuery.data;
+  const upcomingSubmissions = upcomingQuery.data ?? [];
+  const submissionSummary = dashboardSummary?.submissionSummary;
+  const feedbackSummary = dashboardSummary?.feedbackSummary;
+  const latestFeedback = feedbackSummary?.latestFeedback ?? null;
   const submissionsPath = `/me/contests/${contestId}/teams/${teamId}/submissions`;
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-14 px-4 py-12 sm:px-8 md:px-12 lg:py-20">
-      <ProjectDashboardHero
-        teamDetail={teamDetail}
-        requiredCount={submissionSummary.requiredCount}
-        nearestDueDate={submissionSummary.nearestDueDate}
-        unreadFeedbackCount={feedbackSummary.unreadCount}
-        latestFeedbackLabel={
-          latestFeedback ? `${latestFeedback.mentorName} 멘토: ${latestFeedback.content}` : '최근 피드백이 없습니다.'
-        }
-      />
+      {teamDetailQuery.isLoading || summaryQuery.isLoading ? (
+        <ProjectDashboardHeroSkeleton />
+      ) : teamDetail && submissionSummary && feedbackSummary ? (
+        <ProjectDashboardHero
+          teamDetail={teamDetail}
+          requiredCount={submissionSummary.requiredCount}
+          nearestDueDate={submissionSummary.nearestDueDate}
+          unreadFeedbackCount={feedbackSummary.unreadCount}
+          latestFeedbackLabel={
+            latestFeedback ? `${latestFeedback.mentorName} 멘토: ${latestFeedback.content}` : '최근 피드백이 없습니다.'
+          }
+        />
+      ) : (
+        <NoData className="border-lightGray my-0 min-h-60 rounded-lg border bg-white text-sm font-medium" />
+      )}
 
       <DashboardSection
         title="다가오는 제출 일정"
@@ -103,7 +88,11 @@ const TeamDashboardPage = () => {
           </Link>
         }
       >
-        <UpcomingSubmissionTable items={upcomingSubmissions} submissionsPath={submissionsPath} />
+        {upcomingQuery.isLoading ? (
+          <UpcomingSubmissionTableSkeleton />
+        ) : (
+          <UpcomingSubmissionTable items={upcomingSubmissions} submissionsPath={submissionsPath} />
+        )}
       </DashboardSection>
 
       <DashboardSection
@@ -115,14 +104,26 @@ const TeamDashboardPage = () => {
           </Link>
         }
       >
-        <LatestFeedbackCard
-          mentorName={latestFeedback?.mentorName ?? null}
-          content={latestFeedback?.content ?? null}
-          submissionsPath={submissionsPath}
-        />
+        {summaryQuery.isLoading ? (
+          <LatestFeedbackSkeleton />
+        ) : (
+          <LatestFeedbackCard
+            mentorName={latestFeedback?.mentorName ?? null}
+            content={latestFeedback?.content ?? null}
+            submissionsPath={submissionsPath}
+          />
+        )}
       </DashboardSection>
 
-      <ProjectManageSection teamDetail={teamDetail} contestId={contestId} teamId={teamId} />
+      {teamDetailQuery.isLoading ? (
+        <ProjectManageSectionSkeleton />
+      ) : teamDetail ? (
+        <ProjectManageSection teamDetail={teamDetail} contestId={contestId} teamId={teamId} />
+      ) : (
+        <DashboardSection title="프로젝트 관리">
+          <NoData className="border-lightGray my-0 min-h-28 rounded-lg border bg-white text-sm font-medium" />
+        </DashboardSection>
+      )}
     </section>
   );
 };
@@ -333,12 +334,12 @@ const ProjectManageSection = ({
         {teamDetail.productionPath ? (
           <a href={teamDetail.productionPath} target="_blank" rel="noreferrer" className={outlineButtonClassName}>
             <ExternalLink size={18} />
-            아카이브 페이지 보기
+            배포 페이지 열기
           </a>
         ) : (
           <button type="button" className={cn(outlineButtonClassName, 'opacity-50')} disabled>
             <ExternalLink size={18} />
-            아카이브 페이지 보기
+            배포 페이지 열기
           </button>
         )}
         <Link to={`/contest/${contestId}/teams/edit/${teamId}`} className={outlineButtonClassName}>
@@ -350,13 +351,99 @@ const ProjectManageSection = ({
   );
 };
 
-const TeamDashboardLoading = () => {
+const SkeletonBlock = ({ className }: { className: string }) => {
+  return <div className={cn('animate-pulse rounded-md bg-neutral-200', className)} />;
+};
+
+const ProjectDashboardHeroSkeleton = () => {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-16 sm:px-8 md:px-12">
-      <div className="border-lightGray flex min-h-80 items-center justify-center rounded-lg border">
-        <Spinner />
+    <header className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(520px,0.95fr)] lg:items-center">
+      <div className="flex min-w-0 flex-col gap-5">
+        <SkeletonBlock className="h-12 w-3/4 max-w-xl" />
+        <div className="flex flex-wrap gap-3">
+          <SkeletonBlock className="h-8 w-28 rounded-full" />
+          <SkeletonBlock className="h-8 w-24 rounded-full" />
+          <SkeletonBlock className="h-8 w-32 rounded-full" />
+        </div>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <HeroMetricSkeleton />
+        <HeroMetricSkeleton />
+      </div>
+    </header>
+  );
+};
+
+const HeroMetricSkeleton = () => {
+  return (
+    <article className="border-mainGreen/20 flex min-h-36 flex-col justify-center border-l-4 px-8">
+      <SkeletonBlock className="h-5 w-24" />
+      <SkeletonBlock className="mt-3 h-10 w-20" />
+      <SkeletonBlock className="mt-8 h-4 w-28" />
+      <SkeletonBlock className="mt-3 h-4 w-full" />
+    </article>
+  );
+};
+
+const UpcomingSubmissionTableSkeleton = () => {
+  return (
+    <div className="border-lightGray overflow-hidden rounded-lg border bg-white">
+      <div className="border-lightGray bg-whiteGray hidden grid-cols-[1.25fr_1fr_1fr_0.85fr_0.75fr] border-b px-6 py-4 md:grid">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <SkeletonBlock key={index} className="h-4 w-20" />
+        ))}
+      </div>
+      <div className="divide-lightGray divide-y">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="grid gap-4 px-6 py-5 md:grid-cols-[1.25fr_1fr_1fr_0.85fr_0.75fr] md:items-center">
+            <SkeletonBlock className="h-5 w-40" />
+            <SkeletonBlock className="h-4 w-28" />
+            <SkeletonBlock className="h-4 w-28" />
+            <SkeletonBlock className="h-9 w-24 md:mx-auto" />
+            <SkeletonBlock className="h-11 w-24" />
+          </div>
+        ))}
       </div>
     </div>
+  );
+};
+
+const LatestFeedbackSkeleton = () => {
+  return (
+    <article className="border-lightGray rounded-lg border bg-white px-6 py-6">
+      <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
+        <div className="flex min-w-0 gap-5">
+          <SkeletonBlock className="size-13 shrink-0 rounded-full" />
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            <div className="flex flex-wrap gap-2">
+              <SkeletonBlock className="h-5 w-20" />
+              <SkeletonBlock className="h-5 w-24" />
+              <SkeletonBlock className="h-7 w-14" />
+            </div>
+            <SkeletonBlock className="h-4 w-full" />
+            <SkeletonBlock className="h-4 w-4/5" />
+            <SkeletonBlock className="h-4 w-2/3" />
+          </div>
+        </div>
+        <div className="flex flex-col items-start gap-6 lg:items-end">
+          <SkeletonBlock className="h-4 w-10" />
+          <SkeletonBlock className="h-12 w-36" />
+        </div>
+      </div>
+    </article>
+  );
+};
+
+const ProjectManageSectionSkeleton = () => {
+  return (
+    <section className="flex flex-col gap-6">
+      <SkeletonBlock className="h-8 w-36" />
+      <div className="flex flex-wrap gap-4">
+        <SkeletonBlock className="h-12 w-40" />
+        <SkeletonBlock className="h-12 w-40" />
+      </div>
+    </section>
   );
 };
 
