@@ -5,6 +5,7 @@ import { MY_VOTES_QUERY_KEY } from '@queries/me';
 import type { GetMyVotesResponseDto } from '@dto/meDto';
 import TeamCard from '@pages/contest/TeamCard';
 import { LuVote } from 'react-icons/lu';
+import { ActivityEmptyState, ActivityPreviewSkeleton } from './components/ActivityEmptyState';
 
 const MyVoteSection = () => {
   return (
@@ -24,11 +25,19 @@ const MyVoteSection = () => {
 export default MyVoteSection;
 
 const MyVoteList = () => {
-  const { data: myVotes } = useQuery<GetMyVotesResponseDto>({
+  const { data: myVotes, isLoading } = useQuery<GetMyVotesResponseDto>({
     queryKey: MY_VOTES_QUERY_KEY,
     queryFn: getMyVotes,
     staleTime: 5 * 60 * 1000,
   });
+
+  if (isLoading) {
+    return <ActivityPreviewSkeleton />;
+  }
+
+  if (!myVotes || myVotes.length === 0) {
+    return <ActivityEmptyState message="투표한 프로젝트가 아직 없어요." className="min-h-55" />;
+  }
 
   return (
     <div

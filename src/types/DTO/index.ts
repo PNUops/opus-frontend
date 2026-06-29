@@ -13,6 +13,7 @@ export * from './notificationDto';
 export * from './meDto';
 export * from './memberDto';
 export * from './submissionDto';
+export * from './teamDashboardDto';
 
 export type { DashboardTeamResponseDto } from './dashboardDto';
 export type { TeamLikeResponseDto } from './teamsLikeDto';

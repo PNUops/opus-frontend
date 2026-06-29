@@ -5,7 +5,7 @@ import type { SubmissionDetailResponseDto } from '@dto/submissionDto';
 import { formatDateTime } from '../utils/format';
 import { SubmissionStatusBadge } from './SubmissionBadges';
 
-/** 상세보기·코멘트 Drawer 상단 공통 팀 요약 블록 */
+/** 상세보기·피드백 Drawer 상단 공통 팀 요약 블록 */
 export const SubmissionTeamSummary = ({ detail }: { detail: SubmissionDetailResponseDto }) => {
   return (
     <div>
