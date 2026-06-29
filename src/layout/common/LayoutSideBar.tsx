@@ -1,8 +1,9 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { Activity, CircleUserRound } from 'lucide-react';
+import { PiChalkboardTeacher } from 'react-icons/pi';
 import { cn } from '@utils/classname';
 
-type LayoutSidebarIcon = 'activity' | 'account';
+type LayoutSidebarIcon = 'activity' | 'advisorActivity' | 'account';
 
 export interface LayoutSidebarLink {
   key?: string;
@@ -58,6 +59,10 @@ const LayoutSideBar = ({ sections }: LayoutSideBarProps) => {
 
     if (icon === 'account') {
       return <CircleUserRound size={20} className="shrink-0" />;
+    }
+
+    if (icon === 'advisorActivity') {
+      return <PiChalkboardTeacher size={20} className="shrink-0" />;
     }
 
     return null;

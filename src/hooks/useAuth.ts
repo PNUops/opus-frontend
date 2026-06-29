@@ -13,6 +13,9 @@ const useAuth = () => {
   const isLeader = isSignedIn && user?.roles?.includes('ROLE_팀장');
   const isMember = isSignedIn && user?.roles?.includes('ROLE_팀원');
   const isAdmin = isSignedIn && user?.roles?.includes('ROLE_관리자');
+  const isProfessor = isSignedIn && user?.roles?.includes('ROLE_교수');
+  const isExternalMentor = isSignedIn && user?.roles?.includes('ROLE_외부멘토');
+  const isAdvisor = isProfessor || isExternalMentor;
 
   const signOut = useCallback(() => {
     clearToken();
@@ -38,6 +41,9 @@ const useAuth = () => {
     isLeader,
     isMember,
     isAdmin,
+    isProfessor,
+    isExternalMentor,
+    isAdvisor,
     user,
     signIn,
     signOut,
