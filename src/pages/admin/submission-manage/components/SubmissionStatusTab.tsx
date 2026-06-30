@@ -250,7 +250,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
               </tr>
             ) : (
               pagedRows.map((submission) => (
-                <tr key={submission.teamId} className="border-lightGray border-b last:border-b-0">
+                <tr key={submission.submissionId} className="border-lightGray border-b last:border-b-0">
                   <td className="text-darkGray px-4 py-4 text-sm font-medium whitespace-nowrap">
                     {submission.teamName}
                   </td>
