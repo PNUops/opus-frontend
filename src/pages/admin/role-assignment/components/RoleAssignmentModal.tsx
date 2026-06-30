@@ -240,26 +240,25 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
                   className="placeholder:text-midGray h-8 min-w-[180px] flex-1 text-sm focus:outline-none"
                 />
               )}
+              {!isEditMode && memberKeyword.length > 0 && (
+                <div className="border-lightGray flex max-h-48 w-full basis-full flex-col overflow-y-auto rounded-md border bg-white p-1">
+                  {isDebouncingMemberSearch || isFetchingMembers ? (
+                    <p className="text-midGray py-4 text-center text-sm">검색 중이에요.</p>
+                  ) : memberOptions.length === 0 ? (
+                    <p className="text-midGray py-4 text-center text-sm">검색 결과가 없어요.</p>
+                  ) : (
+                    memberOptions.map((member) => (
+                      <MemberOption
+                        key={member.memberId}
+                        member={member}
+                        selected={selectedMemberIds.has(member.memberId)}
+                        onToggle={() => toggleMember(member)}
+                      />
+                    ))
+                  )}
+                </div>
+              )}
             </div>
-
-            {!isEditMode && memberKeyword.length > 0 && (
-              <div className="border-lightGray flex max-h-48 flex-col overflow-y-auto rounded-md border bg-white p-1">
-                {isDebouncingMemberSearch || isFetchingMembers ? (
-                  <p className="text-midGray py-4 text-center text-sm">검색 중이에요.</p>
-                ) : memberOptions.length === 0 ? (
-                  <p className="text-midGray py-4 text-center text-sm">검색 결과가 없어요.</p>
-                ) : (
-                  memberOptions.map((member) => (
-                    <MemberOption
-                      key={member.memberId}
-                      member={member}
-                      selected={selectedMemberIds.has(member.memberId)}
-                      onToggle={() => toggleMember(member)}
-                    />
-                  ))
-                )}
-              </div>
-            )}
           </div>
         </ModalField>
 
@@ -430,7 +429,7 @@ const MemberOption = ({ member, selected, onToggle }: MemberOptionProps) => {
       type="button"
       onClick={onToggle}
       className={cn(
-        'flex min-h-11 items-center gap-3 rounded-md px-2 text-left transition-colors',
+        'flex min-h-12 w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
         selected ? 'bg-whiteGray' : 'hover:bg-whiteGray',
       )}
     >
@@ -443,8 +442,10 @@ const MemberOption = ({ member, selected, onToggle }: MemberOptionProps) => {
       >
         {selected && <Check className="text-mainBlue size-4" />}
       </span>
-      <span className="text-darkGray min-w-0 flex-1 truncate text-sm font-medium">{member.name}</span>
-      <span className="text-darkGray truncate text-sm">{member.email}</span>
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="text-darkGray truncate text-sm font-medium">{member.name}</span>
+        <span className="text-midGray truncate text-sm">{member.email}</span>
+      </span>
     </button>
   );
 };
