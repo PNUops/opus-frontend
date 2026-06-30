@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import ConfirmModal from '@components/ConfirmModal';
 import { AdminHeader } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
 import { deleteContestStaff, getContestStaff } from '@apis/contestStaff';
-import { getProjectsAdmin } from '@apis/contest';
+import { ROLE_LABEL } from '@constants/roleAssignment';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { useToast } from '@hooks/useToast';
 import { getApiErrorMessage } from '@utils/error';
@@ -13,7 +14,17 @@ import { RoleAssignmentFilterBar } from './components/RoleAssignmentFilterBar';
 import { RoleAssignmentModal } from './components/RoleAssignmentModal';
 import { RoleAssignmentTabBar } from './components/RoleAssignmentTabBar';
 import { RoleAssignmentTable } from './components/RoleAssignmentTable';
-import type { RoleType } from './types/roleAssignment';
+import type { RoleAssignment, RoleType } from './types/roleAssignment';
+
+type RoleAssignmentModalState =
+  | {
+      mode: 'create';
+      role: RoleType;
+    }
+  | {
+      mode: 'edit';
+      assignment: RoleAssignment;
+    };
 
 const RoleAssignmentPage = () => {
   const contestId = useContestIdOrRedirect();
@@ -21,7 +32,8 @@ const RoleAssignmentPage = () => {
   const toast = useToast();
   const [activeRole, setActiveRole] = useState<RoleType>('ROLE_교수');
   const [search, setSearch] = useState('');
-  const [modalRole, setModalRole] = useState<RoleType | null>(null);
+  const [modalState, setModalState] = useState<RoleAssignmentModalState | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<RoleAssignment | null>(null);
 
   const assignmentQueryKey = ['contestStaff', contestId, activeRole, search.trim()];
 
@@ -29,21 +41,6 @@ const RoleAssignmentPage = () => {
     queryKey: assignmentQueryKey,
     queryFn: () => getContestStaff({ contestId, memberType: activeRole, search: search.trim() || undefined }),
   });
-
-  const { data: projects = [] } = useQuery({
-    queryKey: ['projects', contestId],
-    queryFn: () => getProjectsAdmin(contestId),
-  });
-
-  const assignableTeams = useMemo(
-    () =>
-      projects.map((project) => ({
-        teamId: project.teamId,
-        teamName: project.teamName,
-        trackName: project.trackName,
-      })),
-    [projects],
-  );
 
   const { mutate: deleteAssignment } = useMutation({
     mutationFn: (contestMemberId: number) => deleteContestStaff(contestId, contestMemberId),
@@ -55,6 +52,12 @@ const RoleAssignmentPage = () => {
       toast(getApiErrorMessage(error, '배정 삭제에 실패했어요.'), 'error');
     },
   });
+
+  const handleDeleteConfirm = () => {
+    if (!deleteTarget) return;
+    deleteAssignment(deleteTarget.contestMemberId);
+    setDeleteTarget(null);
+  };
 
   return (
     <div className="flex w-full flex-col gap-10">
@@ -70,22 +73,38 @@ const RoleAssignmentPage = () => {
           activeRole={activeRole}
           search={search}
           onSearchChange={setSearch}
-          onAssignClick={() => setModalRole(activeRole)}
+          onAssignClick={() => setModalState({ mode: 'create', role: activeRole })}
         />
 
-        <RoleAssignmentTable assignments={assignments} onDelete={deleteAssignment} />
+        <RoleAssignmentTable
+          assignments={assignments}
+          onEdit={(assignment) => setModalState({ mode: 'edit', assignment })}
+          onDelete={setDeleteTarget}
+        />
       </div>
 
-      <Dialog open={modalRole !== null} onOpenChange={(open) => !open && setModalRole(null)}>
-        {modalRole && (
+      <Dialog open={modalState !== null} onOpenChange={(open) => !open && setModalState(null)}>
+        {modalState && (
           <RoleAssignmentModal
             contestId={contestId}
-            defaultRole={modalRole}
-            teams={assignableTeams}
-            onClose={() => setModalRole(null)}
+            defaultRole={modalState.mode === 'create' ? modalState.role : modalState.assignment.roleType}
+            assignment={modalState.mode === 'edit' ? modalState.assignment : undefined}
+            onClose={() => setModalState(null)}
           />
         )}
       </Dialog>
+
+      <ConfirmModal
+        isOpen={deleteTarget !== null}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteTarget(null)}
+        message="역할 배정을 삭제하시겠어요?"
+        description={
+          deleteTarget
+            ? `${deleteTarget.name}님의 ${ROLE_LABEL[deleteTarget.roleType]} 담당 팀 배정이 삭제됩니다.`
+            : undefined
+        }
+      />
     </div>
   );
 };

@@ -25,7 +25,7 @@ export const formatNotificationCreatedAt = (value: string) => {
 export const markNotificationAsReadInCache = (queryClient: QueryClient, notificationId: number) => {
   queryClient.setQueryData<NotificationDto[]>(NOTIFICATIONS_QUERY_KEY, (cachedNotifications) =>
     cachedNotifications?.map((notification) =>
-      notification.notificationId === notificationId ? { ...notification, isRead: true } : notification,
+      notification.id === notificationId ? { ...notification, isRead: true } : notification,
     ),
   );
 };

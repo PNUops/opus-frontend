@@ -99,6 +99,6 @@ export const putTeamCustomSort = async (contestId: number, payload: TeamCustomSo
 };
 
 export const getProjectsAdmin = async (contestId: number): Promise<ProjectsAdminResponseDto[]> => {
-  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/contests/${contestId}/submissions`);
+  const res = await apiClient.get<ProjectsAdminResponseDto[]>(`/contests/${contestId}/team-detail-submissions`);
   return res.data;
 };

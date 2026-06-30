@@ -1,7 +1,9 @@
+import type { CurrentContestResponseDto } from '@dto/contestsDto';
 import type { MyProjectDto } from '@dto/meDto';
 import type { LayoutSidebarSection } from '@layout/common/LayoutSideBar';
 
 interface CreateMyPageSidebarDataOptions {
+  currentContests?: CurrentContestResponseDto[];
   showAdvisorActivity?: boolean;
 }
 
@@ -49,26 +51,29 @@ export const createMyPageSidebarData = (
         ],
       })),
     },
+    { to: 'account', label: '계정 정보', icon: 'account' },
   ];
 
   if (options.showAdvisorActivity) {
-    activityLinks.push({
+    activityLinks.unshift({
       to: 'advisor-activity',
       label: '지도 활동',
       icon: 'advisorActivity',
       activePaths: ['/me/advisor-activity'],
+      links: options.currentContests?.map(({ contestId, contestName }) => ({
+        key: `advisor-contest-${contestId}`,
+        to: `advisor-activity/contests/${contestId}`,
+        label: contestName,
+      })),
     });
   }
 
   return [
     {
       title: '',
-      links: [...activityLinks, { to: 'account', label: '계정 정보', icon: 'account' }],
+      links: [...activityLinks],
     },
   ];
 };
-
-export const createMyTeamSidebarData = (projects: MyProjectDto[]): LayoutSidebarSection[] =>
-  projects.length === 0 ? [] : createMyPageSidebarData(projects);
 
 export default myPageSidebarData;

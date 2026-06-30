@@ -7,6 +7,7 @@ import { useOutsideClick } from '@hooks/useOutsideClick';
 import { useToast } from '@hooks/useToast';
 import { HiMenu } from 'react-icons/hi';
 import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
+import { PiChalkboardTeacher } from 'react-icons/pi';
 import { useSidebar } from './SidebarContext';
 import ProfileButton from './ProfileButton';
 import NotificationOverlay from './NotificationOverlay';
@@ -56,6 +57,7 @@ const ProfileMenuButton = ({ icon, children, onClick, rightContent }: ProfileMen
 interface HeaderProfileMenuProps {
   username?: string;
   isAdmin: boolean;
+  isAdvisor: boolean;
   unreadNotificationCount: number;
   onSignout: () => void;
   onNotificationClick: () => void;
@@ -64,6 +66,7 @@ interface HeaderProfileMenuProps {
 const HeaderProfileMenu = ({
   username,
   isAdmin,
+  isAdvisor,
   unreadNotificationCount,
   onSignout,
   onNotificationClick,
@@ -166,6 +169,17 @@ const HeaderProfileMenu = ({
             </ProfileMenuLink>
           </div>
         )}
+        {isAdvisor && (
+          <div className="border-lightGray mt-2 border-t pt-2.5">
+            <ProfileMenuLink
+              to="/me/advisor-activity"
+              icon={<PiChalkboardTeacher className="h-4 w-4 text-neutral-500" />}
+              onClick={closeMenu}
+            >
+              지도 활동
+            </ProfileMenuLink>
+          </div>
+        )}
 
         <div className="border-lightGray mt-2 border-t pt-2.5">
           <ProfileMenuButton icon={<LogOut className="h-4 w-4 text-neutral-500" />} onClick={handleSignout}>
@@ -179,7 +193,7 @@ const HeaderProfileMenu = ({
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isSignedIn, signOut, user, isAdmin } = useAuth();
+  const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
   const toast = useToast();
   const location = useLocation();
   const { toggle } = useSidebar();
@@ -250,6 +264,7 @@ const Header = () => {
               <HeaderProfileMenu
                 username={user?.name}
                 isAdmin={isAdmin}
+                isAdvisor={isAdvisor}
                 unreadNotificationCount={unreadNotificationCount}
                 onSignout={handleSignout}
                 onNotificationClick={handleNotificationOpen}
