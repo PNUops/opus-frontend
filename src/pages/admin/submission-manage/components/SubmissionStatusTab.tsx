@@ -117,7 +117,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
           (typeFilter === '' || s.submissionItemName === typeFilter) &&
           (statusFilter === '' || s.status === statusFilter) &&
           (trackFilter === '' || s.trackName === trackFilter) &&
-          (search === '' || s.teamName.toLowerCase().includes(search.trim().toLowerCase())),
+          (search === '' || s.teamName?.toLowerCase().includes(search.trim().toLowerCase())),
       ),
     [submissions, typeFilter, statusFilter, trackFilter, search],
   );
