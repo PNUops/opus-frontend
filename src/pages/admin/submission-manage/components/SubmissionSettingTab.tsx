@@ -92,9 +92,11 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }: { id: number; payload: SubmissionItemRequestDto }) =>
       patchSubmissionItem(contestId, id, payload),
-    onSuccess: () => {
+    onSuccess: (_data, { id }) => {
       toast('제출 항목을 수정했어요.', 'success');
       invalidateList();
+      // 개별 설정값 캐시도 무효화 — 안 하면 다시 수정 진입 시 이전 값이 채워짐
+      queryClient.invalidateQueries({ queryKey: submissionItemSettingOption(contestId, id).queryKey });
       setModalState(null);
     },
     onError: (error) => toast(getApiErrorMessage(error, '제출 항목 수정에 실패했어요.'), 'error'),
