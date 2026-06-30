@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, CircleDot, Folder, FolderOpen } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
@@ -6,6 +6,7 @@ import { cn } from '@utils/classname';
 import { useQuery } from '@tanstack/react-query';
 import { getGroupedContests } from '@apis/contest';
 import { useContestId } from '@hooks/useId';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
@@ -98,7 +99,9 @@ const CategoryGroup = ({ category, isActive, isExpanded, onToggle }: CategoryGro
       ) : (
         <Folder className="size-5 shrink-0" aria-hidden />
       )}
-      <span className="min-w-0 flex-1 truncate">{category.categoryName}</span>
+      <SidebarTooltipText content={category.categoryName} className="min-w-0 flex-1 truncate">
+        {category.categoryName}
+      </SidebarTooltipText>
       <span
         className={cn(
           'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
@@ -136,7 +139,7 @@ const ContestList = ({ contests }: ContestListProps) => {
     <>
       {contests.map((contest) => (
         <li key={contest.contestId}>
-          <NavLink to={`/contest/${contest.contestId}`} className={getLinkClass} title={contest.contestName}>
+          <NavLink to={`/contest/${contest.contestId}`} className={getLinkClass}>
             <CircleDot
               className={cn(
                 'size-3 shrink-0',
@@ -144,13 +147,34 @@ const ContestList = ({ contests }: ContestListProps) => {
               )}
               aria-hidden
             />
-            <span className="min-w-0 flex-1 truncate">{contest.contestName}</span>
+            <SidebarTooltipText content={contest.contestName} className="min-w-0 flex-1 truncate">
+              {contest.contestName}
+            </SidebarTooltipText>
           </NavLink>
         </li>
       ))}
     </>
   );
 };
+
+const SidebarTooltipText = ({
+  content,
+  className,
+  children,
+}: {
+  content: string;
+  className?: string;
+  children: ReactNode;
+}) => (
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <span className={className}>{children}</span>
+    </TooltipTrigger>
+    <TooltipContent side="right" sideOffset={8} className="max-w-80 text-left leading-5 break-keep text-neutral-900">
+      {content}
+    </TooltipContent>
+  </Tooltip>
+);
 
 const SidebarSkeleton = () => (
   <>
