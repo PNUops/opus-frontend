@@ -16,7 +16,6 @@ interface ConfirmMemoProps {
 
 /** 확인 메모 (UI 전용) — 보기/편집 토글 */
 export const ConfirmMemo = ({ memo, onSave, onDelete }: ConfirmMemoProps) => {
-  console.log(memo);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(memo?.content ?? '');
 
