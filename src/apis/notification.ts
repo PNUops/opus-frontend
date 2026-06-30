@@ -11,5 +11,5 @@ export const markNotificationAsRead = async (notificationId: number): Promise<vo
 };
 
 export const markAllNotificationsAsRead = async (): Promise<void> => {
-  await apiClient.patch('/notifications/read-all');
+  await apiClient.patch('/notifications');
 };
