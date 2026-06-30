@@ -6,9 +6,9 @@ import type { MySubmissionSummaryDto } from '@dto/meDto';
 export const SubmissionSummaryCards = ({ summary }: { summary: MySubmissionSummaryDto }) => {
   return (
     <div className="flex flex-wrap gap-3">
-      <SummaryCard icon={<ClipboardList size={18} />} label="전체 제출물" count={summary.totalCount} />
+      <SummaryCard icon={<ClipboardList size={18} />} label="전체 제출물" count={summary.totalItemCount} />
       <SummaryCard icon={<CircleCheck size={18} />} label="제출 완료" count={summary.submittedCount} />
-      <SummaryCard icon={<MessageSquare size={18} />} label="피드백" count={summary.feedbackCount} />
+      <SummaryCard icon={<MessageSquare size={18} />} label="피드백" count={summary.totalFeedbackCount} />
     </div>
   );
 };

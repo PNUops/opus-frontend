@@ -37,11 +37,11 @@ export type GetMyProjectsResponseDto = MyProjectDto[];
 /** 나의 활동 - 제출물 상태 요약 */
 export interface MySubmissionSummaryDto {
   /** 전체 제출물 수 */
-  totalCount: number;
+  totalItemCount: number;
   /** 제출 완료 수 */
   submittedCount: number;
   /** 피드백 수 */
-  feedbackCount: number;
+  totalFeedbackCount: number;
 }
 
 export type GetMySubmissionSummaryResponseDto = MySubmissionSummaryDto;
