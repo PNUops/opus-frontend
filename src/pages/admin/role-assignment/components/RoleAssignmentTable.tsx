@@ -8,10 +8,11 @@ const TABLE_HEADERS = ['이름', '이메일', '회원 유형', '담당 팀'];
 
 interface RoleAssignmentTableProps {
   assignments: RoleAssignment[];
-  onDelete: (contestMemberId: number) => void;
+  onEdit: (assignment: RoleAssignment) => void;
+  onDelete: (assignment: RoleAssignment) => void;
 }
 
-export const RoleAssignmentTable = ({ assignments, onDelete }: RoleAssignmentTableProps) => {
+export const RoleAssignmentTable = ({ assignments, onEdit, onDelete }: RoleAssignmentTableProps) => {
   return (
     <div className="border-lightGray overflow-x-auto rounded-md border">
       <table className="w-full min-w-[940px] border-collapse">
@@ -48,8 +49,8 @@ export const RoleAssignmentTable = ({ assignments, onDelete }: RoleAssignmentTab
                 <td className="px-6 py-4">
                   <div className="flex justify-center">
                     <AdminPopoverMenu>
-                      <AdminPopoverEditButton onEdit={() => undefined} />
-                      <AdminPopoverDeleteButton onDelete={() => onDelete(assignment.contestMemberId)} />
+                      <AdminPopoverEditButton onEdit={() => onEdit(assignment)} />
+                      <AdminPopoverDeleteButton onDelete={() => onDelete(assignment)} />
                     </AdminPopoverMenu>
                   </div>
                 </td>

@@ -1,8 +1,9 @@
-import { type ReactNode, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, ChevronDown, X } from 'lucide-react';
 
-import { createContestStaffBatch } from '@apis/contestStaff';
+import { getContestTeams } from '@apis/contest';
+import { createContestStaffBatch, updateContestStaff } from '@apis/contestStaff';
 import { searchAdminMembers } from '@apis/member';
 import { AdminActionButton } from '@components/admin';
 import { cn } from '@components/lib/utils';
@@ -13,7 +14,13 @@ import useDebounce from '@hooks/useDebounce';
 import { useToast } from '@hooks/useToast';
 import { getApiErrorMessage } from '@utils/error';
 
-import type { AssignableMember, AssignableTeam, RoleAssignmentFormValues, RoleType } from '../types/roleAssignment';
+import type {
+  AssignableMember,
+  AssignableTeam,
+  RoleAssignment,
+  RoleAssignmentFormValues,
+  RoleType,
+} from '../types/roleAssignment';
 
 type FocusedField = 'member' | 'role' | 'team';
 
@@ -22,26 +29,43 @@ const getTrimmedValue = (value: string | null | undefined) => value?.trim() ?? '
 interface RoleAssignmentModalProps {
   contestId: number;
   defaultRole: RoleType;
-  teams: AssignableTeam[];
+  assignment?: RoleAssignment;
   onClose: () => void;
 }
 
-const createDefaultValues = (): RoleAssignmentFormValues => ({
+const createDefaultValues = (assignment?: RoleAssignment): RoleAssignmentFormValues => ({
   memberEmailQuery: '',
-  teamIds: [],
+  teamIds: assignment?.teams.map((team) => team.teamId) ?? [],
 });
 
-export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: RoleAssignmentModalProps) => {
+const createSelectedMember = (assignment: RoleAssignment): AssignableMember => ({
+  memberId: assignment.memberId,
+  name: assignment.name,
+  email: assignment.email,
+  roleType: assignment.roleType,
+});
+
+export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClose }: RoleAssignmentModalProps) => {
   const queryClient = useQueryClient();
   const toast = useToast();
-  const [values, setValues] = useState<RoleAssignmentFormValues>(createDefaultValues);
-  const [selectedMembers, setSelectedMembers] = useState<AssignableMember[]>([]);
+  const isEditMode = assignment !== undefined;
+  const [values, setValues] = useState<RoleAssignmentFormValues>(() => createDefaultValues(assignment));
+  const [selectedMembers, setSelectedMembers] = useState<AssignableMember[]>(() =>
+    assignment ? [createSelectedMember(assignment)] : [],
+  );
   const [isTeamDropdownOpen, setIsTeamDropdownOpen] = useState(false);
   const [focusedField, setFocusedField] = useState<FocusedField | null>(null);
   const memberInputRef = useRef<HTMLInputElement>(null);
   const memberKeyword = values.memberEmailQuery.trim();
   const debouncedMemberKeyword = useDebounce(memberKeyword, 300);
   const roleLabel = ROLE_LABEL[defaultRole];
+
+  useEffect(() => {
+    setValues(createDefaultValues(assignment));
+    setSelectedMembers(assignment ? [createSelectedMember(assignment)] : []);
+    setIsTeamDropdownOpen(false);
+    setFocusedField(null);
+  }, [assignment]);
 
   const update = <K extends keyof RoleAssignmentFormValues>(key: K, value: RoleAssignmentFormValues[K]) => {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -74,29 +98,28 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
   const { data: memberOptions = [], isFetching: isFetchingMembers } = useQuery({
     queryKey: ['adminMemberSearch', defaultRole, debouncedMemberKeyword],
     queryFn: () => searchAdminMembers({ keyword: debouncedMemberKeyword, roleType: defaultRole }),
-    enabled: debouncedMemberKeyword.length > 0,
+    enabled: !isEditMode && debouncedMemberKeyword.length > 0,
   });
   const isDebouncingMemberSearch = memberKeyword !== debouncedMemberKeyword;
 
-  const availableTeams = useMemo(
-    () =>
-      teams.filter((team) => getTrimmedValue(team.trackName).length > 0 && getTrimmedValue(team.teamName).length > 0),
-    [teams],
-  );
+  const { data: teams = [], isFetching: isFetchingTeams } = useQuery({
+    queryKey: ['contestTeams', contestId],
+    queryFn: () => getContestTeams(contestId),
+    enabled: contestId > 0,
+    select: (teams): AssignableTeam[] =>
+      teams.map((team) => ({
+        teamId: team.teamId,
+        teamName: team.teamName,
+      })),
+  });
+
+  const availableTeams = useMemo(() => teams.filter((team) => getTrimmedValue(team.teamName).length > 0), [teams]);
   const selectedMemberIds = useMemo(() => new Set(selectedMembers.map((member) => member.memberId)), [selectedMembers]);
   const selectedTeams = useMemo(
     () => availableTeams.filter((team) => values.teamIds.includes(team.teamId)),
     [availableTeams, values.teamIds],
   );
-  const teamOptionGroups = useMemo(() => {
-    return availableTeams.reduce<Record<string, AssignableTeam[]>>((groups, team) => {
-      const trackName = getTrimmedValue(team.trackName);
-      return {
-        ...groups,
-        [trackName]: [...(groups[trackName] ?? []), team],
-      };
-    }, {});
-  }, [availableTeams]);
+  const originalTeamIds = useMemo(() => assignment?.teams.map((team) => team.teamId) ?? [], [assignment]);
 
   const toggleMember = (member: AssignableMember) => {
     setSelectedMembers((prev) =>
@@ -121,8 +144,15 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
     }));
   };
 
-  const { mutate: assignStaff, isPending: isAssigning } = useMutation({
+  const { mutate: submitAssignment, isPending: isSubmitting } = useMutation({
     mutationFn: () => {
+      if (assignment) {
+        return updateContestStaff(contestId, assignment.contestMemberId, {
+          addTeamIds: values.teamIds.filter((teamId) => !originalTeamIds.includes(teamId)),
+          deleteTeamIds: originalTeamIds.filter((teamId) => !values.teamIds.includes(teamId)),
+        });
+      }
+
       if (selectedMembers.length === 0) throw new Error('역할을 배정할 회원을 선택해주세요.');
       return createContestStaffBatch(contestId, {
         memberIds: selectedMembers.map((member) => member.memberId),
@@ -131,16 +161,24 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contestStaff', contestId] });
-      toast(`${selectedMembers.length}명의 ${roleLabel}에게 ${values.teamIds.length}개 팀을 배정했어요.`, 'success');
+      toast(
+        assignment
+          ? `${assignment.name}님의 담당 팀을 수정했어요.`
+          : `${selectedMembers.length}명의 ${roleLabel}에게 ${values.teamIds.length}개 팀을 배정했어요.`,
+        'success',
+      );
       onClose();
     },
     onError: (error) => {
-      toast(getApiErrorMessage(error, '역할 배정에 실패했어요.'), 'error');
+      toast(
+        getApiErrorMessage(error, isEditMode ? '역할 배정 수정에 실패했어요.' : '역할 배정에 실패했어요.'),
+        'error',
+      );
     },
   });
 
   const handleSubmit = () => {
-    if (selectedMembers.length === 0) {
+    if (!isEditMode && selectedMembers.length === 0) {
       toast('역할을 배정할 회원을 선택해주세요.', 'error');
       return;
     }
@@ -149,14 +187,21 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
       return;
     }
 
-    assignStaff();
+    submitAssignment();
   };
+
+  const dialogTitle = isEditMode ? '담당 팀 수정' : '담당 팀 배정';
+  const dialogDescription = isEditMode
+    ? `${assignment?.name ?? ''}님의 담당 팀을 수정할 수 있어요.`
+    : `이메일로 ${roleLabel}의 담당 팀을 배정할 수 있어요.`;
+  const submitButtonText = isEditMode ? '수정' : '일괄 배정';
+  const submittingButtonText = isEditMode ? '수정 중' : '배정 중';
 
   return (
     <DialogContent className="max-h-[calc(100vh-32px)] w-[600px] max-w-[92vw] grid-rows-[auto_minmax(0,1fr)_auto] items-stretch gap-8 overflow-hidden rounded-lg border bg-white p-6 sm:max-h-[calc(100vh-48px)] sm:p-8">
       <div className="flex flex-col gap-2">
-        <DialogTitle className="text-2xl leading-8 font-bold text-black">담당 팀 배정</DialogTitle>
-        <p className="text-midGray text-sm leading-5">이메일로 {roleLabel}의 담당 팀을 배정할 수 있어요.</p>
+        <DialogTitle className="text-2xl leading-8 font-bold text-black">{dialogTitle}</DialogTitle>
+        <p className="text-midGray text-sm leading-5">{dialogDescription}</p>
       </div>
 
       <div className="flex min-h-0 flex-col gap-5 overflow-y-auto pr-1">
@@ -172,40 +217,48 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
               className={cn(
                 'border-lightGray flex min-h-[115px] flex-wrap content-start items-start gap-2 rounded-md border bg-white px-4 py-3 transition-colors duration-300 ease-in-out',
                 focusedField === 'member' && 'border-mainBlue',
+                isEditMode && 'bg-gray-50',
               )}
-              onClick={() => memberInputRef.current?.focus()}
+              onClick={() => {
+                if (!isEditMode) memberInputRef.current?.focus();
+              }}
             >
               {selectedMembers.map((member) => (
-                <MemberChip key={member.memberId} member={member} onRemove={() => removeMember(member.memberId)} />
+                <MemberChip
+                  key={member.memberId}
+                  member={member}
+                  onRemove={isEditMode ? undefined : () => removeMember(member.memberId)}
+                />
               ))}
-              <input
-                ref={memberInputRef}
-                type="search"
-                value={values.memberEmailQuery}
-                onChange={(event) => handleMemberQueryChange(event.target.value)}
-                placeholder={selectedMembers.length > 0 ? '이메일 추가 검색' : '회원 이메일로 검색'}
-                className="placeholder:text-midGray h-8 min-w-[180px] flex-1 text-sm focus:outline-none"
-              />
+              {!isEditMode && (
+                <input
+                  ref={memberInputRef}
+                  type="search"
+                  value={values.memberEmailQuery}
+                  onChange={(event) => handleMemberQueryChange(event.target.value)}
+                  placeholder={selectedMembers.length > 0 ? '이메일 추가 검색' : '회원 이메일로 검색'}
+                  className="placeholder:text-midGray h-8 min-w-[180px] flex-1 text-sm focus:outline-none"
+                />
+              )}
+              {!isEditMode && memberKeyword.length > 0 && (
+                <div className="border-lightGray flex max-h-48 w-full basis-full flex-col overflow-y-auto rounded-md border bg-white p-1">
+                  {isDebouncingMemberSearch || isFetchingMembers ? (
+                    <p className="text-midGray py-4 text-center text-sm">검색 중이에요.</p>
+                  ) : memberOptions.length === 0 ? (
+                    <p className="text-midGray py-4 text-center text-sm">검색 결과가 없어요.</p>
+                  ) : (
+                    memberOptions.map((member) => (
+                      <MemberOption
+                        key={member.memberId}
+                        member={member}
+                        selected={selectedMemberIds.has(member.memberId)}
+                        onToggle={() => toggleMember(member)}
+                      />
+                    ))
+                  )}
+                </div>
+              )}
             </div>
-
-            {memberKeyword.length > 0 && (
-              <div className="border-lightGray flex max-h-48 flex-col overflow-y-auto rounded-md border bg-white p-1">
-                {isDebouncingMemberSearch || isFetchingMembers ? (
-                  <p className="text-midGray py-4 text-center text-sm">검색 중이에요.</p>
-                ) : memberOptions.length === 0 ? (
-                  <p className="text-midGray py-4 text-center text-sm">검색 결과가 없어요.</p>
-                ) : (
-                  memberOptions.map((member) => (
-                    <MemberOption
-                      key={member.memberId}
-                      member={member}
-                      selected={selectedMemberIds.has(member.memberId)}
-                      onToggle={() => toggleMember(member)}
-                    />
-                  ))
-                )}
-              </div>
-            )}
           </div>
         </ModalField>
 
@@ -273,21 +326,18 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
                 onTouchMove={(event) => event.stopPropagation()}
                 className="border-lightGray pointer-events-auto z-[70] max-h-56 w-[var(--radix-popover-trigger-width)] overflow-y-auto overscroll-contain bg-white p-1 shadow-lg"
               >
-                {availableTeams.length === 0 ? (
+                {isFetchingTeams && availableTeams.length === 0 ? (
+                  <p className="text-midGray py-4 text-center text-sm">팀 목록을 불러오는 중이에요.</p>
+                ) : availableTeams.length === 0 ? (
                   <p className="text-midGray py-4 text-center text-sm">선택할 팀이 없어요.</p>
                 ) : (
-                  Object.entries(teamOptionGroups).map(([trackName, groupedTeams]) => (
-                    <div key={trackName} className="flex flex-col">
-                      <span className="text-midGray px-2 py-2 text-sm">{trackName}</span>
-                      {groupedTeams.map((team) => (
-                        <TeamOption
-                          key={team.teamId}
-                          team={team}
-                          selected={values.teamIds.includes(team.teamId)}
-                          onToggle={() => toggleTeam(team.teamId)}
-                        />
-                      ))}
-                    </div>
+                  availableTeams.map((team) => (
+                    <TeamOption
+                      key={team.teamId}
+                      team={team}
+                      selected={values.teamIds.includes(team.teamId)}
+                      onToggle={() => toggleTeam(team.teamId)}
+                    />
                   ))
                 )}
               </PopoverContent>
@@ -303,7 +353,7 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
           </AdminActionButton>
         </DialogClose>
         <AdminActionButton type="button" className="min-w-[100px]" onClick={handleSubmit}>
-          {isAssigning ? '배정 중' : '일괄 배정'}
+          {isSubmitting ? submittingButtonText : submitButtonText}
         </AdminActionButton>
       </div>
     </DialogContent>
@@ -348,19 +398,21 @@ const ModalField = ({
   );
 };
 
-const MemberChip = ({ member, onRemove }: { member: AssignableMember; onRemove: () => void }) => {
+const MemberChip = ({ member, onRemove }: { member: AssignableMember; onRemove?: () => void }) => {
   return (
     <span className="inline-flex h-8 max-w-full items-center gap-2 rounded-full bg-sky-50 px-3 text-sm text-neutral-900">
       <span className="shrink-0 font-medium">{member.name}</span>
       <span className="min-w-0 truncate">{member.email}</span>
-      <button
-        type="button"
-        className="text-mainBlue shrink-0 rounded-full p-0.5 hover:bg-white/60"
-        onClick={onRemove}
-        aria-label={`${member.email} 선택 해제`}
-      >
-        <X size={14} />
-      </button>
+      {onRemove && (
+        <button
+          type="button"
+          className="text-mainBlue shrink-0 rounded-full p-0.5 hover:bg-white/60"
+          onClick={onRemove}
+          aria-label={`${member.email} 선택 해제`}
+        >
+          <X size={14} />
+        </button>
+      )}
     </span>
   );
 };
@@ -377,7 +429,7 @@ const MemberOption = ({ member, selected, onToggle }: MemberOptionProps) => {
       type="button"
       onClick={onToggle}
       className={cn(
-        'flex min-h-11 items-center gap-3 rounded-md px-2 text-left transition-colors',
+        'flex min-h-12 w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
         selected ? 'bg-whiteGray' : 'hover:bg-whiteGray',
       )}
     >
@@ -390,8 +442,10 @@ const MemberOption = ({ member, selected, onToggle }: MemberOptionProps) => {
       >
         {selected && <Check className="text-mainBlue size-4" />}
       </span>
-      <span className="text-darkGray min-w-0 flex-1 truncate text-sm font-medium">{member.name}</span>
-      <span className="text-darkGray truncate text-sm">{member.email}</span>
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="text-darkGray truncate text-sm font-medium">{member.name}</span>
+        <span className="text-midGray truncate text-sm">{member.email}</span>
+      </span>
     </button>
   );
 };
@@ -433,7 +487,7 @@ const TeamOption = ({
       type="button"
       onClick={onToggle}
       className={cn(
-        'flex min-h-10 items-center gap-3 rounded-md px-4 text-left transition-colors',
+        'flex min-h-10 w-full items-center gap-3 rounded-md px-4 text-left transition-colors',
         selected ? 'bg-whiteGray' : 'hover:bg-whiteGray',
       )}
     >
