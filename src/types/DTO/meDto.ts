@@ -67,7 +67,7 @@ export interface MySubmissionListItemDto {
   /** 제출 ID, 미제출이면 null */
   submissionId: number | null;
   /** 제출물 종류명 */
-  submissionTypeName: string;
+  submissionItemName: string;
   /** 제출 항목 설명 */
   description: string;
   /** 제출 마감일시 */

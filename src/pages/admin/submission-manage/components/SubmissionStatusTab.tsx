@@ -86,7 +86,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   const typeOptions = useMemo(
     () =>
       toNameOptions(
-        submissions.map((s) => s.submissionTypeName),
+        submissions.map((s) => s.submissionItemName),
         '제출 항목',
       ),
     [submissions],
@@ -114,7 +114,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
     () =>
       submissions.filter(
         (s) =>
-          (typeFilter === '' || s.submissionTypeName === typeFilter) &&
+          (typeFilter === '' || s.submissionItemName === typeFilter) &&
           (statusFilter === '' || s.status === statusFilter) &&
           (trackFilter === '' || s.trackName === trackFilter) &&
           (search === '' || s.teamName.toLowerCase().includes(search.trim().toLowerCase())),
@@ -255,7 +255,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
                     {submission.teamName}
                   </td>
                   <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.trackName}</td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.submissionTypeName}</td>
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.submissionItemName}</td>
                   <td className="px-4 py-4">
                     <SubmissionStatusBadge status={submission.status} />
                   </td>

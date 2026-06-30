@@ -114,7 +114,7 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
       <section className="flex flex-col gap-4 rounded-xl bg-white p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1">
-            <h4 className="text-darkGray text-base font-bold">{item.submissionTypeName}</h4>
+            <h4 className="text-darkGray text-base font-bold">{item.submissionItemName}</h4>
             <p className="text-midGray text-sm">{item.description}</p>
           </div>
           <button
@@ -190,7 +190,7 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
             contestId={contestId}
             submissionItemId={item.submissionItemId}
             submissionId={item.submissionId}
-            submissionTypeName={item.submissionTypeName}
+            submissionItemName={item.submissionItemName}
             description={item.description}
             setting={setting}
             existingFiles={files}

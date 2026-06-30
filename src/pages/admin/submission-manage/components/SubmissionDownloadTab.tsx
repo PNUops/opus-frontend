@@ -64,7 +64,7 @@ export const SubmissionDownloadTab = () => {
       toUniqueOptions(
         archives,
         (a) => a.submissionTypeId,
-        (a) => a.submissionTypeName,
+        (a) => a.submissionItemName,
         '제출 항목',
       ),
     [archives],
@@ -196,12 +196,12 @@ export const SubmissionDownloadTab = () => {
                         <Checkbox
                           checked={selectedKeys.has(key)}
                           onChange={() => toggleRow(key)}
-                          ariaLabel={`${archive.submissionTypeName} ${archive.trackName} 선택`}
+                          ariaLabel={`${archive.submissionItemName} ${archive.trackName} 선택`}
                         />
                       </div>
                     </td>
                     <td className="text-darkGray px-4 py-4 text-sm font-medium whitespace-nowrap">
-                      {archive.submissionTypeName}
+                      {archive.submissionItemName}
                     </td>
                     <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">{archive.trackName}</td>
                     <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
