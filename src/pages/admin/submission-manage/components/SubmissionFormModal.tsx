@@ -277,7 +277,7 @@ const VisibilityLabel = () => {
             <LuInfo size={14} className="text-midGray" />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="right" className="w-100 border-0 bg-[#16233f] p-4 text-white shadow-2xl">
+        <TooltipContent side="right" className="w-105 border-0 bg-[#16233f] p-4 text-white shadow-2xl">
           <div className="mb-3 flex items-center gap-2">
             <LuInfo size={16} className="shrink-0" />
             <span className="text-sm font-medium">제출된 자료를 열람할 수 있는 범위를 설정합니다.</span>
