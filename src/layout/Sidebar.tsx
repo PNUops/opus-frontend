@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, CircleDot, FolderOpen } from 'lucide-react';
+import { ChevronDown, CircleDot, Folder, FolderOpen } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
 import { cn } from '@utils/classname';
@@ -42,29 +42,33 @@ const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
   };
 
   const containerClassName =
-    variant === 'desktop' ? ' min-w-sidebar hidden  bg-white lg:block' : 'h-full w-full bg-white';
+    variant === 'desktop' ? 'min-w-sidebar hidden bg-white lg:block' : 'h-full w-full bg-white';
 
   return (
     <aside className={containerClassName}>
-      <nav className="flex flex-col gap-4 px-4 py-5" aria-label="대회 사이드바">
-        <div className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-5 p-5 md:p-6" aria-label="대회 사이드바">
+        <div className="flex items-center gap-3 px-4 py-2">
+          <FolderOpen className="text-mainGreen size-5 shrink-0" />
+          <h2 className="truncate text-base font-semibold text-neutral-950">대회 목록</h2>
+        </div>
+
+        <ul className="ml-3 flex flex-col gap-3">
           {isLoading ? (
             <SidebarSkeleton />
           ) : groups.length === 0 ? (
-            <div className="border-lightGray text-midGray rounded-lg border bg-white px-4 py-6 text-center text-sm">
-              등록된 대회가 없어요.
-            </div>
+            <li className="text-midGray px-4 py-6 text-center text-sm">등록된 대회가 없어요.</li>
           ) : (
             groups.map((group) => (
               <CategoryGroup
                 key={group.categoryId}
                 category={group}
                 isExpanded={expandedCategoryId === group.categoryId}
+                isActive={activeCategoryId === group.categoryId}
                 onToggle={() => toggleCategory(group.categoryId)}
               />
             ))
           )}
-        </div>
+        </ul>
       </nav>
     </aside>
   );
@@ -72,31 +76,36 @@ const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
 
 interface CategoryGroupProps {
   category: GroupedContestResponseDto;
+  isActive: boolean;
   isExpanded: boolean;
   onToggle: () => void;
 }
 
-const CategoryGroup = ({ category, isExpanded, onToggle }: CategoryGroupProps) => (
-  <section
-    className={cn(
-      'border-lightGray overflow-hidden rounded-lg border bg-white transition-colors',
-      isExpanded && 'border-mainGreen/40 bg-green-50/30',
-    )}
-  >
+const CategoryGroup = ({ category, isActive, isExpanded, onToggle }: CategoryGroupProps) => (
+  <li className="flex flex-col gap-2">
     <button
       type="button"
       onClick={onToggle}
       className={cn(
-        'flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors',
-        isExpanded ? 'text-mainGreen' : 'hover:bg-whiteGray text-neutral-800',
+        'hover:text-mainGreen flex min-w-0 items-center gap-3 rounded-lg px-4 py-3 text-left text-base font-semibold transition-all',
+        (isActive || isExpanded) && 'bg-subGreen text-mainGreen',
+        !isActive && !isExpanded && 'hover:bg-whiteGray text-neutral-900',
       )}
       aria-expanded={isExpanded}
     >
-      <span className="flex min-w-0 flex-col gap-0.5">
-        <span className="truncate text-sm font-bold">{category.categoryName}</span>
-        <span className={cn('text-xs', isExpanded ? 'text-mainGreen/70' : 'text-midGray')}>
-          {category.contests.length}개 대회
-        </span>
+      {isExpanded ? (
+        <FolderOpen className="size-5 shrink-0" aria-hidden />
+      ) : (
+        <Folder className="size-5 shrink-0" aria-hidden />
+      )}
+      <span className="min-w-0 flex-1 truncate">{category.categoryName}</span>
+      <span
+        className={cn(
+          'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
+          isActive || isExpanded ? 'text-mainGreen bg-white/60' : 'bg-whiteGray text-midGray',
+        )}
+      >
+        {category.contests.length}
       </span>
       <ChevronDown
         className={cn('size-4 shrink-0 transition-transform duration-200', isExpanded && 'rotate-180')}
@@ -104,17 +113,15 @@ const CategoryGroup = ({ category, isExpanded, onToggle }: CategoryGroupProps) =
       />
     </button>
 
-    <div
+    <ul
       className={cn(
-        'grid transition-[grid-template-rows,opacity] duration-200 ease-out',
-        isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        'border-mainGreen/30 ml-5 flex flex-col gap-2 overflow-hidden border-l pl-4 transition-all duration-200 ease-out',
+        isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
       )}
     >
-      <div className="min-h-0 overflow-hidden">
-        <ContestList contests={category.contests} />
-      </div>
-    </div>
-  </section>
+      <ContestList contests={category.contests} />
+    </ul>
+  </li>
 );
 
 interface ContestListProps {
@@ -122,41 +129,37 @@ interface ContestListProps {
 }
 
 const ContestList = ({ contests }: ContestListProps) => {
-  const baseStyle = 'group flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left transition-colors';
+  const baseStyle = 'group flex min-w-0 items-center gap-2 py-1 text-sm transition-all hover:text-mainGreen';
   const getLinkClass = ({ isActive }: { isActive: boolean }) =>
-    cn(
-      baseStyle,
-      isActive
-        ? 'bg-subGreen text-mainGreen font-semibold'
-        : 'text-neutral-700 hover:bg-whiteGray hover:text-mainGreen',
-    );
+    cn(baseStyle, isActive ? 'font-semibold text-mainGreen' : 'text-neutral-700');
   return (
-    <div className="border-lightGray flex flex-col gap-1 border-t bg-white px-2 py-2">
+    <>
       {contests.map((contest) => (
-        <NavLink key={contest.contestId} to={`/contest/${contest.contestId}`} className={getLinkClass}>
-          <CircleDot
-            className={cn(
-              'size-3 shrink-0',
-              contest.isCurrent ? 'text-mainGreen fill-mainGreen' : 'text-lightGray group-hover:text-mainGreen',
-            )}
-            aria-hidden
-          />
-          <span className="min-w-0 flex-1 truncate text-sm">{contest.contestName}</span>
-        </NavLink>
+        <li key={contest.contestId}>
+          <NavLink to={`/contest/${contest.contestId}`} className={getLinkClass} title={contest.contestName}>
+            <CircleDot
+              className={cn(
+                'size-3 shrink-0',
+                contest.isCurrent ? 'fill-mainGreen text-mainGreen' : 'text-lightGray group-hover:text-mainGreen',
+              )}
+              aria-hidden
+            />
+            <span className="min-w-0 flex-1 truncate">{contest.contestName}</span>
+          </NavLink>
+        </li>
       ))}
-    </div>
+    </>
   );
 };
 
 const SidebarSkeleton = () => (
-  <div className="flex flex-col gap-2">
+  <>
     {Array.from({ length: 4 }).map((_, index) => (
-      <div key={index} className="border-lightGray rounded-lg border bg-white px-4 py-3">
-        <div className="h-4 w-28 animate-pulse rounded bg-neutral-200" />
-        <div className="mt-2 h-3 w-14 animate-pulse rounded bg-neutral-100" />
-      </div>
+      <li key={index} className="rounded-lg px-4 py-3">
+        <div className="h-5 w-32 animate-pulse rounded bg-neutral-200" />
+      </li>
     ))}
-  </div>
+  </>
 );
 
 export default Sidebar;
