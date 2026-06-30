@@ -52,7 +52,9 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
   const { data: feedbacks = [] } = useQuery(submissionFeedbacksOption(contestId, item.submissionId ?? 0));
 
   // 확인 메모 조회 — 제출된 항목에만 메모 작성 가능
-  const { data: memo = null } = useQuery(confirmMemoOption(contestId, teamId, item.submissionId ?? 0));
+  const { data: memo = null, isLoading: isMemoLoading } = useQuery(
+    confirmMemoOption(contestId, teamId, item.submissionId ?? 0),
+  );
 
   const invalidateMemo = () =>
     queryClient.invalidateQueries(confirmMemoOption(contestId, teamId, item.submissionId ?? 0));
@@ -180,7 +182,11 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
       <section className="flex flex-col gap-2">
         <h4 className="text-darkGray text-base font-bold">확인 메모 (선택)</h4>
         <p className="text-midGray text-sm">피드백을 확인하고 메모로 정리해 프로젝트 개선에 활용해보세요.</p>
-        <ConfirmMemo memo={memo} onSave={handleSaveMemo} onDelete={() => deleteMemoMutation.mutate()} />
+        {isMemoLoading ? (
+          <div className="bg-lightGray h-16 w-full animate-pulse rounded-lg" />
+        ) : (
+          <ConfirmMemo memo={memo} onSave={handleSaveMemo} onDelete={() => deleteMemoMutation.mutate()} />
+        )}
       </section>
 
       {/* 제출물 업로드 모달 */}

@@ -16,8 +16,17 @@ interface ConfirmMemoProps {
 
 /** 확인 메모 (UI 전용) — 보기/편집 토글 */
 export const ConfirmMemo = ({ memo, onSave, onDelete }: ConfirmMemoProps) => {
-  const [isEditing, setIsEditing] = useState(memo === null);
+  console.log(memo);
+  const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(memo?.content ?? '');
+
+  // memo가 로딩(null) → 도착으로 바뀌면 보기/내용 state를 다시 동기화
+  const [prevMemo, setPrevMemo] = useState(memo);
+  if (memo !== prevMemo) {
+    setPrevMemo(memo);
+    setIsEditing(memo === null);
+    setContent(memo?.content ?? '');
+  }
 
   const startEdit = () => {
     setContent(memo?.content ?? '');
