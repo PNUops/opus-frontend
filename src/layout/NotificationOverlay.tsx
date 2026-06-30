@@ -83,7 +83,7 @@ const NotificationOverlay = ({
 
       if (!notification.isRead) {
         try {
-          await markAsReadMutation.mutateAsync(notification.notificationId);
+          await markAsReadMutation.mutateAsync(notification.id);
         } catch {
           void invalidateNotificationQueries(queryClient);
         }
@@ -141,7 +141,7 @@ const NotificationOverlay = ({
           <ul className="divide-lightGray divide-y">
             {notifications.map((notification) => (
               <NotificationItem
-                key={notification.notificationId}
+                key={notification.id}
                 notification={notification}
                 isPending={markAsReadMutation.isPending}
                 onClick={() => handleNotificationClick(notification)}
