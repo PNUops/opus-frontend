@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { AdminHeader } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
 import { deleteContestStaff, getContestStaff } from '@apis/contestStaff';
-import { getProjectsAdmin } from '@apis/contest';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { useToast } from '@hooks/useToast';
 import { getApiErrorMessage } from '@utils/error';
@@ -29,21 +28,6 @@ const RoleAssignmentPage = () => {
     queryKey: assignmentQueryKey,
     queryFn: () => getContestStaff({ contestId, memberType: activeRole, search: search.trim() || undefined }),
   });
-
-  const { data: projects = [] } = useQuery({
-    queryKey: ['projects', contestId],
-    queryFn: () => getProjectsAdmin(contestId),
-  });
-
-  const assignableTeams = useMemo(
-    () =>
-      projects.map((project) => ({
-        teamId: project.teamId,
-        teamName: project.teamName,
-        trackName: project.trackName,
-      })),
-    [projects],
-  );
 
   const { mutate: deleteAssignment } = useMutation({
     mutationFn: (contestMemberId: number) => deleteContestStaff(contestId, contestMemberId),
@@ -78,12 +62,7 @@ const RoleAssignmentPage = () => {
 
       <Dialog open={modalRole !== null} onOpenChange={(open) => !open && setModalRole(null)}>
         {modalRole && (
-          <RoleAssignmentModal
-            contestId={contestId}
-            defaultRole={modalRole}
-            teams={assignableTeams}
-            onClose={() => setModalRole(null)}
-          />
+          <RoleAssignmentModal contestId={contestId} defaultRole={modalRole} onClose={() => setModalRole(null)} />
         )}
       </Dialog>
     </div>

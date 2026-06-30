@@ -2,6 +2,7 @@ import { type ReactNode, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, ChevronDown, X } from 'lucide-react';
 
+import { getContestTeams } from '@apis/contest';
 import { createContestStaffBatch } from '@apis/contestStaff';
 import { searchAdminMembers } from '@apis/member';
 import { AdminActionButton } from '@components/admin';
@@ -22,7 +23,6 @@ const getTrimmedValue = (value: string | null | undefined) => value?.trim() ?? '
 interface RoleAssignmentModalProps {
   contestId: number;
   defaultRole: RoleType;
-  teams: AssignableTeam[];
   onClose: () => void;
 }
 
@@ -31,7 +31,7 @@ const createDefaultValues = (): RoleAssignmentFormValues => ({
   teamIds: [],
 });
 
-export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: RoleAssignmentModalProps) => {
+export const RoleAssignmentModal = ({ contestId, defaultRole, onClose }: RoleAssignmentModalProps) => {
   const queryClient = useQueryClient();
   const toast = useToast();
   const [values, setValues] = useState<RoleAssignmentFormValues>(createDefaultValues);
@@ -78,25 +78,23 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
   });
   const isDebouncingMemberSearch = memberKeyword !== debouncedMemberKeyword;
 
-  const availableTeams = useMemo(
-    () =>
-      teams.filter((team) => getTrimmedValue(team.trackName).length > 0 && getTrimmedValue(team.teamName).length > 0),
-    [teams],
-  );
+  const { data: teams = [], isFetching: isFetchingTeams } = useQuery({
+    queryKey: ['contestTeams', contestId],
+    queryFn: () => getContestTeams(contestId),
+    enabled: contestId > 0,
+    select: (teams): AssignableTeam[] =>
+      teams.map((team) => ({
+        teamId: team.teamId,
+        teamName: team.teamName,
+      })),
+  });
+
+  const availableTeams = useMemo(() => teams.filter((team) => getTrimmedValue(team.teamName).length > 0), [teams]);
   const selectedMemberIds = useMemo(() => new Set(selectedMembers.map((member) => member.memberId)), [selectedMembers]);
   const selectedTeams = useMemo(
     () => availableTeams.filter((team) => values.teamIds.includes(team.teamId)),
     [availableTeams, values.teamIds],
   );
-  const teamOptionGroups = useMemo(() => {
-    return availableTeams.reduce<Record<string, AssignableTeam[]>>((groups, team) => {
-      const trackName = getTrimmedValue(team.trackName);
-      return {
-        ...groups,
-        [trackName]: [...(groups[trackName] ?? []), team],
-      };
-    }, {});
-  }, [availableTeams]);
 
   const toggleMember = (member: AssignableMember) => {
     setSelectedMembers((prev) =>
@@ -273,21 +271,18 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, teams, onClose }: 
                 onTouchMove={(event) => event.stopPropagation()}
                 className="border-lightGray pointer-events-auto z-[70] max-h-56 w-[var(--radix-popover-trigger-width)] overflow-y-auto overscroll-contain bg-white p-1 shadow-lg"
               >
-                {availableTeams.length === 0 ? (
+                {isFetchingTeams && availableTeams.length === 0 ? (
+                  <p className="text-midGray py-4 text-center text-sm">팀 목록을 불러오는 중이에요.</p>
+                ) : availableTeams.length === 0 ? (
                   <p className="text-midGray py-4 text-center text-sm">선택할 팀이 없어요.</p>
                 ) : (
-                  Object.entries(teamOptionGroups).map(([trackName, groupedTeams]) => (
-                    <div key={trackName} className="flex flex-col">
-                      <span className="text-midGray px-2 py-2 text-sm">{trackName}</span>
-                      {groupedTeams.map((team) => (
-                        <TeamOption
-                          key={team.teamId}
-                          team={team}
-                          selected={values.teamIds.includes(team.teamId)}
-                          onToggle={() => toggleTeam(team.teamId)}
-                        />
-                      ))}
-                    </div>
+                  availableTeams.map((team) => (
+                    <TeamOption
+                      key={team.teamId}
+                      team={team}
+                      selected={values.teamIds.includes(team.teamId)}
+                      onToggle={() => toggleTeam(team.teamId)}
+                    />
                   ))
                 )}
               </PopoverContent>
@@ -433,7 +428,7 @@ const TeamOption = ({
       type="button"
       onClick={onToggle}
       className={cn(
-        'flex min-h-10 items-center gap-3 rounded-md px-4 text-left transition-colors',
+        'flex min-h-10 w-full items-center gap-3 rounded-md px-4 text-left transition-colors',
         selected ? 'bg-whiteGray' : 'hover:bg-whiteGray',
       )}
     >
