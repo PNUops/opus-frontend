@@ -11,7 +11,22 @@ import { useContestIdOrRedirect, useTeamIdOrRedirect } from '@hooks/useId';
 import { teamDetailOption } from '@queries/team';
 import { teamDashboardSummaryOption, upcomingSubmissionsOption } from '@queries/teamDashboard';
 import type { TeamDetailDto } from '@dto/teams/teamsDto';
-import type { UpcomingSubmissionItemResponseDto, UpcomingSubmissionStatus } from '@dto/teamDashboardDto';
+import type {
+  TeamDashboardFeedbackSummaryDto,
+  TeamDashboardSubmissionSummaryDto,
+  UpcomingSubmissionItemResponseDto,
+  UpcomingSubmissionStatus,
+} from '@dto/teamDashboardDto';
+
+const EMPTY_SUBMISSION_SUMMARY: TeamDashboardSubmissionSummaryDto = {
+  requiredCount: 0,
+  nearestDueDate: null,
+};
+
+const EMPTY_FEEDBACK_SUMMARY: TeamDashboardFeedbackSummaryDto = {
+  unreadCount: 0,
+  latestFeedback: null,
+};
 
 const formatDateTime = (value?: string | null) => {
   if (!value) {
@@ -56,16 +71,16 @@ const TeamDashboardPage = () => {
   const teamDetail = teamDetailQuery.data;
   const dashboardSummary = summaryQuery.data;
   const upcomingSubmissions = upcomingQuery.data ?? [];
-  const submissionSummary = dashboardSummary?.submissionSummary;
-  const feedbackSummary = dashboardSummary?.feedbackSummary;
-  const latestFeedback = feedbackSummary?.latestFeedback ?? null;
+  const submissionSummary = dashboardSummary?.submissionSummary ?? EMPTY_SUBMISSION_SUMMARY;
+  const feedbackSummary = dashboardSummary?.feedbackSummary ?? EMPTY_FEEDBACK_SUMMARY;
+  const latestFeedback = feedbackSummary.latestFeedback;
   const submissionsPath = `/me/contests/${contestId}/teams/${teamId}/submissions`;
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-14 px-4 py-12 sm:px-8 md:px-12 lg:py-20">
       {teamDetailQuery.isLoading || summaryQuery.isLoading ? (
         <ProjectDashboardHeroSkeleton />
-      ) : teamDetail && submissionSummary && feedbackSummary ? (
+      ) : teamDetail && dashboardSummary ? (
         <ProjectDashboardHero
           teamDetail={teamDetail}
           requiredCount={submissionSummary.requiredCount}
@@ -147,22 +162,19 @@ const ProjectDashboardHero = ({
   latestFeedbackLabel: string;
 }) => {
   return (
-    <header className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(520px,0.95fr)] lg:items-center">
-      <div className="flex min-w-0 flex-col gap-5">
-        <h1
-          className="truncate text-4xl font-extrabold text-neutral-950 md:text-5xl"
-          title={teamDetail.projectName ?? ''}
-        >
+    <header className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex min-w-0 flex-col gap-3">
+        <h1 className="truncate text-2xl font-extrabold text-neutral-950" title={teamDetail.projectName ?? ''}>
           {teamDetail.projectName ?? '프로젝트'}
         </h1>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           <InfoChip>{teamDetail.contestName}</InfoChip>
           {teamDetail.trackName && <InfoChip>{teamDetail.trackName}</InfoChip>}
           {teamDetail.teamName && <InfoChip>{teamDetail.teamName}</InfoChip>}
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-6 lg:min-w-[24rem] lg:gap-10">
         <HeroMetric
           label="제출 필요"
           value={`${requiredCount}건`}
@@ -181,7 +193,7 @@ const ProjectDashboardHero = ({
 };
 
 const InfoChip = ({ children }: { children: ReactNode }) => {
-  return <span className="bg-whiteGray rounded-full px-3 py-1.5 text-sm text-neutral-700">{children}</span>;
+  return <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">{children}</span>;
 };
 
 const HeroMetric = ({
@@ -196,11 +208,11 @@ const HeroMetric = ({
   detail: string;
 }) => {
   return (
-    <article className="border-mainGreen/40 flex min-h-36 flex-col justify-center border-l-4 px-8">
-      <p className="font-semibold text-neutral-900">{label}</p>
-      <strong className="mt-2 text-4xl font-extrabold text-neutral-500">{value}</strong>
-      <p className="text-midGray mt-6 text-sm">{caption}</p>
-      <p className="mt-2 line-clamp-2 text-sm leading-5 text-neutral-800">{detail}</p>
+    <article className="border-mainGreen/40 flex min-h-24 flex-col justify-center border-l-4 pl-6">
+      <p className="text-sm font-semibold text-neutral-900">{label}</p>
+      <strong className="text-midGray mt-2 text-3xl font-extrabold">{value}</strong>
+      <p className="text-midGray mt-3 text-xs">{caption}</p>
+      <p className="mt-1 line-clamp-2 text-xs leading-5 text-neutral-800">{detail}</p>
     </article>
   );
 };
@@ -288,7 +300,11 @@ const LatestFeedbackCard = ({
   submissionsPath: string;
 }) => {
   if (!mentorName || !content) {
-    return <NoData className="border-lightGray my-0 min-h-45 rounded-lg border bg-white text-sm font-medium" />;
+    return (
+      <article className="border-lightGray flex min-h-45 items-center justify-center rounded-lg border bg-white px-6 py-6">
+        <p className="text-midGray text-sm font-bold">최근 피드백이 없습니다.</p>
+      </article>
+    );
   }
 
   return (
@@ -357,17 +373,17 @@ const SkeletonBlock = ({ className }: { className: string }) => {
 
 const ProjectDashboardHeroSkeleton = () => {
   return (
-    <header className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(520px,0.95fr)] lg:items-center">
-      <div className="flex min-w-0 flex-col gap-5">
-        <SkeletonBlock className="h-12 w-3/4 max-w-xl" />
-        <div className="flex flex-wrap gap-3">
-          <SkeletonBlock className="h-8 w-28 rounded-full" />
-          <SkeletonBlock className="h-8 w-24 rounded-full" />
-          <SkeletonBlock className="h-8 w-32 rounded-full" />
+    <header className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex min-w-0 flex-col gap-3">
+        <SkeletonBlock className="h-8 w-3/4 max-w-xl" />
+        <div className="flex flex-wrap gap-2">
+          <SkeletonBlock className="h-6 w-28 rounded-full" />
+          <SkeletonBlock className="h-6 w-24 rounded-full" />
+          <SkeletonBlock className="h-6 w-32 rounded-full" />
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-6 lg:min-w-[24rem] lg:gap-10">
         <HeroMetricSkeleton />
         <HeroMetricSkeleton />
       </div>
@@ -377,11 +393,11 @@ const ProjectDashboardHeroSkeleton = () => {
 
 const HeroMetricSkeleton = () => {
   return (
-    <article className="border-mainGreen/20 flex min-h-36 flex-col justify-center border-l-4 px-8">
+    <article className="border-mainGreen/20 flex min-h-24 flex-col justify-center border-l-4 pl-6">
       <SkeletonBlock className="h-5 w-24" />
-      <SkeletonBlock className="mt-3 h-10 w-20" />
-      <SkeletonBlock className="mt-8 h-4 w-28" />
-      <SkeletonBlock className="mt-3 h-4 w-full" />
+      <SkeletonBlock className="mt-3 h-8 w-20" />
+      <SkeletonBlock className="mt-4 h-3 w-28" />
+      <SkeletonBlock className="mt-2 h-3 w-full" />
     </article>
   );
 };
