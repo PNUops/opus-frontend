@@ -43,7 +43,7 @@ export const SubmissionList = () => {
                 <div key={item.submissionItemId} className="border-lightGray border-t first:border-t-0">
                   <div className={`${GRID_COLS} px-4 py-4`}>
                     <div className="flex min-w-0 flex-col">
-                      <span className="text-darkGray truncate text-sm font-semibold">{item.submissionTypeName}</span>
+                      <span className="text-darkGray truncate text-sm font-semibold">{item.submissionItemName}</span>
                       <span className="text-midGray truncate text-xs">{item.description}</span>
                     </div>
                     <span className="text-sm text-gray-600">{formatDateTime(item.deadlineAt)}</span>

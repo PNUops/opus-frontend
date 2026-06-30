@@ -22,7 +22,7 @@ export type UpcomingSubmissionStatus = 'SUBMITTED' | 'LATE' | 'NOT_SUBMITTED';
 
 export interface UpcomingSubmissionItemResponseDto {
   submissionItemId: number;
-  submissionTypeName: string;
+  submissionItemName: string;
   deadlineAt: string;
   lastModifiedAt: string | null;
   status: UpcomingSubmissionStatus;

@@ -258,8 +258,8 @@ const UpcomingSubmissionRow = ({
   return (
     <li className="grid gap-4 px-6 py-5 md:grid-cols-[1.25fr_1fr_1fr_0.85fr_0.75fr] md:items-center">
       <div className="min-w-0">
-        <p className="truncate font-semibold text-neutral-950" title={item.submissionTypeName}>
-          {item.submissionTypeName}
+        <p className="truncate font-semibold text-neutral-950" title={item.submissionItemName}>
+          {item.submissionItemName}
         </p>
         <p className="text-midGray mt-1 text-xs md:hidden">마감 {formatCompactDateTime(item.deadlineAt)}</p>
       </div>

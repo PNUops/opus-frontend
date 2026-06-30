@@ -31,7 +31,7 @@ interface SubmissionUploadModalProps {
   submissionItemId: number;
   /** 기존 제출 ID — null이면 최초 제출, 값이 있으면 파일 추가/삭제 */
   submissionId: number | null;
-  submissionTypeName: string;
+  submissionItemName: string;
   description: string;
   /** 제출물 설정값 (설정값 확인 API) — 시작/마감일시, 지각 제출, 공개 범위, 파일 제약 */
   setting: SubmissionItemSettingResponseDto;
@@ -46,7 +46,7 @@ export const SubmissionUploadModal = ({
   contestId,
   submissionItemId,
   submissionId,
-  submissionTypeName,
+  submissionItemName,
   description,
   setting,
   existingFiles,
@@ -150,7 +150,7 @@ export const SubmissionUploadModal = ({
 
       {/* 제출물 정보 */}
       <div className="flex flex-col gap-1">
-        <h4 className="text-darkGray text-base font-bold">{submissionTypeName}</h4>
+        <h4 className="text-darkGray text-base font-bold">{submissionItemName}</h4>
         <p className="text-midGray text-sm">{description}</p>
       </div>
 
