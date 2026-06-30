@@ -33,7 +33,7 @@ export const SubmissionTimeline = ({ items }: { items: MySubmissionTimelineItemD
           const meta = SUBMISSION_STATUS_META[item.status];
 
           return (
-            <div key={item.id} className="flex flex-1 flex-col items-center">
+            <div key={item.submissionItemName} className="flex flex-1 flex-col items-center">
               <div
                 className={cn(
                   'relative z-10 flex h-6 w-6 items-center justify-center rounded-full',
@@ -46,8 +46,8 @@ export const SubmissionTimeline = ({ items }: { items: MySubmissionTimelineItemD
               {/* 라벨 */}
               <div className="mt-3 flex flex-col items-center gap-1.5">
                 <span className={cn('rounded-full px-3 py-0.5 text-xs font-medium', meta.className)}>{meta.label}</span>
-                <span className="text-darkGray text-sm font-semibold">{dayjs(item.dueDate).format('M/D')}</span>
-                <span className="text-midGray text-sm">{item.title}</span>
+                <span className="text-darkGray text-sm font-semibold">{dayjs(item.deadlineAt).format('M/D')}</span>
+                <span className="text-midGray text-sm">{item.submissionItemName}</span>
               </div>
             </div>
           );
