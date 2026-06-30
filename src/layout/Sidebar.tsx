@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, CircleDot, Folder, FolderOpen } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
 import { cn } from '@utils/classname';
 import { useQuery } from '@tanstack/react-query';
 import { getGroupedContests } from '@apis/contest';
+import { useContestId } from '@hooks/useId';
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
 }
 
 const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
-  const { pathname } = useLocation();
+  const activeContestId = useContestId();
   const { data: groups = [], isLoading } = useQuery({ queryKey: ['groupedContests'], queryFn: getGroupedContests });
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
-  const activeContestId = Number(pathname.match(/^\/contest\/(\d+)/)?.[1]);
   const currentCategoryId = useMemo(
     () => groups.find((group) => group.contests.some((contest) => contest.isCurrent))?.categoryId ?? null,
     [groups],
