@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react';
 
 import { cn } from '@utils/classname';
 
@@ -76,28 +77,43 @@ export const AdvisorProjectCard = ({
           <button
             type="button"
             onClick={onToggle}
-            className="bg-mainBlue inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold text-white transition-colors hover:bg-sky-800"
+            className="border-mainBlue text-mainBlue inline-flex h-10 items-center justify-center rounded-md border px-4 text-center text-sm font-semibold transition-colors hover:bg-blue-50"
+            aria-expanded={expanded}
           >
             피드백 작성
+            <ChevronDown className={cn('ml-2 size-4 transition-transform duration-300', expanded && 'rotate-180')} />
           </button>
         </div>
       </div>
 
-      {expanded && (
-        <AdvisorSubmissionPanel
-          isLoading={isLoadingSubmissions}
-          savingSubmissionId={savingSubmissionId}
-          submissions={project.submissions}
-          selectedSubmissionId={selectedSubmissionId}
-          feedbackDrafts={feedbackDrafts}
-          onAttachFeedbackFiles={onAttachFeedbackFiles}
-          onChangeFeedback={onChangeFeedback}
-          onDownloadFile={onDownloadFile}
-          onRemoveFeedbackFile={onRemoveFeedbackFile}
-          onSaveFeedback={onSaveFeedback}
-          onSelectSubmission={onSelectSubmission}
-        />
-      )}
+      <div
+        className={cn(
+          'grid transition-[grid-template-rows,opacity] duration-300 ease-out',
+          expanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        )}
+        aria-hidden={!expanded}
+      >
+        <div
+          className={cn(
+            'min-h-0 overflow-hidden transition-transform duration-300 ease-out',
+            expanded ? 'translate-y-0' : '-translate-y-2',
+          )}
+        >
+          <AdvisorSubmissionPanel
+            isLoading={isLoadingSubmissions}
+            savingSubmissionId={savingSubmissionId}
+            submissions={project.submissions}
+            selectedSubmissionId={selectedSubmissionId}
+            feedbackDrafts={feedbackDrafts}
+            onAttachFeedbackFiles={onAttachFeedbackFiles}
+            onChangeFeedback={onChangeFeedback}
+            onDownloadFile={onDownloadFile}
+            onRemoveFeedbackFile={onRemoveFeedbackFile}
+            onSaveFeedback={onSaveFeedback}
+            onSelectSubmission={onSelectSubmission}
+          />
+        </div>
+      </div>
     </article>
   );
 };
