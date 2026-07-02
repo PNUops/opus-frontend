@@ -189,6 +189,7 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
           <SubmissionUploadModal
             contestId={contestId}
             submissionItemId={item.submissionItemId}
+            teamId={teamId}
             submissionId={item.submissionId}
             submissionTypeName={item.submissionTypeName}
             description={item.description}

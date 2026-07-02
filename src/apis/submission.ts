@@ -98,14 +98,17 @@ export const getSubmissionFeedbacks = async (contestId: number, submissionId: nu
 };
 
 /** 제출물 제출 (특정 제출 항목에 파일 제출) — 응답으로 생성된 submissionId 반환 */
-export const postSubmission = async (contestId: number, submissionItemId: number, files: File[]) => {
+export const postSubmission = async (contestId: number, submissionItemId: number, teamId: number, files: File[]) => {
   const formData = new FormData();
   files.forEach((file) => formData.append('files', file));
 
   const res = await apiClient.post<SubmitSubmissionResponseDto>(
     `/contests/${contestId}/submission-items/${submissionItemId}/submissions`,
     formData,
-    { headers: { 'Content-Type': 'multipart/form-data' } },
+    {
+      params: { teamId },
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
   );
   return res.data;
 };
