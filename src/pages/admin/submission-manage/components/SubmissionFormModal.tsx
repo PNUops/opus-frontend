@@ -42,7 +42,7 @@ const createDefaultValues = (): SubmissionFormValues => ({
   startAt: dayjs().hour(0).minute(0).second(0).format(LOCAL_DATETIME_FORMAT),
   endAt: dayjs().hour(23).minute(59).second(0).format(LOCAL_DATETIME_FORMAT),
   allowLateSubmission: true,
-  visibility: 'PRIVATE',
+  visibility: 'TEAM',
 });
 
 /** 폼 값을 요청 DTO로 변환 */

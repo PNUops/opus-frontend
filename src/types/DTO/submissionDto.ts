@@ -2,7 +2,7 @@
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
 /** 제출물 공개 범위 (SubmissionVisibility Enum) */
-export type SubmissionVisibility = 'PUBLIC' | 'MEMBER' | 'STAFF' | 'PRIVATE';
+export type SubmissionVisibility = 'PUBLIC' | 'MEMBER' | 'STAFF' | 'TEAM';
 
 /** 허용 파일 형식 (SubmissionFileFormat Enum) */
 export type SubmissionFileFormat =
