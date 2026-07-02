@@ -11,22 +11,7 @@ import { useContestIdOrRedirect, useTeamIdOrRedirect } from '@hooks/useId';
 import { teamDetailOption } from '@queries/team';
 import { teamDashboardSummaryOption, upcomingSubmissionsOption } from '@queries/teamDashboard';
 import type { TeamDetailDto } from '@dto/teams/teamsDto';
-import type {
-  TeamDashboardFeedbackSummaryDto,
-  TeamDashboardSubmissionSummaryDto,
-  UpcomingSubmissionItemResponseDto,
-  UpcomingSubmissionStatus,
-} from '@dto/teamDashboardDto';
-
-const EMPTY_SUBMISSION_SUMMARY: TeamDashboardSubmissionSummaryDto = {
-  requiredCount: 0,
-  nearestDueDate: null,
-};
-
-const EMPTY_FEEDBACK_SUMMARY: TeamDashboardFeedbackSummaryDto = {
-  unreadCount: 0,
-  latestFeedback: null,
-};
+import type { UpcomingSubmissionItemResponseDto, UpcomingSubmissionStatus } from '@dto/teamDashboardDto';
 
 const formatDateTime = (value?: string | null) => {
   if (!value) {
@@ -71,9 +56,8 @@ const TeamDashboardPage = () => {
   const teamDetail = teamDetailQuery.data;
   const dashboardSummary = summaryQuery.data;
   const upcomingSubmissions = upcomingQuery.data ?? [];
-  const submissionSummary = dashboardSummary?.submissionSummary ?? EMPTY_SUBMISSION_SUMMARY;
-  const feedbackSummary = dashboardSummary?.feedbackSummary ?? EMPTY_FEEDBACK_SUMMARY;
-  const latestFeedback = feedbackSummary.latestFeedback;
+
+  const latestFeedbackPreview = dashboardSummary?.latestFeedbackPreview ?? null;
   const submissionsPath = `/me/contests/${contestId}/teams/${teamId}/submissions`;
 
   return (
@@ -83,12 +67,10 @@ const TeamDashboardPage = () => {
       ) : teamDetail && dashboardSummary ? (
         <ProjectDashboardHero
           teamDetail={teamDetail}
-          requiredCount={submissionSummary.requiredCount}
-          nearestDueDate={submissionSummary.nearestDueDate}
-          unreadFeedbackCount={feedbackSummary.unreadCount}
-          latestFeedbackLabel={
-            latestFeedback ? `${latestFeedback.mentorName} 멘토: ${latestFeedback.content}` : '최근 피드백이 없습니다.'
-          }
+          pendingSubmissionCount={dashboardSummary.pendingSubmissionCount}
+          nearestDeadline={dashboardSummary.nearestDeadline}
+          unreadFeedbackCount={dashboardSummary.unreadFeedbackCount}
+          latestFeedbackPreview={latestFeedbackPreview ?? '최근 피드백이 없습니다.'}
         />
       ) : (
         <NoData className="border-lightGray my-0 min-h-60 rounded-lg border bg-white text-sm font-medium" />
@@ -122,11 +104,7 @@ const TeamDashboardPage = () => {
         {summaryQuery.isLoading ? (
           <LatestFeedbackSkeleton />
         ) : (
-          <LatestFeedbackCard
-            mentorName={latestFeedback?.mentorName ?? null}
-            content={latestFeedback?.content ?? null}
-            submissionsPath={submissionsPath}
-          />
+          <LatestFeedbackCard content={latestFeedbackPreview} submissionsPath={submissionsPath} />
         )}
       </DashboardSection>
 
@@ -150,16 +128,16 @@ const outlineButtonClassName =
 
 const ProjectDashboardHero = ({
   teamDetail,
-  requiredCount,
-  nearestDueDate,
+  pendingSubmissionCount,
+  nearestDeadline,
   unreadFeedbackCount,
-  latestFeedbackLabel,
+  latestFeedbackPreview,
 }: {
   teamDetail: TeamDetailDto;
-  requiredCount: number;
-  nearestDueDate?: string | null;
+  pendingSubmissionCount: number;
+  nearestDeadline: string | null;
   unreadFeedbackCount: number;
-  latestFeedbackLabel: string;
+  latestFeedbackPreview: string;
 }) => {
   return (
     <header className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
@@ -177,15 +155,15 @@ const ProjectDashboardHero = ({
       <div className="grid grid-cols-2 gap-6 lg:min-w-[24rem] lg:gap-10">
         <HeroMetric
           label="제출 필요"
-          value={`${requiredCount}건`}
+          value={`${pendingSubmissionCount}건`}
           caption="가장 가까운 마감"
-          detail={formatDateTime(nearestDueDate)}
+          detail={formatDateTime(nearestDeadline)}
         />
         <HeroMetric
           label="읽지 않은 피드백"
           value={`${unreadFeedbackCount}개`}
           caption="최근 피드백"
-          detail={latestFeedbackLabel}
+          detail={latestFeedbackPreview}
         />
       </div>
     </header>
@@ -266,6 +244,7 @@ const UpcomingSubmissionRow = ({
   submissionsPath: string;
 }) => {
   const statusMeta = getStatusMeta(item.status);
+  const submissionItemPath = `${submissionsPath}?submissionItemId=${item.submissionItemId}`;
 
   return (
     <li className="grid gap-4 px-6 py-5 md:grid-cols-[1.25fr_1fr_1fr_0.85fr_0.75fr] md:items-center">
@@ -283,23 +262,15 @@ const UpcomingSubmissionRow = ({
       <span className={cn('w-fit rounded-md px-4 py-2 text-sm font-bold md:mx-auto', statusMeta.className)}>
         {statusMeta.label}
       </span>
-      <Link to={submissionsPath} className={cn(outlineButtonClassName, 'h-11 px-4')}>
+      <Link to={submissionItemPath} className={cn(outlineButtonClassName, 'h-11 px-4')}>
         제출하기
       </Link>
     </li>
   );
 };
 
-const LatestFeedbackCard = ({
-  mentorName,
-  content,
-  submissionsPath,
-}: {
-  mentorName: string | null;
-  content: string | null;
-  submissionsPath: string;
-}) => {
-  if (!mentorName || !content) {
+const LatestFeedbackCard = ({ content, submissionsPath }: { content: string | null; submissionsPath: string }) => {
+  if (!content) {
     return (
       <article className="border-lightGray flex min-h-45 items-center justify-center rounded-lg border bg-white px-6 py-6">
         <p className="text-midGray text-sm font-bold">최근 피드백이 없습니다.</p>
@@ -310,13 +281,11 @@ const LatestFeedbackCard = ({
   return (
     <article className="border-lightGray rounded-lg border bg-white px-6 py-6">
       <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
-        <div className="flex min-w-0 gap-5">
-          <div className="size-13 shrink-0 rounded-full bg-neutral-200" aria-hidden />
+        <div className="flex min-w-0">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-mainBlue font-bold">최근 피드백</span>
-              <span className="font-semibold text-neutral-900">{mentorName}</span>
-              <span className="bg-whiteGray rounded-md px-2 py-1 text-sm text-neutral-800">멘토</span>
+              <span className="bg-whiteGray rounded-md px-2 py-1 text-sm text-neutral-800">미리보기</span>
             </div>
             <p className="mt-3 line-clamp-3 text-sm leading-7 text-neutral-900">{content}</p>
           </div>
@@ -429,13 +398,11 @@ const LatestFeedbackSkeleton = () => {
   return (
     <article className="border-lightGray rounded-lg border bg-white px-6 py-6">
       <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
-        <div className="flex min-w-0 gap-5">
-          <SkeletonBlock className="size-13 shrink-0 rounded-full" />
+        <div className="flex min-w-0">
           <div className="flex min-w-0 flex-1 flex-col gap-3">
             <div className="flex flex-wrap gap-2">
               <SkeletonBlock className="h-5 w-20" />
-              <SkeletonBlock className="h-5 w-24" />
-              <SkeletonBlock className="h-7 w-14" />
+              <SkeletonBlock className="h-7 w-16" />
             </div>
             <SkeletonBlock className="h-4 w-full" />
             <SkeletonBlock className="h-4 w-4/5" />
