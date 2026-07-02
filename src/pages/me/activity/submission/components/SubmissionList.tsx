@@ -1,21 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { useContestIdOrRedirect, useTeamIdOrRedirect } from '@hooks/useId';
 import { mySubmissionsOption } from '@queries/submission';
+import { cn } from '@utils/classname';
 
 import { formatDateTime, formatFileSize } from '../utils/format';
 import { StatusBadge } from './StatusBadge';
 import { SubmissionDetailPanel } from './SubmissionDetailPanel';
 
 const GRID_COLS = 'grid grid-cols-[1fr_160px_110px_200px_110px] items-center gap-4';
+const SUBMISSION_ITEM_ID_PARAM = 'submissionItemId';
+
+const getSubmissionItemIdParam = (searchParams: URLSearchParams) => {
+  const rawValue = searchParams.get(SUBMISSION_ITEM_ID_PARAM);
+  const parsedValue = Number(rawValue);
+
+  return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : null;
+};
 
 export const SubmissionList = () => {
   const contestId = useContestIdOrRedirect();
   const teamId = useTeamIdOrRedirect();
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const submissionItemIdParam = getSubmissionItemIdParam(searchParams);
+  const [expandedId, setExpandedId] = useState<number | null>(() => submissionItemIdParam);
 
   const { data: items } = useSuspenseQuery(mySubmissionsOption(contestId, teamId));
+
+  useEffect(() => {
+    setExpandedId(submissionItemIdParam);
+  }, [submissionItemIdParam]);
+
+  const handleTogglePanel = (submissionItemId: number, isExpanded: boolean) => {
+    const nextExpandedId = isExpanded ? null : submissionItemId;
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    setExpandedId(nextExpandedId);
+
+    if (nextExpandedId === null) {
+      nextSearchParams.delete(SUBMISSION_ITEM_ID_PARAM);
+    } else {
+      nextSearchParams.set(SUBMISSION_ITEM_ID_PARAM, String(nextExpandedId));
+    }
+
+    setSearchParams(nextSearchParams, { replace: true });
+  };
 
   return (
     <section className="flex flex-col gap-3">
@@ -40,7 +71,13 @@ export const SubmissionList = () => {
               const firstFile = item.files[0];
 
               return (
-                <div key={item.submissionItemId} className="border-lightGray border-t first:border-t-0">
+                <div
+                  key={item.submissionItemId}
+                  className={cn(
+                    'rounded-lg bg-white transition-colors',
+                    isExpanded ? 'border-mainGreen border bg-white' : 'border-lightGray border-t first:border-t-0',
+                  )}
+                >
                   <div className={`${GRID_COLS} px-4 py-4`}>
                     <div className="flex min-w-0 flex-col">
                       <span className="text-darkGray truncate text-sm font-semibold">{item.submissionItemName}</span>
@@ -63,19 +100,30 @@ export const SubmissionList = () => {
                     <div className="flex justify-center">
                       <button
                         type="button"
-                        onClick={() => setExpandedId(isExpanded ? null : item.submissionItemId)}
+                        onClick={() => handleTogglePanel(item.submissionItemId, isExpanded)}
                         className="border-mainGreen text-mainGreen rounded-md border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors hover:bg-green-50"
+                        aria-expanded={isExpanded}
                       >
                         자세히 보기
                       </button>
                     </div>
                   </div>
 
-                  {isExpanded && (
-                    <div className="px-4 pb-4">
-                      <SubmissionDetailPanel contestId={contestId} teamId={teamId} item={item} />
+                  <div
+                    className={cn(
+                      'grid transition-[grid-template-rows,opacity] duration-300 ease-out',
+                      isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+                    )}
+                    aria-hidden={!isExpanded}
+                  >
+                    <div className="overflow-hidden">
+                      {isExpanded && (
+                        <div className="px-4 pb-4">
+                          <SubmissionDetailPanel contestId={contestId} teamId={teamId} item={item} />
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })

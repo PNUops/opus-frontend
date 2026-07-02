@@ -111,9 +111,9 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
   };
 
   return (
-    <div className="border-subGreen flex flex-col gap-6 rounded-xl border bg-green-50/30 p-5">
+    <div className="flex flex-col gap-6 rounded-lg p-5">
       {/* 제출물 정보 */}
-      <section className="flex flex-col gap-4 rounded-xl bg-white p-5">
+      <section className="bg-whiteGray flex flex-col gap-4 rounded-xl p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1">
             <h4 className="text-darkGray text-base font-bold">{item.submissionItemName}</h4>
