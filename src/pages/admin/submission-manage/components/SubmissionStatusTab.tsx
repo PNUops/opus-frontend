@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
-import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
+import { getFeedbackFileDownload, getSubmissionFileDownload, getSubmissionFilesDownload } from '@apis/submission';
 import { submissionDetailOption, submissionFeedbacksOption, submissionStatusesOption } from '@queries/submission';
 import { downloadFromResponse } from '@utils/download';
 import { getApiErrorMessage } from '@utils/error';
@@ -66,6 +66,17 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
       downloadFromResponse(response, file.fileName);
     } catch (error) {
       toast(getApiErrorMessage(error, '파일 다운로드에 실패했어요.'), 'error');
+    }
+  };
+
+  // 제출물 파일 전체 다운로드 (zip)
+  const handleDownloadSubmission = async (submission: SubmissionStatusResponseDto) => {
+    if (submission.submissionId === null) return;
+    try {
+      const response = await getSubmissionFilesDownload(contestId, submission.submissionId);
+      downloadFromResponse(response, `${submission.teamName}_${submission.submissionItemName}.zip`);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '제출물 다운로드에 실패했어요.'), 'error');
     }
   };
 
@@ -283,7 +294,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
                         variant="solid"
                         disabled={submission.submissionId === null}
                         icon={<Download size={16} />}
-                        onClick={() => toast('제출물을 다운로드했습니다.', 'success')}
+                        onClick={() => handleDownloadSubmission(submission)}
                       />
                     </div>
                   </td>
