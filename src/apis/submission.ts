@@ -173,13 +173,17 @@ export const getSubmissionDownloads = async (contestId: number) => {
   return res.data;
 };
 
-/** 제출 파일 여러개 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+/** 분과별 제출 파일 일괄 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
 export const postSubmissionDownloads = (contestId: number, targets: SubmissionDownloadTargetDto[]) =>
   apiClient.post<Blob>(`/contests/${contestId}/submissions/downloads`, { targets }, { responseType: 'blob' });
 
 /** 제출 파일 단건 다운로드 (blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
 export const getSubmissionFileDownload = (contestId: number, submissionId: number, fileId: number) =>
   apiClient.get<Blob>(`/contests/${contestId}/submissions/${submissionId}/files/${fileId}`, { responseType: 'blob' });
+
+/** 제출 파일 일괄 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+export const getSubmissionFilesDownload = (contestId: number, submissionId: number) =>
+  apiClient.get<Blob>(`/contests/${contestId}/submissions/${submissionId}/files`, { responseType: 'blob' });
 
 /** 피드백 첨부파일 단건 다운로드 (blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
 export const getFeedbackFileDownload = (contestId: number, submissionId: number, feedbackId: number, fileId: number) =>
