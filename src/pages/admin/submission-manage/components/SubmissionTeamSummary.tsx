@@ -17,7 +17,7 @@ export const SubmissionTeamSummary = ({ detail }: { detail: SubmissionDetailResp
 
       <ul className="mt-4 flex list-disc flex-col gap-2 pl-4 text-sm marker:text-gray-400">
         <InfoRow label="분과" value={detail.trackName} />
-        <InfoRow label="제출 항목" value={detail.submissionTypeName} />
+        <InfoRow label="제출 항목" value={detail.submissionItemName} />
         <InfoRow label="제출 마감일시" value={formatDateTime(detail.deadlineAt)} />
         <InfoRow label="최초 제출일시" value={formatDateTime(detail.firstSubmittedAt)} />
         <InfoRow label="최종 제출일시" value={formatDateTime(detail.lastModifiedAt)} />

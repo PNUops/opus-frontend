@@ -1,28 +1,15 @@
-export interface TeamDashboardSubmissionSummaryDto {
-  requiredCount: number;
-  nearestDueDate?: string | null;
-}
-
-export interface TeamDashboardLatestFeedbackDto {
-  mentorName: string;
-  content: string;
-}
-
-export interface TeamDashboardFeedbackSummaryDto {
-  unreadCount: number;
-  latestFeedback: TeamDashboardLatestFeedbackDto | null;
-}
-
 export interface TeamDashboardSummaryResponseDto {
-  submissionSummary: TeamDashboardSubmissionSummaryDto;
-  feedbackSummary: TeamDashboardFeedbackSummaryDto;
+  pendingSubmissionCount: number;
+  nearestDeadline: string | null;
+  unreadFeedbackCount: number;
+  latestFeedbackPreview: string | null;
 }
 
 export type UpcomingSubmissionStatus = 'SUBMITTED' | 'LATE' | 'NOT_SUBMITTED';
 
 export interface UpcomingSubmissionItemResponseDto {
   submissionItemId: number;
-  submissionTypeName: string;
+  submissionItemName: string;
   deadlineAt: string;
   lastModifiedAt: string | null;
   status: UpcomingSubmissionStatus;

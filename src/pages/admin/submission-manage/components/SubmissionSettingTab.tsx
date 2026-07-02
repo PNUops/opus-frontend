@@ -53,7 +53,7 @@ const formatDateTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm'
 
 interface SubmissionSettingTabProps {
   // "제출 현황 보기" 클릭 시 해당 제출물 종류명으로 제출 현황 탭 필터링하며 이동
-  onViewStatus: (submissionTypeName: string) => void;
+  onViewStatus: (submissionItemName: string) => void;
 }
 
 export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps) => {
@@ -92,9 +92,11 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }: { id: number; payload: SubmissionItemRequestDto }) =>
       patchSubmissionItem(contestId, id, payload),
-    onSuccess: () => {
+    onSuccess: (_data, { id }) => {
       toast('제출 항목을 수정했어요.', 'success');
       invalidateList();
+      // 개별 설정값 캐시도 무효화 — 안 하면 다시 수정 진입 시 이전 값이 채워짐
+      queryClient.invalidateQueries({ queryKey: submissionItemSettingOption(contestId, id).queryKey });
       setModalState(null);
     },
     onError: (error) => toast(getApiErrorMessage(error, '제출 항목 수정에 실패했어요.'), 'error'),

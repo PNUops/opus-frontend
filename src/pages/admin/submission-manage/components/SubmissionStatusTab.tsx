@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { cn } from '@components/lib/utils';
-import { getFeedbackFileDownload, getSubmissionFileDownload } from '@apis/submission';
+import { getFeedbackFileDownload, getSubmissionFileDownload, getSubmissionFilesDownload } from '@apis/submission';
 import { submissionDetailOption, submissionFeedbacksOption, submissionStatusesOption } from '@queries/submission';
 import { downloadFromResponse } from '@utils/download';
 import { getApiErrorMessage } from '@utils/error';
@@ -69,6 +69,17 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
     }
   };
 
+  // 제출물 파일 전체 다운로드 (zip)
+  const handleDownloadSubmission = async (submission: SubmissionStatusResponseDto) => {
+    if (submission.submissionId === null) return;
+    try {
+      const response = await getSubmissionFilesDownload(contestId, submission.submissionId);
+      downloadFromResponse(response, `${submission.teamName}_${submission.submissionItemName}.zip`);
+    } catch (error) {
+      toast(getApiErrorMessage(error, '제출물 다운로드에 실패했어요.'), 'error');
+    }
+  };
+
   // 피드백 첨부파일 단건 다운로드
   const handleDownloadFeedbackFile = async (
     submissionId: number,
@@ -86,7 +97,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
   const typeOptions = useMemo(
     () =>
       toNameOptions(
-        submissions.map((s) => s.submissionTypeName),
+        submissions.map((s) => s.submissionItemName),
         '제출 항목',
       ),
     [submissions],
@@ -114,10 +125,10 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
     () =>
       submissions.filter(
         (s) =>
-          (typeFilter === '' || s.submissionTypeName === typeFilter) &&
+          (typeFilter === '' || s.submissionItemName === typeFilter) &&
           (statusFilter === '' || s.status === statusFilter) &&
           (trackFilter === '' || s.trackName === trackFilter) &&
-          (search === '' || s.teamName.toLowerCase().includes(search.trim().toLowerCase())),
+          (search === '' || s.teamName?.toLowerCase().includes(search.trim().toLowerCase())),
       ),
     [submissions, typeFilter, statusFilter, trackFilter, search],
   );
@@ -250,12 +261,15 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
               </tr>
             ) : (
               pagedRows.map((submission) => (
-                <tr key={submission.teamId} className="border-lightGray border-b last:border-b-0">
+                <tr
+                  key={`${submission.teamId}-${submission.submissionItemName}`}
+                  className="border-lightGray border-b last:border-b-0"
+                >
                   <td className="text-darkGray px-4 py-4 text-sm font-medium whitespace-nowrap">
                     {submission.teamName}
                   </td>
                   <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.trackName}</td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.submissionTypeName}</td>
+                  <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.submissionItemName}</td>
                   <td className="px-4 py-4">
                     <SubmissionStatusBadge status={submission.status} />
                   </td>
@@ -280,7 +294,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
                         variant="solid"
                         disabled={submission.submissionId === null}
                         icon={<Download size={16} />}
-                        onClick={() => toast('제출물을 다운로드했습니다.', 'success')}
+                        onClick={() => handleDownloadSubmission(submission)}
                       />
                     </div>
                   </td>

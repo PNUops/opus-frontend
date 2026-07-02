@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import apiClient from './apiClient';
 import type {
   ConfirmMemoResponseDto,
@@ -98,14 +100,17 @@ export const getSubmissionFeedbacks = async (contestId: number, submissionId: nu
 };
 
 /** 제출물 제출 (특정 제출 항목에 파일 제출) — 응답으로 생성된 submissionId 반환 */
-export const postSubmission = async (contestId: number, submissionItemId: number, files: File[]) => {
+export const postSubmission = async (contestId: number, submissionItemId: number, teamId: number, files: File[]) => {
   const formData = new FormData();
   files.forEach((file) => formData.append('files', file));
 
   const res = await apiClient.post<SubmitSubmissionResponseDto>(
     `/contests/${contestId}/submission-items/${submissionItemId}/submissions`,
     formData,
-    { headers: { 'Content-Type': 'multipart/form-data' } },
+    {
+      params: { teamId },
+      headers: { 'Content-Type': 'multipart/form-data' },
+    },
   );
   return res.data;
 };
@@ -127,12 +132,20 @@ export const deleteSubmissionFile = async (contestId: number, submissionId: numb
   return res.data;
 };
 
-/** 확인 메모 조회 (멤버 제출물 자세히보기) — 메모 없으면 null */
+/** 확인 메모 조회 (멤버 제출물 자세히보기) — 메모 없으면 404 → null로 변환 */
 export const getConfirmMemo = async (contestId: number, teamId: number, submissionId: number) => {
-  const res = await apiClient.get<ConfirmMemoResponseDto | null>(
-    `/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`,
-  );
-  return res.data;
+  try {
+    const res = await apiClient.get<ConfirmMemoResponseDto | null>(
+      `/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`,
+    );
+    return res.data;
+  } catch (error) {
+    // 메모가 없으면 서버가 404를 반환 — 정상 상태이므로 null로 처리
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 /** 확인 메모 생성 */
@@ -163,13 +176,17 @@ export const getSubmissionDownloads = async (contestId: number) => {
   return res.data;
 };
 
-/** 제출 파일 여러개 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+/** 분과별 제출 파일 일괄 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
 export const postSubmissionDownloads = (contestId: number, targets: SubmissionDownloadTargetDto[]) =>
   apiClient.post<Blob>(`/contests/${contestId}/submissions/downloads`, { targets }, { responseType: 'blob' });
 
 /** 제출 파일 단건 다운로드 (blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
 export const getSubmissionFileDownload = (contestId: number, submissionId: number, fileId: number) =>
   apiClient.get<Blob>(`/contests/${contestId}/submissions/${submissionId}/files/${fileId}`, { responseType: 'blob' });
+
+/** 제출 파일 일괄 다운로드 (zip blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
+export const getSubmissionFilesDownload = (contestId: number, submissionId: number) =>
+  apiClient.get<Blob>(`/contests/${contestId}/submissions/${submissionId}/files`, { responseType: 'blob' });
 
 /** 피드백 첨부파일 단건 다운로드 (blob) — Content-Disposition 파일명을 위해 응답 전체 반환 */
 export const getFeedbackFileDownload = (contestId: number, submissionId: number, feedbackId: number, fileId: number) =>
