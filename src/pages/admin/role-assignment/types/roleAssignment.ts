@@ -7,9 +7,7 @@ export type AssignedTeam = ContestStaffTeam;
 
 export type RoleAssignment = ContestStaff;
 
-export interface AssignableTeam extends AssignedTeam {
-  trackName: string | null;
-}
+export type AssignableTeam = AssignedTeam;
 
 export type AssignableMember = AdminMemberSearchResultDto;
 

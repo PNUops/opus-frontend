@@ -42,16 +42,20 @@ export const getFeedbackRoleLabel = (roleType: string): string => roleType.repla
 
 /** 공개 범위 라벨 */
 export const VISIBILITY_LABEL: Record<SubmissionVisibility, string> = {
-  PUBLIC: '공개',
-  PRIVATE: '비공개',
+  PUBLIC: '전체 공개',
+  MEMBER: '회원 전체',
+  STAFF: '대회 관계자',
+  PRIVATE: '제출 팀만',
 };
 
 /** 공개 범위 선택 옵션 순서 */
-export const VISIBILITY_OPTIONS: SubmissionVisibility[] = ['PUBLIC', 'PRIVATE'];
+export const VISIBILITY_OPTIONS: SubmissionVisibility[] = ['PUBLIC', 'MEMBER', 'STAFF', 'PRIVATE'];
 
 /** 공개 범위 설명 (툴팁용) */
 export const VISIBILITY_DESCRIPTION: Record<SubmissionVisibility, string> = {
-  PUBLIC: '제출 팀 외 회원도 제출물을 열람할 수 있습니다.',
+  PUBLIC: '비회원도 열람할 수 있습니다.',
+  MEMBER: '로그인한 모든 회원이 열람할 수 있습니다.',
+  STAFF: '팀원, 지도교수, 심사위원, 멘토, 관리자가 열람할 수 있습니다.',
   PRIVATE: '제출 팀의 팀원과 관리자만 열람할 수 있습니다.',
 };
 

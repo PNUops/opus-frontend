@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import apiClient from './apiClient';
 import type {
   ConfirmMemoResponseDto,
@@ -130,12 +132,20 @@ export const deleteSubmissionFile = async (contestId: number, submissionId: numb
   return res.data;
 };
 
-/** 확인 메모 조회 (멤버 제출물 자세히보기) — 메모 없으면 null */
+/** 확인 메모 조회 (멤버 제출물 자세히보기) — 메모 없으면 404 → null로 변환 */
 export const getConfirmMemo = async (contestId: number, teamId: number, submissionId: number) => {
-  const res = await apiClient.get<ConfirmMemoResponseDto | null>(
-    `/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`,
-  );
-  return res.data;
+  try {
+    const res = await apiClient.get<ConfirmMemoResponseDto | null>(
+      `/contests/${contestId}/teams/${teamId}/submissions/${submissionId}/memos`,
+    );
+    return res.data;
+  } catch (error) {
+    // 메모가 없으면 서버가 404를 반환 — 정상 상태이므로 null로 처리
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 };
 
 /** 확인 메모 생성 */

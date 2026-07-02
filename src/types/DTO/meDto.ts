@@ -37,25 +37,23 @@ export type GetMyProjectsResponseDto = MyProjectDto[];
 /** 나의 활동 - 제출물 상태 요약 */
 export interface MySubmissionSummaryDto {
   /** 전체 제출물 수 */
-  totalCount: number;
+  totalItemCount: number;
   /** 제출 완료 수 */
   submittedCount: number;
   /** 피드백 수 */
-  feedbackCount: number;
+  totalFeedbackCount: number;
 }
 
 export type GetMySubmissionSummaryResponseDto = MySubmissionSummaryDto;
 
 /** 나의 활동 - 제출 타임라인 항목 */
 export interface MySubmissionTimelineItemDto {
-  /** 제출물 id */
-  id: number;
-  /** 제출물 항목 */
-  title: string;
-  /** 제출 마감일 (LocalDate) */
-  dueDate: string;
   /** 제출 상태 */
   status: SubmissionStatus;
+  /** 제출 마감일 (LocalDate) */
+  deadlineAt: string;
+  /** 제출물 종류명 */
+  submissionItemName: string;
 }
 
 export type GetMySubmissionTimelineResponseDto = MySubmissionTimelineItemDto[];
@@ -67,7 +65,7 @@ export interface MySubmissionListItemDto {
   /** 제출 ID, 미제출이면 null */
   submissionId: number | null;
   /** 제출물 종류명 */
-  submissionTypeName: string;
+  submissionItemName: string;
   /** 제출 항목 설명 */
   description: string;
   /** 제출 마감일시 */

@@ -1,7 +1,7 @@
 export type NotificationTargetType = 'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARD' | 'TEAM_AWARDS';
 
 export interface NotificationDto {
-  notificationId: number;
+  id: number;
   title: string;
   content: string;
   targetType: NotificationTargetType;

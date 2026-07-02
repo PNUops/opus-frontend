@@ -2,7 +2,7 @@
 export type SubmissionOperationStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'CLOSED';
 
 /** 제출물 공개 범위 (SubmissionVisibility Enum) */
-export type SubmissionVisibility = 'PUBLIC' | 'PRIVATE';
+export type SubmissionVisibility = 'PUBLIC' | 'MEMBER' | 'STAFF' | 'PRIVATE';
 
 /** 허용 파일 형식 (SubmissionFileFormat Enum) */
 export type SubmissionFileFormat =
@@ -55,7 +55,7 @@ export interface SubmissionStatusResponseDto {
   /** 분과명 */
   trackName: string;
   /** 제출물 종류명 */
-  submissionTypeName: string;
+  submissionItemName: string;
   /** 제출 상태 */
   status: SubmissionStatus;
   /** 최초 제출일시, 미제출이면 null */
@@ -113,7 +113,7 @@ export interface SubmissionDetailResponseDto {
   /** 분과명 */
   trackName: string;
   /** 제출물 종류명 */
-  submissionTypeName: string;
+  submissionItemName: string;
   /** 제출 상태 */
   status: SubmissionStatus;
   /** 제출 마감일시 */
@@ -133,7 +133,7 @@ export interface SubmissionArchiveResponseDto {
   /** 제출물 종류 ID */
   submissionTypeId: number;
   /** 제출물 종류명 */
-  submissionTypeName: string;
+  submissionItemName: string;
   /** 분과 ID */
   trackId: number;
   /** 분과명 */

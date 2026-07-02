@@ -32,7 +32,7 @@ export const Toaster = () => {
   const toasts = useToastStore((state) => state.toasts);
 
   return (
-    <div className="fixed right-10 bottom-10 z-50 flex flex-col-reverse gap-3">
+    <div className="fixed right-10 bottom-10 z-[100] flex flex-col-reverse gap-3">
       {[...toasts].reverse().map((toast) => (
         <ToastItem key={toast.id} toast={toast} />
       ))}
