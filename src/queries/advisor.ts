@@ -1,8 +1,15 @@
 import { queryOptions, type QueryClient } from '@tanstack/react-query';
 
-import { getAdvisorProjects, getAdvisorTeamSubmissions, getMyAdvisorFeedback } from '@apis/advisor';
+import { getAdvisorContests, getAdvisorProjects, getAdvisorTeamSubmissions, getMyAdvisorFeedback } from '@apis/advisor';
 
 export const ADVISOR_ACTIVITY_QUERY_KEY = ['advisorActivity'] as const;
+
+export const advisorContestsOption = () =>
+  queryOptions({
+    queryKey: [...ADVISOR_ACTIVITY_QUERY_KEY, 'contests'],
+    queryFn: getAdvisorContests,
+    staleTime: 3 * 60 * 1000,
+  });
 
 export const advisorProjectsOption = (contestId: number) =>
   queryOptions({
@@ -32,6 +39,7 @@ export const invalidateAdvisorActivityQueries = (
   submissionId?: number,
 ) =>
   Promise.all([
+    queryClient.invalidateQueries({ queryKey: [...ADVISOR_ACTIVITY_QUERY_KEY, 'contests'] }),
     queryClient.invalidateQueries({ queryKey: [...ADVISOR_ACTIVITY_QUERY_KEY, 'projects', contestId] }),
     teamId
       ? queryClient.invalidateQueries({

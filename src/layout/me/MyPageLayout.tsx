@@ -6,7 +6,7 @@ import LayoutSideBar from '@layout/common/LayoutSideBar';
 import { createMyPageSidebarData } from '@constants/myPageSidebarData';
 import useAuth from '@hooks/useAuth';
 import { getMyProjects } from '@apis/me';
-import { currentContestOption } from '@queries/contest';
+import { advisorContestsOption } from '@queries/advisor';
 import { MY_PROJECTS_QUERY_KEY } from '@queries/me';
 
 const MyPageLayout = () => {
@@ -17,15 +17,14 @@ const MyPageLayout = () => {
     enabled: isSignedIn,
     staleTime: 5 * 60 * 1000,
   });
-  const { data: currentContests = [] } = useQuery({
-    ...currentContestOption(),
+  const { data: advisorContests = [] } = useQuery({
+    ...advisorContestsOption(),
     enabled: isSignedIn && isAdvisor,
-    staleTime: 5 * 60 * 1000,
   });
   const myProjects = useMemo(() => fetchedMyProjects ?? [], [fetchedMyProjects]);
   const sidebarSections = useMemo(
-    () => createMyPageSidebarData(myProjects, { currentContests, showAdvisorActivity: isAdvisor }),
-    [currentContests, isAdvisor, myProjects],
+    () => createMyPageSidebarData(myProjects, { advisorContests, showAdvisorActivity: isAdvisor }),
+    [advisorContests, isAdvisor, myProjects],
   );
 
   if (!isSignedIn) {
