@@ -37,7 +37,7 @@ export const getAdvisorTeamSubmissions = async (
   teamId: number,
 ): Promise<GetAdvisorTeamSubmissionsResponseDto> => {
   const res = await apiClient.get<GetAdvisorTeamSubmissionsResponseDto>(
-    `/mentors/me/contests/${contestId}/teams/${teamId}/submissions `,
+    `/mentors/me/contests/${contestId}/teams/${teamId}/submissions`,
   );
   return res.data;
 };
