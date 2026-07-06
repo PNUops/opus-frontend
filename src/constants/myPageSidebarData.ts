@@ -1,9 +1,9 @@
-import type { CurrentContestResponseDto } from '@dto/contestsDto';
+import type { AdvisorContestDto } from '@dto/advisorDto';
 import type { MyProjectDto } from '@dto/meDto';
 import type { LayoutSidebarSection } from '@layout/common/LayoutSideBar';
 
 interface CreateMyPageSidebarDataOptions {
-  currentContests?: CurrentContestResponseDto[];
+  advisorContests?: AdvisorContestDto[];
   showAdvisorActivity?: boolean;
 }
 
@@ -60,7 +60,7 @@ export const createMyPageSidebarData = (
       label: '지도 활동',
       icon: 'advisorActivity',
       activePaths: ['/me/advisor-activity'],
-      links: options.currentContests?.map(({ contestId, contestName }) => ({
+      links: options.advisorContests?.map(({ contestId, contestName }) => ({
         key: `advisor-contest-${contestId}`,
         to: `advisor-activity/contests/${contestId}`,
         label: contestName,

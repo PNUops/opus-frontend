@@ -14,11 +14,18 @@ export interface AdvisorProjectDto {
   pendingFeedbackCount: number;
 }
 
-export interface GetAdvisorProjectsResponseDto {
-  assignedTeamCount: number;
-  pendingFeedbackCount: number;
-  projects: AdvisorProjectDto[];
+export interface AdvisorContestDto {
+  contestId: number;
+  contestName: string;
+  categoryName: string;
+  assignedTrackNames: string[];
+  totalPendingFeedbackCount: number;
+  totalAssignedTeamCount: number;
 }
+
+export type GetAdvisorContestsResponseDto = AdvisorContestDto[];
+
+export type GetAdvisorProjectsResponseDto = AdvisorProjectDto[];
 
 export interface AdvisorSubmissionDto {
   submissionId: number;
