@@ -2,6 +2,7 @@ import axios, { type AxiosResponse } from 'axios';
 
 import type {
   AdvisorFeedbackDto,
+  GetAdvisorContestsResponseDto,
   GetAdvisorProjectsResponseDto,
   GetAdvisorTeamSubmissionsResponseDto,
   PutAdvisorFeedbackRequestDto,
@@ -21,8 +22,13 @@ const createAdvisorFeedbackFormData = ({
   return formData;
 };
 
+export const getAdvisorContests = async (): Promise<GetAdvisorContestsResponseDto> => {
+  const res = await apiClient.get<GetAdvisorContestsResponseDto>('/mentors/me/contests');
+  return res.data;
+};
+
 export const getAdvisorProjects = async (contestId: number): Promise<GetAdvisorProjectsResponseDto> => {
-  const res = await apiClient.get<GetAdvisorProjectsResponseDto>(`/contests/${contestId}/mentor/projects`);
+  const res = await apiClient.get<GetAdvisorProjectsResponseDto>(`/mentors/me/contests/${contestId}/teams`);
   return res.data;
 };
 
@@ -31,7 +37,7 @@ export const getAdvisorTeamSubmissions = async (
   teamId: number,
 ): Promise<GetAdvisorTeamSubmissionsResponseDto> => {
   const res = await apiClient.get<GetAdvisorTeamSubmissionsResponseDto>(
-    `/contests/${contestId}/teams/${teamId}/submissions`,
+    `/mentors/me/contests/${contestId}/teams/${teamId}/submissions`,
   );
   return res.data;
 };

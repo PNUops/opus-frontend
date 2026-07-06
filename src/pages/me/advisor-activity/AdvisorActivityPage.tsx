@@ -7,12 +7,12 @@ import { getAdvisorFeedbackFile, getAdvisorSubmissionFile, putAdvisorFeedback } 
 import useAuth from '@hooks/useAuth';
 import { useToast } from '@hooks/useToast';
 import {
+  advisorContestsOption,
   advisorFeedbackOption,
   advisorProjectsOption,
   advisorTeamSubmissionsOption,
   invalidateAdvisorActivityQueries,
 } from '@queries/advisor';
-import { currentContestOption } from '@queries/contest';
 import { downloadBlob } from '@utils/download';
 
 import { AdvisorContestSummary } from './components/AdvisorContestSummary';
@@ -52,21 +52,28 @@ const AdvisorActivityPage = () => {
   const [pendingFeedbackFiles, setPendingFeedbackFiles] = useState<Record<number, AdvisorSubmissionFile[]>>({});
   const [removedFeedbackFileIds, setRemovedFeedbackFileIds] = useState<Record<number, number[]>>({});
 
-  const currentContestQuery = useQuery({
-    ...currentContestOption(),
-    enabled: isAdvisor && requestedContestId === null,
+  const advisorContestsQuery = useQuery({
+    ...advisorContestsOption(),
+    enabled: isAdvisor,
   });
-  const defaultContest = currentContestQuery.data?.[0];
-  const contestId = requestedContestId ?? defaultContest?.contestId ?? null;
+  const advisorContests = useMemo(() => advisorContestsQuery.data ?? [], [advisorContestsQuery.data]);
+  const selectedContest = useMemo(() => {
+    if (requestedContestId === null) {
+      return advisorContests[0] ?? null;
+    }
+
+    return advisorContests.find((contest) => contest.contestId === requestedContestId) ?? null;
+  }, [advisorContests, requestedContestId]);
+  const contestId = selectedContest?.contestId ?? null;
 
   const advisorProjectsQuery = useQuery({
     ...advisorProjectsOption(contestId ?? 0),
     enabled: isAdvisor && contestId !== null,
   });
-  const projectsResponse = advisorProjectsQuery.data;
+  const advisorProjects = useMemo(() => advisorProjectsQuery.data ?? [], [advisorProjectsQuery.data]);
 
   useEffect(() => {
-    const firstProject = projectsResponse?.projects[0];
+    const firstProject = advisorProjects[0];
 
     if (!firstProject) {
       setExpandedTeamId(null);
@@ -74,10 +81,10 @@ const AdvisorActivityPage = () => {
     }
 
     setExpandedTeamId((currentTeamId) => {
-      const currentProjectExists = projectsResponse.projects.some((project) => project.teamId === currentTeamId);
+      const currentProjectExists = advisorProjects.some((project) => project.teamId === currentTeamId);
       return currentProjectExists ? currentTeamId : firstProject.teamId;
     });
-  }, [projectsResponse?.projects]);
+  }, [advisorProjects]);
 
   const teamSubmissionsQuery = useQuery({
     ...advisorTeamSubmissionsOption(contestId ?? 0, expandedTeamId ?? 0),
@@ -165,58 +172,57 @@ const AdvisorActivityPage = () => {
         submissionId: selectedSubmissionId,
       }));
   }, [removedFeedbackFileIds, selectedFeedback, selectedSubmissionId]);
-  const contestTitle =
-    defaultContest && defaultContest.contestId === contestId ? defaultContest.contestName : '지도 활동';
+  const contestTitle = selectedContest?.contestName ?? '지도 활동';
 
   const advisorActivity: AdvisorActivityContest = useMemo(() => {
-    const projects: AdvisorProject[] =
-      projectsResponse?.projects.map((project) => {
-        const isExpanded = project.teamId === expandedTeamId;
-        const submissions =
-          isExpanded && teamSubmissions
-            ? teamSubmissions.submissions.map((submission) => {
-                const isSelected = submission.submissionId === selectedSubmissionId;
-                const pendingFiles = pendingFeedbackFiles[submission.submissionId] ?? [];
+    const projects: AdvisorProject[] = advisorProjects.map((project) => {
+      const isExpanded = project.teamId === expandedTeamId;
+      const submissions =
+        isExpanded && teamSubmissions
+          ? teamSubmissions.submissions.map((submission) => {
+              const isSelected = submission.submissionId === selectedSubmissionId;
+              const pendingFiles = pendingFeedbackFiles[submission.submissionId] ?? [];
 
-                return {
-                  ...submission,
-                  feedbackFiles: isSelected ? [...serverFeedbackFiles, ...pendingFiles] : pendingFiles,
-                  files: submission.files.map((file) => ({
-                    ...file,
-                    source: 'submission' as const,
-                    submissionId: submission.submissionId,
-                  })),
-                  isFeedbackLoading: isSelected && advisorFeedbackQuery.isLoading,
-                };
-              })
-            : [];
+              return {
+                ...submission,
+                feedbackFiles: isSelected ? [...serverFeedbackFiles, ...pendingFiles] : pendingFiles,
+                files: submission.files.map((file) => ({
+                  ...file,
+                  source: 'submission' as const,
+                  submissionId: submission.submissionId,
+                })),
+                isFeedbackLoading: isSelected && advisorFeedbackQuery.isLoading,
+              };
+            })
+          : [];
 
-        return { ...project, submissions };
-      }) ?? [];
+      return { ...project, submissions };
+    });
 
     const contestTags =
-      contestId === null
+      selectedContest === null
         ? ['대회 미선택']
-        : [`대회 #${contestId}`, ...Array.from(new Set(projects.map((project) => project.trackName)))];
+        : Array.from(new Set([selectedContest.categoryName, ...selectedContest.assignedTrackNames])).filter(Boolean);
 
     return {
-      assignedTeamCount: projectsResponse?.assignedTeamCount ?? 0,
+      assignedTeamCount: selectedContest?.totalAssignedTeamCount ?? projects.length,
       contestId: contestId ?? 0,
       contestName: contestTitle,
-      pendingFeedbackCount: projectsResponse?.pendingFeedbackCount ?? 0,
+      pendingFeedbackCount:
+        selectedContest?.totalPendingFeedbackCount ??
+        projects.reduce((total, project) => total + project.pendingFeedbackCount, 0),
       projects,
       tags: contestTags,
     };
   }, [
+    advisorProjects,
     advisorFeedbackQuery.isLoading,
     contestId,
     contestTitle,
     expandedTeamId,
     pendingFeedbackFiles,
-    projectsResponse?.assignedTeamCount,
-    projectsResponse?.pendingFeedbackCount,
-    projectsResponse?.projects,
     selectedSubmissionId,
+    selectedContest,
     serverFeedbackFiles,
     teamSubmissions,
   ]);
@@ -230,16 +236,16 @@ const AdvisorActivityPage = () => {
     );
   }
 
-  if (currentContestQuery.isLoading && requestedContestId === null) {
+  if (advisorContestsQuery.isLoading) {
     return <AdvisorActivitySkeleton />;
   }
 
-  if (currentContestQuery.isError && requestedContestId === null) {
+  if (advisorContestsQuery.isError) {
     return (
       <AdvisorActivityMessage
-        title="대회 정보를 불러오지 못했습니다."
+        title="담당 대회 정보를 불러오지 못했습니다."
         description="잠시 후 다시 시도해주세요."
-        onRetry={() => void currentContestQuery.refetch()}
+        onRetry={() => void advisorContestsQuery.refetch()}
       />
     );
   }
@@ -247,8 +253,12 @@ const AdvisorActivityPage = () => {
   if (contestId === null) {
     return (
       <AdvisorActivityMessage
-        title="담당 대회가 없습니다."
-        description="현재 진행 중인 대회가 없거나 지도 활동을 확인할 대회를 찾지 못했습니다."
+        title={requestedContestId === null ? '담당 대회가 없습니다.' : '담당 대회를 찾지 못했습니다.'}
+        description={
+          requestedContestId === null
+            ? '지도 활동을 확인할 담당 대회가 없습니다.'
+            : '선택한 대회의 지도 활동 권한을 확인할 수 없습니다.'
+        }
       />
     );
   }
