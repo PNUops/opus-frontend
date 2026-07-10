@@ -138,7 +138,7 @@ const AdminContestSidebarContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { data: contests } = useSuspenseQuery(contestsOption());
-  const selectedContestId = contestId?.toString();
+  const selectedContestId = contestId?.toString() ?? '';
   const activeSectionTitle = getActiveSectionTitle(location.pathname, selectedContestId);
   const [openSectionTitle, setOpenSectionTitle] = useState<string | null>(activeSectionTitle);
 
@@ -183,7 +183,7 @@ const AdminContestSidebarContent = () => {
         {adminSidebarSections.map((section) => (
           <AdminSidebarSection
             key={section.title}
-            contestId={selectedContestId}
+            contestId={selectedContestId || undefined}
             isActive={activeSectionTitle === section.title}
             isOpen={openSectionTitle === section.title}
             section={section}
