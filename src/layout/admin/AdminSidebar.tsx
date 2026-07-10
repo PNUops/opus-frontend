@@ -104,13 +104,13 @@ const AdminSidebar = () => {
       className="border-lightGray fixed top-0 bottom-0 left-0 z-30 flex w-[272px] flex-col border-r bg-white"
     >
       <div className="h-header flex items-center justify-center px-6">
-        <Link to="/admin" aria-label="관리자 대시보드로 이동" className="flex items-center justify-center">
+        <Link to="/admin" aria-label="관리자 대시보드로 이동" className="flex items-center justify-center" replace>
           <img src={logoOpusAdmin} alt="OPUS Admin" className="h-14 w-auto max-w-[196px]" />
         </Link>
       </div>
 
       <nav className="min-h-0 flex-1 overflow-y-auto py-5">
-        <NavLink to="/admin" end className={dashboardLinkClass}>
+        <NavLink to="/admin" end className={dashboardLinkClass} replace>
           <LayoutGrid className="h-5 w-5 text-gray-500" strokeWidth={1.8} />
           <span>대시보드</span>
         </NavLink>
@@ -147,7 +147,7 @@ const AdminContestSidebarContent = () => {
   }, [activeSectionTitle]);
 
   const handleContestChange = (nextContestId: string) => {
-    navigate(`/admin/contest/${nextContestId}`);
+    navigate(`/admin/contest/${nextContestId}`, { replace: true });
   };
 
   const handleSectionOpen = (sectionTitle: string) => {
