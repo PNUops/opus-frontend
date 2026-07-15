@@ -1,0 +1,58 @@
+name: 🐛 버그 신고
+description: 오류 또는 예상과 다르게 동작하는 문제를 기록합니다.
+title: '[Bug] 🐛 '
+labels:
+  - '🐛 bug'
+
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 문제 상황
+      description: 발생한 문제와 서비스에 미치는 영향을 작성해주세요.
+      placeholder: |
+        관리자 페이지에서 브라우저 뒤로가기를 실행하면
+        URL만 변경되고 이전 화면이 표시되지 않습니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 재현 및 동작
+      description: 재현 절차, 기대 동작, 실제 동작을 작성해주세요.
+      placeholder: |
+        재현 절차:
+        1. 관리자 페이지에 접근합니다.
+        2. 다른 메뉴로 이동합니다.
+        3. 브라우저 뒤로가기를 실행합니다.
+
+        기대 동작:
+        이전 페이지가 정상적으로 표시되어야 합니다.
+
+        실제 동작:
+        URL만 변경되고 현재 화면이 유지됩니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 발생 환경
+      description: 문제가 발생한 환경과 사용자 권한을 작성해주세요.
+      placeholder: |
+        - 환경: Production / Development
+        - 브라우저:
+        - 운영체제:
+        - 사용자 권한:
+        - 관련 버전 또는 커밋:
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 증빙 자료
+      description: 스크린샷, 영상, 콘솔 로그 또는 네트워크 응답을 첨부해주세요.
+      placeholder: |
+        개인정보, 토큰, 비밀번호가 포함되지 않도록 확인해주세요.
