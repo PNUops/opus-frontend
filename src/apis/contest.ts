@@ -13,6 +13,11 @@ import {
 } from '@dto/contestsDto';
 import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 
+type CurrentContestApiResponse = Omit<CurrentContestResponseDto, 'voteStartAt' | 'voteEndAt'> & {
+  voteStartAt: string;
+  voteEndAt: string;
+};
+
 export const postContest = async (payload: ContestRequestDto): Promise<ContestResponseDto> => {
   const res = await apiClient.post('/contests', payload);
   return res.data;
@@ -47,8 +52,12 @@ export const patchContest = async (contestId: number, payload: ContestRequestDto
 };
 
 export const getCurrentContest = async (): Promise<CurrentContestResponseDto[]> => {
-  const res = await apiClient.get('/contests/current');
-  return res.data;
+  const res = await apiClient.get<CurrentContestApiResponse[]>('/contests/current');
+  return res.data.map((contest) => ({
+    ...contest,
+    voteStartAt: new Date(contest.voteStartAt),
+    voteEndAt: new Date(contest.voteEndAt),
+  }));
 };
 
 export const patchChangeOngoingContest = async (contestId: number, isCurrent: boolean) => {

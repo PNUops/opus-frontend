@@ -4,6 +4,7 @@ import {
   mockGroupedContestsResponse,
   mockContestBulkAddTeamsError,
   mockProjectsAdminResponse,
+  mockCurrentContestsResponse,
 } from '@mocks/data/contest';
 import { mockTeams } from '@mocks/data/teams';
 import { http, HttpResponse } from 'msw';
@@ -11,6 +12,9 @@ import { http, HttpResponse } from 'msw';
 export const contestsHandler = [
   http.get(`${API_BASE_URL}/api/contests`, () => {
     return HttpResponse.json(mockContestsResponse);
+  }),
+  http.get(`${API_BASE_URL}/api/contests/current`, () => {
+    return HttpResponse.json(mockCurrentContestsResponse);
   }),
   http.get(`${API_BASE_URL}/api/sidebar`, () => HttpResponse.json(mockGroupedContestsResponse)),
   http.get(`${API_BASE_URL}/api/contests/:contestId/teams`, () => {

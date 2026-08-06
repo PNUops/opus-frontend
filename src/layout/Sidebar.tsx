@@ -10,9 +10,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
+  tone?: 'default' | 'editorial';
 }
 
-const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
+const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
+  const isEditorial = tone === 'editorial';
   const activeContestId = useContestId();
   const { data: groups = [], isLoading } = useQuery({ queryKey: ['groupedContests'], queryFn: getGroupedContests });
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
@@ -42,22 +44,28 @@ const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
     setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
   };
 
-  const containerClassName =
-    variant === 'desktop' ? 'min-w-sidebar hidden bg-white lg:block' : 'h-full w-full bg-white';
+  const containerClassName = cn(
+    variant === 'desktop' ? 'hidden w-[280px] min-w-[280px] shrink-0 lg:block' : 'h-full w-full',
+    isEditorial ? 'border-r border-white/35 bg-[#06172f] text-[#f8f6f0]' : 'bg-white',
+  );
 
   return (
     <aside className={containerClassName}>
-      <nav className="flex flex-col gap-5 p-5 md:p-6" aria-label="대회 사이드바">
+      <nav className={cn('flex flex-col gap-5', isEditorial ? 'p-5' : 'p-5 md:p-6')} aria-label="대회 사이드바">
         <div className="flex items-center gap-3 px-4 py-2">
-          <FolderOpen className="text-mainGreen size-5 shrink-0" />
-          <h2 className="truncate text-base font-semibold text-neutral-950">대회 목록</h2>
+          <FolderOpen className={cn('size-5 shrink-0', isEditorial ? 'text-[#45d6ec]' : 'text-mainGreen')} />
+          <h2 className={cn('truncate text-base font-semibold', isEditorial ? 'text-[#f8f6f0]' : 'text-neutral-950')}>
+            대회 목록
+          </h2>
         </div>
 
-        <ul className="ml-3 flex flex-col gap-3">
+        <ul className={cn('flex flex-col gap-3', isEditorial ? 'ml-0' : 'ml-3')}>
           {isLoading ? (
-            <SidebarSkeleton />
+            <SidebarSkeleton tone={tone} />
           ) : groups.length === 0 ? (
-            <li className="text-midGray px-4 py-6 text-center text-sm">등록된 대회가 없어요.</li>
+            <li className={cn('px-4 py-6 text-center text-sm', isEditorial ? 'text-white/55' : 'text-midGray')}>
+              등록된 대회가 없어요.
+            </li>
           ) : (
             groups.map((group) => (
               <CategoryGroup
@@ -66,6 +74,7 @@ const Sidebar = ({ variant = 'desktop' }: SidebarProps) => {
                 isExpanded={expandedCategoryId === group.categoryId}
                 isActive={activeCategoryId === group.categoryId}
                 onToggle={() => toggleCategory(group.categoryId)}
+                tone={tone}
               />
             ))
           )}
@@ -80,17 +89,21 @@ interface CategoryGroupProps {
   isActive: boolean;
   isExpanded: boolean;
   onToggle: () => void;
+  tone: 'default' | 'editorial';
 }
 
-const CategoryGroup = ({ category, isActive, isExpanded, onToggle }: CategoryGroupProps) => (
+const CategoryGroup = ({ category, isActive, isExpanded, onToggle, tone }: CategoryGroupProps) => (
   <li className="flex flex-col gap-2">
     <button
       type="button"
       onClick={onToggle}
       className={cn(
-        'hover:text-mainGreen flex min-w-0 items-center gap-3 rounded-lg px-4 py-3 text-left text-base font-semibold transition-all',
-        (isActive || isExpanded) && 'bg-subGreen text-mainGreen',
-        !isActive && !isExpanded && 'hover:bg-whiteGray text-neutral-900',
+        'flex min-w-0 items-center gap-3 rounded-lg px-4 py-3 text-left text-base font-semibold transition-all',
+        tone === 'editorial' && 'gap-2 px-3 text-sm',
+        tone === 'editorial' && (isActive || isExpanded) && 'bg-[#102d54] text-white',
+        tone === 'editorial' && !isActive && !isExpanded && 'text-white/75 hover:bg-white/5 hover:text-white',
+        tone === 'default' && (isActive || isExpanded) && 'bg-subGreen text-mainGreen',
+        tone === 'default' && !isActive && !isExpanded && 'hover:bg-whiteGray hover:text-mainGreen text-neutral-900',
       )}
       aria-expanded={isExpanded}
     >
@@ -105,7 +118,11 @@ const CategoryGroup = ({ category, isActive, isExpanded, onToggle }: CategoryGro
       <span
         className={cn(
           'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
-          isActive || isExpanded ? 'text-mainGreen bg-white/60' : 'bg-whiteGray text-midGray',
+          tone === 'editorial' && 'hidden',
+          tone === 'editorial' && (isActive || isExpanded) && 'bg-[#bed925] text-[#06172f]',
+          tone === 'editorial' && !isActive && !isExpanded && 'bg-white/10 text-white/60',
+          tone === 'default' && (isActive || isExpanded) && 'text-mainGreen bg-white/60',
+          tone === 'default' && !isActive && !isExpanded && 'bg-whiteGray text-midGray',
         )}
       >
         {category.contests.length}
@@ -118,23 +135,32 @@ const CategoryGroup = ({ category, isActive, isExpanded, onToggle }: CategoryGro
 
     <ul
       className={cn(
-        'border-mainGreen/30 ml-5 flex flex-col gap-2 overflow-hidden border-l pl-4 transition-all duration-200 ease-out',
+        'ml-5 flex flex-col gap-2 overflow-hidden border-l pl-4 transition-all duration-200 ease-out',
+        tone === 'editorial' ? 'border-[#45d6ec]/35' : 'border-mainGreen/30',
         isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
       )}
     >
-      <ContestList contests={category.contests} />
+      <ContestList contests={category.contests} tone={tone} />
     </ul>
   </li>
 );
 
 interface ContestListProps {
   contests: Pick<ContestResponseDto, 'contestId' | 'contestName' | 'isCurrent'>[];
+  tone: 'default' | 'editorial';
 }
 
-const ContestList = ({ contests }: ContestListProps) => {
-  const baseStyle = 'group flex min-w-0 items-center gap-2 py-1 text-sm transition-all hover:text-mainGreen';
+const ContestList = ({ contests, tone }: ContestListProps) => {
+  const baseStyle = cn(
+    'group flex min-w-0 items-center gap-2 py-1 text-sm transition-all',
+    tone === 'editorial' ? 'hover:text-[#45d6ec]' : 'hover:text-mainGreen',
+  );
   const getLinkClass = ({ isActive }: { isActive: boolean }) =>
-    cn(baseStyle, isActive ? 'font-semibold text-mainGreen' : 'text-neutral-700');
+    cn(
+      baseStyle,
+      tone === 'editorial' && (isActive ? 'font-semibold text-white' : 'text-white/65'),
+      tone === 'default' && (isActive ? 'font-semibold text-mainGreen' : 'text-neutral-700'),
+    );
   return (
     <>
       {contests.map((contest) => (
@@ -143,11 +169,20 @@ const ContestList = ({ contests }: ContestListProps) => {
             <CircleDot
               className={cn(
                 'size-3 shrink-0',
-                contest.isCurrent ? 'fill-mainGreen text-mainGreen' : 'text-lightGray group-hover:text-mainGreen',
+                tone === 'editorial' && contest.isCurrent && 'fill-[#bed925] text-[#bed925]',
+                tone === 'editorial' && !contest.isCurrent && 'text-white/25 group-hover:text-[#45d6ec]',
+                tone === 'default' && contest.isCurrent && 'fill-mainGreen text-mainGreen',
+                tone === 'default' && !contest.isCurrent && 'text-lightGray group-hover:text-mainGreen',
               )}
               aria-hidden
             />
-            <SidebarTooltipText content={contest.contestName} className="min-w-0 flex-1 truncate">
+            <SidebarTooltipText
+              content={contest.contestName}
+              className={cn(
+                'min-w-0 flex-1',
+                tone === 'editorial' ? 'leading-5 break-keep whitespace-normal' : 'truncate',
+              )}
+            >
               {contest.contestName}
             </SidebarTooltipText>
           </NavLink>
@@ -176,11 +211,13 @@ const SidebarTooltipText = ({
   </Tooltip>
 );
 
-const SidebarSkeleton = () => (
+const SidebarSkeleton = ({ tone }: { tone: 'default' | 'editorial' }) => (
   <>
     {Array.from({ length: 4 }).map((_, index) => (
       <li key={index} className="rounded-lg px-4 py-3">
-        <div className="h-5 w-32 animate-pulse rounded bg-neutral-200" />
+        <div
+          className={cn('h-5 w-32 animate-pulse rounded', tone === 'editorial' ? 'bg-white/10' : 'bg-neutral-200')}
+        />
       </li>
     ))}
   </>

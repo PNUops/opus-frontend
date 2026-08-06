@@ -51,7 +51,10 @@ const AppRoutes = () =>
           element: <SidebarLayout />,
           children: [
             { index: true, element: <MainPage /> },
-            { path: 'contest/:contestId', element: <ContestPage /> },
+            {
+              element: <FullContainerLayout />,
+              children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
+            },
           ],
         },
         {
