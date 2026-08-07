@@ -34,7 +34,7 @@ const ContestGridError = ({ resetErrorBoundary }: FallbackProps) => (
 
 const MainPage = () => {
   const { data: currentContests } = useSuspenseQuery(currentContestOption());
-  const heroTitle = currentContests.length > 0 ? '현재 진행 중인 대회' : '최근 대회';
+  const heroTitle = currentContests.length > 0 ? ' 진행 중인 대회' : ' 대회';
 
   return (
     <main className="opus-home">
@@ -44,7 +44,7 @@ const MainPage = () => {
             <OpusClock />
             <p className="opus-masthead__eyebrow">OPUS</p>
             <h1 id="opus-home-title" className="opus-masthead__title">
-              {currentContests.length > 0 ? <span>현재</span> : null}
+              {currentContests.length > 0 ? <span>현재</span> : <span>최근</span>}
               {heroTitle}
             </h1>
           </div>
