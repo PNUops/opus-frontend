@@ -1,10 +1,11 @@
+import { useRef } from 'react';
 import { type FallbackProps } from 'react-error-boundary';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import QueryWrapper from '@providers/QueryWrapper';
 import { currentContestOption } from '@queries/contest';
 import CurrentContestSection from './CurrentContestSection';
-import LeaderSection from './LeaderSection';
 import OpusMascot from './OpusMascot';
+import CampusNoticeHologram from './CampusNoticeHologram';
 import OpusClock from './OpusClock';
 import './EditorialHome.css';
 
@@ -36,32 +37,48 @@ const MainPage = () => {
   const { data: currentContests } = useSuspenseQuery(currentContestOption());
   const heroTitle = currentContests.length > 0 ? ' 진행 중인 대회' : ' 대회';
 
+  const contestSectionRef = useRef<HTMLDivElement>(null);
+
+  const handleExploreContests = () => {
+    contestSectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
+
   return (
     <main className="opus-home">
       <section className="opus-masthead" aria-labelledby="opus-home-title">
         <div className="opus-masthead__content">
           <div className="opus-masthead__intro">
             <OpusClock />
+
             <p className="opus-masthead__eyebrow">OPUS</p>
+
             <h1 id="opus-home-title" className="opus-masthead__title">
               {currentContests.length > 0 ? <span>현재</span> : <span>최근</span>}
+
               {heroTitle}
             </h1>
           </div>
-          <OpusMascot />
+
+          <div className="opus-mascot-zone">
+            <CampusNoticeHologram onExploreContests={handleExploreContests} />
+            <OpusMascot />
+          </div>
         </div>
 
         <div className="opus-masthead__rule" aria-hidden="true" />
       </section>
 
-      <LeaderSection />
-
-      <QueryWrapper
-        loadingFallback={<ContestGridSkeleton />}
-        errorFallback={(props) => <ContestGridError {...props} />}
-      >
-        <CurrentContestSection />
-      </QueryWrapper>
+      <div ref={contestSectionRef}>
+        <QueryWrapper
+          loadingFallback={<ContestGridSkeleton />}
+          errorFallback={(props) => <ContestGridError {...props} />}
+        >
+          <CurrentContestSection />
+        </QueryWrapper>
+      </div>
     </main>
   );
 };

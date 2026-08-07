@@ -108,7 +108,7 @@ const OpusMascot = () => {
     <button
       ref={mascotRef}
       type="button"
-      className={`opus-mascot${isGreeting ? 'is-greeting' : ''}`}
+      className={`opus-mascot ${isGreeting ? 'is-greeting' : ''}`}
       aria-label="OPUS 마스코트에게 인사하기"
       onClick={handleGreeting}
     >
@@ -195,8 +195,10 @@ const OpusMascot = () => {
                     strokeLinecap="round"
                   />
                   <g className="opus-mascot__eyes">
-                    <ellipse cx="198" cy="74" rx="3.6" ry="5.2" fill="#06172f" />
-                    <ellipse cx="224" cy="74" rx="3.6" ry="5.2" fill="#06172f" />
+                    <g className="opus-mascot__blink">
+                      <ellipse cx="198" cy="74" rx="3.6" ry="5.2" fill="#06172f" />
+                      <ellipse cx="224" cy="74" rx="3.6" ry="5.2" fill="#06172f" />
+                    </g>
                   </g>
                 </g>
               </g>

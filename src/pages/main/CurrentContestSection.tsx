@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { contestsOption, currentContestOption } from '@queries/contest';
-import { type ContestResponseDto, type CurrentContestResponseDto } from '@dto/contestsDto';
+import { type CurrentContestResponseDto } from '@dto/contestsDto';
 
 const geometryPatterns = ['dots', 'lines', 'arc', 'quarter'] as const;
 
@@ -48,13 +48,11 @@ const CurrentContestSection = () => {
   const { data: allContests } = useSuspenseQuery(contestsOption());
 
   const hasCurrentContests = currentContests.length > 0;
-  const recentContests = [...allContests]
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-    .slice(0, 3);
+  const recentContests = [...allContests].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()).slice(0, 3);
 
   if (!hasCurrentContests) {
     return (
-      <section className="opus-contest-region" aria-label={`최근 대회 ${recentContests.length}개`}>
+      <section id="contest-section" className="opus-contest-region" aria-label={`최근 대회 ${recentContests.length}개`}>
         <div className="opus-contest-grid" data-layout={getGridLayout(recentContests.length)}>
           {recentContests.map((contest, index) => {
             const geometryPattern = geometryPatterns[index % geometryPatterns.length];
