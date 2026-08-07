@@ -108,7 +108,7 @@ const OpusMascot = () => {
     <button
       ref={mascotRef}
       type="button"
-      className={`opus-mascot${isGreeting ? 'is-greeting' : ''}`}
+      className={`opus-mascot ${isGreeting ? 'is-greeting' : ''}`}
       aria-label="OPUS 마스코트에게 인사하기"
       onClick={handleGreeting}
     >
