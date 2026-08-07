@@ -52,7 +52,7 @@ const CurrentContestSection = () => {
 
   if (!hasCurrentContests) {
     return (
-      <section className="opus-contest-region" aria-label={`최근 대회 ${recentContests.length}개`}>
+      <section id="contest-section" className="opus-contest-region" aria-label={`최근 대회 ${recentContests.length}개`}>
         <div className="opus-contest-grid" data-layout={getGridLayout(recentContests.length)}>
           {recentContests.map((contest, index) => {
             const geometryPattern = geometryPatterns[index % geometryPatterns.length];
