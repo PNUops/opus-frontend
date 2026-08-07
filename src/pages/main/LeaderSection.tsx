@@ -6,7 +6,6 @@ import useAuth from '@hooks/useAuth';
 import { SubmissionStatusResponseDto } from '@dto/teams/submissionStatusDto';
 
 import { TbPencil } from 'react-icons/tb';
-import RoundedButton from '@components/RoundedButton';
 
 const LeaderSection = () => {
   const { isLeader, user } = useAuth();
@@ -20,15 +19,13 @@ const LeaderSection = () => {
 
   if (!showLeaderMessage) return null;
   return (
-    <div className="flex w-full items-center justify-between gap-2 rounded-lg bg-white p-2 text-sm shadow-md sm:gap-4 sm:p-4">
+    <aside className="opus-leader-alert" aria-label="프로젝트 작성 안내">
       <LeaderMessage leaderName={user?.name ?? '팀장'} />
-      <Link to={`/teams/edit/${submissionData?.teamId}`}>
-        <RoundedButton className="flex items-center gap-1">
-          <TbPencil className="text-lg sm:text-xl" />
-          <span className="hidden whitespace-nowrap md:inline">작성하러 가기</span>
-        </RoundedButton>
+      <Link to={`/teams/edit/${submissionData?.teamId}`} className="opus-leader-alert__link">
+        <TbPencil aria-hidden="true" />
+        <span>작성하러 가기</span>
       </Link>
-    </div>
+    </aside>
   );
 };
 

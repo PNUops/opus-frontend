@@ -4,7 +4,7 @@ import { cn } from '@components/lib/utils';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { patchChangeOngoingContest } from '@apis/contest';
 import { useToast } from '@hooks/useToast';
-import { contestsOption } from '@queries/contest';
+import { contestsOption, currentContestOption } from '@queries/contest';
 
 interface ContestSlotsProps {
   selectedId: string;
@@ -35,6 +35,7 @@ export const ContestSlots = ({ selectedId }: ContestSlotsProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: contestsOption().queryKey });
+          queryClient.invalidateQueries({ queryKey: currentContestOption().queryKey });
           if (isCurrent) toast(`${contest.contestName}를 진행 대회로 설정했습니다.`, 'success');
           else toast(`${contest.contestName}를 진행 대회에서 제외했습니다.`, 'success');
         },
