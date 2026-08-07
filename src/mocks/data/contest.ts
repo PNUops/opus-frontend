@@ -6,6 +6,7 @@ import {
   ProjectsAdminResponseDto,
   GetContestTracksResponseDto,
   GetContestAwardsResponseDto,
+  CurrentContestResponseDto,
 } from '@dto/contestsDto';
 
 export const mockContestsResponse: ContestResponseDto[] = [
@@ -40,6 +41,37 @@ export const mockContestsResponse: ContestResponseDto[] = [
     contestId: 4,
     contestName: '제3회PNU창의융합SW해커톤',
     updatedAt: new Date('2025-06-20T09:15:45Z'),
+  },
+];
+
+export const mockCurrentContestsResponse: CurrentContestResponseDto[] = [
+  {
+    contestId: 1,
+    categoryName: '창의융합 SW해커톤',
+    contestName: '제7회 PNU 창의융합 SW 해커톤',
+    voteStartAt: new Date('2026-08-03T00:00:00+09:00'),
+    voteEndAt: new Date('2026-08-28T23:59:59+09:00'),
+  },
+  {
+    contestId: 2,
+    categoryName: '졸업과제',
+    contestName: '2026 전기 졸업과제',
+    voteStartAt: new Date('2026-06-15T00:00:00+09:00'),
+    voteEndAt: new Date('2026-09-04T23:59:59+09:00'),
+  },
+  {
+    contestId: 3,
+    categoryName: '프로젝트 경진대회',
+    contestName: 'AI 프로젝트 경진대회',
+    voteStartAt: new Date('2026-08-10T00:00:00+09:00'),
+    voteEndAt: new Date('2026-09-18T23:59:59+09:00'),
+  },
+  {
+    contestId: 4,
+    categoryName: '오픈소스',
+    contestName: '오픈소스 SW 챌린지',
+    voteStartAt: new Date('2026-09-01T00:00:00+09:00'),
+    voteEndAt: new Date('2026-10-12T23:59:59+09:00'),
   },
 ];
 

@@ -220,11 +220,16 @@ const Header = () => {
 
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
+  const isHomeRoute = location.pathname === '/';
 
   return (
     <header
-      className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between bg-white px-3 py-2 sm:h-20 ${
-        isAdminRoute ? 'min-w-[1024px] pl-[272px]' : 'shadow-b-lg min-w-[350px]'
+      className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
+        isAdminRoute
+          ? 'min-w-[1024px] bg-white pl-[272px]'
+          : isHomeRoute
+            ? 'min-w-[350px] border-b border-white/35 bg-[#06172f] text-white'
+            : 'shadow-b-lg min-w-[350px] bg-white'
       }`}
     >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
@@ -242,14 +247,14 @@ const Header = () => {
             <>
               <Link to="/" className="max-sm:hidden">
                 <img
-                  className="w-auto sm:h-6 md:h-7 lg:h-8"
+                  className={`w-auto sm:h-6 md:h-7 lg:h-8 ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/Logo.svg"
                   alt="부산대학교 SW프로젝트관리시스템 로고"
                 />
               </Link>
               <Link to="/" className="items-center sm:hidden">
                 <img
-                  className="h-7 w-auto"
+                  className={`h-7 w-auto ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/swOpsLogo-sm.png"
                   alt="부산대학교 SW프로젝트관리시스템 로고 (작은 버전)"
                 />
@@ -283,7 +288,11 @@ const Header = () => {
           ) : (
             <Button
               onClick={isSignedIn ? handleSignout : () => navigate('/signin')}
-              className="border-lightGray rounded-full border text-sm text-nowrap text-black hover:cursor-pointer"
+              className={`rounded-full border text-sm text-nowrap hover:cursor-pointer ${
+                isHomeRoute
+                  ? 'border-white/45 text-white hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[#45d6ec] focus-visible:outline-none'
+                  : 'border-lightGray text-black'
+              }`}
             >
               로그인 / 회원가입
             </Button>
