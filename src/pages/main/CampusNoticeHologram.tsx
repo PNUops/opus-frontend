@@ -16,7 +16,7 @@ const CampusNoticeHologram = ({ onExploreContests }: CampusNoticeHologramProps) 
 
       <div className="opus-campus-news__error">
         <div className="flex items-center gap-[9px]">
-          <p className="m-0">함께 부산대학교의 다양한 프로젝트를 둘러보실래요?</p>
+          <p className="m-0">부산대학교의 다양한 프로젝트를 함께 둘러볼까요?</p>
 
           <button type="button" onClick={onExploreContests} className={campusNewsClassName}>
             네
