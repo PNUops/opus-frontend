@@ -14,6 +14,11 @@
   color: var(--opus-home-ink);
 }
 
+.opus-home:has(.opus-contest-card__link:hover) .opus-mascot,
+.opus-home:has(.opus-contest-card__link:focus-visible) .opus-mascot {
+  --mascot-eye-scale: 1.08;
+}
+
 .opus-masthead {
   min-height: 304px;
   padding: 28px clamp(28px, 4.2vw, 64px) 28px;
@@ -130,6 +135,8 @@
   --mascot-head-y: 0px;
   --mascot-tilt-x: 0deg;
   --mascot-tilt-y: 0deg;
+  --mascot-eye-scale: 1;
+
   appearance: none;
   display: block;
   width: 100%;
@@ -188,9 +195,21 @@
   transform: translate(var(--mascot-head-x), var(--mascot-head-y));
 }
 
-.opus-mascot__eyes {
+/* .opus-mascot__eyes {
   animation: opus-mascot-blink 3.8s 1 both;
   transform: translate(var(--mascot-look-x), var(--mascot-look-y));
+} */
+.opus-mascot__eyes {
+  transform: translate(var(--mascot-look-x), var(--mascot-look-y)) scale(var(--mascot-eye-scale));
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 180ms ease-out;
+}
+
+.opus-mascot__blink {
+  animation: opus-mascot-blink 3.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .opus-mascot__confetti {
@@ -652,7 +671,7 @@
   }
 }
 
-@keyframes opus-mascot-blink {
+/* @keyframes opus-mascot-blink {
   0%,
   60%,
   66%,
@@ -661,6 +680,19 @@
   }
   63% {
     transform: translate(var(--mascot-look-x), var(--mascot-look-y)) scaleY(0.12);
+  }
+} */
+
+@keyframes opus-mascot-blink {
+  0%,
+  60%,
+  66%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  63% {
+    transform: scaleY(0.12);
   }
 }
 
