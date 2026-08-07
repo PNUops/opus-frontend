@@ -226,10 +226,10 @@ const Header = () => {
     <header
       className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
         isAdminRoute
-          ? 'min-w-[1024px] bg-white pl-[272px]'
+          ? 'bg-white pl-[272px]'
           : isHomeRoute
-            ? 'min-w-[350px] border-b border-white/35 bg-[#06172f] text-white'
-            : 'shadow-b-lg min-w-[350px] bg-white'
+            ? 'border-b border-white/35 bg-[#06172f] text-white'
+            : 'shadow-b-lg bg-white'
       }`}
     >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">

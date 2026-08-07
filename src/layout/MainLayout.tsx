@@ -22,7 +22,7 @@ const MainLayout = () => {
   return (
     <AxiosInterceptorProvider>
       <SidebarProvider>
-        <div>
+        <div className={isAdminRoute ? 'min-w-[1024px]' : 'min-w-[350px]'}>
           <Header />
           <div>
             <Outlet />
