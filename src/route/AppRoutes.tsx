@@ -10,6 +10,7 @@ import SignUpPage from '@pages/signup/SignUpPage';
 import FindPage from '@pages/find/FindPage';
 import OAuthCallback from '@pages/signin/SocialSignIn/OAuthCallback';
 import NoticeDetailPage from '@pages/notice/NoticeDetailPage';
+import NoticeListPage from '@pages/notice/NoticeListPage';
 import ContestPage from '@pages/contest/ContestPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
@@ -66,6 +67,7 @@ const AppRoutes = () =>
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/callback', element: <OAuthCallback /> },
+            { path: 'notices', element: <NoticeListPage /> },
             { path: 'notices/:noticeId', element: <NoticeDetailPage /> },
             { path: 'notices/:contestId/:noticeId', element: <NoticeDetailPage /> },
           ],

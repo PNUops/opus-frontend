@@ -8,7 +8,7 @@ const CampusNoticeHologram = ({ onExploreContests }: CampusNoticeHologramProps) 
       <header className="opus-campus-news__header">
         <div>
           <span className="opus-campus-news__signal" aria-hidden="true" />
-          <strong>PNU SIGNAL</strong>
+          <strong>OPUS SIGNAL</strong>
         </div>
 
         <span className="opus-campus-news__live">LIVE</span>
