@@ -25,7 +25,10 @@ const NoticeDetail = () => {
   return (
     <div className="max-w mx-auto">
       <h1 className="mb-6 flex items-center gap-2 text-2xl font-bold">
-        <Link to={!contestId ? '/' : `/contest/${contestId}`} title={`${contestName ?? '메인으'}로 돌아가기`}>
+        <Link
+          to={!contestId ? '/notices' : `/contest/${contestId}`}
+          title={`${contestName ?? '전체 공지사항'}으로 돌아가기`}
+        >
           <Undo2 className="shrink-0 cursor-pointer" />
         </Link>
         {`${contestName ?? ''} 공지사항`.trim()}
