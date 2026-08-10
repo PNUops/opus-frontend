@@ -1,10 +1,35 @@
 import { Link } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { type FallbackProps } from 'react-error-boundary';
 import dayjs from 'dayjs';
 import { contestsOption, currentContestOption } from '@queries/contest';
 import { type CurrentContestResponseDto } from '@dto/contestsDto';
 
 const geometryPatterns = ['dots', 'lines', 'arc', 'quarter'] as const;
+
+export const ContestGridSkeleton = () => (
+  <div className="opus-contest-skeleton" aria-label="대회 목록을 불러오는 중" aria-busy="true">
+    {Array.from({ length: 4 }).map((_, index) => (
+      <div key={index} className="opus-contest-skeleton__item" aria-hidden="true">
+        <div className="opus-contest-skeleton__line" />
+        <div className="opus-contest-skeleton__line" />
+        <div className="opus-contest-skeleton__line" />
+      </div>
+    ))}
+  </div>
+);
+
+export const ContestGridError = ({ resetErrorBoundary }: FallbackProps) => (
+  <section className="opus-contest-error" role="alert" aria-labelledby="contest-error-title">
+    <p className="opus-contest-error__number" aria-hidden="true">
+      !
+    </p>
+    <h2 id="contest-error-title">대회 정보를 불러오지 못했습니다.</h2>
+    <button type="button" onClick={resetErrorBoundary}>
+      다시 시도 ↗
+    </button>
+  </section>
+);
 
 const getGeometryPieceCount = (pattern: (typeof geometryPatterns)[number]) => {
   if (pattern === 'dots') return 40;
