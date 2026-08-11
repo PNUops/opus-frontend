@@ -8,14 +8,14 @@ const NoticeSignalSection = () => {
   const { data: notices } = useSuspenseQuery(noticeOption());
   const recentNotices = [...notices]
     .sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf())
-    .slice(0, 2);
+    .slice(0, 5);
 
   return (
     <section className="opus-signal-section" aria-labelledby="opus-signal-title">
       <header className="opus-signal-section__header">
         <div>
           <span className="opus-campus-news__signal" aria-hidden="true" />
-          <h2 id="opus-signal-title">OPUS SIGNAL</h2>
+          <h1 id="opus-signal-title">OPUS SIGNAL</h1>
         </div>
         <span>NOTICE</span>
       </header>
@@ -40,7 +40,7 @@ const NoticeSignalSection = () => {
         <p className="opus-signal-section__empty">새로운 공지가 없습니다.</p>
       )}
 
-      <Link to="/notices" className="opus-editorial-link">
+      <Link to="/notices" className="opus-editorial-link opus-signal-section__more">
         전체 공지 보기 <span aria-hidden="true">↗</span>
       </Link>
     </section>
@@ -52,23 +52,32 @@ export const NoticeSignalSkeleton = () => (
     <header className="opus-signal-section__header">
       <div>
         <span className="opus-campus-news__signal" aria-hidden="true" />
-        <span className="opus-signal-section__skeleton-heading">OPUS SIGNAL</span>
+        <h1 className="opus-signal-section__skeleton-heading">OPUS SIGNAL</h1>
       </div>
       <span>NOTICE</span>
     </header>
     <div className="opus-signal-skeleton" aria-hidden="true">
-      <span />
-      <span />
+      {Array.from({ length: 5 }).map((_, index) => (
+        <span key={index} />
+      ))}
     </div>
   </section>
 );
 
 export const NoticeSignalError = ({ resetErrorBoundary }: FallbackProps) => (
   <section className="opus-signal-section opus-signal-section--error" role="alert">
-    <p>공지사항을 불러오지 못했습니다.</p>
-    <button type="button" onClick={resetErrorBoundary}>
-      다시 시도 ↗
-    </button>
+    <header className="opus-signal-section__header">
+      <div>
+        <span className="opus-campus-news__signal" aria-hidden="true" />
+        <h1>OPUS SIGNAL</h1>
+      </div>
+    </header>
+    <div className="opus-signal-section__error-message">
+      <p>공지를 불러오지 못했습니다.</p>
+      <button type="button" onClick={resetErrorBoundary}>
+        다시 시도 ↗
+      </button>
+    </div>
   </section>
 );
 

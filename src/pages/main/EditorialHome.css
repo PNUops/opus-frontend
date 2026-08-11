@@ -38,6 +38,7 @@ html {
 }
 
 .opus-masthead__intro {
+  min-width: 0;
   align-self: center;
 }
 
@@ -414,39 +415,40 @@ html {
 }
 
 .opus-signal-section {
-  padding: 30px clamp(28px, 4.2vw, 64px) 34px;
-  border-bottom: 1px solid var(--opus-home-line);
+  width: min(100%, 640px);
+  min-width: 0;
+  margin: 10px;
 }
 
 .opus-signal-section__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(229, 240, 252, 0.28);
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(229, 240, 252, 0.2);
 }
 
 .opus-signal-section__header > div {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
-.opus-signal-section__header h2,
+.opus-signal-section__header h1,
 .opus-signal-section__skeleton-heading {
   margin: 0;
   color: var(--opus-home-ink);
-  font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.18em;
+  font-size: 0.66rem;
+  font-weight: 820;
+  letter-spacing: 0.16em;
 }
 
 .opus-signal-section__header > span {
   color: var(--opus-home-cyan);
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
 }
 
 .opus-signal-list {
@@ -455,59 +457,55 @@ html {
   list-style: none;
 }
 
-.opus-signal-list li {
-  border-bottom: 1px solid rgba(229, 240, 252, 0.18);
+.opus-signal-list li + li {
+  border-top: 1px solid rgba(229, 240, 252, 0.1);
 }
 
 .opus-signal-list__link {
   display: grid;
-  grid-template-columns: 90px minmax(0, 1fr) auto;
+  grid-template-columns: 42px minmax(0, 1fr) 12px;
   align-items: center;
-  gap: clamp(18px, 3vw, 42px);
-  min-height: 72px;
-  padding: 12px 2px;
+  gap: 10px;
+  min-height: 36px;
+  padding: 3px 1px;
   color: inherit;
   text-decoration: none;
-  transition:
-    color 160ms ease,
-    padding 180ms ease;
+  transition: color 160ms ease;
 }
 
 .opus-signal-list__link:hover,
 .opus-signal-list__link:focus-visible {
-  padding-right: 8px;
-  padding-left: 8px;
   color: var(--opus-home-cyan);
 }
 
 .opus-signal-list__link:focus-visible,
 .opus-editorial-link:focus-visible {
-  outline: 2px solid var(--opus-home-cyan);
-  outline-offset: 4px;
+  outline: 1px solid var(--opus-home-cyan);
+  outline-offset: 2px;
 }
 
 .opus-signal-list__link time {
   color: var(--opus-home-blue);
-  font-size: clamp(1rem, 1.55vw, 1.28rem);
+  font-size: 0.67rem;
   font-variant-numeric: tabular-nums;
-  font-weight: 850;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: 0.01em;
 }
 
 .opus-signal-list__title {
   min-width: 0;
   overflow: hidden;
   color: var(--opus-home-ink);
-  font-size: clamp(0.96rem, 1.55vw, 1.18rem);
-  font-weight: 680;
-  line-height: 1.45;
+  font-size: 0.8rem;
+  font-weight: 650;
+  line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .opus-signal-list__arrow {
   color: currentColor;
-  font-size: 1.12rem;
+  font-size: 0.76rem;
   transition: transform 180ms ease;
 }
 
@@ -520,9 +518,9 @@ html {
 
 .opus-signal-section__empty {
   margin: 0;
-  padding: 22px 2px 6px;
+  padding: 12px 1px 4px;
   color: rgba(248, 246, 240, 0.54);
-  font-size: 0.86rem;
+  font-size: 0.72rem;
 }
 
 .opus-editorial-link {
@@ -543,6 +541,14 @@ html {
   transition: transform 180ms ease;
 }
 
+.opus-signal-section__more {
+  gap: 7px;
+  margin-top: 9px;
+  padding: 5px 0;
+  border-bottom-width: 1px;
+  font-size: 0.72rem;
+}
+
 .opus-signal-skeleton {
   display: flex;
   flex-direction: column;
@@ -551,18 +557,23 @@ html {
 .opus-signal-skeleton span {
   display: block;
   width: 100%;
-  height: 72px;
-  border-bottom: 1px solid rgba(229, 240, 252, 0.18);
+  height: 36px;
+  border-bottom: 1px solid rgba(229, 240, 252, 0.1);
   background: rgba(229, 240, 252, 0.08);
   animation: opus-skeleton-pulse 1.15s ease-in-out infinite alternate;
 }
 
 .opus-signal-section--error {
+  display: block;
+  min-height: 0;
+}
+
+.opus-signal-section__error-message {
   display: flex;
-  min-height: 126px;
+  min-height: 62px;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 12px;
 }
 
 .opus-signal-section--error p,
@@ -570,6 +581,10 @@ html {
   margin: 0;
   color: var(--opus-home-muted);
   font-size: 0.9rem;
+}
+
+.opus-signal-section--error p {
+  font-size: 0.7rem;
 }
 
 .opus-signal-section--error button,
@@ -580,6 +595,12 @@ html {
   background: transparent;
   color: var(--opus-home-ink);
   font-weight: 750;
+}
+
+.opus-signal-section--error button {
+  padding: 5px 0;
+  border-bottom-width: 1px;
+  font-size: 0.7rem;
 }
 
 @keyframes opus-campus-news-loading {
@@ -711,6 +732,32 @@ html {
 
 .opus-contest-region {
   position: relative;
+}
+
+.opus-contest-region__header {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.3fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(22px, 4vw, 64px);
+  padding: clamp(42px, 6vw, 74px) clamp(28px, 4.2vw, 64px) clamp(32px, 4vw, 52px);
+  border-bottom: 1px solid var(--opus-home-line);
+}
+
+.opus-contest-region__header p {
+  margin: 0;
+  color: var(--opus-home-cyan);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.22em;
+}
+
+.opus-contest-region__header h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4.4vw, 4.25rem);
+  line-height: 0.95;
+  font-weight: 850;
+  letter-spacing: -0.065em;
+  word-break: keep-all;
 }
 
 .opus-leader-alert {
@@ -1536,13 +1583,15 @@ html {
   }
 
   .opus-masthead__content {
-    grid-template-columns: minmax(0, 1fr) 150px;
+    grid-template-columns: minmax(0, 1fr) minmax(110px, 38vw);
     min-height: 208px;
     gap: 8px;
   }
 
   .opus-clock {
-    min-width: 160px;
+    width: min(160px, 100%);
+    min-width: 0;
+    box-sizing: border-box;
     margin-bottom: 14px;
     padding: 9px 10px 10px;
   }
@@ -1564,27 +1613,35 @@ html {
   }
 
   .opus-signal-section {
-    padding: 24px 22px 28px;
+    padding: 0;
   }
 
   .opus-signal-list__link {
-    grid-template-columns: 58px minmax(0, 1fr) auto;
-    gap: 14px;
-    min-height: 74px;
+    grid-template-columns: 38px minmax(0, 1fr) 10px;
+    gap: 8px;
+    min-height: 34px;
   }
 
   .opus-signal-list__title {
-    display: -webkit-box;
+    display: block;
     overflow: hidden;
-    line-height: 1.4;
-    text-overflow: unset;
-    white-space: normal;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .opus-signal-skeleton span {
-    height: 74px;
+    height: 34px;
+  }
+
+  .opus-contest-region__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 42px 22px 30px;
+  }
+
+  .opus-contest-region__header h2 {
+    font-size: clamp(2.2rem, 10vw, 3.4rem);
   }
 
   .opus-contest-card__link {
