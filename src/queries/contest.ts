@@ -41,7 +41,11 @@ export const archiveProjectsOption = (queryClient: QueryClient) =>
       );
       const candidates = teamGroups
         .flatMap(({ contest, teams }) =>
-          teams.filter((team) => team.projectName.trim().length > 0).map((team) => ({ contest, team })),
+          teams.flatMap((team) => {
+            const projectName = team.projectName?.trim();
+
+            return projectName ? [{ contest, team, projectName }] : [];
+          }),
         )
         .slice(0, ARCHIVE_PROJECT_LIMIT);
 
@@ -49,14 +53,14 @@ export const archiveProjectsOption = (queryClient: QueryClient) =>
         candidates.map(({ team }) => queryClient.fetchQuery(teamDetailOption(team.teamId))),
       );
 
-      return candidates.map(({ contest, team }, index) => {
+      return candidates.map(({ contest, team, projectName }, index) => {
         const detail = details[index].status === 'fulfilled' ? details[index].value : undefined;
 
         return {
           contestId: contest.contestId,
           contestName: contest.contestName,
           teamId: team.teamId,
-          projectName: detail?.projectName?.trim() || team.projectName,
+          projectName: detail?.projectName?.trim() || projectName,
           overview: detail?.overview?.trim() ?? '',
         };
       });
