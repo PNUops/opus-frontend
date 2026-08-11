@@ -7,16 +7,26 @@ import { type CurrentContestResponseDto } from '@dto/contestsDto';
 
 const geometryPatterns = ['dots', 'lines', 'arc', 'quarter'] as const;
 
+const ContestSectionHeader = ({ title }: { title: string }) => (
+  <header className="opus-contest-region__header">
+    <p>CONTEST</p>
+    <h2>{title}</h2>
+  </header>
+);
+
 export const ContestGridSkeleton = () => (
-  <div className="opus-contest-skeleton" aria-label="대회 목록을 불러오는 중" aria-busy="true">
-    {Array.from({ length: 4 }).map((_, index) => (
-      <div key={index} className="opus-contest-skeleton__item" aria-hidden="true">
-        <div className="opus-contest-skeleton__line" />
-        <div className="opus-contest-skeleton__line" />
-        <div className="opus-contest-skeleton__line" />
-      </div>
-    ))}
-  </div>
+  <section className="opus-contest-region" aria-label="대회 목록을 불러오는 중" aria-busy="true">
+    <ContestSectionHeader title="현재 진행 중인 대회" />
+    <div className="opus-contest-skeleton">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div key={index} className="opus-contest-skeleton__item" aria-hidden="true">
+          <div className="opus-contest-skeleton__line" />
+          <div className="opus-contest-skeleton__line" />
+          <div className="opus-contest-skeleton__line" />
+        </div>
+      ))}
+    </div>
+  </section>
 );
 
 export const ContestGridError = ({ resetErrorBoundary }: FallbackProps) => (
@@ -78,6 +88,7 @@ const CurrentContestSection = () => {
   if (!hasCurrentContests) {
     return (
       <section id="contest-section" className="opus-contest-region" aria-label={`최근 대회 ${recentContests.length}개`}>
+        <ContestSectionHeader title="최근 대회" />
         <div className="opus-contest-grid" data-layout={getGridLayout(recentContests.length)}>
           {recentContests.map((contest, index) => {
             const geometryPattern = geometryPatterns[index % geometryPatterns.length];
@@ -128,6 +139,7 @@ const CurrentContestSection = () => {
 
   return (
     <section className="opus-contest-region" aria-label={`현재 진행 중인 대회 ${currentContests.length}개`}>
+      <ContestSectionHeader title="현재 진행 중인 대회" />
       <div className="opus-contest-grid" data-layout={getGridLayout(currentContests.length)}>
         {currentContests.map((contest, index) => {
           const geometryPattern = geometryPatterns[index % geometryPatterns.length];
