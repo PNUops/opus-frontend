@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, CircleDot, Folder, FolderOpen } from 'lucide-react';
+import { ChevronDown, CircleDot, Folder, FolderOpen, MessageSquareShare } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
 import { cn } from '@utils/classname';
@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getGroupedContests } from '@apis/contest';
 import { useContestId } from '@hooks/useId';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
+import { EXTERNAL_LINKS } from '@constants/external-links';
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
@@ -79,6 +80,37 @@ const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
             ))
           )}
         </ul>
+
+        <div className={cn('border-t pt-4', isEditorial ? 'border-white/20' : 'border-lightGray')}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <a
+                href={EXTERNAL_LINKS.FEEDBACK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-colors',
+                  isEditorial
+                    ? 'text-white/75 hover:bg-white/5 hover:text-white'
+                    : 'hover:bg-whiteGray hover:text-mainGreen text-neutral-700',
+                )}
+              >
+                <MessageSquareShare
+                  className={cn('size-5 shrink-0', isEditorial ? 'text-[#45d6ec]' : 'text-mainGreen')}
+                  aria-hidden
+                />
+                <span>의견 보내기</span>
+              </a>
+            </TooltipTrigger>
+            <TooltipContent
+              side="right"
+              sideOffset={8}
+              className="max-w-64 text-left leading-5 break-keep text-neutral-900"
+            >
+              OPUS 사용 중 발견한 문제나 개선 의견을 남겨주세요.
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </nav>
     </aside>
   );
