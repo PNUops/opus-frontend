@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ChevronDown, Home, LayoutGrid } from 'lucide-react';
+import { ChevronDown, Home, LayoutGrid, MessageSquareShare } from 'lucide-react';
 
 import logoOpusAdmin from './logo-opus-admin.svg';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
@@ -10,6 +10,8 @@ import { useContestId } from '@hooks/useId';
 import { useToast } from '@hooks/useToast';
 import QueryWrapper from '@providers/QueryWrapper';
 import { contestsOption } from '@queries/contest';
+
+import { EXTERNAL_LINKS } from '@constants/external-links';
 
 type AdminSidebarLink = {
   label: string;
@@ -97,6 +99,9 @@ const contestLinkClass = ({ isActive }: { isActive: boolean }) =>
       : 'border-l-transparent text-gray-700 hover:bg-mainBlue/5',
   );
 
+const utilityItemClass =
+  'hover:bg-mainBlue/5 flex h-10 items-center gap-3 border-l-[3px] border-l-transparent px-5 text-[14px] font-medium text-gray-700 transition-colors hover:text-gray-950';
+
 const AdminSidebar = () => {
   return (
     <aside
@@ -120,14 +125,27 @@ const AdminSidebar = () => {
         </QueryWrapper>
       </nav>
 
-      <div className="py-5">
-        <Link
-          to="/"
-          className="hover:bg-mainBlue/5 flex h-10 items-center gap-3 border-l-[3px] border-l-transparent px-5 text-[14px] font-medium text-gray-700 transition-colors hover:text-gray-950"
-        >
+      <div className="mt-auto py-5">
+        <Link to="/" className={utilityItemClass}>
           <Home className="h-5 w-5 text-gray-500" strokeWidth={1.8} />
           <span>서비스 홈</span>
         </Link>
+        <a
+          href={EXTERNAL_LINKS.FEEDBACK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${utilityItemClass} group relative`}
+        >
+          <MessageSquareShare className="h-5 w-5 text-gray-500" strokeWidth={1.8} />
+          <span>의견 보내기</span>
+          <span
+            id="feedback-tooltip"
+            role="tooltip"
+            className="pointer-events-none absolute bottom-full left-5 z-50 mb-2 w-max max-w-64 rounded-md bg-gray-900 px-3 py-2 text-xs font-light text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+          >
+            OPUS 사용 중 발견한 문제나 개선 의견을 남겨주세요.
+          </span>
+        </a>
       </div>
     </aside>
   );
