@@ -66,7 +66,7 @@ const Comment = ({ comment, teamId }: CommentProps) => {
   return (
     <div className="relative flex flex-col gap-3 border-b border-gray-100 p-5 text-sm" ref={editRef}>
       <span className="flex justify-between font-bold">
-        {memberName}
+        {memberName ?? '알 수 없음'}
         {memberId === currentUserId && (
           <div className="text-midGray bg-whiteGray flex items-center rounded-md">
             <div className="group relative">

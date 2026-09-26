@@ -9,7 +9,6 @@ import ConfirmModal from '@components/ConfirmModal';
 import { CommentDto } from '@dto/projectViewerDto';
 import useAuth from '@hooks/useAuth';
 import { useToast } from '@hooks/useToast';
-import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
 import { teamCommentKeys } from '@queries/teamComments';
 
 const MAX_FEEDBACK_LENGTH = 3000;
@@ -22,7 +21,7 @@ interface FeedbackItemProps {
 const getRoleLabel = (roleType: CommentDto['memberRoleType']) => {
   if (roleType === 'ROLE_교수') return '지도교수';
   if (roleType === 'ROLE_외부멘토') return '멘토';
-  return '지도자';
+  return null;
 };
 
 const FeedbackItem = ({ feedback, teamId }: FeedbackItemProps) => {
@@ -41,7 +40,6 @@ const FeedbackItem = ({ feedback, teamId }: FeedbackItemProps) => {
     onSuccess: () => {
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey });
-      queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('피드백이 수정되었어요.');
     },
     onError: () => toast('피드백 수정에 실패했어요.'),
@@ -52,7 +50,6 @@ const FeedbackItem = ({ feedback, teamId }: FeedbackItemProps) => {
     onSuccess: () => {
       setShowConfirm(false);
       queryClient.invalidateQueries({ queryKey });
-      queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('피드백이 삭제되었어요.');
     },
     onError: () => toast('피드백 삭제에 실패했어요.'),
@@ -71,18 +68,21 @@ const FeedbackItem = ({ feedback, teamId }: FeedbackItemProps) => {
   };
 
   const isMine = memberId === user?.id;
+  const roleLabel = getRoleLabel(memberRoleType);
 
   return (
     <article className="border-lightGray rounded-lg border p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <div className="bg-lightGray text-midGray flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
-            {memberName.slice(0, 1)}
+            {memberName?.slice(0, 1) ?? '?'}
           </div>
-          <span className="text-darkGray truncate text-sm font-semibold">{memberName}</span>
-          <span className="bg-subGreen text-mainGreen shrink-0 rounded-md px-2 py-0.5 text-xs font-medium">
-            {getRoleLabel(memberRoleType)}
-          </span>
+          <span className="text-darkGray truncate text-sm font-semibold">{memberName ?? '알 수 없음'}</span>
+          {roleLabel && (
+            <span className="bg-subGreen text-mainGreen shrink-0 rounded-md px-2 py-0.5 text-xs font-medium">
+              {roleLabel}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

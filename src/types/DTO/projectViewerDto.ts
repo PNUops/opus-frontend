@@ -53,7 +53,7 @@ export interface CommentDto {
   description: string;
   visibility: CommentVisibility;
   memberId: number;
-  memberName: string;
+  memberName: string | null;
   memberRoleType: CommentMemberRoleType | null;
   teamId: number;
   createdAt: string;

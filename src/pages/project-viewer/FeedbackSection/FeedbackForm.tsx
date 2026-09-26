@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { postCommentForm } from '@apis/projectViewer';
 import { useToast } from '@hooks/useToast';
-import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
 import { teamCommentKeys } from '@queries/teamComments';
 
 const MAX_FEEDBACK_LENGTH = 3000;
@@ -22,7 +21,6 @@ const FeedbackForm = ({ teamId }: FeedbackFormProps) => {
     onSuccess: () => {
       setDescription('');
       queryClient.invalidateQueries({ queryKey: teamCommentKeys.list(teamId, 'TEAM') });
-      queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('피드백이 등록되었어요.');
     },
     onError: () => toast('피드백 등록에 실패했어요.'),
