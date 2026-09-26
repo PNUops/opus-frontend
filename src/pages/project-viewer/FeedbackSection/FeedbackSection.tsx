@@ -7,6 +7,7 @@ import useAuth from '@hooks/useAuth';
 import { teamCommentKeys } from '@queries/teamComments';
 
 import FeedbackForm from './FeedbackForm';
+import FeedbackItem from './FeedbackItem';
 
 interface FeedbackSectionProps {
   teamId: number;
@@ -55,11 +56,7 @@ const FeedbackSection = ({ teamId }: FeedbackSectionProps) => {
           ) : (
             <div className="flex flex-col gap-3">
               {feedbacks.map((feedback) => (
-                <article key={feedback.commentId} className="border-lightGray rounded-lg border p-4">
-                  <p className="text-darkGray text-sm leading-relaxed break-words whitespace-pre-wrap">
-                    {feedback.description}
-                  </p>
-                </article>
+                <FeedbackItem key={feedback.commentId} feedback={feedback} teamId={teamId} />
               ))}
             </div>
           )}
