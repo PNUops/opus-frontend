@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@constants/env';
+import { API_BASE_URL } from '../../constants/env';
 import { http, HttpResponse } from 'msw';
 
 export const bannersHandler = [

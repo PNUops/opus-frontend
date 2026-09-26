@@ -2,14 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import './index.css';
-import { worker } from '@mocks/browsers';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '@stores/queryClient';
 import { RouterProvider } from 'react-router-dom';
 import AppRoutes from '@route/AppRoutes';
 
-if (import.meta.env.MODE === 'development') {
-  //   await worker.start();
+if (import.meta.env.DEV && import.meta.env.VITE_USE_MSW === 'true') {
+  const { worker } = await import('@mocks/browsers');
+  await worker.start({ onUnhandledRequest: 'bypass' });
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

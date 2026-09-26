@@ -1,12 +1,12 @@
-import { API_BASE_URL } from '@constants/env';
+import { API_BASE_URL } from '../../constants/env';
 import {
   mockContestsResponse,
   mockGroupedContestsResponse,
   mockContestBulkAddTeamsError,
   mockProjectsAdminResponse,
   mockCurrentContestsResponse,
-} from '@mocks/data/contest';
-import { mockTeams } from '@mocks/data/teams';
+} from '../data/contest';
+import { mockTeams } from '../data/teams';
 import { http, HttpResponse } from 'msw';
 
 export const contestsHandler = [

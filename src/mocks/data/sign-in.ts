@@ -1,9 +1,31 @@
 import { SignInResponseDto } from '@dto/signInDto';
 
 export const mockSignInResponse: SignInResponseDto = {
-  memberId: 1,
-  name: '허동혁',
+  memberId: 1001,
+  name: '홍지연',
   token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibWVtYmVySWQiOjEyMywibmFtZSI6Iu2XiOuPme2YgSIsIm1lbWJlclR5cGUiOlsiUk9MRV_tmozsm5AiLCJST0xFX-2MgOyepSJdLCJpYXQiOjE1MTYyMzkwMjJ9.I0vUQfo_hznLHUbZHvl8RuuaBvZ7N2_qX14cRzrvG3E',
-  roles: ['ROLE_회원', 'ROLE_팀장'],
+    'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMDAxIiwibmFtZSI6Iu2ZjeyngOyXsCIsInJvbGVzIjpbIlJPTEVf7ZWZ7IOdIiwiUk9MRV_tjIDsnqUiXX0.mock',
+  roles: ['ROLE_학생', 'ROLE_팀장'],
+};
+
+export const mockProfessorSignInResponse: SignInResponseDto = {
+  memberId: 31,
+  name: '박지윤',
+  token:
+    'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIzMSIsIm5hbWUiOiLrsJXsp4DsnKQiLCJyb2xlcyI6WyJST0xFX-q1kOyImCJdfQ.mock',
+  roles: ['ROLE_교수'],
+};
+
+export const mockMentorSignInResponse: SignInResponseDto = {
+  memberId: 32,
+  name: '최민호',
+  token:
+    'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIzMiIsIm5hbWUiOiLstZzrr7ztmLgiLCJyb2xlcyI6WyJST0xFX-yZuOu2gOupmO2GoCJdfQ.mock',
+  roles: ['ROLE_외부멘토'],
+};
+
+export const mockSignInResponsesByEmail: Record<string, SignInResponseDto> = {
+  'test@pusan.ac.kr': mockSignInResponse,
+  'professor@pusan.ac.kr': mockProfessorSignInResponse,
+  'mentor@pusan.ac.kr': mockMentorSignInResponse,
 };
