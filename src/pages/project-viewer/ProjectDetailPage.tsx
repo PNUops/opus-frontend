@@ -10,6 +10,7 @@ import ProjectDetailSection from './ProjectDetailSection';
 
 import GithubCard from './MediaSection/GithubCard';
 import CommentSection from './CommentSection/CommentSection';
+import FeedbackSection from './FeedbackSection/FeedbackSection';
 
 import { teamDetailOption } from '@queries/team';
 import { getPoster, PosterResult } from '@apis/projectEditor';
@@ -129,6 +130,8 @@ const ProjectDetailPage = () => {
       <GithubCard githubUrl={githubUrl} />
       <div className="h-28" />
       <CommentSection teamId={data.teamId} />
+      <div className="h-20" />
+      <FeedbackSection teamId={data.teamId} />
     </div>
   );
 };
