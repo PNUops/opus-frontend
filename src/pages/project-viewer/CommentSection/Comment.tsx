@@ -6,21 +6,22 @@ import { CommentDeleteRequestDto, CommentDto, CommentEditRequestDto } from '@dto
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { deleteComment, editComment } from '@apis/projectViewer';
 import { useToast } from '@hooks/useToast';
-import { useTeamId } from '@hooks/useId';
 import useAuth from '@hooks/useAuth';
 import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
+import { teamCommentKeys } from '@queries/teamComments';
 
 interface CommentProps {
   comment: CommentDto;
+  teamId: number;
 }
 
-const Comment = ({ comment }: CommentProps) => {
+const Comment = ({ comment, teamId }: CommentProps) => {
   const { commentId, description, memberId, memberName } = comment;
-  const teamId = useTeamId();
   const { user } = useAuth();
   const currentUserId = user?.id;
   const queryClient = useQueryClient();
   const toast = useToast();
+  const queryKey = teamCommentKeys.list(teamId, 'PUBLIC');
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -38,10 +39,10 @@ const Comment = ({ comment }: CommentProps) => {
     };
   }, [isEditing, description, setIsEditing]);
 
-  const { mutate: handleDeleteComment } = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: (request: CommentDeleteRequestDto) => deleteComment(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
+      queryClient.invalidateQueries({ queryKey });
       queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 삭제되었어요.');
       setShowConfirm(false);
@@ -49,11 +50,11 @@ const Comment = ({ comment }: CommentProps) => {
     onError: () => toast('댓글 삭제에 실패했어요.'),
   });
 
-  const { mutate: handleEditComment } = useMutation({
+  const editMutation = useMutation({
     mutationFn: (request: CommentEditRequestDto) => editComment(request),
     onSuccess: () => {
       setIsEditing(false);
-      queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
+      queryClient.invalidateQueries({ queryKey });
       queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 편집되었어요.');
     },
@@ -114,18 +115,20 @@ const Comment = ({ comment }: CommentProps) => {
 
           <div className="flex justify-end gap-2">
             <button
+              type="button"
               className="bg-mainGreen text-exsm text-whiteGray rounded-full px-5 py-1 transition hover:cursor-pointer hover:bg-emerald-600 focus:bg-emerald-600 focus:outline-none"
               onClick={() => {
                 if (editedDescription.trim() === description.trim() || !editedDescription) {
                   setIsEditing(false);
                   return;
                 }
-                handleEditComment({ commentId, description: editedDescription, teamId: teamId ?? -1 });
+                editMutation.mutate({ commentId, description: editedDescription, teamId });
               }}
             >
               저장
             </button>
             <button
+              type="button"
               className="text-exsm border-lightGray text-midGray hover:bg-lightGray focus:bg-lightGray rounded-full border px-5 py-1 transition hover:cursor-pointer focus:outline-none"
               onClick={() => setIsEditing(false)}
             >
@@ -140,7 +143,9 @@ const Comment = ({ comment }: CommentProps) => {
       )}
       <ConfirmModal
         isOpen={showConfirm}
-        onConfirm={() => handleDeleteComment({ commentId, teamId: teamId ?? -1 })}
+        onConfirm={() => {
+          if (!deleteMutation.isPending) deleteMutation.mutate({ commentId, teamId });
+        }}
         onCancel={() => setShowConfirm(false)}
         description="삭제한 댓글은 복구할 수 없습니다."
       />

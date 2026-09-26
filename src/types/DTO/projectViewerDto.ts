@@ -36,18 +36,28 @@ export interface PreviewImagesResponseDto {
 export interface CommentCreateRequestDto {
   teamId: number;
   description: string;
+  visibility: CommentVisibility;
 }
 
 export interface CommentsListRequestDto {
   teamId: number;
+  visibility: CommentVisibility;
 }
+
+export type CommentVisibility = 'PUBLIC' | 'TEAM';
+
+export type CommentMemberRoleType = 'ROLE_교수' | 'ROLE_외부멘토';
 
 export interface CommentDto {
   commentId: number;
   description: string;
+  visibility: CommentVisibility;
   memberId: number;
   memberName: string;
+  memberRoleType: CommentMemberRoleType | null;
   teamId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CommentDeleteRequestDto {

@@ -5,6 +5,8 @@ import { useToast } from '@hooks/useToast';
 import { CommentCreateRequestDto, CommentDto } from '@dto/projectViewerDto';
 import { postCommentForm } from '@apis/projectViewer';
 import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
+import { teamCommentKeys } from '@queries/teamComments';
+
 interface CommentFormSection {
   teamId: number;
 }
@@ -18,44 +20,51 @@ const CommentFormSection = ({ teamId }: CommentFormSection) => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const toast = useToast();
+  const queryKey = teamCommentKeys.list(teamId, 'PUBLIC');
 
   const commentMutation = useMutation<void, Error, string, PreviousComments>({
     mutationFn: (comment) => {
       const requestDto: CommentCreateRequestDto = {
         teamId,
         description: comment,
+        visibility: 'PUBLIC',
       };
       return postCommentForm(requestDto);
     },
     onMutate: async (newCommentText) => {
-      await queryClient.cancelQueries({ queryKey: ['comments', teamId] });
-      const previousComments = queryClient.getQueryData<CommentDto[]>(['comments', teamId]);
+      await queryClient.cancelQueries({ queryKey });
+      const previousComments = queryClient.getQueryData<CommentDto[]>(queryKey);
+      const now = new Date().toISOString();
 
       const optimisticComment: CommentDto = {
         commentId: Date.now(),
         description: newCommentText,
+        visibility: 'PUBLIC',
         memberId: user?.id ?? 0,
         memberName: user?.name ?? '',
+        memberRoleType: null,
         teamId,
+        createdAt: now,
+        updatedAt: now,
       };
 
-      queryClient.setQueryData<CommentDto[]>(['comments', teamId], (old = []) => [...old, optimisticComment]);
+      queryClient.setQueryData<CommentDto[]>(queryKey, (old = []) => [optimisticComment, ...old]);
 
       return { previousComments };
     },
-    onError: (err, newComment, context) => {
-      if (context?.previousComments) {
-        queryClient.setQueryData(['comments', teamId], context.previousComments);
+    onError: (_error, _comment, context) => {
+      if (context) {
+        queryClient.setQueryData(queryKey, context.previousComments);
       }
       toast('댓글 등록에 실패했어요.');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
+      setNewComment('');
       toast('댓글이 등록되었어요.');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
-      setNewComment('');
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 
@@ -82,6 +91,7 @@ const CommentFormSection = ({ teamId }: CommentFormSection) => {
 
       <div className="mt-2 flex justify-end">
         <button
+          type="button"
           onClick={handleClick}
           className="text-mainGreen text-exsm rounded-full bg-[#D1F3E1] px-10 py-2 font-medium transition-colors duration-200 hover:cursor-pointer hover:bg-[#b2e8cf] focus:bg-[#b2e8cf] focus:outline-none sm:text-sm"
         >

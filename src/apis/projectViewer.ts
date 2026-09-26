@@ -7,6 +7,7 @@ import {
   CommentDeleteRequestDto,
   CommentEditRequestDto,
   CommentDto,
+  CommentVisibility,
   PreviewResult,
   TeamVoteResponseDto,
 } from '@dto/projectViewerDto';
@@ -81,8 +82,8 @@ export const removeVote = async (teamId: number): Promise<TeamVoteResponseDto> =
   return response.data;
 };
 
-export const postCommentForm = async ({ teamId, description }: CommentCreateRequestDto) => {
-  const response = await apiClient.post(`/teams/${teamId}/comments`, { description });
+export const postCommentForm = async ({ teamId, description, visibility }: CommentCreateRequestDto) => {
+  const response = await apiClient.post(`/teams/${teamId}/comments`, { description, visibility });
   return response.data;
 };
 
@@ -95,7 +96,7 @@ export const editComment = async ({ teamId, commentId, description }: CommentEdi
   return response.data;
 };
 
-export const getCommentsList = async (teamId: number): Promise<CommentDto[]> => {
-  const response = await apiClient.get(`/teams/${teamId}/comments`);
+export const getCommentsList = async (teamId: number, visibility: CommentVisibility): Promise<CommentDto[]> => {
+  const response = await apiClient.get(`/teams/${teamId}/comments`, { params: { visibility } });
   return response.data;
 };
