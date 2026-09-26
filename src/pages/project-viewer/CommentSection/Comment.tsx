@@ -10,6 +10,8 @@ import useAuth from '@hooks/useAuth';
 import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
 import { teamCommentKeys } from '@queries/teamComments';
 
+const MAX_COMMENT_LENGTH = 3000;
+
 interface CommentProps {
   comment: CommentDto;
   teamId: number;
@@ -102,14 +104,14 @@ const Comment = ({ comment, teamId }: CommentProps) => {
           <div className="bg-whiteGray focus-within:ring-lightGray flex h-36 flex-col gap-2 rounded p-3 text-sm transition-all duration-300 ease-in-out focus-within:ring-1 focus:outline-none">
             <textarea
               className="placeholder:text-lightGray w-full flex-1 resize-none p-2 focus:outline-none"
-              placeholder="댓글을 입력하세요 (최대 255자)"
-              maxLength={255}
+              placeholder="댓글을 입력하세요 (최대 3000자)"
+              maxLength={MAX_COMMENT_LENGTH}
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
             />
             <div className="text-exsm text-midGray text-right">
-              <span className={editedDescription.length >= 200 ? 'text-mainRed' : ''}>{editedDescription.length}</span>{' '}
-              / 255자
+              <span className={editedDescription.length >= 2700 ? 'text-mainRed' : ''}>{editedDescription.length}</span>{' '}
+              / {MAX_COMMENT_LENGTH}자
             </div>
           </div>
 
@@ -117,15 +119,20 @@ const Comment = ({ comment, teamId }: CommentProps) => {
             <button
               type="button"
               className="bg-mainGreen text-exsm text-whiteGray rounded-full px-5 py-1 transition hover:cursor-pointer hover:bg-emerald-600 focus:bg-emerald-600 focus:outline-none"
+              disabled={editMutation.isPending}
               onClick={() => {
-                if (editedDescription.trim() === description.trim() || !editedDescription) {
+                if (!editedDescription.trim()) {
+                  toast('댓글을 입력해주세요.');
+                  return;
+                }
+                if (editedDescription.trim() === description.trim()) {
                   setIsEditing(false);
                   return;
                 }
                 editMutation.mutate({ commentId, description: editedDescription, teamId });
               }}
             >
-              저장
+              {editMutation.isPending ? '저장 중' : '저장'}
             </button>
             <button
               type="button"

@@ -7,6 +7,8 @@ import { postCommentForm } from '@apis/projectViewer';
 import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
 import { teamCommentKeys } from '@queries/teamComments';
 
+const MAX_COMMENT_LENGTH = 3000;
+
 interface CommentFormSection {
   teamId: number;
 }
@@ -80,12 +82,13 @@ const CommentFormSection = ({ teamId }: CommentFormSection) => {
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          maxLength={255}
+          maxLength={MAX_COMMENT_LENGTH}
           placeholder="프로젝트에 대해 댓글을 남겨보세요."
           className="placeholder-lightGray w-full flex-1 resize-none p-2 focus:outline-none"
         />
         <div className="text-exsm text-midGray text-right">
-          <span className={newComment.length >= 200 ? 'text-mainRed' : ''}>{newComment.length}</span> / 255자
+          <span className={newComment.length >= 2700 ? 'text-mainRed' : ''}>{newComment.length}</span> /{' '}
+          {MAX_COMMENT_LENGTH}자
         </div>
       </div>
 
@@ -93,9 +96,10 @@ const CommentFormSection = ({ teamId }: CommentFormSection) => {
         <button
           type="button"
           onClick={handleClick}
-          className="text-mainGreen text-exsm rounded-full bg-[#D1F3E1] px-10 py-2 font-medium transition-colors duration-200 hover:cursor-pointer hover:bg-[#b2e8cf] focus:bg-[#b2e8cf] focus:outline-none sm:text-sm"
+          disabled={commentMutation.isPending}
+          className="text-mainGreen text-exsm rounded-full bg-[#D1F3E1] px-10 py-2 font-medium transition-colors duration-200 hover:cursor-pointer hover:bg-[#b2e8cf] focus:bg-[#b2e8cf] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
         >
-          등록
+          {commentMutation.isPending ? '등록 중' : '등록'}
         </button>
       </div>
     </>
