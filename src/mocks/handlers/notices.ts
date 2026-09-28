@@ -1,5 +1,5 @@
-import { API_BASE_URL } from '@constants/env';
-import { mockNoticeDetail, mockNotices } from '@mocks/data/notices';
+import { API_BASE_URL } from '../../constants/env';
+import { mockNoticeDetail, mockNotices } from '../data/notices';
 import { http, HttpResponse } from 'msw';
 
 export const noticesHandler = [

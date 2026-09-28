@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import dayjs from 'dayjs';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { RiPencilFill } from 'react-icons/ri';
 import { IoRemoveCircle } from 'react-icons/io5';
@@ -6,25 +7,31 @@ import { CommentDeleteRequestDto, CommentDto, CommentEditRequestDto } from '@dto
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { deleteComment, editComment } from '@apis/projectViewer';
 import { useToast } from '@hooks/useToast';
-import { useTeamId } from '@hooks/useId';
 import useAuth from '@hooks/useAuth';
 import { MY_COMMENTS_QUERY_KEY } from '@queries/me';
+import { teamCommentKeys } from '@queries/teamComments';
+
+const MAX_COMMENT_LENGTH = 3000;
 
 interface CommentProps {
   comment: CommentDto;
+  teamId: number;
 }
 
-const Comment = ({ comment }: CommentProps) => {
-  const { commentId, description, memberId, memberName } = comment;
-  const teamId = useTeamId();
+const Comment = ({ comment, teamId }: CommentProps) => {
+  const { commentId, description, memberId, memberName, createdAt, updatedAt } = comment;
   const { user } = useAuth();
   const currentUserId = user?.id;
   const queryClient = useQueryClient();
   const toast = useToast();
+  const queryKey = teamCommentKeys.list(teamId, 'PUBLIC');
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedDescription, setEditedDescription] = useState<string>(description);
+
+  const isEdited = !dayjs(createdAt).isSame(updatedAt);
+  const displayedAt = isEdited ? updatedAt : createdAt;
 
   const editRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -38,10 +45,10 @@ const Comment = ({ comment }: CommentProps) => {
     };
   }, [isEditing, description, setIsEditing]);
 
-  const { mutate: handleDeleteComment } = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: (request: CommentDeleteRequestDto) => deleteComment(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
+      queryClient.invalidateQueries({ queryKey });
       queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 삭제되었어요.');
       setShowConfirm(false);
@@ -49,11 +56,11 @@ const Comment = ({ comment }: CommentProps) => {
     onError: () => toast('댓글 삭제에 실패했어요.'),
   });
 
-  const { mutate: handleEditComment } = useMutation({
+  const editMutation = useMutation({
     mutationFn: (request: CommentEditRequestDto) => editComment(request),
     onSuccess: () => {
       setIsEditing(false);
-      queryClient.invalidateQueries({ queryKey: ['comments', teamId] });
+      queryClient.invalidateQueries({ queryKey });
       queryClient.invalidateQueries({ queryKey: MY_COMMENTS_QUERY_KEY });
       toast('댓글이 편집되었어요.');
     },
@@ -62,70 +69,83 @@ const Comment = ({ comment }: CommentProps) => {
 
   return (
     <div className="relative flex flex-col gap-3 border-b border-gray-100 p-5 text-sm" ref={editRef}>
-      <span className="flex justify-between font-bold">
-        {memberName}
-        {memberId === currentUserId && (
-          <div className="text-midGray bg-whiteGray flex items-center rounded-md">
-            <div className="group relative">
-              <button
-                onClick={() => {
-                  setIsEditing(true);
-                  setEditedDescription(description);
-                }}
-                className={`cursor-pointer px-3 ${isEditing ? 'text-mainGreen' : 'hover:text-mainGreen'} focus:text-mainGreen text-midGray focus:outline-none`}
-              >
-                <RiPencilFill size={18} />
-              </button>
-              <div className="bg-mainGreen absolute -top-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
-                댓글 수정
+      <div className="flex items-center justify-between gap-3 font-bold">
+        <span className="min-w-0 truncate">{memberName ?? '알 수 없음'}</span>
+        <div className="flex shrink-0 items-center gap-3">
+          <time dateTime={displayedAt} className="text-midGray text-xs font-normal">
+            {dayjs(displayedAt).format('YYYY.MM.DD HH:mm')}
+            {isEdited && ' (수정됨)'}
+          </time>
+          {memberId === currentUserId && (
+            <div className="text-midGray bg-whiteGray flex items-center rounded-md">
+              <div className="group relative">
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditedDescription(description);
+                  }}
+                  className={`cursor-pointer px-3 ${isEditing ? 'text-mainGreen' : 'hover:text-mainGreen'} focus:text-mainGreen text-midGray focus:outline-none`}
+                >
+                  <RiPencilFill size={18} />
+                </button>
+                <div className="bg-mainGreen absolute -top-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
+                  댓글 수정
+                </div>
+              </div>
+              <div className="bg-lightGray h-4 w-px" />
+              <div className="group relative">
+                <button
+                  onClick={() => setShowConfirm(true)}
+                  className="text-midGray hover:text-mainRed focus:text-mainRed cursor-pointer px-3 focus:outline-none"
+                >
+                  <IoRemoveCircle size={18} />
+                </button>
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-red-500 px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
+                  댓글 삭제
+                </div>
               </div>
             </div>
-            <div className="bg-lightGray h-4 w-px" />
-            <div className="group relative">
-              <button
-                onClick={() => setShowConfirm(true)}
-                className="text-midGray hover:text-mainRed focus:text-mainRed cursor-pointer px-3 focus:outline-none"
-              >
-                <IoRemoveCircle size={18} />
-              </button>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-red-500 px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
-                댓글 삭제
-              </div>
-            </div>
-          </div>
-        )}
-      </span>
+          )}
+        </div>
+      </div>
 
       {isEditing ? (
         <div className="animate-fade-in flex flex-col gap-5">
           <div className="bg-whiteGray focus-within:ring-lightGray flex h-36 flex-col gap-2 rounded p-3 text-sm transition-all duration-300 ease-in-out focus-within:ring-1 focus:outline-none">
             <textarea
               className="placeholder:text-lightGray w-full flex-1 resize-none p-2 focus:outline-none"
-              placeholder="댓글을 입력하세요 (최대 255자)"
-              maxLength={255}
+              placeholder="댓글을 입력하세요 (최대 3000자)"
+              maxLength={MAX_COMMENT_LENGTH}
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
             />
             <div className="text-exsm text-midGray text-right">
-              <span className={editedDescription.length >= 200 ? 'text-mainRed' : ''}>{editedDescription.length}</span>{' '}
-              / 255자
+              <span className={editedDescription.length >= 2700 ? 'text-mainRed' : ''}>{editedDescription.length}</span>{' '}
+              / {MAX_COMMENT_LENGTH}자
             </div>
           </div>
 
           <div className="flex justify-end gap-2">
             <button
+              type="button"
               className="bg-mainGreen text-exsm text-whiteGray rounded-full px-5 py-1 transition hover:cursor-pointer hover:bg-emerald-600 focus:bg-emerald-600 focus:outline-none"
+              disabled={editMutation.isPending}
               onClick={() => {
-                if (editedDescription.trim() === description.trim() || !editedDescription) {
+                if (!editedDescription.trim()) {
+                  toast('댓글을 입력해주세요.');
+                  return;
+                }
+                if (editedDescription.trim() === description.trim()) {
                   setIsEditing(false);
                   return;
                 }
-                handleEditComment({ commentId, description: editedDescription, teamId: teamId ?? -1 });
+                editMutation.mutate({ commentId, description: editedDescription, teamId });
               }}
             >
-              저장
+              {editMutation.isPending ? '저장 중' : '저장'}
             </button>
             <button
+              type="button"
               className="text-exsm border-lightGray text-midGray hover:bg-lightGray focus:bg-lightGray rounded-full border px-5 py-1 transition hover:cursor-pointer focus:outline-none"
               onClick={() => setIsEditing(false)}
             >
@@ -140,7 +160,9 @@ const Comment = ({ comment }: CommentProps) => {
       )}
       <ConfirmModal
         isOpen={showConfirm}
-        onConfirm={() => handleDeleteComment({ commentId, teamId: teamId ?? -1 })}
+        onConfirm={() => {
+          if (!deleteMutation.isPending) deleteMutation.mutate({ commentId, teamId });
+        }}
         onCancel={() => setShowConfirm(false)}
         description="삭제한 댓글은 복구할 수 없습니다."
       />

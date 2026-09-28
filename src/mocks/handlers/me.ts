@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@constants/env';
+import { API_BASE_URL } from '../../constants/env';
 import { mockMyProjects, getMockMyLikes, mockMyLikesPreview, mockMyVotes } from '../data/me';
 import { getMockMyComments } from '../data/comment';
 import { http, HttpResponse } from 'msw';

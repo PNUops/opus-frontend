@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import Comment from './Comment';
 import { getCommentsList } from '@apis/projectViewer';
 import { CommentDto } from '@dto/projectViewerDto';
+import { teamCommentKeys } from '@queries/teamComments';
 
 interface CommentListSectionProps {
   teamId: number;
@@ -9,8 +10,8 @@ interface CommentListSectionProps {
 
 const CommentListSection = ({ teamId }: CommentListSectionProps) => {
   const { data: comments = [] } = useQuery<CommentDto[]>({
-    queryKey: ['comments', teamId],
-    queryFn: () => getCommentsList(teamId),
+    queryKey: teamCommentKeys.list(teamId, 'PUBLIC'),
+    queryFn: () => getCommentsList(teamId, 'PUBLIC'),
   });
 
   return (
@@ -20,7 +21,7 @@ const CommentListSection = ({ teamId }: CommentListSectionProps) => {
       </div>
       <div className="flex flex-col">
         {comments.map((comment) => (
-          <Comment key={comment.commentId} comment={comment} />
+          <Comment key={comment.commentId} comment={comment} teamId={teamId} />
         ))}
       </div>
     </div>

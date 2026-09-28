@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { mockVoteRanking, mockVoteStats, mockVoteLogs, mockMainStats } from '@mocks/data/statistics';
+import { mockVoteRanking, mockVoteStats, mockVoteLogs, mockMainStats } from '../data/statistics';
 
 const base = import.meta.env.VITE_API_BASE_URL ?? '';
 
