@@ -6,17 +6,22 @@ import CommentListSection from './CommentListSection';
 
 interface CommentSectionProps {
   teamId: number;
+  showForm?: boolean;
 }
 
-const CommentSection = ({ teamId }: CommentSectionProps) => {
+const CommentSection = ({ teamId, showForm = true }: CommentSectionProps) => {
   const { isSignedIn } = useAuth();
 
   return (
     <div id="comments" className="flex scroll-mt-24 flex-col">
       {isSignedIn ? (
         <>
-          <CommentFormSection teamId={teamId} />
-          <div className="h-20" />
+          {showForm && (
+            <>
+              <CommentFormSection teamId={teamId} />
+              <div className="h-20" />
+            </>
+          )}
           <CommentListSection teamId={teamId} />
         </>
       ) : (

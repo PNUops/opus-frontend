@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import dayjs from 'dayjs';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { RiPencilFill } from 'react-icons/ri';
 import { IoRemoveCircle } from 'react-icons/io5';
@@ -18,7 +19,7 @@ interface CommentProps {
 }
 
 const Comment = ({ comment, teamId }: CommentProps) => {
-  const { commentId, description, memberId, memberName } = comment;
+  const { commentId, description, memberId, memberName, createdAt, updatedAt } = comment;
   const { user } = useAuth();
   const currentUserId = user?.id;
   const queryClient = useQueryClient();
@@ -28,6 +29,9 @@ const Comment = ({ comment, teamId }: CommentProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedDescription, setEditedDescription] = useState<string>(description);
+
+  const isEdited = !dayjs(createdAt).isSame(updatedAt);
+  const displayedAt = isEdited ? updatedAt : createdAt;
 
   const editRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -65,39 +69,45 @@ const Comment = ({ comment, teamId }: CommentProps) => {
 
   return (
     <div className="relative flex flex-col gap-3 border-b border-gray-100 p-5 text-sm" ref={editRef}>
-      <span className="flex justify-between font-bold">
-        {memberName ?? '알 수 없음'}
-        {memberId === currentUserId && (
-          <div className="text-midGray bg-whiteGray flex items-center rounded-md">
-            <div className="group relative">
-              <button
-                onClick={() => {
-                  setIsEditing(true);
-                  setEditedDescription(description);
-                }}
-                className={`cursor-pointer px-3 ${isEditing ? 'text-mainGreen' : 'hover:text-mainGreen'} focus:text-mainGreen text-midGray focus:outline-none`}
-              >
-                <RiPencilFill size={18} />
-              </button>
-              <div className="bg-mainGreen absolute -top-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
-                댓글 수정
+      <div className="flex items-center justify-between gap-3 font-bold">
+        <span className="min-w-0 truncate">{memberName ?? '알 수 없음'}</span>
+        <div className="flex shrink-0 items-center gap-3">
+          <time dateTime={displayedAt} className="text-midGray text-xs font-normal">
+            {dayjs(displayedAt).format('YYYY.MM.DD HH:mm')}
+            {isEdited && ' (수정됨)'}
+          </time>
+          {memberId === currentUserId && (
+            <div className="text-midGray bg-whiteGray flex items-center rounded-md">
+              <div className="group relative">
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditedDescription(description);
+                  }}
+                  className={`cursor-pointer px-3 ${isEditing ? 'text-mainGreen' : 'hover:text-mainGreen'} focus:text-mainGreen text-midGray focus:outline-none`}
+                >
+                  <RiPencilFill size={18} />
+                </button>
+                <div className="bg-mainGreen absolute -top-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
+                  댓글 수정
+                </div>
+              </div>
+              <div className="bg-lightGray h-4 w-px" />
+              <div className="group relative">
+                <button
+                  onClick={() => setShowConfirm(true)}
+                  className="text-midGray hover:text-mainRed focus:text-mainRed cursor-pointer px-3 focus:outline-none"
+                >
+                  <IoRemoveCircle size={18} />
+                </button>
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-red-500 px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
+                  댓글 삭제
+                </div>
               </div>
             </div>
-            <div className="bg-lightGray h-4 w-px" />
-            <div className="group relative">
-              <button
-                onClick={() => setShowConfirm(true)}
-                className="text-midGray hover:text-mainRed focus:text-mainRed cursor-pointer px-3 focus:outline-none"
-              >
-                <IoRemoveCircle size={18} />
-              </button>
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 rounded bg-red-500 px-2 py-1 text-xs font-normal whitespace-nowrap text-white opacity-0 transition-opacity group-hover:opacity-50">
-                댓글 삭제
-              </div>
-            </div>
-          </div>
-        )}
-      </span>
+          )}
+        </div>
+      </div>
 
       {isEditing ? (
         <div className="animate-fade-in flex flex-col gap-5">

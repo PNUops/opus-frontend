@@ -97,7 +97,7 @@ const CommentFormSection = ({ teamId }: CommentFormSection) => {
           type="button"
           onClick={handleClick}
           disabled={commentMutation.isPending}
-          className="text-mainGreen text-exsm rounded-full bg-[#D1F3E1] px-10 py-2 font-medium transition-colors duration-200 hover:cursor-pointer hover:bg-[#b2e8cf] focus:bg-[#b2e8cf] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+          className="text-mainGreen text-exsm w-32 rounded-full bg-[#D1F3E1] py-2 font-medium transition-colors duration-200 hover:cursor-pointer hover:bg-[#b2e8cf] focus:bg-[#b2e8cf] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
         >
           {commentMutation.isPending ? '등록 중' : '등록'}
         </button>

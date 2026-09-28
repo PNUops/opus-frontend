@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { GoCommentDiscussion } from 'react-icons/go';
 
@@ -11,9 +12,10 @@ import FeedbackItem from './FeedbackItem';
 
 interface FeedbackSectionProps {
   teamId: number;
+  showForm?: boolean;
 }
 
-const FeedbackSection = ({ teamId }: FeedbackSectionProps) => {
+const FeedbackSection = ({ teamId, showForm = true }: FeedbackSectionProps) => {
   const { isSignedIn, isAdvisor } = useAuth();
   const {
     data: feedbacks = [],
@@ -25,54 +27,60 @@ const FeedbackSection = ({ teamId }: FeedbackSectionProps) => {
     enabled: isSignedIn,
   });
 
+  if (!isSignedIn) return null;
+
   return (
-    <section id="feedback" className="border-lightGray scroll-mt-24 rounded-lg border p-4 sm:p-5">
-      <div className="mb-5 flex items-start gap-2">
-        <GoCommentDiscussion className="text-mainGreen mt-0.5 shrink-0" size={18} />
-        <div>
-          <h2 className="text-darkGray text-base font-bold">피드백</h2>
-          <p className="text-midGray mt-1 text-xs">지도교수·멘토가 프로젝트에 남긴 피드백입니다.</p>
-        </div>
-      </div>
-
-      {!isSignedIn ? (
-        <div className="bg-whiteGray text-midGray rounded-md py-8 text-center text-sm">
-          피드백은 로그인 후 확인할 수 있어요.
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {isAdvisor && <FeedbackForm teamId={teamId} />}
-
-          {isLoading ? (
-            <FeedbackLoading />
-          ) : isError ? (
-            <div className="text-mainRed border-lightGray rounded-lg border py-8 text-center text-sm">
-              피드백을 불러오지 못했어요.
-            </div>
-          ) : feedbacks.length === 0 ? (
-            <div className="text-midGray border-lightGray rounded-lg border py-8 text-center text-sm">
-              아직 등록된 피드백이 없어요.
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {feedbacks.map((feedback) => (
-                <FeedbackItem key={feedback.commentId} feedback={feedback} teamId={teamId} />
-              ))}
-            </div>
-          )}
-        </div>
+    <section id="feedback" className="flex scroll-mt-24 flex-col">
+      {showForm && isAdvisor && (
+        <>
+          <FeedbackForm teamId={teamId} />
+          <div className="h-16 sm:h-20" />
+        </>
       )}
+
+      <div>
+        <div className="border-lightGray flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-b pb-5">
+          <div className="flex items-center gap-2 text-sm font-bold">
+            <GoCommentDiscussion className="text-mainGreen shrink-0" size={18} />
+            <h2>
+              피드백 <span className="text-mainGreen">{feedbacks.length}</span>개
+            </h2>
+          </div>
+          <p className="text-midGray text-xs">지도교수·멘토가 프로젝트에 남긴 피드백입니다.</p>
+        </div>
+
+        {isLoading ? (
+          <FeedbackLoading />
+        ) : isError ? (
+          <FeedbackStatus className="text-mainRed">피드백을 불러오지 못했어요.</FeedbackStatus>
+        ) : (
+          <div className="flex flex-col">
+            {feedbacks.map((feedback) => (
+              <FeedbackItem key={feedback.commentId} feedback={feedback} teamId={teamId} />
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 };
 
+interface FeedbackStatusProps {
+  children: ReactNode;
+  className?: string;
+}
+
+const FeedbackStatus = ({ children, className = 'text-midGray' }: FeedbackStatusProps) => (
+  <div className={`border-b border-gray-100 py-10 text-center text-sm ${className}`}>{children}</div>
+);
+
 const FeedbackLoading = () => (
-  <div className="border-lightGray animate-pulse rounded-lg border p-4">
-    <div className="flex items-center gap-2">
-      <div className="h-8 w-8 rounded-full bg-gray-200" />
+  <div className="animate-pulse border-b border-gray-100 p-5">
+    <div className="flex items-center justify-between gap-3">
       <div className="h-4 w-32 rounded bg-gray-200" />
+      <div className="h-3 w-28 rounded bg-gray-200" />
     </div>
-    <div className="mt-4 h-4 w-3/4 rounded bg-gray-200" />
+    <div className="mt-3 h-4 w-3/4 rounded bg-gray-200" />
   </div>
 );
 
