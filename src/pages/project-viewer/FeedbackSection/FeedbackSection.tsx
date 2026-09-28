@@ -41,9 +41,9 @@ const FeedbackSection = ({ teamId, showForm = true }: FeedbackSectionProps) => {
       <div>
         <div className="border-lightGray flex flex-wrap items-end justify-between gap-x-4 gap-y-2 border-b pb-5">
           <div className="flex items-center gap-2 text-sm font-bold">
-            <GoCommentDiscussion className="text-mainGreen shrink-0" size={18} />
+            <GoCommentDiscussion className="text-mainBlue shrink-0" size={18} />
             <h2>
-              피드백 <span className="text-mainGreen">{feedbacks.length}</span>개
+              피드백 <span className="text-mainBlue">{feedbacks.length}</span>개
             </h2>
           </div>
           <p className="text-midGray text-xs">지도교수·멘토가 프로젝트에 남긴 피드백입니다.</p>

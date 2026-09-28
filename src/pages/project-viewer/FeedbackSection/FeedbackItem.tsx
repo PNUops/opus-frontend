@@ -89,7 +89,7 @@ const FeedbackItem = ({ feedback, teamId }: FeedbackItemProps) => {
         <div className="flex min-w-0 items-center gap-2">
           <span className="truncate">{memberName ?? '알 수 없음'}</span>
           {roleLabel && (
-            <span className="bg-subGreen text-mainGreen shrink-0 rounded-md px-2 py-0.5 text-xs font-medium">
+            <span className="text-mainBlue shrink-0 rounded-md bg-sky-100 px-2 py-0.5 text-xs font-medium">
               {roleLabel}
             </span>
           )}
