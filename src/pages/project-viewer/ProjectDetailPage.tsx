@@ -33,7 +33,7 @@ const ProjectDetailPage = () => {
   const teamId = useTeamId();
   if (!teamId) return <div>Team ID not found.</div>;
 
-  const { isAdmin, user } = useAuth();
+  const { isAdmin, isAdvisor, user } = useAuth();
   const memberId = user?.id;
   const toast = useToast();
   const posterNotFoundToast = useRef(false);
@@ -52,6 +52,7 @@ const ProjectDetailPage = () => {
 
   const requiredFields = requiredFieldsData ?? defaultRequiredFields;
   const isEditorOfThisTeam = data ? canEditTeamPage(memberId ?? -1, data.teamMembers, isAdmin) : false;
+  const canViewFeedback = isEditorOfThisTeam || isAdvisor;
   const posterUrl = posterResult?.status === 'success' ? posterResult.url : null;
 
   useEffect(() => {
@@ -128,7 +129,7 @@ const ProjectDetailPage = () => {
       <div className="h-10" />
       <GithubCard githubUrl={githubUrl} />
       <div className="h-28" />
-      <ProjectDiscussionSection teamId={data.teamId} />
+      <ProjectDiscussionSection teamId={data.teamId} canViewFeedback={canViewFeedback} />
     </div>
   );
 };

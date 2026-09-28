@@ -9,21 +9,22 @@ import FeedbackSection from './FeedbackSection/FeedbackSection';
 
 interface ProjectDiscussionSectionProps {
   teamId: number;
+  canViewFeedback: boolean;
 }
 
 type DiscussionTab = 'comments' | 'feedback';
 
-const ProjectDiscussionSection = ({ teamId }: ProjectDiscussionSectionProps) => {
-  const { isSignedIn, isAdvisor } = useAuth();
+const ProjectDiscussionSection = ({ teamId, canViewFeedback }: ProjectDiscussionSectionProps) => {
+  const { isAdvisor } = useAuth();
   const [activeTab, setActiveTab] = useState<DiscussionTab>('comments');
   const commentTabRef = useRef<HTMLButtonElement>(null);
   const feedbackTabRef = useRef<HTMLButtonElement>(null);
 
-  if (!isAdvisor) {
+  if (!isAdvisor || !canViewFeedback) {
     return (
       <>
         <CommentSection teamId={teamId} />
-        {isSignedIn && (
+        {canViewFeedback && (
           <>
             <div className="h-20" />
             <FeedbackSection teamId={teamId} />
