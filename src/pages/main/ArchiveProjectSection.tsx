@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { type FallbackProps } from 'react-error-boundary';
 import { archiveProjectsOption } from '@queries/contest';
+import SectionScrollHeader from './SectionScrollHeader';
 
 const ArchiveGeometry = () => (
   <span className="opus-archive-feature__geometry" aria-hidden="true">
@@ -22,10 +23,13 @@ const ArchiveProjectSection = () => {
 
   return (
     <section className="opus-archive-section" aria-labelledby="opus-archive-title">
-      <header className="opus-archive-section__header">
-        <p>ARCHIVE</p>
-        <h2 id="opus-archive-title">다시 보는 프로젝트</h2>
-      </header>
+      <SectionScrollHeader
+        className="opus-archive-section__header"
+        eyebrow="ARCHIVE"
+        title="다시 보는 프로젝트"
+        titleId="opus-archive-title"
+        scrollFromSectionStart
+      />
 
       <div className="opus-archive-layout" data-layout={compactProjects.length > 0 ? 'split' : 'single'}>
         <article className="opus-archive-feature">
@@ -83,10 +87,12 @@ const ArchiveProjectSection = () => {
 
 export const ArchiveProjectSkeleton = () => (
   <section className="opus-archive-section" aria-label="과거 프로젝트를 불러오는 중" aria-busy="true">
-    <header className="opus-archive-section__header">
-      <p>ARCHIVE</p>
-      <h2>다시 보는 프로젝트</h2>
-    </header>
+    <SectionScrollHeader
+      className="opus-archive-section__header"
+      eyebrow="ARCHIVE"
+      title="다시 보는 프로젝트"
+      scrollFromSectionStart
+    />
     <div className="opus-archive-skeleton" aria-hidden="true">
       <span />
       <span />

@@ -4,14 +4,12 @@ import { type FallbackProps } from 'react-error-boundary';
 import dayjs from 'dayjs';
 import { contestsOption, currentContestOption } from '@queries/contest';
 import { type CurrentContestResponseDto } from '@dto/contestsDto';
+import SectionScrollHeader from './SectionScrollHeader';
 
 const geometryPatterns = ['dots', 'lines', 'arc', 'quarter'] as const;
 
 const ContestSectionHeader = ({ title }: { title: string }) => (
-  <header className="opus-contest-region__header">
-    <p>CONTEST</p>
-    <h2>{title}</h2>
-  </header>
+  <SectionScrollHeader className="opus-contest-region__header" eyebrow="CONTEST" title={title} />
 );
 
 export const ContestGridSkeleton = () => (
