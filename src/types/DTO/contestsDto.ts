@@ -15,6 +15,18 @@ export interface GroupedContestResponseDto {
   contests: Pick<ContestResponseDto, 'contestId' | 'contestName' | 'isCurrent'>[];
 }
 
+export type SidebarSortMode = 'ASC' | 'DESC' | 'CUSTOM';
+
+export interface SidebarCategoryCustomSortDto {
+  categoryId: number;
+  itemOrder: number;
+}
+
+export interface CategoryContestCustomSortDto {
+  contestId: number;
+  itemOrder: number;
+}
+
 export interface CurrentContestResponseDto {
   contestId: number;
   categoryName: string;

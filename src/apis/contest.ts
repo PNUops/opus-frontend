@@ -10,6 +10,9 @@ import {
   ProjectsAdminResponseDto,
   TeamCustomSortData,
   TeamSortOption,
+  SidebarSortMode,
+  SidebarCategoryCustomSortDto,
+  CategoryContestCustomSortDto,
 } from '@dto/contestsDto';
 import { TeamListItemResponseDto } from '@dto/teams/teamListDto';
 
@@ -34,6 +37,32 @@ export const getAllContests = async (): Promise<ContestResponseDto[]> => {
 export const getGroupedContests = async (): Promise<GroupedContestResponseDto[]> => {
   const res = await apiClient.get('/sidebar');
   return res.data;
+};
+
+export const getSidebarCategorySort = async (): Promise<SidebarSortMode> => {
+  const res = await apiClient.get<{ mode: SidebarSortMode }>('/categories/sort');
+  return res.data.mode;
+};
+
+export const putSidebarCategorySort = async (mode: SidebarSortMode) => {
+  await apiClient.put('/categories/sort', { mode });
+};
+
+export const putSidebarCategoryCustomSort = async (payload: SidebarCategoryCustomSortDto[]) => {
+  await apiClient.put('/categories/sort/custom', payload);
+};
+
+export const getCategoryContestSort = async (categoryId: number): Promise<SidebarSortMode> => {
+  const res = await apiClient.get<{ mode: SidebarSortMode }>(`/categories/${categoryId}/contests/sort`);
+  return res.data.mode;
+};
+
+export const putCategoryContestSort = async (categoryId: number, mode: SidebarSortMode) => {
+  await apiClient.put(`/categories/${categoryId}/contests/sort`, { mode });
+};
+
+export const putCategoryContestCustomSort = async (categoryId: number, payload: CategoryContestCustomSortDto[]) => {
+  await apiClient.put(`/categories/${categoryId}/contests/sort/custom`, payload);
 };
 
 export const postAllContests = async (contestName: string) => {
