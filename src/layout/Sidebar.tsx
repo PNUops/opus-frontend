@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, CircleDot, Folder, FolderOpen, MessageSquareShare } from 'lucide-react';
+import { ChevronDown, CircleDot, Folder, FolderOpen, ListRestart, MessageSquareShare } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
 import { cn } from '@utils/classname';
@@ -8,6 +8,8 @@ import { getGroupedContests } from '@apis/contest';
 import { useContestId } from '@hooks/useId';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import { EXTERNAL_LINKS } from '@constants/external-links';
+import useAuth from '@hooks/useAuth';
+import SidebarSortEditor from '@layout/SidebarSortEditor';
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
@@ -16,9 +18,11 @@ interface SidebarProps {
 
 const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
   const isEditorial = tone === 'editorial';
+  const { isAdmin } = useAuth();
   const activeContestId = useContestId();
   const { data: groups = [], isLoading } = useQuery({ queryKey: ['groupedContests'], queryFn: getGroupedContests });
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
+  const [isSorting, setIsSorting] = useState(false);
   const currentCategoryId = useMemo(
     () => groups.find((group) => group.contests.some((contest) => contest.isCurrent))?.categoryId ?? null,
     [groups],
@@ -53,33 +57,61 @@ const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
   return (
     <aside className={containerClassName}>
       <nav className={cn('flex flex-col gap-5', isEditorial ? 'p-5' : 'p-5 md:p-6')} aria-label="대회 사이드바">
-        <div className="flex items-center gap-3 px-4 py-2">
-          <FolderOpen className={cn('size-5 shrink-0', isEditorial ? 'text-[#45d6ec]' : 'text-mainGreen')} />
-          <h2 className={cn('truncate text-base font-semibold', isEditorial ? 'text-[#f8f6f0]' : 'text-neutral-950')}>
-            대회 목록
-          </h2>
+        <div className="flex items-center justify-between gap-2 px-4 py-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <FolderOpen className={cn('size-5 shrink-0', isEditorial ? 'text-[#45d6ec]' : 'text-mainGreen')} />
+            <h2 className={cn('truncate text-base font-semibold', isEditorial ? 'text-[#f8f6f0]' : 'text-neutral-950')}>
+              대회 목록
+            </h2>
+          </div>
+          {isAdmin && !isSorting && !isLoading && groups.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setIsSorting(true)}
+              className={cn(
+                'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold transition-colors',
+                isEditorial
+                  ? 'text-white/60 hover:bg-white/5 hover:text-white'
+                  : 'hover:bg-whiteGray hover:text-mainGreen text-neutral-500',
+              )}
+            >
+              <ListRestart className="size-3.5" aria-hidden />
+              정렬
+            </button>
+          )}
         </div>
 
-        <ul className={cn('flex flex-col gap-3', isEditorial ? 'ml-0' : 'ml-3')}>
-          {isLoading ? (
-            <SidebarSkeleton tone={tone} />
-          ) : groups.length === 0 ? (
-            <li className={cn('px-4 py-6 text-center text-sm', isEditorial ? 'text-white/55' : 'text-midGray')}>
-              등록된 대회가 없어요.
-            </li>
-          ) : (
-            groups.map((group) => (
-              <CategoryGroup
-                key={group.categoryId}
-                category={group}
-                isExpanded={expandedCategoryId === group.categoryId}
-                isActive={activeCategoryId === group.categoryId}
-                onToggle={() => toggleCategory(group.categoryId)}
-                tone={tone}
-              />
-            ))
-          )}
-        </ul>
+        {isSorting && isAdmin ? (
+          <SidebarSortEditor
+            groups={groups}
+            expandedCategoryId={expandedCategoryId}
+            onToggleCategory={toggleCategory}
+            onCancel={() => setIsSorting(false)}
+            onSaved={() => setIsSorting(false)}
+            tone={tone}
+          />
+        ) : (
+          <ul className={cn('flex flex-col gap-3', isEditorial ? 'ml-0' : 'ml-3')}>
+            {isLoading ? (
+              <SidebarSkeleton tone={tone} />
+            ) : groups.length === 0 ? (
+              <li className={cn('px-4 py-6 text-center text-sm', isEditorial ? 'text-white/55' : 'text-midGray')}>
+                등록된 대회가 없어요.
+              </li>
+            ) : (
+              groups.map((group) => (
+                <CategoryGroup
+                  key={group.categoryId}
+                  category={group}
+                  isExpanded={expandedCategoryId === group.categoryId}
+                  isActive={activeCategoryId === group.categoryId}
+                  onToggle={() => toggleCategory(group.categoryId)}
+                  tone={tone}
+                />
+              ))
+            )}
+          </ul>
+        )}
 
         <div className={cn('border-t pt-4', isEditorial ? 'border-white/20' : 'border-lightGray')}>
           <Tooltip>
