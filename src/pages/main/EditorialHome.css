@@ -1370,10 +1370,18 @@ html {
 }
 
 .opus-archive-compact {
+  display: flex;
   min-width: 0;
+  flex-direction: column;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.opus-archive-compact li {
+  display: flex;
+  min-height: 0;
+  flex: 1;
 }
 
 .opus-archive-compact li + li {
@@ -1383,6 +1391,7 @@ html {
 .opus-archive-compact__link {
   display: grid;
   min-height: 180px;
+  flex: 1;
   grid-template-columns: 54px minmax(0, 1fr) auto;
   align-items: start;
   gap: 18px;
