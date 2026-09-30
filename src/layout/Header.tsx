@@ -237,7 +237,11 @@ const Header = () => {
           {isSidebarRoute && !isAdminRoute && (
             <Button
               onClick={toggle}
-              className="flex h-9 w-9 items-center justify-center p-0 text-black lg:hidden"
+              className={`flex h-9 w-9 items-center justify-center p-0 lg:hidden ${
+                isHomeRoute
+                  ? 'border border-white/40 bg-white/10 text-white hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-[#45d6ec] focus-visible:outline-none'
+                  : 'text-black'
+              }`}
               aria-label="메뉴 열기"
             >
               <HiMenu className="h-4 w-4" />
