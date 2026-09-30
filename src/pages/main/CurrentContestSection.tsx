@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { type FallbackProps } from 'react-error-boundary';
 import dayjs from 'dayjs';
 import { contestsOption, currentContestOption } from '@queries/contest';
 import { type CurrentContestResponseDto } from '@dto/contestsDto';
+import { bannerOption } from '@queries/banner';
+import { useImageObjectUrl } from '@hooks/useImageBlob';
 import SectionScrollHeader from './SectionScrollHeader';
 
 const geometryPatterns = ['dots', 'lines', 'arc', 'quarter'] as const;
@@ -73,6 +75,20 @@ const ContestPeriod = ({ contest }: { contest: CurrentContestResponseDto }) => {
       <span aria-hidden="true"> — </span>
       <time dateTime={endAt.format('YYYY-MM-DD')}>{endLabel}</time>
     </p>
+  );
+};
+
+const ContestPoster = ({ contest }: { contest: CurrentContestResponseDto }) => {
+  const { data: posterBlob, isLoading } = useQuery(bannerOption(contest.contestId));
+  const posterUrl = useImageObjectUrl(posterBlob);
+
+  if (!isLoading && !posterUrl) return null;
+
+  return (
+    <span className="opus-contest-card__poster" data-loading={isLoading}>
+      {posterUrl && <img src={posterUrl} alt={`${contest.contestName} 대회 홍보 배너`} />}
+      <span className="opus-contest-card__poster-shade" aria-hidden="true" />
+    </span>
   );
 };
 
@@ -153,6 +169,7 @@ const CurrentContestSection = () => {
                 className="opus-contest-card__link"
                 aria-label={`${contest.contestName} 대회 보기`}
               >
+                <ContestPoster contest={contest} />
                 <div className="opus-contest-card__top">
                   <span className="opus-contest-card__number" aria-hidden="true">
                     {String(index + 1).padStart(2, '0')}
