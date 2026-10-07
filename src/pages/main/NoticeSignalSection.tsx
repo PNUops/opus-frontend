@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { noticeOption } from '@queries/notices';
 import { type FallbackProps } from 'react-error-boundary';
+import type { NoticeListDto } from '@dto/noticeDto';
 
 const NoticeSignalSection = () => {
   const { data: notices } = useSuspenseQuery(noticeOption());
-  const recentNotices = [...notices]
-    .sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf())
-    .slice(0, 5);
+  const recentNotices = notices.slice(0, 5);
 
   return (
     <section className="opus-signal-section" aria-labelledby="opus-signal-title">
@@ -22,24 +21,9 @@ const NoticeSignalSection = () => {
 
       {recentNotices.length > 0 ? (
         <ol className="opus-signal-list">
-          {recentNotices.map((notice) => {
-            const createdAt = dayjs(notice.createdAt);
-
-            return (
-              <li key={notice.noticeId}>
-                <Link to={`/notices/${notice.noticeId}`} viewTransition className="opus-signal-list__link">
-                  <time dateTime={createdAt.format('YYYY-MM-DD')}>
-                    <span className="opus-signal-list__date-full">{createdAt.format('YYYY.MM.DD')}</span>
-                    <span className="opus-signal-list__date-compact">{createdAt.format('MM.DD')}</span>
-                  </time>
-                  <span className="opus-signal-list__title">{notice.title}</span>
-                  <span className="opus-signal-list__arrow" aria-hidden="true">
-                    ↗
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
+          {recentNotices.map((notice) => (
+            <NoticeSignalItem key={notice.noticeId} notice={notice} />
+          ))}
         </ol>
       ) : (
         <p className="opus-signal-section__empty">새로운 공지가 없습니다.</p>
@@ -51,6 +35,37 @@ const NoticeSignalSection = () => {
     </section>
   );
 };
+
+interface NoticeSignalItemProps {
+  notice: NoticeListDto;
+}
+
+function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
+  const createdAt = dayjs(notice.createdAt);
+  const showNewLabel = createdAt.isAfter(dayjs().subtract(3, 'day'));
+
+  return (
+    <li>
+      <Link to={`/notices/${notice.noticeId}`} viewTransition className="opus-signal-list__link">
+        <time dateTime={createdAt.format('YYYY-MM-DD')}>
+          <span className="opus-signal-list__date-full">{createdAt.format('YYYY.MM.DD')}</span>
+          <span className="opus-signal-list__date-compact">{createdAt.format('MM.DD')}</span>
+        </time>
+        <span className="opus-signal-list__headline">
+          <span className="opus-signal-list__title">{notice.title}</span>
+          {showNewLabel && (
+            <span aria-label="새 공지" className="opus-signal-list__new">
+              NEW
+            </span>
+          )}
+        </span>
+        <span className="opus-signal-list__arrow" aria-hidden="true">
+          ↗
+        </span>
+      </Link>
+    </li>
+  );
+}
 
 export const NoticeSignalSkeleton = () => (
   <section className="opus-signal-section" aria-label="최근 공지를 불러오는 중" aria-busy="true">

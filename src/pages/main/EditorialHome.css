@@ -42,56 +42,6 @@ html {
   align-self: center;
 }
 
-.opus-clock {
-  display: inline-block;
-  min-width: 190px;
-  margin-bottom: 18px;
-  padding: 10px 12px 11px;
-  border: 1px solid rgba(218, 244, 255, 0.32);
-  border-radius: 14px;
-  background: rgba(177, 224, 248, 0.1);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 8px 24px rgba(0, 12, 31, 0.2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.opus-clock time {
-  display: block;
-}
-
-.opus-clock__date {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--opus-home-muted);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.opus-clock__time-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.opus-clock__time {
-  color: var(--opus-home-ink);
-  font-size: 1.28rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 760;
-  letter-spacing: 0.035em;
-  line-height: 1;
-}
-
-.opus-clock__zone {
-  color: var(--opus-home-cyan);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-}
-
 .opus-masthead__eyebrow {
   margin: 0 0 12px;
   color: var(--opus-home-cyan);
@@ -527,17 +477,45 @@ html {
   display: none;
 }
 
-.opus-signal-list__title {
-  display: -webkit-box;
+.opus-signal-list__headline {
+  display: flex;
   min-width: 0;
+  align-items: center;
+  gap: 5px;
+}
+
+.opus-signal-list__title {
+  display: block;
+  min-width: 0;
+  flex: 1;
   overflow: hidden;
   color: var(--opus-home-ink);
   font-size: 0.84rem;
   font-weight: 680;
   line-height: 1.35;
+  text-overflow: ellipsis;
   transition: color 160ms ease;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  white-space: nowrap;
+}
+
+.opus-signal-list__new {
+  display: inline-flex;
+  min-width: 30px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 5px 2px;
+  border: 1px solid rgba(190, 217, 37, 0.68);
+  border-radius: 999px;
+  background: rgba(190, 217, 37, 0.1);
+  color: var(--opus-home-lime);
+  box-shadow:
+    0 0 8px rgba(190, 217, 37, 0.14),
+    inset 0 0 6px rgba(190, 217, 37, 0.07);
+  font-size: 0.5rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .opus-signal-list__link:hover .opus-signal-list__title,
@@ -1727,14 +1705,6 @@ html {
     grid-template-columns: minmax(0, 1fr) minmax(110px, 38vw);
     min-height: 208px;
     gap: 8px;
-  }
-
-  .opus-clock {
-    width: min(160px, 100%);
-    min-width: 0;
-    box-sizing: border-box;
-    margin-bottom: 14px;
-    padding: 9px 10px 10px;
   }
 
   .opus-clock__time {

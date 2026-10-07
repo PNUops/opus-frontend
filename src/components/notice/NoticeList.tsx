@@ -46,7 +46,7 @@ export const NoticeListItem = ({ title, noticeId, createdAt, contestId, variant 
             {showNewIcon && <MdFiberNew aria-label="새 공지" className="text-mainRed mt-0.5 shrink-0 text-xl" />}
           </div>
           <time dateTime={createdAt} className="text-midGray text-xs whitespace-nowrap sm:text-sm">
-            {dayjs(createdAt).format('YYYY.MM.DD HH:mm')}
+            {dayjs(createdAt).format('YYYY.MM.DD ')}
           </time>
         </Link>
       </li>

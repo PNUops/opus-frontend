@@ -29,6 +29,8 @@ const NoticeDetail = () => {
 
   const backTo = !contestId ? '/notices' : `/contest/${contestId}`;
   const backLabel = contestId ? `${contestName ?? '대회'}으로 돌아가기` : '전체 공지사항으로 돌아가기';
+  const isModified = dayjs(notice.updatedAt).isAfter(dayjs(notice.createdAt));
+  const displayedAt = isModified ? notice.updatedAt : notice.createdAt;
 
   return (
     <article className="mx-auto w-full max-w-4xl">
@@ -45,24 +47,10 @@ const NoticeDetail = () => {
           {notice.title}
         </h1>
 
-        <dl className="text-midGray mt-5 grid gap-2 text-xs sm:flex sm:flex-wrap sm:gap-x-5 sm:gap-y-2 sm:text-sm">
-          <div className="flex items-center gap-2">
-            <dt className="font-medium">작성일</dt>
-            <dd>
-              <time dateTime={notice.createdAt} className="font-semibold text-neutral-700">
-                {dayjs(notice.createdAt).format('YYYY.MM.DD')}
-              </time>
-            </dd>
-          </div>
-          <div className="border-lightGray flex items-center gap-2 sm:border-l sm:pl-5">
-            <dt className="font-medium">수정일</dt>
-            <dd>
-              <time dateTime={notice.updatedAt} className="font-semibold text-neutral-700">
-                {dayjs(notice.updatedAt).format('YYYY.MM.DD')}
-              </time>
-            </dd>
-          </div>
-        </dl>
+        <p className="text-midGray mt-5 text-xs sm:text-sm">
+          <time dateTime={displayedAt}>{dayjs(displayedAt).format('YYYY.MM.DD HH:mm')}</time>
+          {isModified && <span className="ml-1">(수정됨)</span>}
+        </p>
       </header>
 
       <section aria-label="공지 내용" className="min-h-64 pt-8 sm:pt-10">

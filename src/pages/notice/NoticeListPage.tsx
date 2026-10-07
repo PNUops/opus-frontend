@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,12 +7,11 @@ import { noticeOption } from '@queries/notices';
 
 const NoticeItems = () => {
   const { data: notices } = useSuspenseQuery(noticeOption());
-  const recentFirstNotices = [...notices].sort((a, b) => dayjs(b.createdAt).valueOf() - dayjs(a.createdAt).valueOf());
 
   return (
     <NoticeList variant="document">
-      {recentFirstNotices.length === 0 && <NoticeListNoData variant="document" />}
-      {recentFirstNotices.map((notice) => (
+      {notices.length === 0 && <NoticeListNoData variant="document" />}
+      {notices.map((notice) => (
         <NoticeListItem key={notice.noticeId} {...notice} variant="document" />
       ))}
     </NoticeList>
