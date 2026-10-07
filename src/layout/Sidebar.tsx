@@ -229,7 +229,7 @@ const ContestList = ({ contests, tone }: ContestListProps) => {
     <>
       {contests.map((contest) => (
         <li key={contest.contestId}>
-          <NavLink to={`/contest/${contest.contestId}`} className={getLinkClass}>
+          <NavLink to={`/contest/${contest.contestId}`} viewTransition={tone === 'editorial'} className={getLinkClass}>
             <CircleDot
               className={cn(
                 'size-3 shrink-0',

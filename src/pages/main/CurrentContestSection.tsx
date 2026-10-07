@@ -115,6 +115,7 @@ const CurrentContestSection = () => {
               >
                 <Link
                   to={`/contest/${contest.contestId}`}
+                  viewTransition
                   className="opus-contest-card__link"
                   aria-label={`${contest.contestName} 대회 보기`}
                 >
@@ -166,6 +167,7 @@ const CurrentContestSection = () => {
             >
               <Link
                 to={`/contest/${contest.contestId}`}
+                viewTransition
                 className="opus-contest-card__link"
                 aria-label={`${contest.contestName} 대회 보기`}
               >

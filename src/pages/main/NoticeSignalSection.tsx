@@ -22,25 +22,30 @@ const NoticeSignalSection = () => {
 
       {recentNotices.length > 0 ? (
         <ol className="opus-signal-list">
-          {recentNotices.map((notice) => (
-            <li key={notice.noticeId}>
-              <Link to={`/notices/${notice.noticeId}`} className="opus-signal-list__link">
-                <time dateTime={dayjs(notice.createdAt).format('YYYY-MM-DD')}>
-                  {dayjs(notice.createdAt).format('MM.DD')}
-                </time>
-                <span className="opus-signal-list__title">{notice.title}</span>
-                <span className="opus-signal-list__arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </Link>
-            </li>
-          ))}
+          {recentNotices.map((notice) => {
+            const createdAt = dayjs(notice.createdAt);
+
+            return (
+              <li key={notice.noticeId}>
+                <Link to={`/notices/${notice.noticeId}`} viewTransition className="opus-signal-list__link">
+                  <time dateTime={createdAt.format('YYYY-MM-DD')}>
+                    <span className="opus-signal-list__date-full">{createdAt.format('YYYY.MM.DD')}</span>
+                    <span className="opus-signal-list__date-compact">{createdAt.format('MM.DD')}</span>
+                  </time>
+                  <span className="opus-signal-list__title">{notice.title}</span>
+                  <span className="opus-signal-list__arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ol>
       ) : (
         <p className="opus-signal-section__empty">새로운 공지가 없습니다.</p>
       )}
 
-      <Link to="/notices" className="opus-editorial-link opus-signal-section__more">
+      <Link to="/notices" viewTransition className="opus-editorial-link opus-signal-section__more">
         전체 공지 보기 <span aria-hidden="true">↗</span>
       </Link>
     </section>

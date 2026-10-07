@@ -35,6 +35,7 @@ const ArchiveProjectSection = () => {
         <article className="opus-archive-feature">
           <Link
             to={`/contest/${featuredProject.contestId}/teams/view/${featuredProject.teamId}`}
+            viewTransition
             className="opus-archive-feature__link"
             aria-label={`${featuredProject.projectName} 프로젝트 보기`}
           >
@@ -57,6 +58,7 @@ const ArchiveProjectSection = () => {
               <li key={project.teamId}>
                 <Link
                   to={`/contest/${project.contestId}/teams/view/${project.teamId}`}
+                  viewTransition
                   className="opus-archive-compact__link"
                   aria-label={`${project.projectName} 프로젝트 보기`}
                 >
@@ -78,7 +80,7 @@ const ArchiveProjectSection = () => {
         )}
       </div>
 
-      <Link to={moreProjectsPath} className="opus-editorial-link opus-archive-section__more">
+      <Link to={moreProjectsPath} viewTransition className="opus-editorial-link opus-archive-section__more">
         프로젝트 더 보기 <span aria-hidden="true">↗</span>
       </Link>
     </section>
