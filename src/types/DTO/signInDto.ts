@@ -17,7 +17,7 @@ export interface SignInResponseDto {
   memberId: number;
   name: string;
   token: string;
-  roles: MemberType[];
+  types: MemberType[];
 }
 
 export interface PasswordResetRequestDto {
