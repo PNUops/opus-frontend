@@ -12,10 +12,6 @@ const NoticeSignalSection = () => {
   return (
     <section className="opus-signal-section" aria-labelledby="opus-signal-title">
       <header className="opus-signal-section__header">
-        <div>
-          <span className="opus-campus-news__signal" aria-hidden="true" />
-          <h1 id="opus-signal-title">OPUS SIGNAL</h1>
-        </div>
         <span>NOTICE</span>
       </header>
 
@@ -70,10 +66,6 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
 export const NoticeSignalSkeleton = () => (
   <section className="opus-signal-section" aria-label="최근 공지를 불러오는 중" aria-busy="true">
     <header className="opus-signal-section__header">
-      <div>
-        <span className="opus-campus-news__signal" aria-hidden="true" />
-        <h1 className="opus-signal-section__skeleton-heading">OPUS SIGNAL</h1>
-      </div>
       <span>NOTICE</span>
     </header>
     <div className="opus-signal-skeleton" aria-hidden="true">
