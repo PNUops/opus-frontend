@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 import { AiOutlineNotification } from 'react-icons/ai';
-import { MdFiberNew } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { NoticeListDto } from '@dto/noticeDto';
+import { getNoticePath, isRecentNotice } from '@utils/notice';
+import { NoticeNewIndicator } from './NoticeNewIndicator';
 
 type NoticeListVariant = 'card' | 'document';
 
@@ -26,25 +27,33 @@ interface NoticeListItemProps extends NoticeListDto {
   variant?: NoticeListVariant;
 }
 
-export const NoticeListItem = ({ title, noticeId, createdAt, contestId, variant = 'card' }: NoticeListItemProps) => {
-  const showNewIcon = dayjs(createdAt).isAfter(dayjs().subtract(3, 'day'));
-  const href = `/notices/${!contestId ? noticeId : `${contestId}/${noticeId}`}`;
+export const NoticeListItem = ({
+  title,
+  noticeId,
+  createdAt,
+  updatedAt,
+  contestId,
+  variant = 'card',
+}: NoticeListItemProps) => {
+  const showNewIndicator = isRecentNotice({ createdAt, updatedAt });
+  const href = getNoticePath(noticeId, contestId);
 
   if (variant === 'document') {
     return (
       <li>
         <Link
           to={href}
+          viewTransition
           className="group focus-visible:ring-mainBlue grid min-h-20 grid-cols-1 gap-2 px-1 py-5 transition-colors hover:bg-gray-50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6 sm:px-3"
         >
           <div className="flex min-w-0 items-start gap-2">
             <span className="group-hover:text-mainBlue text-sm leading-6 font-semibold [overflow-wrap:anywhere] text-neutral-800 transition-colors sm:text-base">
               {title}
             </span>
-            {showNewIcon && <MdFiberNew aria-label="새 공지" className="text-mainRed mt-0.5 shrink-0 text-xl" />}
+            {showNewIndicator && <NoticeNewIndicator className="bg-mainRed mt-2" />}
           </div>
           <time dateTime={createdAt} className="text-midGray text-xs whitespace-nowrap sm:text-sm">
-            {dayjs(createdAt).format('YYYY.MM.DD ')}
+            {dayjs(createdAt).format('YYYY.MM.DD')}
           </time>
         </Link>
       </li>
@@ -52,9 +61,10 @@ export const NoticeListItem = ({ title, noticeId, createdAt, contestId, variant 
   }
 
   return (
-    <li key={noticeId}>
+    <li>
       <Link
         to={href}
+        viewTransition
         className="group flex items-center justify-between rounded-md px-2 py-2 transition-colors hover:bg-black/5"
       >
         <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -63,7 +73,7 @@ export const NoticeListItem = ({ title, noticeId, createdAt, contestId, variant 
             <span className="truncate text-sm font-medium text-gray-700 group-hover:text-black sm:text-base">
               {title}
             </span>
-            {showNewIcon && <MdFiberNew className="text-mainRed shrink-0 text-xl" />}
+            {showNewIndicator && <NoticeNewIndicator className="bg-mainRed" />}
           </div>
         </div>
         <span className="text-midGray ml-4 shrink-0 text-xs whitespace-nowrap sm:text-sm">

@@ -4,6 +4,8 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { type FallbackProps } from 'react-error-boundary';
 import { noticeOption } from '@queries/notices';
 import type { NoticeListDto } from '@dto/noticeDto';
+import { NoticeNewIndicator } from '@components/notice';
+import { getNoticePath, isRecentNotice } from '@utils/notice';
 
 const signalSectionClassName = 'm-2.5 min-w-0 w-[min(100%,40rem)]';
 const signalHeaderClassName = 'flex items-center justify-between gap-3 border-b border-[rgba(229,240,252,0.2)] pb-2.5';
@@ -58,12 +60,12 @@ interface NoticeSignalItemProps {
 
 function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
   const createdAt = dayjs(notice.createdAt);
-  const showNewLabel = createdAt.isAfter(dayjs().subtract(3, 'day'));
+  const showNewIndicator = isRecentNotice(notice);
 
   return (
     <li>
       <Link
-        to={`/notices/${notice.noticeId}`}
+        to={getNoticePath(notice.noticeId)}
         viewTransition
         className="group relative -mx-2 grid min-h-[50px] grid-cols-[42px_minmax(0,1fr)] items-center gap-2.5 rounded-lg p-2 text-inherit no-underline transition-[background-color,color] duration-150 hover:bg-[rgba(69,214,236,0.08)] hover:text-[var(--opus-home-cyan)] focus-visible:bg-[rgba(69,214,236,0.08)] focus-visible:text-[var(--opus-home-cyan)] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[var(--opus-home-cyan)] min-[721px]:-mx-2.5 min-[721px]:min-h-12 min-[721px]:grid-cols-[76px_minmax(0,1fr)] min-[721px]:gap-3.5 min-[721px]:px-2.5"
       >
@@ -72,7 +74,7 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
           className="absolute inset-y-[9px] left-0 w-0.5 scale-y-[0.45] rounded-full bg-[var(--opus-home-cyan)] opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-y-100 group-hover:opacity-100 group-focus-visible:scale-y-100 group-focus-visible:opacity-100"
         />
         <time
-          dateTime={createdAt.format('YYYY-MM-DD')}
+          dateTime={notice.createdAt}
           className="block text-[0.66rem] leading-none font-[800] tracking-[0.035em] whitespace-nowrap text-[var(--opus-home-blue)] tabular-nums"
         >
           <span className="hidden min-[721px]:inline">{createdAt.format('YYYY.MM.DD')}</span>
@@ -82,11 +84,8 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
           <span className="block max-w-full min-w-0 flex-[0_1_auto] truncate text-[0.8rem] leading-[1.3] font-[680] text-[var(--opus-home-ink)] transition-colors duration-150 group-hover:text-white group-focus-visible:text-white min-[721px]:text-[0.84rem] min-[721px]:leading-[1.35]">
             {notice.title}
           </span>
-          {showNewLabel && (
-            <span
-              aria-label="새 공지"
-              className="size-1.5 shrink-0 rounded-full bg-[var(--opus-home-lime)] shadow-[0_0_6px_rgba(190,217,37,0.78),0_0_12px_rgba(190,217,37,0.38)]"
-            />
+          {showNewIndicator && (
+            <NoticeNewIndicator className="bg-[var(--opus-home-lime)] shadow-[0_0_6px_rgba(190,217,37,0.78),0_0_12px_rgba(190,217,37,0.38)]" />
           )}
         </span>
       </Link>

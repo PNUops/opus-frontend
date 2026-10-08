@@ -7,12 +7,8 @@ import { Link } from 'react-router-dom';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { contestNoticeOption } from '@queries/notices';
 import type { NoticeListDto } from '@dto/noticeDto';
-
-const isNewNotice = ({ createdAt, updatedAt }: NoticeListDto) => {
-  const newNoticeThreshold = dayjs().subtract(3, 'day');
-
-  return dayjs(createdAt).isAfter(newNoticeThreshold) || (!!updatedAt && dayjs(updatedAt).isAfter(newNoticeThreshold));
-};
+import { NoticeNewIndicator } from '@components/notice';
+import { getNoticePath, isRecentNotice } from '@utils/notice';
 
 const ContestNoticeList = () => {
   const contestId = useContestIdOrRedirect();
@@ -21,7 +17,7 @@ const ContestNoticeList = () => {
   const primaryNotices = notices.slice(0, 3);
   const additionalNotices = notices.slice(3);
   const hiddenNoticeCount = additionalNotices.length;
-  const hasHiddenNewNotice = additionalNotices.some(isNewNotice);
+  const hasHiddenNewNotice = additionalNotices.some(isRecentNotice);
 
   if (primaryNotices.length === 0) return null;
 
@@ -68,10 +64,7 @@ const ContestNoticeList = () => {
             >
               {isExpanded ? '접기' : `공지 ${hiddenNoticeCount}개 더보기`}
               {!isExpanded && hasHiddenNewNotice && (
-                <span
-                  className="bg-mainRed size-1.5 shrink-0 rounded-full"
-                  aria-label="새 공지 또는 최근 수정된 공지 있음"
-                />
+                <NoticeNewIndicator className="bg-mainRed" label="새 공지 또는 최근 수정된 공지 있음" />
               )}
               <ChevronDown
                 aria-hidden="true"
@@ -94,12 +87,12 @@ interface ContestNoticeItemProps {
 
 const ContestNoticeItem = ({ notice, contestId }: ContestNoticeItemProps) => {
   const createdAt = dayjs(notice.createdAt);
-  const showNewLabel = isNewNotice(notice);
+  const showNewIndicator = isRecentNotice(notice);
 
   return (
     <li>
       <Link
-        to={`/notices/${contestId}/${notice.noticeId}`}
+        to={getNoticePath(notice.noticeId, contestId)}
         viewTransition
         className="group focus-visible:ring-mainBlue grid min-h-11 grid-cols-1 items-center gap-x-3 rounded-sm px-1 py-2.5 transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset sm:grid-cols-[minmax(0,1fr)_auto] sm:px-2"
       >
@@ -107,7 +100,7 @@ const ContestNoticeItem = ({ notice, contestId }: ContestNoticeItemProps) => {
           <span className="group-hover:text-mainBlue truncate text-sm font-medium text-neutral-700 transition-colors">
             {notice.title}
           </span>
-          {showNewLabel && <span className="bg-mainRed size-1.5 shrink-0 rounded-full" aria-label="새 공지" />}
+          {showNewIndicator && <NoticeNewIndicator className="bg-mainRed" />}
         </span>
 
         <time

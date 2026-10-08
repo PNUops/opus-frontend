@@ -5,6 +5,7 @@ import { contestNoticeDetailOption, noticeDetailOption } from '@queries/notices'
 import NoticeDetailSkeleton from './NoticeDetailSkeleton';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getNoticeDisplayAt, isNoticeUpdated } from '@utils/notice';
 
 const NoticeDetail = () => {
   const noticeId = useNoticeIdOrRedirect();
@@ -25,8 +26,8 @@ const NoticeDetail = () => {
     );
   }
 
-  const isModified = dayjs(notice.updatedAt).isAfter(dayjs(notice.createdAt));
-  const displayedAt = isModified ? notice.updatedAt : notice.createdAt;
+  const isModified = isNoticeUpdated(notice);
+  const displayedAt = getNoticeDisplayAt(notice);
 
   return (
     <article className="mx-auto w-full max-w-4xl">
@@ -53,6 +54,7 @@ const NoticeDetail = () => {
         <nav aria-label="공지사항 탐색" className="mt-10 sm:mt-14">
           <Link
             to="/notices"
+            viewTransition
             className="text-midGray hover:text-mainBlue focus-visible:ring-mainBlue -ml-2 inline-flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             <ArrowLeft aria-hidden="true" className="size-4 shrink-0" />
