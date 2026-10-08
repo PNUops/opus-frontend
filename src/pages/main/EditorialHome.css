@@ -415,7 +415,7 @@ html {
   position: relative;
   display: grid;
   min-height: 48px;
-  grid-template-columns: 76px minmax(0, 1fr) 16px;
+  grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: 14px;
   margin: 0 -10px;
@@ -523,15 +523,6 @@ html {
   color: #fff;
 }
 
-.opus-signal-list__arrow {
-  color: currentColor;
-  font-size: 0.76rem;
-  opacity: 0.64;
-  transition: transform 180ms ease;
-}
-
-.opus-signal-list__link:hover .opus-signal-list__arrow,
-.opus-signal-list__link:focus-visible .opus-signal-list__arrow,
 .opus-editorial-link:hover span,
 .opus-editorial-link:focus-visible span {
   transform: translate(3px, -3px);
@@ -563,7 +554,6 @@ html {
 }
 
 .opus-signal-section__more {
-  gap: 7px;
   margin-top: 9px;
   padding: 5px 0;
   border-bottom-width: 1px;
@@ -1729,7 +1719,7 @@ html {
 
   .opus-signal-list__link {
     min-height: 50px;
-    grid-template-columns: 42px minmax(0, 1fr) 12px;
+    grid-template-columns: 42px minmax(0, 1fr);
     gap: 10px;
     margin: 0 -8px;
     padding: 8px;

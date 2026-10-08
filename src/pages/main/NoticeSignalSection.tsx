@@ -26,7 +26,7 @@ const NoticeSignalSection = () => {
       )}
 
       <Link to="/notices" viewTransition className="opus-editorial-link opus-signal-section__more">
-        전체 공지 보기 <span aria-hidden="true">↗</span>
+        전체 공지 보기
       </Link>
     </section>
   );
@@ -54,9 +54,6 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
               NEW
             </span>
           )}
-        </span>
-        <span className="opus-signal-list__arrow" aria-hidden="true">
-          ↗
         </span>
       </Link>
     </li>
