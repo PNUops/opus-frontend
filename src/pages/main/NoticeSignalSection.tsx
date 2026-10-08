@@ -13,6 +13,9 @@ const NoticeSignalSection = () => {
     <section className="opus-signal-section" aria-labelledby="opus-signal-title">
       <header className="opus-signal-section__header">
         <span>NOTICE</span>
+        <Link to="/notices" viewTransition className="opus-editorial-link opus-signal-section__more">
+          전체 공지 보기
+        </Link>
       </header>
 
       {recentNotices.length > 0 ? (
@@ -24,10 +27,6 @@ const NoticeSignalSection = () => {
       ) : (
         <p className="opus-signal-section__empty">새로운 공지가 없습니다.</p>
       )}
-
-      <Link to="/notices" viewTransition className="opus-editorial-link opus-signal-section__more">
-        전체 공지 보기
-      </Link>
     </section>
   );
 };
@@ -49,11 +48,7 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
         </time>
         <span className="opus-signal-list__headline">
           <span className="opus-signal-list__title">{notice.title}</span>
-          {showNewLabel && (
-            <span aria-label="새 공지" className="opus-signal-list__new">
-              NEW
-            </span>
-          )}
+          {showNewLabel && <span aria-label="새 공지" className="opus-signal-list__new" />}
         </span>
       </Link>
     </li>

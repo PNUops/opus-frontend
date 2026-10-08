@@ -487,7 +487,8 @@ html {
 .opus-signal-list__title {
   display: block;
   min-width: 0;
-  flex: 1;
+  max-width: 100%;
+  flex: 0 1 auto;
   overflow: hidden;
   color: var(--opus-home-ink);
   font-size: 0.84rem;
@@ -499,23 +500,14 @@ html {
 }
 
 .opus-signal-list__new {
-  display: inline-flex;
-  min-width: 30px;
+  width: 6px;
+  height: 6px;
   flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  padding: 3px 5px 2px;
-  border: 1px solid rgba(190, 217, 37, 0.68);
   border-radius: 999px;
-  background: rgba(190, 217, 37, 0.1);
-  color: var(--opus-home-lime);
+  background: var(--opus-home-lime);
   box-shadow:
-    0 0 8px rgba(190, 217, 37, 0.14),
-    inset 0 0 6px rgba(190, 217, 37, 0.07);
-  font-size: 0.5rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  line-height: 1;
+    0 0 6px rgba(190, 217, 37, 0.78),
+    0 0 12px rgba(190, 217, 37, 0.38);
 }
 
 .opus-signal-list__link:hover .opus-signal-list__title,
