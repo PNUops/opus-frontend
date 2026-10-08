@@ -3,14 +3,12 @@ import dayjs from 'dayjs';
 import { useContestId, useNoticeIdOrRedirect } from '@hooks/useId';
 import { contestNoticeDetailOption, noticeDetailOption } from '@queries/notices';
 import NoticeDetailSkeleton from './NoticeDetailSkeleton';
-import useContestName from '@hooks/useContestName';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const NoticeDetail = () => {
   const noticeId = useNoticeIdOrRedirect();
   const contestId = useContestId();
-  const contestName = useContestName();
 
   const {
     data: notice,
@@ -18,7 +16,7 @@ const NoticeDetail = () => {
     isError,
   } = useQuery(!contestId ? noticeDetailOption(noticeId) : contestNoticeDetailOption(contestId, noticeId));
 
-  if (isLoading) return <NoticeDetailSkeleton />;
+  if (isLoading) return <NoticeDetailSkeleton showBackLink={!contestId} />;
   if (isError || !notice) {
     return (
       <div role="alert" className="border-lightGray text-midGray mx-auto max-w-4xl border-y px-4 py-12 text-center">
@@ -27,22 +25,12 @@ const NoticeDetail = () => {
     );
   }
 
-  const backTo = !contestId ? '/notices' : `/contest/${contestId}`;
-  const backLabel = contestId ? `${contestName ?? '대회'}으로 돌아가기` : '전체 공지사항으로 돌아가기';
   const isModified = dayjs(notice.updatedAt).isAfter(dayjs(notice.createdAt));
   const displayedAt = isModified ? notice.updatedAt : notice.createdAt;
 
   return (
     <article className="mx-auto w-full max-w-4xl">
-      <Link
-        to={backTo}
-        className="text-midGray hover:text-mainBlue focus-visible:ring-mainBlue -ml-2 inline-flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-      >
-        <ArrowLeft aria-hidden="true" className="size-4 shrink-0" />
-        <span className="border-b border-current">{backLabel}</span>
-      </Link>
-
-      <header className="border-lightGray mt-7 border-b pb-7 sm:mt-10 sm:pb-9">
+      <header className="border-lightGray border-b pb-7 sm:pb-9">
         <h1 className="text-2xl leading-snug font-bold tracking-[-0.02em] [overflow-wrap:anywhere] text-neutral-900 sm:text-4xl">
           {notice.title}
         </h1>
@@ -60,6 +48,18 @@ const NoticeDetail = () => {
           </p>
         </div>
       </section>
+
+      {!contestId && (
+        <nav aria-label="공지사항 탐색" className="mt-10 sm:mt-14">
+          <Link
+            to="/notices"
+            className="text-midGray hover:text-mainBlue focus-visible:ring-mainBlue -ml-2 inline-flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4 shrink-0" />
+            <span className="border-b border-current">목록으로 돌아가기</span>
+          </Link>
+        </nav>
+      )}
     </article>
   );
 };

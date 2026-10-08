@@ -1,9 +1,11 @@
-const NoticeDetailSkeleton = () => {
+interface NoticeDetailSkeletonProps {
+  showBackLink?: boolean;
+}
+
+const NoticeDetailSkeleton = ({ showBackLink = true }: NoticeDetailSkeletonProps) => {
   return (
     <div className="mx-auto w-full max-w-4xl animate-pulse" aria-hidden="true">
-      <div className="bg-lightGray h-8 w-48 rounded-sm" />
-
-      <div className="border-lightGray mt-7 border-b pb-7 sm:mt-10 sm:pb-9">
+      <div className="border-lightGray border-b pb-7 sm:pb-9">
         <div className="space-y-3">
           <div className="bg-lightGray h-8 w-full max-w-3xl rounded-sm" />
           <div className="bg-lightGray h-8 w-3/5 rounded-sm" />
@@ -23,6 +25,12 @@ const NoticeDetailSkeleton = () => {
           <div className="bg-lightGray h-4 w-2/3 rounded-sm" />
         </div>
       </div>
+
+      {showBackLink && (
+        <div className="mt-10 sm:mt-14">
+          <div className="bg-lightGray h-8 w-48 rounded-sm" />
+        </div>
+      )}
     </div>
   );
 };

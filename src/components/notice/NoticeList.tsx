@@ -12,9 +12,7 @@ interface NoticeListProps extends React.ComponentProps<'ul'> {
 
 export const NoticeList = ({ children, variant = 'card', className = '', ...props }: NoticeListProps) => {
   const variantClassName =
-    variant === 'document'
-      ? 'border-lightGray divide-lightGray divide-y border-b'
-      : 'flex flex-col gap-1 rounded-xl bg-gray-50 p-2.5 shadow-md';
+    variant === 'document' ? 'divide-lightGray divide-y' : 'flex flex-col gap-1 rounded-xl bg-gray-50 p-2.5 shadow-md';
 
   return (
     <ul className={`${variantClassName} ${className}`.trim()} {...props}>
@@ -85,7 +83,7 @@ export const NoticeListNoData = ({ variant = 'card' }: { variant?: NoticeListVar
 export const NoticeListSkeleton = ({ variant = 'card' }: { variant?: NoticeListVariant }) => {
   if (variant === 'document') {
     return (
-      <ul className="border-lightGray divide-lightGray animate-pulse divide-y border-b" aria-hidden="true">
+      <ul className="divide-lightGray animate-pulse divide-y" aria-hidden="true">
         {Array.from({ length: 4 }).map((_, index) => (
           <li
             key={index}
