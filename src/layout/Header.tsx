@@ -26,11 +26,12 @@ interface ProfileMenuLinkProps {
   icon: ReactNode;
   children: string;
   onClick: () => void;
+  viewTransition: boolean;
 }
 
-const ProfileMenuLink = ({ to, icon, children, onClick }: ProfileMenuLinkProps) => {
+const ProfileMenuLink = ({ to, icon, children, onClick, viewTransition }: ProfileMenuLinkProps) => {
   return (
-    <Link to={to} role="menuitem" className={profileMenuItemClass} onClick={onClick}>
+    <Link to={to} viewTransition={viewTransition} role="menuitem" className={profileMenuItemClass} onClick={onClick}>
       {icon}
       <span>{children}</span>
     </Link>
@@ -61,6 +62,7 @@ interface HeaderProfileMenuProps {
   unreadNotificationCount: number;
   onSignout: () => void;
   onNotificationClick: () => void;
+  viewTransition: boolean;
 }
 
 const HeaderProfileMenu = ({
@@ -70,6 +72,7 @@ const HeaderProfileMenu = ({
   unreadNotificationCount,
   onSignout,
   onNotificationClick,
+  viewTransition,
 }: HeaderProfileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -137,6 +140,7 @@ const HeaderProfileMenu = ({
             to="/me/activity"
             icon={<UserRound className="h-4 w-4 text-neutral-500" />}
             onClick={closeMenu}
+            viewTransition={viewTransition}
           >
             마이페이지
           </ProfileMenuLink>
@@ -164,7 +168,12 @@ const HeaderProfileMenu = ({
 
         {isAdmin && (
           <div className="border-lightGray mt-2 border-t pt-2.5">
-            <ProfileMenuLink to="/admin" icon={<Settings className="h-4 w-4 text-neutral-500" />} onClick={closeMenu}>
+            <ProfileMenuLink
+              to="/admin"
+              icon={<Settings className="h-4 w-4 text-neutral-500" />}
+              onClick={closeMenu}
+              viewTransition={viewTransition}
+            >
               관리자페이지
             </ProfileMenuLink>
           </div>
@@ -175,6 +184,7 @@ const HeaderProfileMenu = ({
               to="/me/advisor-activity"
               icon={<PiChalkboardTeacher className="h-4 w-4 text-neutral-500" />}
               onClick={closeMenu}
+              viewTransition={viewTransition}
             >
               지도 활동
             </ProfileMenuLink>
@@ -210,7 +220,7 @@ const Header = () => {
     setIsNotificationOpen(false);
     toast('로그아웃 되었습니다.', 'success');
     signOut();
-    navigate('/');
+    navigate('/', { viewTransition: !isHomeRoute });
   };
 
   const handleNotificationOpen = () => {
@@ -249,14 +259,14 @@ const Header = () => {
           )}
           {!isAdminRoute && (
             <>
-              <Link to="/" className="max-sm:hidden">
+              <Link to="/" viewTransition={!isHomeRoute} className="max-sm:hidden">
                 <img
                   className={`w-auto sm:h-6 md:h-7 lg:h-8 ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/Logo.svg"
                   alt="부산대학교 SW프로젝트관리시스템 로고"
                 />
               </Link>
-              <Link to="/" className="items-center sm:hidden">
+              <Link to="/" viewTransition={!isHomeRoute} className="items-center sm:hidden">
                 <img
                   className={`h-7 w-auto ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/swOpsLogo-sm.png"
@@ -277,6 +287,7 @@ const Header = () => {
                 unreadNotificationCount={unreadNotificationCount}
                 onSignout={handleSignout}
                 onNotificationClick={handleNotificationOpen}
+                viewTransition={isHomeRoute}
               />
               <NotificationOverlay
                 isOpen={isNotificationOpen}
@@ -291,7 +302,7 @@ const Header = () => {
             </>
           ) : (
             <Button
-              onClick={isSignedIn ? handleSignout : () => navigate('/signin')}
+              onClick={isSignedIn ? handleSignout : () => navigate('/signin', { viewTransition: isHomeRoute })}
               className={`rounded-full border text-sm text-nowrap hover:cursor-pointer ${
                 isHomeRoute
                   ? 'border-white/45 text-white hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[#45d6ec] focus-visible:outline-none'

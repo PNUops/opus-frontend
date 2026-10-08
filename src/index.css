@@ -214,3 +214,31 @@
     left: 100%;
   }
 }
+
+::view-transition-old(root) {
+  animation: opus-route-fade-out 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: opus-route-fade-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes opus-route-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes opus-route-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
