@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { type FallbackProps } from 'react-error-boundary';
 import dayjs from 'dayjs';
 import { contestsOption, currentContestOption } from '@queries/contest';
 import { type CurrentContestResponseDto } from '@dto/contestsDto';
+import { bannerOption } from '@queries/banner';
+import { useImageObjectUrl } from '@hooks/useImageBlob';
+import SectionScrollHeader from './SectionScrollHeader';
 
 const geometryPatterns = ['dots', 'lines', 'arc', 'quarter'] as const;
 
 const ContestSectionHeader = ({ title }: { title: string }) => (
-  <header className="opus-contest-region__header">
-    <p>CONTEST</p>
-    <h2>{title}</h2>
-  </header>
+  <SectionScrollHeader className="opus-contest-region__header" eyebrow="CONTEST" title={title} />
 );
 
 export const ContestGridSkeleton = () => (
@@ -78,6 +78,20 @@ const ContestPeriod = ({ contest }: { contest: CurrentContestResponseDto }) => {
   );
 };
 
+const ContestPoster = ({ contest }: { contest: CurrentContestResponseDto }) => {
+  const { data: posterBlob, isLoading } = useQuery(bannerOption(contest.contestId));
+  const posterUrl = useImageObjectUrl(posterBlob);
+
+  if (!isLoading && !posterUrl) return null;
+
+  return (
+    <span className="opus-contest-card__poster" data-loading={isLoading}>
+      {posterUrl && <img src={posterUrl} alt={`${contest.contestName} 대회 홍보 배너`} />}
+      <span className="opus-contest-card__poster-shade" aria-hidden="true" />
+    </span>
+  );
+};
+
 const CurrentContestSection = () => {
   const { data: currentContests } = useSuspenseQuery(currentContestOption());
   const { data: allContests } = useSuspenseQuery(contestsOption());
@@ -101,6 +115,7 @@ const CurrentContestSection = () => {
               >
                 <Link
                   to={`/contest/${contest.contestId}`}
+                  viewTransition
                   className="opus-contest-card__link"
                   aria-label={`${contest.contestName} 대회 보기`}
                 >
@@ -152,9 +167,11 @@ const CurrentContestSection = () => {
             >
               <Link
                 to={`/contest/${contest.contestId}`}
+                viewTransition
                 className="opus-contest-card__link"
                 aria-label={`${contest.contestName} 대회 보기`}
               >
+                <ContestPoster contest={contest} />
                 <div className="opus-contest-card__top">
                   <span className="opus-contest-card__number" aria-hidden="true">
                     {String(index + 1).padStart(2, '0')}

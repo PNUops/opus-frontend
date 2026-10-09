@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { NoticeListSkeleton } from '@components/notice';
 import useContestName from '@hooks/useContestName';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import QueryWrapper from '@providers/QueryWrapper';
-import ContestNoticeList from './ContestNoticeList';
+import ContestNoticeList, { ContestNoticeListError, ContestNoticeListSkeleton } from './ContestNoticeList';
 import TeamCardGrid from '@pages/contest/TeamCardGrid';
 import { contestTeamOption } from '@queries/contest';
 import { API_BASE_URL } from '@constants/env';
@@ -17,7 +16,7 @@ const ContestPage = () => {
   const { data: teams, isLoading, isError } = useQuery(contestTeamOption(contestId));
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 sm:gap-8">
       <div className="flex flex-col gap-3">
         <h3 className="lg:text-title text-2xl font-bold">{contestName ?? ''}</h3>
         {bannerVisible && (
@@ -29,7 +28,10 @@ const ContestPage = () => {
           />
         )}
       </div>
-      <QueryWrapper loadingFallback={<NoticeListSkeleton />} errorStyle="h-36 rounded-xl shadow-md">
+      <QueryWrapper
+        loadingFallback={<ContestNoticeListSkeleton />}
+        errorFallback={(props) => <ContestNoticeListError {...props} />}
+      >
         <ContestNoticeList />
       </QueryWrapper>
       <TeamCardGrid teams={teams} isLoading={isLoading} isError={isError} />

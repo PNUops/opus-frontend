@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Bell, CheckCheck, ChevronRight, RotateCw } from 'lucide-react';
 
@@ -36,6 +36,7 @@ const NotificationOverlay = ({
 }: NotificationOverlayProps) => {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const unreadCount = notifications.filter((notification) => !notification.isRead).length;
 
@@ -92,7 +93,7 @@ const NotificationOverlay = ({
       const targetPath = await targetPathPromise;
       onClose();
       if (targetPath) {
-        navigate(targetPath);
+        navigate(targetPath, { viewTransition: location.pathname === '/' });
       }
     };
 

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { type FallbackProps } from 'react-error-boundary';
 import { archiveProjectsOption } from '@queries/contest';
+import SectionScrollHeader from './SectionScrollHeader';
 
 const ArchiveGeometry = () => (
   <span className="opus-archive-feature__geometry" aria-hidden="true">
@@ -22,15 +23,19 @@ const ArchiveProjectSection = () => {
 
   return (
     <section className="opus-archive-section" aria-labelledby="opus-archive-title">
-      <header className="opus-archive-section__header">
-        <p>ARCHIVE</p>
-        <h2 id="opus-archive-title">다시 보는 프로젝트</h2>
-      </header>
+      <SectionScrollHeader
+        className="opus-archive-section__header"
+        eyebrow="ARCHIVE"
+        title="다시 보는 프로젝트"
+        titleId="opus-archive-title"
+        scrollFromSectionStart
+      />
 
       <div className="opus-archive-layout" data-layout={compactProjects.length > 0 ? 'split' : 'single'}>
         <article className="opus-archive-feature">
           <Link
             to={`/contest/${featuredProject.contestId}/teams/view/${featuredProject.teamId}`}
+            viewTransition
             className="opus-archive-feature__link"
             aria-label={`${featuredProject.projectName} 프로젝트 보기`}
           >
@@ -53,6 +58,7 @@ const ArchiveProjectSection = () => {
               <li key={project.teamId}>
                 <Link
                   to={`/contest/${project.contestId}/teams/view/${project.teamId}`}
+                  viewTransition
                   className="opus-archive-compact__link"
                   aria-label={`${project.projectName} 프로젝트 보기`}
                 >
@@ -74,7 +80,7 @@ const ArchiveProjectSection = () => {
         )}
       </div>
 
-      <Link to={moreProjectsPath} className="opus-editorial-link opus-archive-section__more">
+      <Link to={moreProjectsPath} viewTransition className="opus-editorial-link opus-archive-section__more">
         프로젝트 더 보기 <span aria-hidden="true">↗</span>
       </Link>
     </section>
@@ -83,10 +89,12 @@ const ArchiveProjectSection = () => {
 
 export const ArchiveProjectSkeleton = () => (
   <section className="opus-archive-section" aria-label="과거 프로젝트를 불러오는 중" aria-busy="true">
-    <header className="opus-archive-section__header">
-      <p>ARCHIVE</p>
-      <h2>다시 보는 프로젝트</h2>
-    </header>
+    <SectionScrollHeader
+      className="opus-archive-section__header"
+      eyebrow="ARCHIVE"
+      title="다시 보는 프로젝트"
+      scrollFromSectionStart
+    />
     <div className="opus-archive-skeleton" aria-hidden="true">
       <span />
       <span />
