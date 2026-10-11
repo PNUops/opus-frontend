@@ -15,6 +15,13 @@ export const notificationTargetTypeLabel: Record<NotificationTargetType, string>
   TEAM_COMMENT: '댓글',
   TEAM_AWARD: '수상',
   TEAM_AWARDS: '수상',
+  SUBMISSION_COMPLETED: '제출 완료',
+  SUBMISSION_FEEDBACK: '새 피드백',
+  SUBMISSION_DEADLINE: '제출 마감',
+  ADVISOR_ASSIGNED: '지도교수 지정',
+  ADVISOR_UNASSIGNED: '지도교수 해제',
+  MENTOR_ASSIGNED: '멘토 지정',
+  MENTOR_UNASSIGNED: '멘토 해제',
 };
 
 export const formatNotificationCreatedAt = (value: string) => {
@@ -77,6 +84,23 @@ const buildNotificationTargetPath = (
     case 'TEAM_AWARD':
     case 'TEAM_AWARDS':
       return `/contest/${contestId}/teams/view/${teamId}#awards`;
+    default:
+      return null;
+  }
+};
+
+const toInternalNotificationPath = (value: string): string | null => {
+  // React Router must receive a root-relative path, never an external URL.
+  if (!value || !value.startsWith('/') || value.startsWith('//') || /[\\\s]/.test(value)) {
+    return null;
+  }
+
+  try {
+    const base = 'https://notification.invalid';
+    const url = new URL(value, base);
+    return url.origin === base ? `${url.pathname}${url.search}${url.hash}` : null;
+  } catch {
+    return null;
   }
 };
 
@@ -84,6 +108,18 @@ export const resolveNotificationTargetPath = async (
   queryClient: QueryClient,
   notification: NotificationDto,
 ): Promise<string | null> => {
+  // Only legacy team notifications may interpret targetId as a team ID.
+  // New notifications carry recipient-specific routes and submission item queries.
+  switch (notification.targetType) {
+    case 'TEAM':
+    case 'TEAM_COMMENT':
+    case 'TEAM_AWARD':
+    case 'TEAM_AWARDS':
+      break;
+    default:
+      return toInternalNotificationPath(notification.redirectUrl);
+  }
+
   const idsFromRedirectUrl = extractNotificationRouteIds(notification.redirectUrl);
   const teamId = idsFromRedirectUrl.teamId ?? toPositiveNumber(notification.targetId);
 

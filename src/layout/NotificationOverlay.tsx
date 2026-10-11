@@ -183,7 +183,7 @@ const NotificationItem = ({
               {notification.title}
             </span>
             <span className="bg-whiteGray shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium text-neutral-600">
-              {notificationTargetTypeLabel[notification.targetType]}
+              {notificationTargetTypeLabel[notification.targetType] ?? '알림'}
             </span>
           </span>
           <span
