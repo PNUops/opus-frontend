@@ -1,52 +1,48 @@
-name: Assign issue and PR authors
+name: Assign PR author
 
 on:
-  issues:
-    types: [opened, reopened, transferred, unassigned]
   pull_request_target:
     types: [opened, reopened, unassigned]
 
 permissions:
-  issues: write
   pull-requests: write
 
 concurrency:
-  group: auto-assign-${{ github.event.issue.number || github.event.pull_request.number }}
+  group: auto-assign-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
 jobs:
   assign-author:
     runs-on: ubuntu-latest
     steps:
-      # Only modify GitHub metadata; never check out or run code from the PR.
-      - name: Assign the author when no assignee is set
+      - name: Add the PR author as an assignee
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          ITEM_NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
-          AUTHOR: ${{ github.event.issue.user.login || github.event.pull_request.user.login }}
-          # Bots and other ineligible authors fall back to a maintainer.
-          # Override with the repository variable DEFAULT_ASSIGNEE.
-          DEFAULT_ASSIGNEE: ${{ vars.DEFAULT_ASSIGNEE || 'redzzzi' }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
         shell: bash
         run: |
           set -euo pipefail
-          endpoint="repos/$GH_REPO/issues/$ITEM_NUMBER"
+          endpoint="repos/$GH_REPO/issues/$PR_NUMBER"
 
-          # Read the latest state so delayed events preserve manual assignments.
-          count=$(gh api "$endpoint" --jq '.assignees | length')
-          if (( count > 0 )); then
+          has_author() {
+            while IFS= read -r assignee; do
+              if [[ "$assignee" == "$AUTHOR" ]]; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          assignees=$(gh api "$endpoint" --jq '.assignees[].login')
+          if has_author <<< "$assignees"; then
             exit 0
           fi
 
-          for assignee in "$AUTHOR" "$DEFAULT_ASSIGNEE"; do
-            if count=$(gh api --method POST "$endpoint/assignees" \
-              --raw-field "assignees[]=$assignee" --jq '.assignees | length'); then
-              if (( count > 0 )); then
-                exit 0
-              fi
-            fi
-          done
-
-          echo "::error::Could not assign the author or DEFAULT_ASSIGNEE."
-          exit 1
+          assignees=$(gh api --method POST "$endpoint/assignees" \
+            --raw-field "assignees[]=$AUTHOR" --jq '.assignees[].login')
+          if ! has_author <<< "$assignees"; then
+            echo "::error::Could not assign the PR author. No replacement assignee was selected."
+            exit 1
+          fi
