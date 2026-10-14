@@ -45,7 +45,9 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
   const { data: setting } = useQuery(submissionItemSettingOption(contestId, item.submissionItemId));
 
   // 제출물 상세 조회 — 제출 ID가 있을 때만 (미제출이면 최초 제출 플로우)
-  const { data: detail } = useQuery(submissionDetailOption(contestId, item.submissionId ?? 0));
+  const { data: detail, isSuccess: isDetailReady } = useQuery(
+    submissionDetailOption(contestId, item.submissionId ?? 0),
+  );
   const files = detail?.files ?? [];
 
   // 피드백 목록 조회
@@ -121,8 +123,9 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
           </div>
           <button
             type="button"
+            disabled={!setting || (item.submissionId !== null && !isDetailReady)}
             onClick={() => setUploadOpen(true)}
-            className="border-mainGreen text-mainGreen shrink-0 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-green-50"
+            className="border-mainGreen text-mainGreen shrink-0 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {item.submissionId === null ? '제출하기' : '다시 제출하기'}
           </button>
