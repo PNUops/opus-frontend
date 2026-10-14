@@ -45,7 +45,7 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.config.cjs'],
+    files: ['**/*.config.cjs', 'tests/**/*.test.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: {
