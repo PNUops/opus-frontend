@@ -1,0 +1,48 @@
+name: Assign PR author
+
+on:
+  pull_request_target:
+    types: [opened, reopened, unassigned]
+
+permissions:
+  pull-requests: write
+
+concurrency:
+  group: auto-assign-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  assign-author:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add the PR author as an assignee
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          endpoint="repos/$GH_REPO/issues/$PR_NUMBER"
+
+          has_author() {
+            while IFS= read -r assignee; do
+              if [[ "$assignee" == "$AUTHOR" ]]; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          assignees=$(gh api "$endpoint" --jq '.assignees[].login')
+          if has_author <<< "$assignees"; then
+            exit 0
+          fi
+
+          assignees=$(gh api --method POST "$endpoint/assignees" \
+            --raw-field "assignees[]=$AUTHOR" --jq '.assignees[].login')
+          if ! has_author <<< "$assignees"; then
+            echo "::error::Could not assign the PR author. No replacement assignee was selected."
+            exit 1
+          fi
