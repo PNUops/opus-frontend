@@ -22,6 +22,13 @@ export const saveSubmissionChanges = async ({
   deletedFileIds,
   newFiles,
 }: SubmissionChanges) => {
+  if (existingFileCount - deletedFileIds.length + newFiles.length < 1) {
+    throw new Error('제출 파일을 최소 1개 남겨주세요.');
+  }
+  if (submissionId !== null && maxFileCount === 1 && deletedFileIds.length > 0 && newFiles.length > 0) {
+    throw new Error('파일 1개 제한 항목은 기존 제출물을 유지하며 교체할 수 없어요.');
+  }
+
   let savedSubmissionId = submissionId;
   let fileCount = existingFileCount;
   const pendingDeletes = [...deletedFileIds];
@@ -34,7 +41,7 @@ export const saveSubmissionChanges = async ({
 
   const uploadFiles = async (count: number) => {
     const files = pendingFiles.slice(0, count);
-    if (savedSubmissionId === null || fileCount === 0) {
+    if (savedSubmissionId === null) {
       const result = await postSubmission(contestId, submissionItemId, teamId, files);
       savedSubmissionId = result.submissionId;
     } else {
@@ -59,8 +66,7 @@ export const saveSubmissionChanges = async ({
   for (const fileId of pendingDeletes) {
     await removeFile(fileId);
   }
-  // 최대 1개인 항목의 교체는 마지막 파일 삭제 후 새 제출물을 생성해야 한다.
   if (pendingFiles.length > 0) await uploadFiles(pendingFiles.length);
 
-  return fileCount === 0 ? null : savedSubmissionId;
+  return savedSubmissionId;
 };

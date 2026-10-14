@@ -71,6 +71,8 @@ export const SubmissionUploadModal = ({
   const totalCount = retainedFiles.length + newFiles.length;
   const remaining = Math.max(0, setting.maxFileCount - totalCount);
   const hasChanges = newFiles.length > 0 || deletedFileIds.length > 0;
+  const isReplacementBlocked =
+    submissionId !== null && setting.maxFileCount === 1 && deletedFileIds.length > 0 && newFiles.length > 0;
 
   const invalidateSubmissions = async (savedSubmissionId?: number | null) => {
     const keys: (readonly (string | number)[])[] = [
@@ -102,7 +104,7 @@ export const SubmissionUploadModal = ({
         newFiles,
       }),
     onSuccess: () => {
-      toast(totalCount === 0 ? '모든 파일을 삭제해 미제출 상태로 변경했어요.' : '제출물을 저장했어요.', 'success');
+      toast('제출물을 저장했어요.', 'success');
     },
     onError: (error) => {
       toast(
@@ -126,8 +128,16 @@ export const SubmissionUploadModal = ({
 
   const handleSave = () => {
     if (savingRef.current) return;
+    if (isReplacementBlocked) {
+      toast('파일 1개 제한 항목은 기존 제출물을 유지하며 교체할 수 없어요.', 'error');
+      return;
+    }
     if (!hasChanges) {
       toast(submissionId === null ? '첨부할 파일을 선택해주세요.' : '변경할 파일을 추가하거나 삭제해주세요.', 'error');
+      return;
+    }
+    if (totalCount === 0) {
+      toast('제출 파일을 최소 1개 남겨주세요.', 'error');
       return;
     }
     const now = dayjs();
@@ -274,13 +284,12 @@ export const SubmissionUploadModal = ({
       )}
       {deletedFileIds.length > 0 && totalCount === 0 && (
         <p className="text-mainRed text-sm" role="alert">
-          저장하면 마지막 파일이 삭제되어 미제출 상태로 변경돼요.
+          제출 파일을 최소 1개 남겨야 저장할 수 있어요. 취소하면 기존 파일이 유지돼요.
         </p>
       )}
-      {submissionId !== null && setting.maxFileCount === 1 && deletedFileIds.length > 0 && newFiles.length > 0 && (
+      {isReplacementBlocked && (
         <p className="text-mainRed text-sm" role="alert">
-          파일을 1개만 제출할 수 있어 기존 제출물을 삭제한 뒤 새로 제출해요. 기존 피드백과 메모를 이어서 볼 수 없으며,
-          저장에 실패하면 미제출 상태가 될 수 있어요.
+          파일 1개 제한 항목은 기존 제출물을 유지하며 교체할 수 없어 저장이 제한돼요. 취소하면 기존 파일이 유지돼요.
         </p>
       )}
 
@@ -291,7 +300,11 @@ export const SubmissionUploadModal = ({
             취소
           </AdminActionButton>
         </DialogClose>
-        <AdminActionButton className="bg-mainGreen hover:bg-green-700" onClick={handleSave} disabled={isSaving}>
+        <AdminActionButton
+          className="bg-mainGreen hover:bg-green-700"
+          onClick={handleSave}
+          disabled={isSaving || isReplacementBlocked || totalCount === 0}
+        >
           {isSaving ? '저장 중...' : '저장'}
         </AdminActionButton>
       </div>

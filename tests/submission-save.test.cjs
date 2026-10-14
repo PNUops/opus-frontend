@@ -83,13 +83,17 @@ test('initial submission and addition-only save', async () => {
   assert.deepEqual(addition.calls, ['add']);
 });
 
-test('deletion-only save, including the last file', async () => {
+test('deletion-only save keeps at least one file; removing all files sends no requests', async () => {
   const server = createServer(2, 2);
   assert.equal(await server.save([1], 0), 10);
   assert.deepEqual(server.files, [2]);
-  const last = createServer(1, 1);
-  assert.equal(await last.save([1], 0), null);
-  assert.deepEqual(last.files, []);
+  for (const count of [1, 2]) {
+    const last = createServer(count, count);
+    const ids = Array.from({ length: count }, (_, index) => index + 1);
+    await assert.rejects(last.save(ids, 0), /최소 1개/);
+    assert.deepEqual(last.calls, []);
+    assert.deepEqual(last.files, ids);
+  }
 });
 
 test('replacement uploads before deleting when there is space', async () => {
@@ -112,10 +116,11 @@ test('full replacement at the count limit retains the submission ID', async () =
   assert.equal(server.files.length, 3);
 });
 
-test('one-file limit recreates the submission after soft deletion', async () => {
+test('one-file replacement is rejected before any request, preserving the submission', async () => {
   const server = createServer(1, 1);
-  assert.equal(await server.save([1], 1), 20);
-  assert.deepEqual(server.calls, ['delete', 'create']);
+  await assert.rejects(server.save([1], 1), /기존 제출물을 유지하며 교체할 수 없어요/);
+  assert.deepEqual(server.calls, []);
+  assert.deepEqual(server.files, [1]);
 });
 
 test('upload failure preserves the old file and stops later deletes', async () => {
@@ -275,11 +280,56 @@ test('deleting and adding are local drafts; cancel does not save', () => {
   assert.equal(modal.invalidations.length, 0);
 });
 
-test('deletion-only saves once, blocks dismissal while pending, and refreshes caches', async () => {
+test('one-file replacement disables save and leaves the draft open without server changes', async () => {
+  const modal = createModal();
+  modal.render().remove();
+  modal.render().add([{ name: 'new.pdf', size: 1024 }]);
+  const draft = modal.render();
+  const saveButton = draft.nodes.find((node) => node.type === 'AdminActionButton' && node.props.children !== '취소');
+  assert.equal(saveButton.props.disabled, true);
+  draft.save();
+  await modal.finish();
+  assert.equal(modal.saves, 0);
+  assert.equal(modal.closed, 0);
+  assert.equal(modal.invalidations.length, 0);
+  assert.ok(modal.notices.some((message) => message.includes('기존 제출물을 유지하며 교체할 수 없어요')));
+});
+
+const multipleFileProps = {
+  existingFiles: [
+    { fileId: 1, fileName: 'old.pdf', fileSize: 1024 },
+    { fileId: 2, fileName: 'kept.pdf', fileSize: 1024 },
+  ],
+  setting: {
+    startAt: '2000-01-01T00:00:00',
+    endAt: '2100-01-01T00:00:00',
+    maxFileCount: 2,
+    maxFileSizeMb: 1,
+    allowedFileFormats: ['PDF'],
+    visibility: 'TEAM',
+    allowLateSubmission: false,
+  },
+};
+
+test('removing the last file disables save and keeps the draft open without requests', async () => {
   const modal = createModal();
   modal.render().remove();
   const draft = modal.render();
   assert.ok(draft.nodes.some((node) => node.props?.role === 'alert'));
+  const saveButton = draft.nodes.find((node) => node.type === 'AdminActionButton' && node.props.children !== '취소');
+  assert.equal(saveButton.props.disabled, true);
+  draft.save();
+  await modal.finish();
+  assert.equal(modal.saves, 0);
+  assert.equal(modal.closed, 0);
+  assert.equal(modal.invalidations.length, 0);
+  assert.ok(modal.notices.some((message) => message.includes('최소 1개')));
+});
+
+test('deletion-only saves once, blocks dismissal while pending, and refreshes caches', async () => {
+  const modal = createModal(multipleFileProps);
+  modal.render().remove();
+  const draft = modal.render();
   draft.save();
   draft.save();
   const saving = modal.render();
@@ -297,7 +347,7 @@ test('deletion-only saves once, blocks dismissal while pending, and refreshes ca
 });
 
 test('failed save warns about partial changes, refreshes caches, and closes the stale draft', async () => {
-  const modal = createModal({}, async () => {
+  const modal = createModal(multipleFileProps, async () => {
     throw new Error('network failed');
   });
   modal.render().remove();
@@ -333,11 +383,12 @@ test('deadline and start time are checked again when saving; late submissions re
   ]) {
     // Settings are props, so simulate the deadline policy without changing the system clock.
     const configured = createModal({
+      existingFiles: multipleFileProps.existingFiles,
       setting: {
         startAt,
         endAt,
         allowLateSubmission,
-        maxFileCount: 1,
+        maxFileCount: 2,
         maxFileSizeMb: 1,
         allowedFileFormats: ['PDF'],
         visibility: 'TEAM',
