@@ -7,11 +7,12 @@ import { CalendarDays, Eye, FileCheck, FileText, UploadCloud, X } from 'lucide-r
 import { AdminActionButton } from '@components/admin';
 import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
-import { deleteSubmissionFile, postSubmission, postSubmissionFiles } from '@apis/submission';
-import { submissionDetailOption } from '@queries/submission';
+import { submissionKeys } from '@queries/submission';
 import { getApiErrorMessage } from '@utils/error';
 import { getFileFormatExtensions, VISIBILITY_LABEL } from '@constants/submission';
 import type { SubmissionFileResponseDto, SubmissionItemSettingResponseDto } from '@dto/submissionDto';
+
+import { saveSubmissionChanges } from '../utils/saveSubmissionChanges';
 
 const getExtension = (fileName: string) => {
   const dotIndex = fileName.lastIndexOf('.');
@@ -59,68 +60,105 @@ export const SubmissionUploadModal = ({
   const toast = useToast();
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
+  const savingRef = useRef(false);
   const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [deletedFileIds, setDeletedFileIds] = useState<number[]>([]);
+
+  const retainedFiles = existingFiles.filter((file) => !deletedFileIds.includes(file.fileId));
 
   const allowedFormats = getFileFormatExtensions(setting.allowedFileFormats);
   const maxSizeBytes = setting.maxFileSizeMb * 1024 * 1024;
-  const totalCount = existingFiles.length + newFiles.length;
+  const totalCount = retainedFiles.length + newFiles.length;
   const remaining = Math.max(0, setting.maxFileCount - totalCount);
+  const hasChanges = newFiles.length > 0 || deletedFileIds.length > 0;
+  const isReplacementBlocked =
+    submissionId !== null && setting.maxFileCount === 1 && deletedFileIds.length > 0 && newFiles.length > 0;
 
-  const invalidateDetail = () => {
+  const invalidateSubmissions = async (savedSubmissionId?: number | null) => {
+    const keys: (readonly (string | number)[])[] = [
+      submissionKeys.myList(contestId, teamId),
+      submissionKeys.mySummary(contestId, teamId),
+      submissionKeys.myTimeline(contestId, teamId),
+      submissionKeys.statuses(contestId),
+      submissionKeys.downloads(contestId),
+    ];
     if (submissionId !== null) {
-      queryClient.invalidateQueries({ queryKey: submissionDetailOption(contestId, submissionId).queryKey });
+      keys.push(submissionKeys.detail(contestId, submissionId));
     }
-    onSuccess?.();
+    if (savedSubmissionId != null && savedSubmissionId !== submissionId) {
+      keys.push(submissionKeys.detail(contestId, savedSubmissionId));
+    }
+    await Promise.all(keys.map((queryKey) => queryClient.invalidateQueries({ queryKey })));
   };
 
-  // 최초 제출 (제출 항목 → 파일 제출)
-  const submitMutation = useMutation({
-    mutationFn: (files: File[]) => postSubmission(contestId, submissionItemId, teamId, files),
+  const saveMutation = useMutation({
+    mutationFn: () =>
+      saveSubmissionChanges({
+        contestId,
+        submissionItemId,
+        teamId,
+        submissionId,
+        existingFileCount: existingFiles.length,
+        maxFileCount: setting.maxFileCount,
+        deletedFileIds,
+        newFiles,
+      }),
     onSuccess: () => {
-      toast('제출물을 제출했어요.', 'success');
-      invalidateDetail();
-      onClose();
+      toast('제출물을 저장했어요.', 'success');
     },
-    onError: (error) => toast(getApiErrorMessage(error, '제출에 실패했어요.'), 'error'),
+    onError: (error) => {
+      toast(
+        `${getApiErrorMessage(error, '저장에 실패했어요.')} 일부 변경이 반영되었을 수 있어요. 최신 목록을 확인한 뒤 다시 수정해주세요.`,
+        'error',
+      );
+    },
+    onSettled: async (savedSubmissionId, error) => {
+      try {
+        await invalidateSubmissions(savedSubmissionId);
+        if (!error) onSuccess?.();
+      } finally {
+        // 응답 유실이나 중간 실패 후 같은 요청을 재전송하지 않도록 초안을 폐기한다.
+        savingRef.current = false;
+        onClose();
+      }
+    },
   });
 
-  // 파일 추가 (이미 제출된 제출물)
-  const addFilesMutation = useMutation({
-    mutationFn: (files: File[]) => postSubmissionFiles(contestId, submissionId ?? 0, files),
-    onSuccess: () => {
-      toast('파일을 추가했어요.', 'success');
-      invalidateDetail();
-      onClose();
-    },
-    onError: (error) => toast(getApiErrorMessage(error, '파일 추가에 실패했어요.'), 'error'),
-  });
-
-  // 기존 파일 삭제
-  const deleteFileMutation = useMutation({
-    mutationFn: (fileId: number) => deleteSubmissionFile(contestId, submissionId ?? 0, fileId),
-    onSuccess: () => {
-      toast('파일을 삭제했어요.', 'success');
-      invalidateDetail();
-    },
-    onError: (error) => toast(getApiErrorMessage(error, '파일 삭제에 실패했어요.'), 'error'),
-  });
-
-  const isSaving = submitMutation.isPending || addFilesMutation.isPending;
+  const isSaving = saveMutation.isPending;
 
   const handleSave = () => {
-    if (newFiles.length === 0) {
-      toast('첨부할 파일을 선택해주세요.', 'error');
+    if (savingRef.current) return;
+    if (isReplacementBlocked) {
+      toast('파일 1개 제한 항목은 기존 제출물을 유지하며 교체할 수 없어요.', 'error');
       return;
     }
-    if (submissionId === null) {
-      submitMutation.mutate(newFiles);
-    } else {
-      addFilesMutation.mutate(newFiles);
+    if (!hasChanges) {
+      toast(submissionId === null ? '첨부할 파일을 선택해주세요.' : '변경할 파일을 추가하거나 삭제해주세요.', 'error');
+      return;
     }
+    if (totalCount === 0) {
+      toast('제출 파일을 최소 1개 남겨주세요.', 'error');
+      return;
+    }
+    const now = dayjs();
+    if (now.isBefore(dayjs(setting.startAt))) {
+      toast('아직 제출 기간이 시작되지 않았어요.', 'error');
+      return;
+    }
+    if (!setting.allowLateSubmission && now.isAfter(dayjs(setting.endAt))) {
+      toast('제출 기간이 마감되었어요.', 'error');
+      return;
+    }
+    if (totalCount > setting.maxFileCount) {
+      toast(`파일은 최대 ${setting.maxFileCount}개까지 첨부할 수 있어요.`, 'error');
+      return;
+    }
+    savingRef.current = true;
+    saveMutation.mutate();
   };
 
   const addFiles = (fileList: FileList | null) => {
-    if (!fileList) return;
+    if (!fileList || savingRef.current) return;
 
     // 형식·크기 검증 (위반 파일은 제외하고 안내)
     const valid = Array.from(fileList).filter((file) => {
@@ -144,11 +182,21 @@ export const SubmissionUploadModal = ({
   };
 
   const removeNewFile = (index: number) => {
+    if (savingRef.current) return;
     setNewFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
-    <DialogContent className="w-[520px] max-w-[92vw] items-stretch gap-5">
+    <DialogContent
+      className="w-[520px] max-w-[92vw] items-stretch gap-5"
+      closeDisabled={isSaving}
+      onEscapeKeyDown={(event) => {
+        if (savingRef.current) event.preventDefault();
+      }}
+      onInteractOutside={(event) => {
+        if (savingRef.current) event.preventDefault();
+      }}
+    >
       <DialogTitle className="text-xl font-bold text-gray-900">제출물 업로드</DialogTitle>
 
       {/* 제출물 정보 */}
@@ -178,6 +226,7 @@ export const SubmissionUploadModal = ({
       {/* 드래그 앤 드롭 */}
       <button
         type="button"
+        disabled={isSaving}
         onClick={() => inputRef.current?.click()}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
@@ -193,6 +242,7 @@ export const SubmissionUploadModal = ({
         ref={inputRef}
         type="file"
         multiple
+        disabled={isSaving}
         accept={allowedFormats.join(',')}
         className="hidden"
         onChange={(e) => {
@@ -204,12 +254,15 @@ export const SubmissionUploadModal = ({
       {/* 파일 목록 */}
       {totalCount > 0 && (
         <div className="flex max-h-44 flex-col gap-2 overflow-y-auto">
-          {existingFiles.map((file) => (
+          {retainedFiles.map((file) => (
             <FileRow
               key={`existing-${file.fileId}`}
               name={file.fileName}
               size={formatFileSize(file.fileSize)}
-              onRemove={() => deleteFileMutation.mutate(file.fileId)}
+              disabled={isSaving}
+              onRemove={() => {
+                if (!savingRef.current) setDeletedFileIds((prev) => [...prev, file.fileId]);
+              }}
             />
           ))}
           {newFiles.map((file, index) => (
@@ -217,20 +270,41 @@ export const SubmissionUploadModal = ({
               key={`new-${index}`}
               name={file.name}
               size={formatFileSize(file.size)}
+              disabled={isSaving}
               onRemove={() => removeNewFile(index)}
             />
           ))}
         </div>
       )}
 
+      {deletedFileIds.length > 0 && (
+        <p className="text-midGray text-sm" role="status">
+          기존 파일 {deletedFileIds.length}개가 저장 시 삭제돼요. 취소하면 변경되지 않아요.
+        </p>
+      )}
+      {deletedFileIds.length > 0 && totalCount === 0 && (
+        <p className="text-mainRed text-sm" role="alert">
+          제출 파일을 최소 1개 남겨야 저장할 수 있어요. 취소하면 기존 파일이 유지돼요.
+        </p>
+      )}
+      {isReplacementBlocked && (
+        <p className="text-mainRed text-sm" role="alert">
+          파일 1개 제한 항목은 기존 제출물을 유지하며 교체할 수 없어 저장이 제한돼요. 취소하면 기존 파일이 유지돼요.
+        </p>
+      )}
+
       {/* 푸터 */}
       <div className="flex justify-end gap-3">
         <DialogClose asChild>
-          <AdminActionButton variant="outline" onClick={onClose}>
+          <AdminActionButton variant="outline" onClick={onClose} disabled={isSaving}>
             취소
           </AdminActionButton>
         </DialogClose>
-        <AdminActionButton className="bg-mainGreen hover:bg-green-700" onClick={handleSave} disabled={isSaving}>
+        <AdminActionButton
+          className="bg-mainGreen hover:bg-green-700"
+          onClick={handleSave}
+          disabled={isSaving || isReplacementBlocked || totalCount === 0}
+        >
           {isSaving ? '저장 중...' : '저장'}
         </AdminActionButton>
       </div>
@@ -248,7 +322,17 @@ const InfoItem = ({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 };
 
-const FileRow = ({ name, size, onRemove }: { name: string; size: string; onRemove: () => void }) => {
+const FileRow = ({
+  name,
+  size,
+  onRemove,
+  disabled,
+}: {
+  name: string;
+  size: string;
+  onRemove: () => void;
+  disabled: boolean;
+}) => {
   return (
     <div className="border-lightGray flex items-center gap-3 rounded-lg border px-3 py-2.5">
       <FileText size={18} className="text-midGray shrink-0" />
@@ -257,6 +341,7 @@ const FileRow = ({ name, size, onRemove }: { name: string; size: string; onRemov
       <button
         type="button"
         onClick={onRemove}
+        disabled={disabled}
         aria-label="파일 삭제"
         className="text-midGray hover:text-darkGray shrink-0"
       >
