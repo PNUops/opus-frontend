@@ -40,15 +40,22 @@ const EmailBlock = ({
   const stopCooldown = () => {
     setCooldown(0);
   };
+
+  const handleEmailChange = (nextEmail: string) => {
+    setEmail(nextEmail);
+    setIsMailSent(false);
+    setIsEmailVerified(false);
+    stopCooldown();
+  };
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <EmailRow
         email={email}
-        setEmail={setEmail}
+        setEmail={handleEmailChange}
         isEmailVerified={isEmailVerified}
         setIsMailSent={setIsMailSent}
         startCooldown={startCooldown}
-        error={error}
+        error={isEmailVerified ? undefined : error}
         mutationFn={emailVerificationMutationFn}
       />
       <EmailVerifyRow
@@ -60,7 +67,7 @@ const EmailBlock = ({
         stopCooldown={stopCooldown}
         mutationFn={emailVerificationCodeMutationFn}
       />
-    </>
+    </div>
   );
 };
 export default EmailBlock;

@@ -1,4 +1,6 @@
 import Input from '@components/Input';
+import AuthField from '../auth/AuthField';
+import { authInputClass } from '../auth/styles';
 
 interface Props {
   value: string;
@@ -8,24 +10,22 @@ interface Props {
 
 const StudentNumberRow = ({ value, setValue, error }: Props) => {
   return (
-    <>
-      <label className="flex items-center gap-1">
-        <span className="text-mainRed">*</span>
-        <span className="text-midGray">학번</span>
-      </label>
-      <div>
-        <Input
-          inputMode="numeric"
-          value={value}
-          onChange={(e) => {
-            const input = e.target.value;
-            if (/^\d*$/.test(input)) setValue(input);
-          }}
-        />
-        <p className="text-mainRed mt-1">{error}</p>
-      </div>
-      <div />
-    </>
+    <AuthField id="signup-student-id" label="학번" error={error}>
+      <Input
+        id="signup-student-id"
+        name="studentId"
+        aria-required="true"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? 'signup-student-id-error' : undefined}
+        className={authInputClass}
+        inputMode="numeric"
+        value={value}
+        onChange={(e) => {
+          const input = e.target.value;
+          if (/^\d*$/.test(input)) setValue(input);
+        }}
+      />
+    </AuthField>
   );
 };
 export default StudentNumberRow;

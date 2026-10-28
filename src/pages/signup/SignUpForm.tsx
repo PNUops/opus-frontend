@@ -7,14 +7,17 @@ import { useSignUpFormState } from './useSignUpFormState';
 import { useMutation } from '@tanstack/react-query';
 import { patchEmailVerificationCode, postEmailVerification, postSignUp } from '@apis/signUp';
 import { useNavigate } from 'react-router-dom';
-import RoundedButton from '@components/RoundedButton';
+import { Button } from '@components/ui/button';
 import { useToast } from '@hooks/useToast';
 import { getApiErrorMessage } from '@utils/error';
+import { authPrimaryButtonClass, authSecondaryButtonClass } from '../auth/styles';
+import { useRef } from 'react';
 
 const SignUpForm = () => {
   const { formState, updateField, formError, validate } = useSignUpFormState();
   const navigate = useNavigate();
   const toast = useToast();
+  const requestInFlight = useRef(false);
 
   const mutation = useMutation({
     mutationFn: postSignUp,
@@ -25,11 +28,16 @@ const SignUpForm = () => {
     onError: (error) => {
       toast(getApiErrorMessage(error, '회원가입에 실패했어요. 다시 시도해주세요.'), 'error');
     },
+    onSettled: () => {
+      requestInFlight.current = false;
+    },
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (requestInFlight.current) return;
     if (validate()) {
+      requestInFlight.current = true;
       mutation.mutate({
         name: formState.name,
         studentId: formState.studentNumber,
@@ -40,15 +48,9 @@ const SignUpForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full space-y-6 md:grid md:grid-cols-[max-content_1fr_max-content] md:items-center md:space-y-0 md:gap-x-4 md:gap-y-6"
-    >
-      <div className="flex flex-col gap-1 md:contents">
+    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-5" aria-busy={mutation.isPending}>
+      <div className="grid gap-5 sm:grid-cols-2">
         <NameRow value={formState.name} setValue={(val) => updateField('name', val)} error={formError.name} />
-      </div>
-
-      <div className="flex flex-col gap-1 md:contents">
         <StudentNumberRow
           value={formState.studentNumber}
           setValue={(val) => updateField('studentNumber', val)}
@@ -56,9 +58,7 @@ const SignUpForm = () => {
         />
       </div>
 
-      <Spacer />
-
-      <div className="flex flex-col gap-1 md:contents">
+      <div className="border-lightGray border-y py-5">
         <EmailBlock
           email={formState.email}
           setEmail={(val) => updateField('email', val)}
@@ -70,36 +70,26 @@ const SignUpForm = () => {
         />
       </div>
 
-      <Spacer />
-
-      <div className="flex flex-col gap-1 md:contents">
-        <PasswordRow
-          value={formState.password}
-          setValue={(val) => updateField('password', val)}
-          error={formError.password}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1 md:contents">
-        <PasswordConfirmRow
-          value={formState.passwordConfirm}
-          setValue={(val) => updateField('passwordConfirm', val)}
-          error={formError.passwordConfirm}
-        />
-      </div>
-
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end sm:gap-4 md:col-span-3">
-        <RoundedButton type="button" onClick={() => navigate(-1)} className="w-full px-10 sm:w-auto">
+      <PasswordRow
+        value={formState.password}
+        setValue={(val) => updateField('password', val)}
+        error={formError.password}
+      />
+      <PasswordConfirmRow
+        value={formState.passwordConfirm}
+        setValue={(val) => updateField('passwordConfirm', val)}
+        error={formError.passwordConfirm}
+      />
+      <div className="mt-1 grid grid-cols-[1fr_2fr] gap-3">
+        <Button type="button" variant="outline" onClick={() => navigate(-1)} className={authSecondaryButtonClass}>
           취소
-        </RoundedButton>
-        <RoundedButton className="bg-lightGray w-full px-10 sm:w-auto" type="submit">
-          가입
-        </RoundedButton>
+        </Button>
+        <Button className={authPrimaryButtonClass} type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? '가입 중…' : '회원가입'}
+        </Button>
       </div>
     </form>
   );
 };
 
 export default SignUpForm;
-
-const Spacer = () => <div className="h-2 md:col-span-3" aria-hidden="true" />;

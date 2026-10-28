@@ -15,6 +15,7 @@ const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isAuthRoute = ['/signin', '/signup'].includes(location.pathname.replace(/\/+$/, ''));
   useScrollToTop();
 
   if (!isAuthInit) return <></>;
@@ -22,9 +23,13 @@ const MainLayout = () => {
   return (
     <AxiosInterceptorProvider>
       <SidebarProvider>
-        <div className={isAdminRoute ? 'min-w-[1024px]' : 'min-w-[350px]'}>
+        <div
+          className={
+            isAdminRoute ? 'min-w-[1024px]' : isAuthRoute ? 'flex min-h-svh min-w-[350px] flex-col' : 'min-w-[350px]'
+          }
+        >
           <Header />
-          <div>
+          <div className={isAuthRoute ? 'flex-1' : undefined}>
             <Outlet />
           </div>
           {!isAdminRoute && <Footer />}

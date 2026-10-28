@@ -1,10 +1,14 @@
 import Input from '@components/Input';
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { EmailVerificationRequestDTO } from '@dto/signUpDto';
 import { isPNUEmail } from '@utils/email';
 import { useToast } from '@hooks/useToast';
 import Spinner from '@components/Spinner';
+import { Button } from '@components/ui/button';
+import AuthField from '../auth/AuthField';
+import { authInputClass, authSecondaryButtonClass } from '../auth/styles';
+import { getApiErrorMessage } from '@utils/error';
 
 interface Props {
   email: string;
@@ -21,21 +25,49 @@ const EmailRow = ({ email, setEmail, isEmailVerified, setIsMailSent, startCooldo
   const [isSendable, setIsSendable] = useState(true);
   const COOLDOWN_SEC = 30;
   const toast = useToast();
+  const requestInFlight = useRef(false);
+  const latestEmail = useRef(email);
+  const resendTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearResendTimer = () => {
+    if (resendTimer.current !== null) {
+      clearTimeout(resendTimer.current);
+      resendTimer.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (resendTimer.current !== null) clearTimeout(resendTimer.current);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    latestEmail.current = email;
+    setIsFirstSend(true);
+  }, [email]);
 
   const mutation = useMutation({
     mutationFn: mutationFn,
-    onSuccess: () => {
-      toast(`${email}로 인증 메일을 전송했어요`, 'success');
+    onSuccess: (_data, variables) => {
+      if (variables.email !== latestEmail.current) return;
+      toast(`${variables.email}로 인증 메일을 전송했어요`, 'success');
       setIsMailSent(true);
       startCooldown();
     },
-    onError: (error: any) => {
-      toast(`인증 메일 전송에 실패했어요: ${error?.response.data.message}`, 'error');
+    onError: (error, variables) => {
+      clearResendTimer();
       setIsSendable(true);
+      if (variables.email !== latestEmail.current) return;
+      toast(getApiErrorMessage(error, '인증 메일 전송에 실패했어요. 다시 시도해주세요.'), 'error');
+    },
+    onSettled: () => {
+      requestInFlight.current = false;
     },
   });
 
   const handleSendCode = () => {
+    if (requestInFlight.current || isEmailVerified) return;
     if (!isPNUEmail(email)) {
       toast('부산대학교 이메일(@pusan.ac.kr)이 아닙니다.', 'info');
       return;
@@ -46,44 +78,56 @@ const EmailRow = ({ email, setEmail, isEmailVerified, setIsMailSent, startCooldo
     }
     setIsFirstSend(false);
     setIsSendable(false);
-    setTimeout(() => {
+    clearResendTimer();
+    resendTimer.current = setTimeout(() => {
+      resendTimer.current = null;
       setIsSendable(true);
     }, COOLDOWN_SEC * 1000);
+    requestInFlight.current = true;
     mutation.mutate({ email });
   };
 
   return (
-    <>
-      <label className="flex items-center gap-1">
-        <span className="text-mainRed">*</span>
-        <span className="text-midGray">이메일</span>
-      </label>
-      <div>
+    <AuthField id="signup-email" label="이메일" error={error}>
+      <div className="flex flex-col gap-2 sm:flex-row">
         <Input
+          id="signup-email"
           name="email"
+          autoComplete="email"
+          inputMode="email"
+          aria-required="true"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? 'signup-email-error' : undefined}
           disabled={isEmailVerified}
-          className="disabled:bg-whiteGray disabled:text-midGray"
+          className={`${authInputClass} disabled:bg-whiteGray disabled:text-midGray min-w-0`}
           placeholder="example@pusan.ac.kr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <p className="text-mainRed mt-1">{error}</p>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleSendCode}
+          disabled={mutation.isPending || isEmailVerified}
+          className={`${authSecondaryButtonClass} shrink-0 sm:min-w-32`}
+        >
+          {mutation.isPending ? (
+            <>
+              <span className="flex size-4 shrink-0 items-center" aria-hidden="true">
+                <Spinner className="h-4 w-4" />
+              </span>
+              <span>전송 중…</span>
+            </>
+          ) : isEmailVerified ? (
+            '인증 완료'
+          ) : isFirstSend ? (
+            '인증코드 전송'
+          ) : (
+            '재전송'
+          )}
+        </Button>
       </div>
-      <button
-        type="button"
-        onClick={handleSendCode}
-        disabled={mutation.isPending || isEmailVerified}
-        className="border-lightGray hover:bg-lightGray min-w-32 rounded-lg border p-3 px-4"
-      >
-        {mutation.isPending ? (
-          <Spinner className="inline-block h-5 w-5 align-middle" />
-        ) : isFirstSend ? (
-          '인증코드 전송'
-        ) : (
-          '재전송'
-        )}
-      </button>
-    </>
+    </AuthField>
   );
 };
 export default EmailRow;
