@@ -43,6 +43,8 @@ const screens = [
     ready: async (page) => {
       await page.locator('.opus-masthead').waitFor();
       await page.locator('.opus-contest-card').first().waitFor({ timeout: 20000 });
+      await page.locator('.opus-archive-section[aria-busy="true"]').waitFor({ state: 'hidden', timeout: 20000 });
+      await page.locator('.opus-masthead [aria-busy="true"]').waitFor({ state: 'hidden', timeout: 20000 });
     },
   },
   {
@@ -92,6 +94,9 @@ function startServer() {
 }
 
 async function capture(page, name, viewport) {
+  // The development-only TanStack Query toggle is not part of the product UI.
+  await page.addStyleTag({ content: '.tsqd-open-btn-container { display: none !important; }' });
+  await page.mouse.move(0, 0);
   const filename = `${name}-${viewport.name}.png`;
   await page.screenshot({
     path: path.join(outputDirectory, filename),
@@ -151,6 +156,11 @@ function writeArtifacts() {
         for (const screen of screens) {
           await page.goto(new URL(screen.path, baseUrl).toString(), { waitUntil: 'domcontentloaded' });
           await screen.ready(page);
+          if (screen.name === 'signin') {
+            await capture(page, 'signin-onboarding', viewport);
+            await page.getByRole('button', { name: '확인', exact: true }).click();
+            await page.getByRole('button', { name: '확인', exact: true }).waitFor({ state: 'hidden' });
+          }
           await capture(page, screen.name, viewport);
         }
 
