@@ -8,7 +8,7 @@ const unusedImports = require('eslint-plugin-unused-imports');
 
 module.exports = [
   {
-    ignores: ['dist/**', 'node_modules/**'],
+    ignores: ['dist/**', 'node_modules/**', '.qa/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -45,7 +45,7 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.config.cjs', 'tests/**/*.test.cjs'],
+    files: ['**/*.config.cjs', 'tests/**/*.test.cjs', 'tests/browser-visual-qa.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: {
