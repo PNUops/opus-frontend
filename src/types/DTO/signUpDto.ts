@@ -3,6 +3,7 @@ export interface SignUpRequestDto {
   studentId: string;
   email: string;
   password: string;
+  memberType: 'STUDENT' | 'STAFF';
 }
 
 export interface EmailVerificationRequestDTO {

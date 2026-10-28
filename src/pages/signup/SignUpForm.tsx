@@ -35,6 +35,7 @@ const SignUpForm = () => {
         studentId: formState.studentNumber,
         email: formState.email,
         password: formState.password,
+        memberType: 'STUDENT',
       });
     }
   };

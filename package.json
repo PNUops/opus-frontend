@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:submission": "node --test tests/submission-save.test.cjs"
+    "test:submission": "node --test tests/submission-save.test.cjs",
+    "test:signup": "node --test tests/signup-contract.test.cjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

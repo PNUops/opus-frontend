@@ -4,9 +4,11 @@ import { isPNUEmail } from '../../utils/email';
 
 export const signUpHandlers = [
   http.post('/api/sign-up', async ({ request }) => {
-    const { name, studentId, email, password } = (await request.json()) as SignUpRequestDto;
-    if (!name.trim() || !studentId.trim() || !email.trim() || !password.trim())
-      return HttpResponse.json({ error: '필수 필드 누락' }, { status: 400 });
+    const { name, studentId, email, password, memberType } = (await request.json()) as Partial<SignUpRequestDto>;
+    if ([name, studentId, email, password].some((value) => typeof value !== 'string' || !value.trim()))
+      return HttpResponse.json({ message: '필수 필드 누락' }, { status: 400 });
+    if (memberType !== 'STUDENT' && memberType !== 'STAFF')
+      return HttpResponse.json({ message: '회원 유형은 STUDENT 또는 STAFF만 가능합니다.' }, { status: 400 });
 
     return new HttpResponse(null, { status: 201 });
   }),
