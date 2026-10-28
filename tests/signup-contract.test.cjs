@@ -48,6 +48,7 @@ test('the student form sends its member type and entered fields through the API 
     './useSignUpFormState': {
       useSignUpFormState: () => ({ formState: student, formError: {}, validate: () => true }),
     },
+    react: { useRef: (initialValue) => ({ current: initialValue }) },
     'react/jsx-runtime': { jsx, jsxs: jsx },
     '@tanstack/react-query': {
       useMutation: ({ mutationFn }) => ({
@@ -59,6 +60,8 @@ test('the student form sends its member type and entered fields through the API 
     '@apis/signUp': api,
     'react-router-dom': { useNavigate: () => () => {} },
     '@components/RoundedButton': 'RoundedButton',
+    '@components/ui/button': { Button: 'Button' },
+    '../auth/styles': { authPrimaryButtonClass: '', authSecondaryButtonClass: '' },
     '@hooks/useToast': { useToast: () => () => {} },
     '@utils/error': {},
   });
