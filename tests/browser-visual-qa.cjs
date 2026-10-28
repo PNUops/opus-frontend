@@ -58,7 +58,8 @@ const screens = [
   {
     name: 'signin',
     path: '/signin',
-    ready: (page) => page.getByRole('heading', { name: '로그인', exact: true }).waitFor(),
+    // A modal onboarding notice hides the background from the accessibility tree, not visually.
+    ready: (page) => page.getByRole('heading', { name: '로그인', exact: true, includeHidden: true }).waitFor(),
   },
   {
     name: 'signup',
