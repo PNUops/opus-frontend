@@ -158,8 +158,8 @@ function writeArtifacts() {
           await screen.ready(page);
           if (screen.name === 'signin') {
             await capture(page, 'signin-onboarding', viewport);
-            await page.getByRole('button', { name: '확인', exact: true }).click();
-            await page.getByRole('button', { name: '확인', exact: true }).waitFor({ state: 'hidden' });
+            await page.getByRole('button', { name: '확인', exact: true }).first().click();
+            await page.waitForFunction(() => localStorage.getItem('signupLeaderMsgConfirmed') === 'true');
           }
           await capture(page, screen.name, viewport);
         }
