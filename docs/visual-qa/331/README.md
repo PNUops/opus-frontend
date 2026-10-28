@@ -28,6 +28,10 @@
 
 레이블/오류 연결, 인증 전 가입 차단, 인증코드 실패·완료, 로그인/가입 대기·서버 오류, 안내 확인 유지·Escape·키보드 이동을 검토했다. 공통 토스트의 긴 한글·대비 문제는 별도 #333에서 다룬다.
 
+후속 검토에서는 합성 JWT·사용자 응답으로 로그인 후 이동, 인증 완료 후 가입 성공, 기존 팀 쿼리 캐시 무효화를 확인하고 성공 화면 3장을 직접 검토했다. 운영 토큰이나 실제 계정을 사용하지 않았으며, 비활성 팀 쿼리의 무효화 확인을 실제 서버 재조회로 해석하지 않는다. 앞부분 56자의 합성 이메일도 390px에서 입력창과 전송 버튼이 양쪽 16px 여백 안에 유지됐고 가로 넘침은 없었다.
+
+독립 계약 PR #318과 이 변경을 임시 checkout에서 함께 적용해 실제 가입 폼에서 API로 전달되는 `memberType: STUDENT`를 확인했다. 통합 검토 후 임시 병합을 취소했으며 어느 PR도 자동 병합하지 않았다.
+
 ## 설계 근거와 범위
 
 Renewal SCREENS `14:6`·ARCHIVE `14:11`에서 일반 인증 화면의 최종 node는 확인되지 않았다. [Button 14:73](https://www.figma.com/design/HbyxwchvTkzD4pbtdjCHkg/OPUS-Renewal?node-id=14-73), [TextField 687:3271](https://www.figma.com/design/HbyxwchvTkzD4pbtdjCHkg/OPUS-Renewal?node-id=687-3271), 기존 OPUS 화면과 토큰을 함께 참고했다. 관리자 초대 로그인은 일반 인증 화면으로 적용하지 않았다.
