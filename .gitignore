@@ -25,3 +25,6 @@ dist-ssr
 
 *.env
 tsconfig.tsbuildinfo
+
+# Isolated Playwright binaries and visual QA artifacts
+.qa/
