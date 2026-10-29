@@ -1,0 +1,137 @@
+{
+  "checks": [
+    {
+      "name": "route-loading",
+      "width": 1440,
+      "overflow": 0
+    },
+    {
+      "name": "direct URL retains search/hash after loading",
+      "width": 1440
+    },
+    {
+      "name": "route-error",
+      "width": 1440,
+      "overflow": 0
+    },
+    {
+      "name": "manual reload recovers failed chunk and preserves URL",
+      "width": 1440
+    },
+    {
+      "name": "sidebar-loading",
+      "width": 1440,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar-ready",
+      "width": 1440,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar absent initially, cancel focus returns, reopen uses one request",
+      "width": 1440
+    },
+    {
+      "name": "sidebar-error",
+      "width": 1440,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar failure preserves home and cancellation restores list",
+      "width": 1440
+    },
+    {
+      "name": "route-loading",
+      "width": 768,
+      "overflow": 0
+    },
+    {
+      "name": "direct URL retains search/hash after loading",
+      "width": 768
+    },
+    {
+      "name": "route-error",
+      "width": 768,
+      "overflow": 0
+    },
+    {
+      "name": "manual reload recovers failed chunk and preserves URL",
+      "width": 768
+    },
+    {
+      "name": "sidebar-loading",
+      "width": 768,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar-ready",
+      "width": 768,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar absent initially, cancel focus returns, reopen uses one request",
+      "width": 768
+    },
+    {
+      "name": "sidebar-error",
+      "width": 768,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar failure preserves home and cancellation restores list",
+      "width": 768
+    },
+    {
+      "name": "route-loading",
+      "width": 390,
+      "overflow": 0
+    },
+    {
+      "name": "direct URL retains search/hash after loading",
+      "width": 390
+    },
+    {
+      "name": "route-error",
+      "width": 390,
+      "overflow": 0
+    },
+    {
+      "name": "manual reload recovers failed chunk and preserves URL",
+      "width": 390
+    },
+    {
+      "name": "sidebar-loading",
+      "width": 390,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar-ready",
+      "width": 390,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar absent initially, cancel focus returns, reopen uses one request",
+      "width": 390
+    },
+    {
+      "name": "sidebar-error",
+      "width": 390,
+      "overflow": 0
+    },
+    {
+      "name": "sidebar failure preserves home and cancellation restores list",
+      "width": 390
+    },
+    {
+      "name": "anonymous admin/my-page guards prevent page chunk requests"
+    },
+    {
+      "name": "sign-in/sign-up history navigation reuses module"
+    },
+    {
+      "name": "unknown route still renders 404"
+    }
+  ],
+  "failures": []
+}

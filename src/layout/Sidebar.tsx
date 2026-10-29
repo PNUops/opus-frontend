@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { lazy, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, CircleDot, Folder, FolderOpen, ListRestart, MessageSquareShare } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
@@ -9,7 +9,9 @@ import { useContestId } from '@hooks/useId';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import { EXTERNAL_LINKS } from '@constants/external-links';
 import useAuth from '@hooks/useAuth';
-import SidebarSortEditor from '@layout/SidebarSortEditor';
+import DeferredContent from '@components/DeferredContent';
+
+const SidebarSortEditor = lazy(() => import('@layout/SidebarSortEditor'));
 
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
@@ -23,6 +25,11 @@ const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
   const { data: groups = [], isLoading } = useQuery({ queryKey: ['groupedContests'], queryFn: getGroupedContests });
   const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
   const [isSorting, setIsSorting] = useState(false);
+  const sortButtonRef = useRef<HTMLButtonElement>(null);
+  const closeSortEditor = () => {
+    setIsSorting(false);
+    requestAnimationFrame(() => sortButtonRef.current?.focus());
+  };
   const currentCategoryId = useMemo(
     () => groups.find((group) => group.contests.some((contest) => contest.isCurrent))?.categoryId ?? null,
     [groups],
@@ -68,6 +75,7 @@ const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
             <button
               type="button"
               onClick={() => setIsSorting(true)}
+              ref={sortButtonRef}
               className={cn(
                 'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold transition-colors',
                 isEditorial
@@ -82,14 +90,16 @@ const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
         </div>
 
         {isSorting && isAdmin ? (
-          <SidebarSortEditor
-            groups={groups}
-            expandedCategoryId={expandedCategoryId}
-            onToggleCategory={toggleCategory}
-            onCancel={() => setIsSorting(false)}
-            onSaved={() => setIsSorting(false)}
-            tone={tone}
-          />
+          <DeferredContent loadingMessage="정렬 도구를 불러오는 중입니다." onCancel={closeSortEditor} tone={tone}>
+            <SidebarSortEditor
+              groups={groups}
+              expandedCategoryId={expandedCategoryId}
+              onToggleCategory={toggleCategory}
+              onCancel={closeSortEditor}
+              onSaved={closeSortEditor}
+              tone={tone}
+            />
+          </DeferredContent>
         ) : (
           <ul className={cn('flex flex-col gap-3', isEditorial ? 'ml-0' : 'ml-3')}>
             {isLoading ? (
