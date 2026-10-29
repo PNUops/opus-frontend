@@ -23,7 +23,11 @@ export const SubmissionFeedbackDrawer = ({ detail, feedbacks, onDownloadFile }: 
       {/* 헤더 */}
       <div className="border-lightGray flex items-center gap-2 border-b px-5 py-4">
         <SheetClose asChild>
-          <button type="button" aria-label="닫기" className="text-midGray hover:text-darkGray">
+          <button
+            type="button"
+            aria-label="닫기"
+            className="text-midGray hover:text-darkGray flex size-11 shrink-0 items-center justify-center rounded-md focus-visible:outline-2"
+          >
             <PanelRightClose size={20} />
           </button>
         </SheetClose>
@@ -31,7 +35,7 @@ export const SubmissionFeedbackDrawer = ({ detail, feedbacks, onDownloadFile }: 
       </div>
 
       {/* 본문 (스크롤) */}
-      <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-5 py-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-5 py-5">
         <SubmissionTeamSummary detail={detail} />
 
         <div className="flex flex-col gap-3">
@@ -58,10 +62,10 @@ interface FeedbackItemProps {
 const FeedbackItem = ({ feedback, onDownloadFile }: FeedbackItemProps) => {
   return (
     <div className="border-lightGray rounded-xl border p-4">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
           <div className="bg-lightGray h-8 w-8 shrink-0 rounded-full" />
-          <span className="text-darkGray text-sm font-semibold">{feedback.memberName}</span>
+          <span className="text-darkGray text-sm font-semibold break-words">{feedback.memberName}</span>
           <span className="bg-whiteGray text-midGray rounded-md px-2 py-0.5 text-xs">
             {getFeedbackRoleLabel(feedback.memberRoleType)}
           </span>
@@ -69,7 +73,9 @@ const FeedbackItem = ({ feedback, onDownloadFile }: FeedbackItemProps) => {
         <span className="text-midGray shrink-0 text-xs">{formatDateTime(feedback.createdAt)}</span>
       </div>
 
-      <p className="text-darkGray mt-3 text-sm leading-relaxed whitespace-pre-wrap">{feedback.description}</p>
+      <p className="text-darkGray mt-3 text-sm leading-relaxed break-words whitespace-pre-wrap">
+        {feedback.description}
+      </p>
 
       {feedback.files.length > 0 && (
         <div className="mt-3 flex flex-col gap-1">
@@ -81,7 +87,7 @@ const FeedbackItem = ({ feedback, onDownloadFile }: FeedbackItemProps) => {
               className="bg-whiteGray hover:bg-lightGray flex items-center gap-3 rounded-md px-3 py-2 text-left transition-colors"
             >
               <FileText size={16} className="text-midGray shrink-0" />
-              <span className="text-darkGray flex-1 truncate text-sm">{file.fileName}</span>
+              <span className="text-darkGray min-w-0 flex-1 text-sm break-words">{file.fileName}</span>
               <span className="text-midGray shrink-0 text-xs">{formatFileSize(file.fileSize)}</span>
             </button>
           ))}

@@ -18,7 +18,11 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile
       {/* 헤더 */}
       <div className="border-lightGray flex items-center gap-2 border-b px-5 py-4">
         <SheetClose asChild>
-          <button type="button" aria-label="닫기" className="text-midGray hover:text-darkGray">
+          <button
+            type="button"
+            aria-label="닫기"
+            className="text-midGray hover:text-darkGray flex size-11 shrink-0 items-center justify-center rounded-md focus-visible:outline-2"
+          >
             <PanelRightClose size={20} />
           </button>
         </SheetClose>
@@ -26,7 +30,7 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile
       </div>
 
       {/* 본문 */}
-      <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-5 py-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-5 py-5">
         <SubmissionTeamSummary detail={detail} />
 
         {/* 제출 파일 */}
@@ -44,7 +48,7 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile
                 className="hover:bg-whiteGray flex items-center gap-3 rounded-md py-2 text-left transition-colors"
               >
                 <FileText size={18} className="text-midGray shrink-0" />
-                <span className="text-darkGray flex-1 truncate text-sm">{file.fileName}</span>
+                <span className="text-darkGray min-w-0 flex-1 text-sm break-words">{file.fileName}</span>
                 <span className="text-midGray shrink-0 text-xs">{formatFileSize(file.fileSize)}</span>
               </button>
             ))}

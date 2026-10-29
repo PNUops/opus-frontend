@@ -69,9 +69,9 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
   };
 
   return (
-    <DialogContent className="w-[500px]">
+    <DialogContent className="max-h-[calc(100dvh-32px)] w-[500px] max-w-[calc(100vw-32px)] items-stretch overflow-y-auto max-sm:p-5 max-sm:pt-12">
       <DialogTitle className="text-2xl font-bold">{`공지사항 ${type === 'create' ? '추가' : '수정'}`}</DialogTitle>
-      <div className="grid grid-cols-[max-content_1fr] gap-x-8 gap-y-4">
+      <div className="grid min-w-0 grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-[max-content_minmax(0,1fr)] sm:gap-y-4">
         <label htmlFor="title" className="m-2">
           제목
         </label>

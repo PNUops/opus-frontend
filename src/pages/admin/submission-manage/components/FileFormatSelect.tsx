@@ -24,9 +24,10 @@ export const FileFormatSelect = ({ value, onChange }: FileFormatSelectProps) => 
           <button
             key={format}
             type="button"
+            aria-pressed={active}
             onClick={() => toggle(format)}
             className={cn(
-              'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
+              'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors max-sm:min-h-11',
               active
                 ? 'border-mainBlue text-mainBlue bg-blue-50'
                 : 'border-input text-midGray bg-white hover:bg-gray-50',

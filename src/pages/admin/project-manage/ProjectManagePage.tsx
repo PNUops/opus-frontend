@@ -60,22 +60,26 @@ const ProjectManagePage = () => {
         ) : (
           projectsAdmin.map((proj, index) => (
             <AdminCardRow key={proj.teamId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
-              <div className="flex w-full items-center gap-4 py-1">
-                <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
-                <div className="flex min-w-0 flex-1 items-center gap-6">
-                  <p className="text-darkGray w-[150px] flex-shrink-0 truncate font-medium">
+              <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-3 py-1 lg:flex lg:items-center lg:gap-4">
+                <p className="text-midGray hidden w-10 flex-shrink-0 text-center text-sm lg:block">
+                  {(index ?? 0) + 1}
+                </p>
+                <div className="col-start-1 row-start-1 flex min-w-0 flex-1 flex-col items-start gap-2 lg:flex-row lg:items-center lg:gap-6">
+                  <p className="text-darkGray max-w-full font-medium break-words lg:w-[150px] lg:flex-shrink-0 lg:truncate">
                     {proj.teamName ?? '미지정'}
                   </p>
-                  <p className="flex-1 truncate text-gray-600">{proj.projectName ?? '미지정'}</p>
-                  <div className="flex w-[100px] flex-shrink-0 justify-center">
+                  <p className="max-w-full min-w-0 text-sm leading-6 break-words text-gray-600 lg:flex-1 lg:truncate">
+                    {proj.projectName ?? '미지정'}
+                  </p>
+                  <div className="flex max-w-full justify-start lg:w-[100px] lg:flex-shrink-0 lg:justify-center">
                     <TrackTag name={proj.trackName ?? '미지정'} />
                   </div>
                 </div>
 
-                <div className="w-[80px] flex-shrink-0">
+                <div className="col-start-1 row-start-2 w-fit lg:w-[80px] lg:flex-shrink-0">
                   <SubmissionTag isSubmitted={proj.isSubmitted} />
                 </div>
-                <div className="flex w-10 flex-shrink-0 justify-end">
+                <div className="col-start-2 row-start-1 flex shrink-0 justify-end lg:w-10">
                   <AdminPopoverMenu>
                     <AdminPopoverEditButton
                       onEdit={() => {

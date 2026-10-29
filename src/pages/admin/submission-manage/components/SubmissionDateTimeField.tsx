@@ -33,7 +33,7 @@ export const SubmissionDateTimeField = ({ value, onChange }: SubmissionDateTimeF
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="border-input flex h-9 w-full items-center justify-between rounded-md border bg-white px-3 text-sm"
+          className="border-input flex h-11 w-full items-center justify-between rounded-md border bg-white px-3 text-base sm:h-9 sm:text-sm"
         >
           {current.format('YYYY-MM-DD HH:mm')}
           <CiCalendar size={18} className="text-midGray" />

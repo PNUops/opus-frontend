@@ -69,7 +69,7 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
   };
 
   return (
-    <DialogContent>
+    <DialogContent className="max-h-[calc(100dvh-32px)] w-[440px] max-w-[calc(100vw-32px)] overflow-y-auto max-sm:p-5 max-sm:pt-12">
       <div className="text-mainBlue mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
         <FaRegEdit size={20} />
       </div>

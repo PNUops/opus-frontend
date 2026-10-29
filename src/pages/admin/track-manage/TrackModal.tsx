@@ -31,7 +31,7 @@ export const TrackModal = ({ type, prevName, onSubmit, onClose }: TrackModalProp
   };
 
   return (
-    <DialogContent>
+    <DialogContent className="max-h-[calc(100dvh-32px)] w-[440px] max-w-[calc(100vw-32px)] overflow-y-auto max-sm:p-5 max-sm:pt-12">
       <div className="text-mainBlue mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
         <FaRegEdit size={20} />
       </div>
@@ -64,8 +64,8 @@ interface TrackDeleteConfirmModalProps {
 
 export const TrackDeleteConfirmModal = ({ trackName, onSubmit }: TrackDeleteConfirmModalProps) => {
   return (
-    <DialogContent>
-      <h3 className="text-center text-lg font-semibold text-gray-800">{`${trackName} 분과를 삭제하시겠습니까?`}</h3>
+    <DialogContent className="max-h-[calc(100dvh-32px)] w-[440px] max-w-[calc(100vw-32px)] overflow-y-auto max-sm:p-5 max-sm:pt-12">
+      <DialogTitle className="text-center text-lg font-semibold break-words text-gray-800">{`${trackName} 분과를 삭제하시겠습니까?`}</DialogTitle>
       <div className="flex gap-4">
         <DialogClose asChild>
           <Button className="border-lightGray text-midGray rounded-full border px-5 py-3 hover:bg-gray-100">

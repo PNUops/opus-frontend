@@ -43,12 +43,16 @@ const AwardList = ({ filterId = 0, teamList }: AwardListProps) => {
     <div className="flex w-full flex-col">
       {filteredTeamList.map((team, index) => (
         <AdminCardRow key={team.teamId} className={twMerge('border-lightGray px-0 py-1.5')}>
-          <div className="flex w-full items-center gap-4 rounded-lg border p-3">
-            <p className="w-10 flex-shrink-0 text-center text-sm">{index + 1}</p>
-            <p className="text-darkGray w-[150px] flex-shrink-0 truncate">{team.teamName}</p>{' '}
-            <p className="flex-1 truncate text-gray-600">{team.projectName}</p>
+          <div className="flex w-full min-w-0 flex-col items-start gap-2 rounded-lg border p-3 lg:flex-row lg:items-center lg:gap-4">
+            <p className="hidden w-10 flex-shrink-0 text-center text-sm lg:block">{index + 1}</p>
+            <p className="text-darkGray max-w-full break-words lg:w-[150px] lg:flex-shrink-0 lg:truncate">
+              {team.teamName}
+            </p>
+            <p className="max-w-full min-w-0 text-sm leading-6 break-words text-gray-600 lg:flex-1 lg:truncate">
+              {team.projectName}
+            </p>
             {team.awards.filter((award) => award.awardName && award.awardColor).length > 0 && (
-              <div className="flex items-center gap-3">
+              <div className="flex max-w-full flex-wrap items-center gap-2 lg:gap-3">
                 {team.awards
                   .filter((award) => award.awardName && award.awardColor)
                   .map((award, index) => (

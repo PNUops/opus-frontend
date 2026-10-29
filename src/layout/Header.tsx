@@ -15,6 +15,7 @@ import Button from '@components/Button';
 import ProfileAvatar from '@components/ProfileAvatar';
 import { myProfileImageOption } from '@queries/me';
 import { notificationOption } from '@queries/notification';
+import logoOpusAdmin from './admin/logo-opus-admin.svg';
 
 const PROFILE_MENU_ID = 'header-profile-menu';
 
@@ -206,7 +207,7 @@ const Header = () => {
   const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
   const toast = useToast();
   const location = useLocation();
-  const { toggle } = useSidebar();
+  const { toggle, isOpen: isSidebarOpen } = useSidebar();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationQuery = useQuery({
     ...notificationOption(),
@@ -236,7 +237,7 @@ const Header = () => {
     <header
       className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
         isAdminRoute
-          ? 'bg-white pl-[272px]'
+          ? 'min-h-16 bg-white lg:pl-[272px]'
           : isHomeRoute
             ? 'border-b border-white/35 bg-[#06172f] text-white'
             : 'shadow-b-lg bg-white'
@@ -244,6 +245,27 @@ const Header = () => {
     >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
         <div className="flex items-center gap-2">
+          {isAdminRoute && (
+            <div className="flex min-w-0 items-center gap-3 lg:hidden">
+              <Link to="/admin" aria-label="관리자 대시보드로 이동">
+                <img src={logoOpusAdmin} alt="OPUS Admin" className="h-7 w-auto" />
+              </Link>
+              {isAdmin && (
+                <button
+                  id="admin-menu-trigger"
+                  type="button"
+                  aria-label="관리자 메뉴 열기"
+                  aria-expanded={isSidebarOpen}
+                  aria-controls="admin-mobile-navigation"
+                  onClick={toggle}
+                  className="border-lightGray text-mainBlue hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  <HiMenu className="size-4" aria-hidden />
+                  관리 메뉴
+                </button>
+              )}
+            </div>
+          )}
           {isSidebarRoute && !isAdminRoute && (
             <Button
               onClick={toggle}

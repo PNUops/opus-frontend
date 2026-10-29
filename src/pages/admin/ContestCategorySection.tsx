@@ -50,7 +50,7 @@ const CategoryList = () => {
 
   return categories.map((category) => (
     <AdminCardRow key={category.categoryId}>
-      <div className="text-midGray font-semibold">{category.categoryName}</div>
+      <div className="text-midGray min-w-0 flex-1 pr-3 font-semibold break-words">{category.categoryName}</div>
       <AdminPopoverMenu>
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
           <AdminPopoverEditButton onEdit={() => setEditOpen(true)} />

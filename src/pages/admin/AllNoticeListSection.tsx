@@ -51,9 +51,11 @@ const AllNoticeList = () => {
 
   return notices.map((notice) => (
     <AdminCardRow key={notice.noticeId} className="border-b-lightGray px-2.5 not-last:border-b">
-      <div className="flex gap-10">
-        <div>{dayjs(notice.createdAt).format('YYYY년 MM월 DD일 HH:mm')}</div>
-        <div>{notice.title}</div>
+      <div className="flex min-w-0 flex-1 flex-col gap-1 pr-3 lg:flex-row lg:gap-10">
+        <div className="order-2 text-xs leading-6 whitespace-nowrap text-neutral-600 lg:order-none lg:text-sm">
+          {dayjs(notice.createdAt).format('YYYY년 MM월 DD일 HH:mm')}
+        </div>
+        <div className="min-w-0 break-words">{notice.title}</div>
       </div>
       <AdminPopoverMenu>
         <Dialog open={editOpen} onOpenChange={setEditOpen}>

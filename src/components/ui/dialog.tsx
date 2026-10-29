@@ -39,7 +39,10 @@ function DialogContent({
           disabled={closeDisabled}
           className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-2 right-2 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none"
         >
-          <button disabled={closeDisabled}>
+          <button
+            disabled={closeDisabled}
+            className="max-sm:flex max-sm:size-11 max-sm:items-center max-sm:justify-center"
+          >
             <RxCross2 size={20} />
             <span className="sr-only">Close</span>
           </button>

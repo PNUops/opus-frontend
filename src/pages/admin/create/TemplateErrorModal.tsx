@@ -7,7 +7,7 @@ interface TemplateErrorModalProps {
 
 export const TemplateErrorModal = ({ errors }: TemplateErrorModalProps) => {
   return (
-    <DialogContent className="w-[450px] gap-6">
+    <DialogContent className="max-h-[calc(100dvh-32px)] w-[450px] max-w-[calc(100vw-32px)] gap-6 overflow-y-auto max-sm:p-5 max-sm:pt-12">
       <DialogTitle className="text-mainRed text-xl">{'템플릿 형식 오류'}</DialogTitle>
       <p className="whitespace-pre-wrap">{`등록하신 파일에서 아래의 오류들이 발견되었습니다.\n수정 후 파일을 다시 업로드 해주세요.`}</p>
       <ul className="flex flex-col gap-2">

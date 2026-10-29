@@ -5,7 +5,11 @@ export const AdminCard = ({ children }: React.ComponentProps<'div'>) => {
 };
 
 export const AdminCardTop = ({ children }: React.ComponentProps<'div'>) => {
-  return <div className="border-lightGray flex items-center justify-between border-b px-5 py-4">{children}</div>;
+  return (
+    <div className="border-lightGray flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4">
+      {children}
+    </div>
+  );
 };
 
 export const AdminCardCreateButton = ({ children, ...props }: React.ComponentProps<'button'>) => {

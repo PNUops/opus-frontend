@@ -32,7 +32,7 @@ const VoteRankingList = ({ selectedFilter }: VoteRankingListProps) => {
   if (voteRanking.length === 0) return <NoData className="h-30" />;
   else {
     return (
-      <div className="max-h-100 overflow-y-auto">
+      <div className="lg:max-h-100 lg:overflow-y-auto">
         {Array.isArray(rankingList) ? (
           <RankingList list={rankingList} />
         ) : (
@@ -61,19 +61,24 @@ interface RankingListProps {
 
 const RankingList = ({ list }: RankingListProps) => {
   return (
-    <ul className="max-h-100 overflow-y-auto">
+    <ul>
       {list.map((item) => (
         <li
           key={item.teamName}
-          className="border-lightGray flex items-center justify-between border-b px-5 py-3 last:border-b-0"
+          className="border-lightGray grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 border-b py-4 last:border-b-0 lg:flex lg:items-center lg:justify-between lg:px-5 lg:py-3"
         >
-          <div className="flex items-center gap-6">
-            <div className="w-8 text-center text-sm text-gray-700">{item.rank}</div>
-            <div className="min-w-[110px] text-sm text-gray-800">{item.teamName}</div>
-            <div className="min-w-[240px] text-sm text-gray-700">{item.projectName}</div>
-            <div>{item.trackName && <TrackTag name={item.trackName} />}</div>
+          <div className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-x-3 gap-y-2 lg:flex lg:items-center lg:gap-6">
+            <div className="row-span-3 w-8 text-center text-sm text-gray-700" aria-label={`${item.rank}위`}>
+              {item.rank}
+            </div>
+            <div className="min-w-0 text-sm break-words text-gray-800 lg:min-w-[110px]">{item.teamName}</div>
+            <div className="min-w-0 text-sm break-words text-gray-700 lg:min-w-[240px]">{item.projectName}</div>
+            <div className="flex min-w-0">{item.trackName && <TrackTag name={item.trackName} />}</div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div
+            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap"
+            aria-label={`${item.voteCount.toLocaleString()}표`}
+          >
             <FaVoteYea className="fill-mainGreen mt-0.5" size={22} />
             <div className="text-mainGreen text-sm font-semibold">{`${item.voteCount.toLocaleString()}개`}</div>
           </div>

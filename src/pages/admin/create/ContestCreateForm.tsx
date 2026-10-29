@@ -55,13 +55,13 @@ const ContestCreateForm = () => {
         * 다음 단계로 넘어갈 시 대회 관리 페이지에서 수정 및 삭제가 가능합니다.
       </div>
       <div className="flex flex-col gap-7.5">
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
           <div className="text-midGray w-[120px] shrink-0">대회 카테고리</div>
           <QueryWrapper loadingStyle="h-10 rounded-sm w-[250px]" errorStyle="h-50">
             <CategorySelect categoryId={categoryId} onChange={(id) => setCategoryId(id)} />
           </QueryWrapper>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
           <div className="text-midGray w-[120px] shrink-0">대회 이름</div>
           <Input
             value={contestName}

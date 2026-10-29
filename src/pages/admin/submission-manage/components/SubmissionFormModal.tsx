@@ -84,7 +84,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
   };
 
   return (
-    <DialogContent className="w-[600px] max-w-[92vw] items-stretch gap-5">
+    <DialogContent className="max-h-[calc(100dvh-32px)] w-[600px] max-w-[calc(100vw-32px)] items-stretch gap-5 overflow-y-auto max-sm:p-5 max-sm:pt-12">
       <div className="flex flex-col gap-1">
         <DialogTitle className="text-xl font-bold text-gray-900">
           {mode === 'create' ? '제출 항목 추가' : '제출 항목 수정'}
@@ -99,7 +99,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
             value={values.name}
             onChange={(e) => update('name', e.target.value)}
             placeholder="제출 항목 이름"
-            className="border-input placeholder:text-midGray h-9 w-full rounded-md border px-3 text-sm focus:outline-none"
+            className="border-input placeholder:text-midGray h-11 w-full rounded-md border px-3 text-base focus:outline-none sm:h-9 sm:text-sm"
           />
         </FormRow>
 
@@ -108,7 +108,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
             value={values.trackId === null ? ALL_TRACKS : String(values.trackId)}
             onValueChange={(v) => update('trackId', v === ALL_TRACKS ? null : Number(v))}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full max-sm:min-h-11 max-sm:text-base">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -128,7 +128,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
             onChange={(e) => update('description', e.target.value)}
             placeholder="제출 항목에 대한 설명을 입력해주세요."
             rows={4}
-            className="border-input placeholder:text-midGray w-full resize-none rounded-md border p-3 text-sm focus:outline-none"
+            className="border-input placeholder:text-midGray w-full resize-none rounded-md border p-3 text-base focus:outline-none sm:text-sm"
           />
         </FormRow>
 
@@ -138,7 +138,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
 
         <FormRow label="파일 크기">
           <Select value={String(values.maxFileSizeMb)} onValueChange={(v) => update('maxFileSizeMb', Number(v))}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full max-sm:min-h-11 max-sm:text-base">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -177,7 +177,7 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
 
         <FormRow label={<VisibilityLabel />}>
           <Select value={values.visibility} onValueChange={(v) => update('visibility', v as SubmissionVisibility)}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full max-sm:min-h-11 max-sm:text-base">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -193,11 +193,13 @@ export const SubmissionFormModal = ({ mode, tracks, initialValues, onSubmit, onC
 
       <div className="flex justify-end gap-3">
         <DialogClose asChild>
-          <AdminActionButton variant="outline" onClick={onClose}>
+          <AdminActionButton variant="outline" onClick={onClose} className="max-sm:min-h-11">
             취소
           </AdminActionButton>
         </DialogClose>
-        <AdminActionButton onClick={handleSubmit}>{mode === 'create' ? '추가' : '수정'}</AdminActionButton>
+        <AdminActionButton onClick={handleSubmit} className="max-sm:min-h-11">
+          {mode === 'create' ? '추가' : '수정'}
+        </AdminActionButton>
       </div>
     </DialogContent>
   );
@@ -211,9 +213,14 @@ interface FormRowProps {
 
 const FormRow = ({ label, align = 'center', children }: FormRowProps) => {
   return (
-    <div className={cn('grid grid-cols-[96px_1fr] gap-4', align === 'center' ? 'items-center' : 'items-start')}>
-      <div className={cn('text-darkGray text-sm font-medium', align === 'start' && 'pt-2')}>{label}</div>
-      <div>{children}</div>
+    <div
+      className={cn(
+        'grid grid-cols-1 gap-2 sm:grid-cols-[96px_minmax(0,1fr)] sm:gap-4',
+        align === 'center' ? 'items-center' : 'items-start',
+      )}
+    >
+      <div className={cn('text-darkGray text-sm font-medium', align === 'start' && 'sm:pt-2')}>{label}</div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 };
@@ -224,7 +231,7 @@ const ToggleOption = ({ active, onClick, children }: { active: boolean; onClick:
       type="button"
       onClick={onClick}
       className={cn(
-        'h-9 flex-1 text-sm font-medium transition-colors',
+        'h-11 flex-1 text-sm font-medium transition-colors sm:h-9',
         active ? 'text-mainBlue bg-blue-50' : 'text-midGray bg-white hover:bg-gray-50',
       )}
     >
@@ -245,11 +252,12 @@ const NumberStepper = ({
   onChange: (value: number) => void;
 }) => {
   return (
-    <div className="border-input flex h-9 w-24 items-center justify-between rounded-md border px-1">
+    <div className="border-input flex h-11 w-36 items-center justify-between rounded-md border px-1 sm:h-9 sm:w-24">
       <button
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="text-midGray hover:text-darkGray flex h-7 w-7 items-center justify-center disabled:opacity-40"
+        aria-label="파일 수 줄이기"
+        className="text-midGray hover:text-darkGray flex size-11 items-center justify-center disabled:opacity-40 sm:size-7"
         disabled={value <= min}
       >
         <Minus size={14} />
@@ -258,7 +266,8 @@ const NumberStepper = ({
       <button
         type="button"
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="text-midGray hover:text-darkGray flex h-7 w-7 items-center justify-center disabled:opacity-40"
+        aria-label="파일 수 늘리기"
+        className="text-midGray hover:text-darkGray flex size-11 items-center justify-center disabled:opacity-40 sm:size-7"
         disabled={value >= max}
       >
         <Plus size={14} />
@@ -277,7 +286,11 @@ const VisibilityLabel = () => {
             <LuInfo size={14} className="text-midGray" />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="right" className="w-105 border-0 bg-[#16233f] p-4 text-white shadow-2xl">
+        <TooltipContent
+          side="top"
+          collisionPadding={16}
+          className="w-105 max-w-[calc(100vw-32px)] border-0 bg-[#16233f] p-4 text-white shadow-2xl"
+        >
           <div className="mb-3 flex items-center gap-2">
             <LuInfo size={16} className="shrink-0" />
             <span className="text-sm font-medium">제출된 자료를 열람할 수 있는 범위를 설정합니다.</span>

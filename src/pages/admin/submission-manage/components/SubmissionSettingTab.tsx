@@ -10,6 +10,7 @@ import {
   AdminPopoverMenu,
 } from '@components/admin';
 import FilterDropDown from '@components/FilterDropDown';
+import { AdminResponsiveList } from '@components/admin/AdminResponsiveList';
 import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
@@ -46,8 +47,6 @@ const settingToFormValues = (setting: SubmissionItemSettingResponseDto): Submiss
 });
 
 type StatusFilter = SubmissionOperationStatus | '';
-
-const TABLE_HEADERS = ['운영 상태', '제출 항목', '분과', '시작일시', '마감일시', '지각 제출 허용', '공개 범위', ''];
 
 const formatDateTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm');
 
@@ -150,79 +149,62 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
         <AdminActionButton
           variant="outline"
           size="sm"
-          className="border-mainBlue text-mainBlue hover:bg-blue-50"
+          className="border-mainBlue text-mainBlue hover:bg-blue-50 max-lg:min-h-11"
           onClick={() => setModalState({ mode: 'create' })}
         >
           + 제출 항목 추가
         </AdminActionButton>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[860px] border-collapse">
-          <thead>
-            <tr className="border-lightGray border-b">
-              {TABLE_HEADERS.map((header, index) => (
-                <th
-                  key={header || `col-${index}`}
-                  className="px-4 py-3 text-left text-sm font-medium whitespace-nowrap"
-                >
-                  {header}
-                </th>
-              ))}
-              <th className="px-4 py-3 text-center text-sm font-medium whitespace-nowrap">작업</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredSubmissions.length === 0 ? (
-              <tr>
-                <td colSpan={TABLE_HEADERS.length + 1} className="text-midGray py-12 text-center text-sm">
-                  등록된 제출 항목이 없어요.
-                </td>
-              </tr>
-            ) : (
-              filteredSubmissions.map((submission) => (
-                <tr key={submission.contestSubmissionItemId} className="border-lightGray border-b last:border-b-0">
-                  <td className="px-4 py-4">
-                    <OperationStatusBadge status={submission.operationStatus} />
-                  </td>
-                  <td className="text-darkGray px-4 py-4 text-sm font-medium whitespace-nowrap">{submission.name}</td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
-                    {submission.trackName ?? '전체'}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
-                    {formatDateTime(submission.startAt)}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
-                    {formatDateTime(submission.endAt)}
-                  </td>
-                  <td className="px-4 py-4">
-                    <AllowLateBadge allowLate={submission.allowLateSubmission} />
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
-                    {VISIBILITY_LABEL[submission.visibility]}
-                  </td>
-                  <td className="px-4 py-4 text-center">
-                    <button
-                      onClick={() => onViewStatus(submission.name)}
-                      className="border-mainBlue text-mainBlue rounded-md border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors hover:bg-blue-50"
-                    >
-                      제출 현황 보기
-                    </button>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex justify-center">
-                      <AdminPopoverMenu>
-                        <AdminPopoverEditButton onEdit={() => handleEdit(submission)} />
-                        <AdminPopoverDeleteButton onDelete={() => setDeleteTarget(submission)} />
-                      </AdminPopoverMenu>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+      <AdminResponsiveList
+        label="제출 항목 설정 목록"
+        items={filteredSubmissions}
+        getKey={(submission) => submission.contestSubmissionItemId}
+        primaryKey="name"
+        emptyText="등록된 제출 항목이 없어요."
+        columns={[
+          {
+            key: 'status',
+            label: '운영 상태',
+            render: (submission) => <OperationStatusBadge status={submission.operationStatus} />,
+          },
+          { key: 'name', label: '제출 항목', render: (submission) => submission.name },
+          { key: 'track', label: '분과', render: (submission) => submission.trackName ?? '전체' },
+          {
+            key: 'start',
+            label: '시작일시',
+            render: (submission) => formatDateTime(submission.startAt),
+            className: 'whitespace-nowrap',
+          },
+          {
+            key: 'end',
+            label: '마감일시',
+            render: (submission) => formatDateTime(submission.endAt),
+            className: 'whitespace-nowrap',
+          },
+          {
+            key: 'late',
+            label: '지각 제출 허용',
+            render: (submission) => <AllowLateBadge allowLate={submission.allowLateSubmission} />,
+          },
+          { key: 'visibility', label: '공개 범위', render: (submission) => VISIBILITY_LABEL[submission.visibility] },
+        ]}
+        actions={(submission) => (
+          <>
+            <button
+              type="button"
+              onClick={() => onViewStatus(submission.name)}
+              className="border-mainBlue text-mainBlue min-h-11 rounded-md border px-3 py-2 text-xs font-medium whitespace-nowrap hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              제출 현황 보기
+            </button>
+            <AdminPopoverMenu>
+              <AdminPopoverEditButton onEdit={() => handleEdit(submission)} />
+              <AdminPopoverDeleteButton onDelete={() => setDeleteTarget(submission)} />
+            </AdminPopoverMenu>
+          </>
+        )}
+      />
 
       <p className="text-midGray text-xs">제출 항목이 설정된 최신 순서대로 표시됩니다.</p>
 

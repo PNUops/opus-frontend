@@ -36,11 +36,13 @@ const StatCardList = () => {
   );
 
   return (
-    <div className="border-lightGray grid grid-cols-1 gap-4 rounded-lg border p-4 sm:grid-cols-3">
+    <div className="border-lightGray grid grid-cols-3 gap-3 border-y py-4 sm:gap-4 sm:rounded-lg sm:border sm:p-4">
       {statsItemList.map((item) => (
-        <div key={item.title} className="bg-whiteGray flex flex-col gap-1 rounded-sm p-6 shadow-sm">
-          <p className="text-sm font-semibold text-gray-500">{item.title}</p>
-          <p className={`text-mainGreen text-3xl font-extrabold`}>{item.value}</p>
+        <div key={item.title} className="sm:bg-whiteGray flex min-w-0 flex-col gap-1 sm:rounded-sm sm:p-6 sm:shadow-sm">
+          <p className="text-xs font-medium text-gray-600 sm:text-sm sm:font-semibold sm:text-gray-500">{item.title}</p>
+          <p className="text-mainGreen text-2xl font-bold break-words tabular-nums sm:text-3xl sm:font-extrabold">
+            {item.value}
+          </p>
         </div>
       ))}
     </div>

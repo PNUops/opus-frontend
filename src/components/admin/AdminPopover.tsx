@@ -7,7 +7,11 @@ export const AdminPopoverMenu = ({ children, ...props }: React.ComponentProps<'d
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="group rounded-4xl px-2 py-2 hover:bg-blue-100">
+        <button
+          type="button"
+          aria-label="항목 작업"
+          className="group shrink-0 rounded-4xl px-2 py-2 hover:bg-blue-100 max-lg:min-h-11 max-lg:min-w-11"
+        >
           <VscKebabVertical size={16} className="group-hover:fill-mainBlue fill-midGray" />
         </button>
       </PopoverTrigger>
@@ -22,7 +26,10 @@ export const AdminPopoverMenu = ({ children, ...props }: React.ComponentProps<'d
 
 export const AdminPopoverEditButton = ({ onEdit }: { onEdit: () => void }) => {
   return (
-    <button className="hover:bg-whiteGray flex items-center gap-2.5 rounded-sm p-1 text-sm" onClick={onEdit}>
+    <button
+      className="hover:bg-whiteGray flex items-center gap-2.5 rounded-sm p-1 text-sm max-lg:min-h-11"
+      onClick={onEdit}
+    >
       <LuPencil size={16} className="mt-1" />
       수정
     </button>
@@ -32,7 +39,7 @@ export const AdminPopoverEditButton = ({ onEdit }: { onEdit: () => void }) => {
 export const AdminPopoverDeleteButton = ({ onDelete }: { onDelete: () => void }) => {
   return (
     <button
-      className="hover:bg-whiteGray flex items-center gap-2.5 rounded-sm p-1 text-sm text-red-500"
+      className="hover:bg-whiteGray flex items-center gap-2.5 rounded-sm p-1 text-sm text-red-500 max-lg:min-h-11"
       onClick={onDelete}
     >
       <FaRegTrashAlt size={16} className="mt-1 fill-red-500" />
