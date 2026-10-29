@@ -10,6 +10,7 @@ import useDebounce from '@hooks/useDebounce';
 import { useToast } from '@hooks/useToast';
 import { invalidateMyActivityQueries } from '@queries/me';
 import { getApiErrorMessage } from '@utils/error';
+import Input from '@components/Input';
 
 interface AwardSelectorProps {
   contestId: number;
@@ -115,22 +116,27 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
         }}
       >
         <PopoverTrigger asChild>
-          <div className="hover:bg-whiteGray flex min-h-[44px] flex-1 cursor-pointer items-center justify-between rounded-md p-2">
+          <button
+            type="button"
+            aria-label="상훈 선택"
+            className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 min-w-0 flex-1 items-center justify-between rounded-md border px-3 py-2 text-left focus-visible:outline-2"
+          >
             {awards.length > 0 ? (
-              <div className="flex gap-3">
+              <span className="flex flex-wrap gap-2">
                 {awards.map((award, index) => (
                   <AwardTag key={index} awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
                 ))}
-              </div>
+              </span>
             ) : (
-              <p className="text-midGray">해당 팀에 등록된 상이 없습니다.</p>
+              <span className="text-neutral-600">해당 팀에 등록된 상이 없습니다.</span>
             )}
-          </div>
+          </button>
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="flex min-h-[var(--radix-popover-trigger-height)] w-fit flex-col overflow-hidden p-0 text-sm shadow-xl"
-          sideOffset={-44}
+          className="flex max-h-[min(480px,80dvh)] w-fit max-w-[calc(100vw-32px)] flex-col overflow-auto p-0 text-sm shadow-sm"
+          sideOffset={4}
+          collisionPadding={16}
         >
           <div className="bg-whiteGray flex items-center gap-4 p-4">
             {filteredTeamAwardsList.length > 0 && (
@@ -149,8 +155,10 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
             )}
             <div className="inline-grid min-w-[50px] items-center">
               <span className="invisible col-start-1 row-start-1 px-1 whitespace-pre">{newAwardName}</span>
-              <input
-                className="col-start-1 row-start-1 w-full bg-transparent outline-none"
+              <Input
+                appearance="admin"
+                aria-label="새 상훈 이름"
+                className="col-start-1 row-start-1 min-w-32 text-sm"
                 value={newAwardName}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAwardName(e.target.value)}
                 placeholder={newAwardName ? '' : '추가 상훈 입력...'}
@@ -160,7 +168,7 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
           </div>
           {debouncedAwardName ? (
             <div className="flex flex-col items-start gap-3 p-4">
-              <p className="text-midGray text-base font-medium">옵션 선택</p>
+              <p className="text-base font-medium text-neutral-600">옵션 선택</p>
               {AWRD_PALETTE.map((color) => (
                 <AwardTag
                   key={color}
@@ -176,12 +184,12 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
             </div>
           ) : (
             <div className="flex flex-col items-start gap-3 p-4">
-              <p className="text-midGray text-base font-medium">옵션 선택</p>
+              <p className="text-base font-medium text-neutral-600">옵션 선택</p>
               {contestAwardsList.map((award) => (
                 <div
                   key={award.awardId}
                   className={
-                    selectedAwardIds.includes(award.awardId) ? 'rounded-full ring-2 ring-blue-300 ring-offset-1' : ''
+                    selectedAwardIds.includes(award.awardId) ? 'rounded-md ring-2 ring-blue-300 ring-offset-1' : ''
                   }
                 >
                   <AwardTag

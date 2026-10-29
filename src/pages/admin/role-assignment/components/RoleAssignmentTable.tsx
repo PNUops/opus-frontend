@@ -1,3 +1,4 @@
+import { AdminTable } from '@components/admin/AdminTable';
 import { AdminPopoverDeleteButton, AdminPopoverEditButton, AdminPopoverMenu } from '@components/admin';
 import { ROLE_LABEL } from '@constants/roleAssignment';
 
@@ -15,7 +16,7 @@ interface RoleAssignmentTableProps {
 export const RoleAssignmentTable = ({ assignments, onEdit, onDelete }: RoleAssignmentTableProps) => {
   return (
     <div className="border-lightGray overflow-x-auto rounded-md border">
-      <table className="w-full min-w-[940px] border-collapse">
+      <AdminTable className="w-full min-w-[940px] border-collapse">
         <thead className="bg-whiteGray">
           <tr className="border-lightGray border-b">
             {TABLE_HEADERS.map((header) => (
@@ -29,7 +30,7 @@ export const RoleAssignmentTable = ({ assignments, onEdit, onDelete }: RoleAssig
         <tbody>
           {assignments.length === 0 ? (
             <tr>
-              <td colSpan={TABLE_HEADERS.length + 1} className="text-midGray py-12 text-center text-sm">
+              <td colSpan={TABLE_HEADERS.length + 1} className="py-12 text-center text-sm text-neutral-600">
                 배정된 역할이 없어요.
               </td>
             </tr>
@@ -58,7 +59,7 @@ export const RoleAssignmentTable = ({ assignments, onEdit, onDelete }: RoleAssig
             ))
           )}
         </tbody>
-      </table>
+      </AdminTable>
     </div>
   );
 };

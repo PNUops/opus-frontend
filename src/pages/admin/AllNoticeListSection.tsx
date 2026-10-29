@@ -47,13 +47,15 @@ const AllNoticeList = () => {
 
   const { data: notices } = useSuspenseQuery(noticeOption());
 
-  if (notices.length === 0) return <NoData />;
+  if (notices.length === 0) return <NoData className="text-sm font-normal text-neutral-600" />;
 
   return notices.map((notice) => (
     <AdminCardRow key={notice.noticeId} className="border-b-lightGray px-2.5 not-last:border-b">
-      <div className="flex gap-10">
-        <div>{dayjs(notice.createdAt).format('YYYY년 MM월 DD일 HH:mm')}</div>
-        <div>{notice.title}</div>
+      <div className="flex min-w-0 flex-1 items-baseline gap-6">
+        <time dateTime={notice.createdAt} className="shrink-0 text-xs text-neutral-600 tabular-nums">
+          {dayjs(notice.createdAt).format('YYYY.MM.DD HH:mm')}
+        </time>
+        <div className="min-w-0 break-words">{notice.title}</div>
       </div>
       <AdminPopoverMenu>
         <Dialog open={editOpen} onOpenChange={setEditOpen}>

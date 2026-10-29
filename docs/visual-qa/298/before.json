@@ -1,0 +1,311 @@
+{
+  "checks": [
+    {
+      "name": "dashboard",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "create",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "projects",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "submission-manage",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "sort",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "awards",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "required-fields",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "manage",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "team-setting",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "votes",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "notices",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "banners",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "statistics",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "category-create",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "notice-create",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "dashboard",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "create",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "projects",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "submission-manage",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "sort",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "awards",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "required-fields",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "manage",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "team-setting",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "roles",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "votes",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "notices",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "banners",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "statistics",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "category-create",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 1
+    },
+    {
+      "name": "notice-create",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 1
+    },
+    {
+      "name": "dashboard",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "create",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "projects",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "submission-manage",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "sort",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "awards",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "required-fields",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "manage",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "team-setting",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "roles",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "votes",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "notices",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "banners",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "statistics",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "category-create",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 1
+    },
+    {
+      "name": "notice-create",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}

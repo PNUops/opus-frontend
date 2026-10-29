@@ -149,7 +149,7 @@ const ContestTeamSetting = ({ contestId, handleSkip }: ContestTeamInsertProps) =
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100">
               <FiUpload size={20} className="stroke-mainBlue" />
             </div>
-            <div className="text-midGray flex flex-col items-center gap-2 text-[14px]">
+            <div className="flex flex-col items-center gap-2 text-[14px] text-neutral-600">
               <p>
                 <span className="font-bold">팀 정보 파일</span>을 업로드 해주세요.
               </p>
@@ -163,16 +163,11 @@ const ContestTeamSetting = ({ contestId, handleSkip }: ContestTeamInsertProps) =
       </Dialog>
       <div className="flex items-center justify-center gap-6">
         {handleSkip && (
-          <AdminActionButton size="lg" className="rounded-full" variant="outline" onClick={handleSkip}>
+          <AdminActionButton size="lg" variant="outline" onClick={handleSkip}>
             나중에 설정하기
           </AdminActionButton>
         )}
-        <AdminActionButton
-          size="lg"
-          className="rounded-full"
-          disabled={!file || bulkAddTeams.isPending}
-          onClick={handleSetting}
-        >
+        <AdminActionButton size="lg" disabled={!file || bulkAddTeams.isPending} onClick={handleSetting}>
           설정하기
         </AdminActionButton>
       </div>

@@ -22,7 +22,7 @@ const ContestCreateProgress = () => {
                     'flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-500 sm:h-10 sm:w-10',
                     {
                       'bg-mainGreen text-white': isCurrent || isCompleted,
-                      'text-midGray bg-gray-200': !isCurrent && !isCompleted,
+                      'bg-gray-200 text-neutral-600': !isCurrent && !isCompleted,
                     },
                   )}
                 >

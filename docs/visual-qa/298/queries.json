@@ -1,0 +1,235 @@
+{
+  "checks": [
+    {
+      "name": "tracks-loading",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-empty",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-loading",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-empty",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-loading",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-empty",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-loading",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-empty",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-loading",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-error",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-empty",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-loading",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-error",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-empty",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-loading",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-error",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-empty",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-loading",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-error",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-empty",
+      "width": 768,
+      "overflow": 256,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-loading",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-error",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "tracks-empty",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-loading",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-error",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "projects-empty",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-loading",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-error",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "notices-empty",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-loading",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-error",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-empty",
+      "width": 390,
+      "overflow": 634,
+      "dialogs": 0
+    }
+  ],
+  "behavior": [
+    "1440 tracks loading/error/retry/empty",
+    "1440 projects loading/error/retry/empty",
+    "1440 notices loading/error/retry/empty",
+    "1440 roles loading/error/retry/empty",
+    "768 tracks loading/error/retry/empty",
+    "768 projects loading/error/retry/empty",
+    "768 notices loading/error/retry/empty",
+    "768 roles loading/error/retry/empty",
+    "390 tracks loading/error/retry/empty",
+    "390 projects loading/error/retry/empty",
+    "390 notices loading/error/retry/empty",
+    "390 roles loading/error/retry/empty"
+  ],
+  "failures": []
+}

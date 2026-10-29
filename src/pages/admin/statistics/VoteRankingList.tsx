@@ -29,7 +29,7 @@ const VoteRankingList = ({ selectedFilter }: VoteRankingListProps) => {
     } else return voteRanking.filter((r) => r.trackName === selectedFilter);
   }, [voteRanking, selectedFilter]);
 
-  if (voteRanking.length === 0) return <NoData className="h-30" />;
+  if (voteRanking.length === 0) return <NoData className="h-30 text-sm font-normal text-neutral-600" />;
   else {
     return (
       <div className="max-h-100 overflow-y-auto">
@@ -75,7 +75,7 @@ const RankingList = ({ list }: RankingListProps) => {
           </div>
           <div className="flex items-center gap-1.5">
             <FaVoteYea className="fill-mainGreen mt-0.5" size={22} />
-            <div className="text-mainGreen text-sm font-semibold">{`${item.voteCount.toLocaleString()}개`}</div>
+            <div className="text-sm font-medium text-neutral-800">{`${item.voteCount.toLocaleString()}개`}</div>
           </div>
         </li>
       ))}

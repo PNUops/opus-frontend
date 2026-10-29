@@ -1,0 +1,54 @@
+[
+  {
+    "name": "home-desktop.png",
+    "equal": true
+  },
+  {
+    "name": "home-mobile.png",
+    "equal": true
+  },
+  {
+    "name": "home-sidebar-open-mobile.png",
+    "equal": true
+  },
+  {
+    "name": "home-tablet.png",
+    "equal": true
+  },
+  {
+    "name": "signin-desktop.png",
+    "equal": true
+  },
+  {
+    "name": "signin-mobile.png",
+    "equal": true
+  },
+  {
+    "name": "signin-onboarding-desktop.png",
+    "equal": true
+  },
+  {
+    "name": "signin-onboarding-mobile.png",
+    "equal": true
+  },
+  {
+    "name": "signin-onboarding-tablet.png",
+    "equal": true
+  },
+  {
+    "name": "signin-tablet.png",
+    "equal": true
+  },
+  {
+    "name": "signup-desktop.png",
+    "equal": true
+  },
+  {
+    "name": "signup-mobile.png",
+    "equal": true
+  },
+  {
+    "name": "signup-tablet.png",
+    "equal": true
+  }
+]
