@@ -1,0 +1,99 @@
+{
+  "behavior": [
+    "390 touch drag reorders rows",
+    "390 short viewport form footer reachable"
+  ],
+  "checks": [
+    {
+      "name": "status-long",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "download-long",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-long",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "award-long",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "status-long",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "download-long",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-long",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "award-long",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "status-long",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "filter-long-options",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "download-long",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "roles-long",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "award-long",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "sort-touch",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "form-short-footer",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}

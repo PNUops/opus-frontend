@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "iteration": 1,
+      "before": {
+        "font": "63.36px",
+        "width": 1440,
+        "css": 5
+      },
+      "after": {
+        "font": "63.36px",
+        "width": 1440
+      },
+      "equal": true
+    },
+    {
+      "iteration": 2,
+      "before": {
+        "font": "63.36px",
+        "width": 1440,
+        "css": 5
+      },
+      "after": {
+        "font": "63.36px",
+        "width": 1440
+      },
+      "equal": true
+    },
+    {
+      "iteration": 3,
+      "before": {
+        "font": "63.36px",
+        "width": 1440,
+        "css": 5
+      },
+      "after": {
+        "font": "63.36px",
+        "width": 1440
+      },
+      "equal": true
+    }
+  ],
+  "errors": []
+}
