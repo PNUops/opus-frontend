@@ -64,3 +64,7 @@ OPUS Renewal의 [SCREENS 14:6](https://www.figma.com/design/HbyxwchvTkzD4pbtdjCH
 ## 검증 범위
 
 운영 백엔드·실제 사용자 계정 연동과 외부 YouTube 재생은 검증하지 않았다. 영상은 외부 요청 없이 로컬에서 응답한 iframe으로 배치와 전환을 확인했다. API 계약·권한 정책·투표 기간 정책을 새로 정하지 않았으며, 미디어 요청 성능 최적화도 이번 변경에 포함하지 않았다.
+
+## 인증 화면 PR과의 통합 검토
+
+이 브랜치와 #334는 같은 develop에서 독립적으로 만들었다. 두 변경을 합치면 `MainLayout.tsx`와 `AppRoutes.tsx`에서 텍스트 충돌이 발생한다. 임시 checkout에서 인증·프로젝트 상세의 화면 높이 조건을 OR로 합치고, 인증은 `AuthLayout`, 프로젝트 상세는 `FullContainer fillViewport={false}`에 각각 유지한 결과를 검토했다. 1440·768·390px의 로그인·가입·프로젝트 실제 화면 9장을 확인했으며 폭과 푸터가 유지됐다. 검토 후 임시 병합은 취소했다. 실제 통합 시 두 경로 중 하나를 덮어쓰지 않도록 같은 해결 방향을 적용해야 한다.
