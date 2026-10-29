@@ -1,0 +1,74 @@
+{
+  "behavior": [
+    "350 header bounds / logo before navigation / breakpoint",
+    "1024 header bounds / logo before navigation / breakpoint",
+    "1279 header bounds / logo before navigation / breakpoint",
+    "1280 header bounds / logo before navigation / breakpoint",
+    "390 touch category reorder / exact save payload",
+    "390 nested popup Escape leaves drawer open",
+    "390x420 close/cancel reachable"
+  ],
+  "checks": [
+    {
+      "name": "header",
+      "width": 350,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "drawer",
+      "width": 350,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "header",
+      "width": 1024,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "drawer",
+      "width": 1024,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "header",
+      "width": 1279,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "drawer",
+      "width": 1279,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "header",
+      "width": 1280,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "touch-sort",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "nested-sort-settings",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 2
+    },
+    {
+      "name": "short-drawer",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}

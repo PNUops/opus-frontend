@@ -5,8 +5,7 @@ import useAuth from '@hooks/useAuth';
 import { useImageBlob } from '@hooks/useImageBlob';
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { useToast } from '@hooks/useToast';
-import { HiMenu } from 'react-icons/hi';
-import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
+import { Bell, List, LogOut, Settings, UserRound } from 'lucide-react';
 import { PiChalkboardTeacher } from 'react-icons/pi';
 import { useSidebar } from './SidebarContext';
 import ProfileButton from './ProfileButton';
@@ -206,7 +205,7 @@ const Header = () => {
   const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
   const toast = useToast();
   const location = useLocation();
-  const { toggle } = useSidebar();
+  const { toggle, isOpen: isSidebarOpen, triggerRef } = useSidebar();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationQuery = useQuery({
     ...notificationOption(),
@@ -243,20 +242,7 @@ const Header = () => {
       }`}
     >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
-        <div className="flex items-center gap-2">
-          {isSidebarRoute && !isAdminRoute && (
-            <Button
-              onClick={toggle}
-              className={`flex h-9 w-9 items-center justify-center p-0 lg:hidden ${
-                isHomeRoute
-                  ? 'border border-white/40 bg-white/10 text-white hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-[#45d6ec] focus-visible:outline-none'
-                  : 'text-black'
-              }`}
-              aria-label="메뉴 열기"
-            >
-              <HiMenu className="h-4 w-4" />
-            </Button>
-          )}
+        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
           {!isAdminRoute && (
             <>
               <Link to="/" viewTransition={!isHomeRoute} className="max-sm:hidden">
@@ -274,6 +260,22 @@ const Header = () => {
                 />
               </Link>
             </>
+          )}
+          {isSidebarRoute && !isAdminRoute && (
+            <button
+              ref={triggerRef}
+              type="button"
+              onClick={toggle}
+              aria-label="대회 목록 열기"
+              aria-expanded={isSidebarOpen}
+              aria-controls={isSidebarOpen ? 'contest-navigation-drawer' : undefined}
+              aria-haspopup="dialog"
+              className={`flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-md border px-2.5 text-sm xl:hidden ${isHomeRoute ? 'border-white/30 text-white hover:bg-white/10 focus-visible:outline-[#45d6ec]' : 'border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue text-neutral-700'} focus-visible:outline-2 focus-visible:outline-offset-2`}
+            >
+              <List size={18} aria-hidden />
+              <span className="sm:hidden">대회</span>
+              <span className="hidden sm:inline">대회 목록</span>
+            </button>
           )}
         </div>
 

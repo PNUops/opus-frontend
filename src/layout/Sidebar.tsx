@@ -1,290 +1,268 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, CircleDot, Folder, FolderOpen, ListRestart, MessageSquareShare } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-import { ContestResponseDto, GroupedContestResponseDto } from '@dto/contestsDto';
+import { type ReactElement, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { ChevronDown, ListRestart, MessageSquareShare } from 'lucide-react';
+import { NavLink, useMatch } from 'react-router-dom';
+import { GroupedContestResponseDto } from '@dto/contestsDto';
 import { cn } from '@utils/classname';
 import { useQuery } from '@tanstack/react-query';
 import { getGroupedContests } from '@apis/contest';
-import { useContestId } from '@hooks/useId';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
 import { EXTERNAL_LINKS } from '@constants/external-links';
 import useAuth from '@hooks/useAuth';
 import SidebarSortEditor from '@layout/SidebarSortEditor';
 
+type Tone = 'default' | 'editorial';
+const focusClass = 'focus-visible:outline-2 focus-visible:outline-offset-2';
+
 interface SidebarProps {
   variant?: 'desktop' | 'mobile';
-  tone?: 'default' | 'editorial';
+  tone?: Tone;
+  footer?: ReactNode;
+  onNavigate?: () => void;
 }
 
-const Sidebar = ({ variant = 'desktop', tone = 'default' }: SidebarProps) => {
+const FullName = ({ name, children }: { name: string; children: ReactElement }) => (
+  <Tooltip>
+    <TooltipTrigger asChild>{children}</TooltipTrigger>
+    <TooltipContent
+      side="right"
+      sideOffset={8}
+      collisionPadding={16}
+      className="max-w-[min(320px,calc(100vw-32px))] text-left leading-6 break-words text-neutral-900"
+    >
+      {name}
+    </TooltipContent>
+  </Tooltip>
+);
+
+const Sidebar = ({ variant = 'desktop', tone = 'default', footer, onNavigate }: SidebarProps) => {
   const isEditorial = tone === 'editorial';
   const { isAdmin } = useAuth();
-  const activeContestId = useContestId();
-  const { data: groups = [], isLoading } = useQuery({ queryKey: ['groupedContests'], queryFn: getGroupedContests });
-  const [expandedCategoryId, setExpandedCategoryId] = useState<number | null>(null);
+  const contestRoute = useMatch('/contest/:contestId/*');
+  const activeContestId = contestRoute ? Number(contestRoute.params.contestId) : null;
+  const query = useQuery({ queryKey: ['groupedContests'], queryFn: getGroupedContests });
+  const groups = query.data ?? [];
+  const [expanded, setExpanded] = useState<number | null | undefined>();
   const [isSorting, setIsSorting] = useState(false);
-  const currentCategoryId = useMemo(
-    () => groups.find((group) => group.contests.some((contest) => contest.isCurrent))?.categoryId ?? null,
-    [groups],
-  );
+  const sortButtonRef = useRef<HTMLButtonElement>(null);
+  const closeSortEditor = () => {
+    setIsSorting(false);
+    requestAnimationFrame(() => sortButtonRef.current?.focus({ preventScroll: true }));
+  };
   const activeCategoryId = useMemo(
-    () =>
-      Number.isInteger(activeContestId)
-        ? (groups.find((group) => group.contests.some((contest) => contest.contestId === activeContestId))
-            ?.categoryId ?? null)
-        : null,
+    () => groups.find((group) => group.contests.some((contest) => contest.contestId === activeContestId))?.categoryId,
     [activeContestId, groups],
   );
+  const defaultCategoryId =
+    activeCategoryId ??
+    groups.find((group) => group.contests.some((contest) => contest.isCurrent))?.categoryId ??
+    groups[0]?.categoryId ??
+    null;
+  const expandedCategoryId = expanded === undefined ? defaultCategoryId : expanded;
 
-  useEffect(() => {
-    if (activeCategoryId !== null) {
-      setExpandedCategoryId(activeCategoryId);
-      return;
-    }
-
-    setExpandedCategoryId((prev) => prev ?? currentCategoryId ?? groups[0]?.categoryId ?? null);
-  }, [activeCategoryId, currentCategoryId, groups]);
-
-  const toggleCategory = (categoryId: number) => {
-    setExpandedCategoryId((prev) => (prev === categoryId ? null : categoryId));
-  };
-
-  const containerClassName = cn(
-    variant === 'desktop' ? 'hidden w-[280px] min-w-[280px] shrink-0 lg:block' : 'h-full w-full',
-    isEditorial ? 'border-r border-white/35 bg-[#06172f] text-[#f8f6f0]' : 'bg-white',
+  useEffect(() => setExpanded(undefined), [activeCategoryId]);
+  const toggleCategory = (id: number) => setExpanded(expandedCategoryId === id ? null : id);
+  const controlClass = cn(
+    focusClass,
+    isEditorial ? 'focus-visible:outline-[#45d6ec]' : 'focus-visible:outline-mainBlue',
   );
 
   return (
-    <aside className={containerClassName}>
-      <nav className={cn('flex flex-col gap-5', isEditorial ? 'p-5' : 'p-5 md:p-6')} aria-label="대회 사이드바">
-        <div className="flex items-center justify-between gap-2 px-4 py-2">
-          <div className="flex min-w-0 items-center gap-3">
-            <FolderOpen className={cn('size-5 shrink-0', isEditorial ? 'text-[#45d6ec]' : 'text-mainGreen')} />
-            <h2 className={cn('truncate text-base font-semibold', isEditorial ? 'text-[#f8f6f0]' : 'text-neutral-950')}>
-              대회 목록
-            </h2>
-          </div>
-          {isAdmin && !isSorting && !isLoading && groups.length > 0 && (
+    <nav
+      aria-label="대회 사이드바"
+      className={cn('flex h-full min-h-0 flex-col text-sm', isEditorial ? 'text-[#f8f6f0]' : 'text-neutral-900')}
+    >
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-2 px-5',
+          variant === 'desktop' ? 'pt-5 pb-3' : 'pb-2',
+        )}
+      >
+        {variant === 'desktop' ? (
+          <h2 className="py-3 text-base font-medium">대회 목록</h2>
+        ) : (
+          <span className="sr-only">카테고리별 대회 탐색</span>
+        )}
+        {isAdmin && !isSorting && !query.isPending && groups.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setIsSorting(true)}
+            ref={sortButtonRef}
+            className={cn(
+              'ml-auto flex min-h-11 items-center gap-1.5 rounded-md px-2 text-xs',
+              controlClass,
+              isEditorial ? 'text-white/70 hover:bg-white/5' : 'hover:bg-whiteGray text-neutral-600',
+            )}
+          >
+            <ListRestart size={16} aria-hidden /> 정렬
+          </button>
+        )}
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4">
+        {query.isError && (
+          <div role="alert" className="px-2 py-4 text-sm leading-6">
+            <p>{query.data ? '목록을 새로 불러오지 못했어요.' : '대회 목록을 불러오지 못했어요.'}</p>
             <button
               type="button"
-              onClick={() => setIsSorting(true)}
-              className={cn(
-                'inline-flex h-8 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold transition-colors',
-                isEditorial
-                  ? 'text-white/60 hover:bg-white/5 hover:text-white'
-                  : 'hover:bg-whiteGray hover:text-mainGreen text-neutral-500',
-              )}
+              onClick={() => void query.refetch()}
+              disabled={query.isFetching}
+              className={cn('min-h-11 underline underline-offset-4 disabled:opacity-50', controlClass)}
             >
-              <ListRestart className="size-3.5" aria-hidden />
-              정렬
+              다시 시도
             </button>
-          )}
-        </div>
-
+          </div>
+        )}
         {isSorting && isAdmin ? (
           <SidebarSortEditor
             groups={groups}
             expandedCategoryId={expandedCategoryId}
             onToggleCategory={toggleCategory}
-            onCancel={() => setIsSorting(false)}
-            onSaved={() => setIsSorting(false)}
+            onCancel={closeSortEditor}
+            onSaved={closeSortEditor}
             tone={tone}
           />
+        ) : query.isPending ? (
+          <div role="status" className="space-y-4 px-3 py-4">
+            <span className="sr-only">대회 목록을 불러오고 있어요.</span>
+            {Array.from({ length: 4 }, (_, i) => (
+              <div
+                key={i}
+                aria-hidden
+                className={cn(
+                  'h-5 animate-pulse rounded motion-reduce:animate-none',
+                  isEditorial ? 'bg-white/10' : 'bg-neutral-100',
+                )}
+              />
+            ))}
+          </div>
+        ) : groups.length === 0 && !query.isError ? (
+          <p className={cn('px-2 py-8 text-center leading-6', isEditorial ? 'text-white/65' : 'text-neutral-600')}>
+            등록된 대회가 없어요.
+          </p>
         ) : (
-          <ul className={cn('flex flex-col gap-3', isEditorial ? 'ml-0' : 'ml-3')}>
-            {isLoading ? (
-              <SidebarSkeleton tone={tone} />
-            ) : groups.length === 0 ? (
-              <li className={cn('px-4 py-6 text-center text-sm', isEditorial ? 'text-white/55' : 'text-midGray')}>
-                등록된 대회가 없어요.
-              </li>
-            ) : (
-              groups.map((group) => (
-                <CategoryGroup
-                  key={group.categoryId}
-                  category={group}
-                  isExpanded={expandedCategoryId === group.categoryId}
-                  isActive={activeCategoryId === group.categoryId}
-                  onToggle={() => toggleCategory(group.categoryId)}
-                  tone={tone}
-                />
-              ))
-            )}
+          <ul className="space-y-2">
+            {groups.map((group) => (
+              <CategoryGroup
+                key={group.categoryId}
+                category={group}
+                isExpanded={expandedCategoryId === group.categoryId}
+                onToggle={() => toggleCategory(group.categoryId)}
+                tone={tone}
+                mobile={variant === 'mobile'}
+                activeContestId={activeContestId}
+                onNavigate={onNavigate}
+              />
+            ))}
           </ul>
         )}
-
-        <div className={cn('border-t pt-4', isEditorial ? 'border-white/20' : 'border-lightGray')}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a
-                href={EXTERNAL_LINKS.FEEDBACK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition-colors',
-                  isEditorial
-                    ? 'text-white/75 hover:bg-white/5 hover:text-white'
-                    : 'hover:bg-whiteGray hover:text-mainGreen text-neutral-700',
-                )}
-              >
-                <MessageSquareShare
-                  className={cn('size-5 shrink-0', isEditorial ? 'text-[#45d6ec]' : 'text-mainGreen')}
-                  aria-hidden
-                />
-                <span>의견 보내기</span>
-              </a>
-            </TooltipTrigger>
-            <TooltipContent
-              side="right"
-              sideOffset={8}
-              className="max-w-64 text-left leading-5 break-keep text-neutral-900"
-            >
-              OPUS 사용 중 발견한 문제나 개선 의견을 남겨주세요.
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      </nav>
-    </aside>
+      </div>
+      <div className={cn('shrink-0 border-t px-3 py-2', isEditorial ? 'border-white/20' : 'border-lightGray')}>
+        <a
+          href={EXTERNAL_LINKS.FEEDBACK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            'flex min-h-11 items-center gap-2 rounded-md px-3 text-sm',
+            controlClass,
+            isEditorial ? 'text-white/75 hover:bg-white/5' : 'hover:bg-whiteGray text-neutral-600',
+          )}
+        >
+          <MessageSquareShare size={18} aria-hidden />
+          <span>의견 보내기</span>
+        </a>
+        {footer}
+      </div>
+    </nav>
   );
 };
 
-interface CategoryGroupProps {
+const CategoryGroup = ({
+  category,
+  isExpanded,
+  onToggle,
+  tone,
+  mobile,
+  activeContestId,
+  onNavigate,
+}: {
   category: GroupedContestResponseDto;
-  isActive: boolean;
   isExpanded: boolean;
   onToggle: () => void;
-  tone: 'default' | 'editorial';
-}
-
-const CategoryGroup = ({ category, isActive, isExpanded, onToggle, tone }: CategoryGroupProps) => (
-  <li className="flex flex-col gap-2">
-    <button
-      type="button"
-      onClick={onToggle}
-      className={cn(
-        'flex min-w-0 items-center gap-3 rounded-lg px-4 py-3 text-left text-base font-semibold transition-all',
-        tone === 'editorial' && 'gap-2 px-3 text-sm',
-        tone === 'editorial' && (isActive || isExpanded) && 'bg-[#102d54] text-white',
-        tone === 'editorial' && !isActive && !isExpanded && 'text-white/75 hover:bg-white/5 hover:text-white',
-        tone === 'default' && (isActive || isExpanded) && 'bg-subGreen text-mainGreen',
-        tone === 'default' && !isActive && !isExpanded && 'hover:bg-whiteGray hover:text-mainGreen text-neutral-900',
-      )}
-      aria-expanded={isExpanded}
-    >
-      {isExpanded ? (
-        <FolderOpen className="size-5 shrink-0" aria-hidden />
-      ) : (
-        <Folder className="size-5 shrink-0" aria-hidden />
-      )}
-      <SidebarTooltipText content={category.categoryName} className="min-w-0 flex-1 truncate">
-        {category.categoryName}
-      </SidebarTooltipText>
-      <span
+  tone: Tone;
+  mobile: boolean;
+  activeContestId: number | null;
+  onNavigate?: () => void;
+}) => {
+  const listId = useId();
+  const editorial = tone === 'editorial';
+  const focus = cn(focusClass, editorial ? 'focus-visible:outline-[#45d6ec]' : 'focus-visible:outline-mainBlue');
+  return (
+    <li>
+      <FullName name={category.categoryName}>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isExpanded}
+          aria-controls={listId}
+          className={cn(
+            'flex min-h-11 w-full items-start gap-2 rounded-md px-3 py-3 text-left text-sm font-medium',
+            focus,
+            editorial ? 'text-white/85 hover:bg-white/5' : 'hover:bg-whiteGray text-neutral-700',
+          )}
+        >
+          <ChevronDown
+            size={16}
+            aria-hidden
+            className={cn(
+              'mt-0.5 shrink-0 transition-transform motion-reduce:transition-none',
+              !isExpanded && '-rotate-90',
+            )}
+          />
+          <span className={cn('min-w-0 leading-5 break-words', !mobile && 'line-clamp-2')}>
+            {category.categoryName}
+          </span>
+        </button>
+      </FullName>
+      <ul
+        id={listId}
+        hidden={!isExpanded}
         className={cn(
-          'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
-          tone === 'editorial' && 'hidden',
-          tone === 'editorial' && (isActive || isExpanded) && 'bg-[#bed925] text-[#06172f]',
-          tone === 'editorial' && !isActive && !isExpanded && 'bg-white/10 text-white/60',
-          tone === 'default' && (isActive || isExpanded) && 'text-mainGreen bg-white/60',
-          tone === 'default' && !isActive && !isExpanded && 'bg-whiteGray text-midGray',
+          isExpanded ? 'ml-5 space-y-1 border-l pl-2' : 'hidden',
+          editorial ? 'border-white/20' : 'border-lightGray',
         )}
       >
-        {category.contests.length}
-      </span>
-      <ChevronDown
-        className={cn('size-4 shrink-0 transition-transform duration-200', isExpanded && 'rotate-180')}
-        aria-hidden
-      />
-    </button>
-
-    <ul
-      className={cn(
-        'ml-5 flex flex-col gap-2 overflow-hidden border-l pl-4 transition-all duration-200 ease-out',
-        tone === 'editorial' ? 'border-[#45d6ec]/35' : 'border-mainGreen/30',
-        isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
-      )}
-    >
-      <ContestList contests={category.contests} tone={tone} />
-    </ul>
-  </li>
-);
-
-interface ContestListProps {
-  contests: Pick<ContestResponseDto, 'contestId' | 'contestName' | 'isCurrent'>[];
-  tone: 'default' | 'editorial';
-}
-
-const ContestList = ({ contests, tone }: ContestListProps) => {
-  const baseStyle = cn(
-    'group flex min-w-0 items-center gap-2 py-1 text-sm transition-all',
-    tone === 'editorial' ? 'hover:text-[#45d6ec]' : 'hover:text-mainGreen',
-  );
-  const getLinkClass = ({ isActive }: { isActive: boolean }) =>
-    cn(
-      baseStyle,
-      tone === 'editorial' && (isActive ? 'font-semibold text-white' : 'text-white/65'),
-      tone === 'default' && (isActive ? 'font-semibold text-mainGreen' : 'text-neutral-700'),
-    );
-  return (
-    <>
-      {contests.map((contest) => (
-        <li key={contest.contestId}>
-          <NavLink to={`/contest/${contest.contestId}`} viewTransition={tone === 'editorial'} className={getLinkClass}>
-            <CircleDot
-              className={cn(
-                'size-3 shrink-0',
-                tone === 'editorial' && contest.isCurrent && 'fill-[#bed925] text-[#bed925]',
-                tone === 'editorial' && !contest.isCurrent && 'text-white/25 group-hover:text-[#45d6ec]',
-                tone === 'default' && contest.isCurrent && 'fill-mainGreen text-mainGreen',
-                tone === 'default' && !contest.isCurrent && 'text-lightGray group-hover:text-mainGreen',
-              )}
-              aria-hidden
-            />
-            <SidebarTooltipText
-              content={contest.contestName}
-              className={cn(
-                'min-w-0 flex-1',
-                tone === 'editorial' ? 'leading-5 break-keep whitespace-normal' : 'truncate',
-              )}
-            >
-              {contest.contestName}
-            </SidebarTooltipText>
-          </NavLink>
-        </li>
-      ))}
-    </>
+        {category.contests.length === 0 ? (
+          <li className={cn('px-3 py-4 text-xs', editorial ? 'text-white/60' : 'text-neutral-500')}>
+            등록된 대회가 없어요.
+          </li>
+        ) : (
+          category.contests.map((contest) => (
+            <li key={contest.contestId}>
+              <FullName name={contest.contestName}>
+                <NavLink
+                  to={`/contest/${contest.contestId}`}
+                  onClick={onNavigate}
+                  viewTransition={editorial}
+                  className={cn(
+                    'flex min-h-11 items-center rounded-r-md border-l-2 px-3 py-2.5 text-sm leading-6',
+                    focus,
+                    activeContestId === contest.contestId
+                      ? editorial
+                        ? 'border-[#45d6ec] bg-[#102d54] font-medium text-white'
+                        : 'border-mainGreen bg-subGreen/50 font-medium text-neutral-950'
+                      : editorial
+                        ? 'border-transparent text-white/70 hover:bg-white/5 hover:text-white'
+                        : 'hover:bg-whiteGray border-transparent text-neutral-600 hover:text-neutral-900',
+                  )}
+                >
+                  <span className={cn('min-w-0 break-words', !mobile && 'line-clamp-2')}>{contest.contestName}</span>
+                </NavLink>
+              </FullName>
+            </li>
+          ))
+        )}
+      </ul>
+    </li>
   );
 };
-
-const SidebarTooltipText = ({
-  content,
-  className,
-  children,
-}: {
-  content: string;
-  className?: string;
-  children: ReactNode;
-}) => (
-  <Tooltip>
-    <TooltipTrigger asChild>
-      <span className={className}>{children}</span>
-    </TooltipTrigger>
-    <TooltipContent side="right" sideOffset={8} className="max-w-80 text-left leading-5 break-keep text-neutral-900">
-      {content}
-    </TooltipContent>
-  </Tooltip>
-);
-
-const SidebarSkeleton = ({ tone }: { tone: 'default' | 'editorial' }) => (
-  <>
-    {Array.from({ length: 4 }).map((_, index) => (
-      <li key={index} className="rounded-lg px-4 py-3">
-        <div
-          className={cn('h-5 w-32 animate-pulse rounded', tone === 'editorial' ? 'bg-white/10' : 'bg-neutral-200')}
-        />
-      </li>
-    ))}
-  </>
-);
 
 export default Sidebar;

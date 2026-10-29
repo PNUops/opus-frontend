@@ -1,0 +1,166 @@
+{
+  "behavior": [
+    "1440 initial/loading/error/retry/stale distinction",
+    "1440 empty list / empty category",
+    "1440 full name tooltip on keyboard focus",
+    "1440 long sort names / final handle / 44px target",
+    "1440 sort cancel has no writes",
+    "768 initial/loading/error/retry/stale distinction",
+    "768 empty list / empty category",
+    "768 long sort names / final handle / 44px target",
+    "768 sort cancel has no writes",
+    "390 initial/loading/error/retry/stale distinction",
+    "390 empty list / empty category",
+    "390 long sort names / final handle / 44px target",
+    "390 sort cancel has no writes",
+    "storage invalid fallback / resize / reset",
+    "storage unavailable fallback / resize / reset"
+  ],
+  "checks": [
+    {
+      "name": "stale-error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "loading",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "empty",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "empty-category",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "full-name-focus",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-sort",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-sort-last",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "stale-error",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "loading",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "error",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty-category",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "long-sort",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "long-sort-last",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "stale-error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "loading",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty-category",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "long-sort",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "long-sort-last",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "storage-invalid",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "storage-unavailable",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    }
+  ],
+  "failures": []
+}
