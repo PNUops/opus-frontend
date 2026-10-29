@@ -1,0 +1,28 @@
+{
+  "behavior": [
+    "1440 preview/download reuses response",
+    "1440 close/revoke/focus",
+    "1440 server deadline disables PDF"
+  ],
+  "checks": [
+    {
+      "name": "report",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "pdf",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "before-close",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    }
+  ],
+  "failures": []
+}

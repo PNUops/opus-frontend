@@ -1,0 +1,59 @@
+{
+  "behavior": [
+    "1440 direct download inline error/retry",
+    "1440 reopening fetches fresh PDF",
+    "1440 long filter bounds/selection",
+    "768 direct download inline error/retry",
+    "768 reopening fetches fresh PDF",
+    "768 long filter bounds/selection",
+    "390 direct download inline error/retry",
+    "390 reopening fetches fresh PDF",
+    "390 long filter bounds/selection",
+    "390 short viewport modal/download bounds"
+  ],
+  "checks": [
+    {
+      "name": "download-error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-filter",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "download-error",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-filter",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "download-error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-filter",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "short-pdf",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}

@@ -1,37 +1,36 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
-import { defaultRankFilter } from '@constants/statistics';
-import { useContestIdOrRedirect } from '@hooks/useId';
-import { voteRankingOption } from '@queries/statistics';
+import type { VoteReportRankingDto } from '@dto/voteReportDto';
 
 interface VoteFilterSelectProps {
   selectedFilter: string;
   onChange: (value: string) => void;
+  rankings: VoteReportRankingDto[];
 }
 
-const VoteFilterSelect = ({ selectedFilter, onChange }: VoteFilterSelectProps) => {
-  const contestId = useContestIdOrRedirect();
-  const { data: voteRanking } = useSuspenseQuery(voteRankingOption(contestId));
-
-  const filters = useMemo(() => {
-    if (!voteRanking) return defaultRankFilter;
-    const uniq = Array.from(new Set(voteRanking.map((r) => r.trackName)));
-    return [...defaultRankFilter, ...uniq];
-  }, [voteRanking]);
-
+const VoteFilterSelect = ({ selectedFilter, onChange, rankings }: VoteFilterSelectProps) => {
+  const tracks = Array.from(new Set(rankings.map((r) => r.trackName)));
   return (
-    <Select onValueChange={onChange} value={selectedFilter}>
+    <Select value={selectedFilter} onValueChange={onChange}>
       <SelectTrigger
-        className="border-subGreen h-10 w-fit min-w-[180px] rounded-none border-0 border-b-2 shadow-none focus:ring-0 focus:ring-offset-0 focus:outline-none"
-        iconClassName="stroke-mainGreen opacity-100 h-5 w-5"
+        aria-label="순위 보기"
+        className="border-lightGray focus-visible:ring-mainBlue h-11 w-full max-w-64 text-neutral-700 shadow-none"
       >
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
-        {filters.map((filter) => (
-          <SelectItem key={filter} value={filter}>
-            {filter}
+      <SelectContent className="max-h-[min(20rem,var(--radix-select-content-available-height))] max-w-[calc(100vw-32px)]">
+        <SelectItem value="all" className="min-h-11">
+          전체
+        </SelectItem>
+        <SelectItem value="grouped" className="min-h-11">
+          분과별 묶어보기
+        </SelectItem>
+        {tracks.map((track) => (
+          <SelectItem
+            key={JSON.stringify(track)}
+            value={`track:${JSON.stringify(track)}`}
+            className="min-h-11 break-words"
+          >
+            {track ?? '분과 미지정'}
           </SelectItem>
         ))}
       </SelectContent>

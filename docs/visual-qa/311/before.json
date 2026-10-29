@@ -1,0 +1,11 @@
+{
+  "checks": [
+    {
+      "name": "statistics",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    }
+  ],
+  "failures": []
+}

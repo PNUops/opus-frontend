@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, type Ref } from 'react';
 import { cn } from '@components/lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 
@@ -31,7 +31,8 @@ export const AdminActionButton = ({
   size,
   children,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>) => {
+}: ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants> & { ref?: Ref<HTMLButtonElement> }) => {
   return (
     <button className={cn(buttonVariants({ variant, size, className }))} {...props}>
       {children}
