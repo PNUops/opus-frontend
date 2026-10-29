@@ -1,0 +1,101 @@
+{
+  "behavior": [
+    "1440 public/admin navigation independent and focus returns",
+    "768 public/admin navigation independent and focus returns",
+    "390 public/admin navigation independent and focus returns",
+    "350 public/admin navigation independent and focus returns"
+  ],
+  "checks": [
+    {
+      "name": "signed-home",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-header",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "signed-contest",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "signed-home",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-header",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-drawer",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "signed-contest",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "signed-home",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-header",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-drawer",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "signed-contest",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "signed-home",
+      "width": 350,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-header",
+      "width": 350,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "admin-drawer",
+      "width": 350,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "signed-contest",
+      "width": 350,
+      "overflow": 0,
+      "dialogs": 0
+    }
+  ],
+  "failures": []
+}

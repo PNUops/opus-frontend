@@ -1,10 +1,11 @@
-import { createContext, useCallback, useContext, useMemo, useState, ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState, ReactNode, type RefObject } from 'react';
 
 interface SidebarContextValue {
   isOpen: boolean;
   open: () => void;
   close: () => void;
   toggle: () => void;
+  triggerRef: RefObject<HTMLButtonElement | null>;
 }
 
 const SidebarContext = createContext<SidebarContextValue | undefined>(undefined);
@@ -15,6 +16,7 @@ interface SidebarProviderProps {
 
 export const SidebarProvider = ({ children }: SidebarProviderProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
@@ -26,6 +28,7 @@ export const SidebarProvider = ({ children }: SidebarProviderProps) => {
       open,
       close,
       toggle,
+      triggerRef,
     }),
     [isOpen, open, close, toggle],
   );

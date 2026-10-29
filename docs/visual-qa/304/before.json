@@ -1,0 +1,78 @@
+{
+  "behavior": [],
+  "checks": [
+    {
+      "name": "home",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "home-navigation",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "contest-navigation",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-navigation",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "home",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "home-navigation",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "contest-navigation",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-navigation",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "home",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "home-navigation",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "contest-navigation",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    },
+    {
+      "name": "long-navigation",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 0
+    }
+  ],
+  "failures": []
+}

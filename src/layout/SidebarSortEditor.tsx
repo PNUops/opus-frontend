@@ -17,18 +17,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  Check,
-  ChevronDown,
-  CircleDot,
-  Folder,
-  FolderOpen,
-  GripVertical,
-  LoaderCircle,
-  RotateCcw,
-  Settings2,
-  X,
-} from 'lucide-react';
+import { Check, ChevronDown, GripVertical, LoaderCircle, RotateCcw, Settings2, X } from 'lucide-react';
 
 import {
   getCategoryContestSort,
@@ -226,14 +215,22 @@ const SidebarSortEditor = ({
   }, [categoryIds, categoryMode, contestModes, groups, localGroups, settingsQuery.data]);
 
   return (
-    <div className="flex flex-col gap-3" aria-label="사이드바 순서 편집">
+    <div
+      className={cn(
+        'flex flex-col gap-3 [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-2',
+        tone === 'editorial'
+          ? '[&_button:focus-visible]:outline-[#45d6ec]'
+          : '[&_button:focus-visible]:outline-mainBlue',
+      )}
+      aria-label="사이드바 순서 편집"
+    >
       <section
         className={cn(
           'rounded-xl border p-3',
           tone === 'editorial' ? 'border-white/15 bg-white/5' : 'border-mainGreen/20 bg-subGreen/45',
         )}
       >
-        <div className="mb-3 flex items-start justify-between gap-2">
+        <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
           <div>
             <h3 className={cn('text-sm font-semibold', tone === 'editorial' ? 'text-white' : 'text-neutral-950')}>
               목록 순서 편집
@@ -248,7 +245,7 @@ const SidebarSortEditor = ({
               onClick={onCancel}
               disabled={saveMutation.isPending}
               className={cn(
-                'inline-flex size-8 items-center justify-center rounded-lg transition-colors disabled:opacity-50',
+                'inline-flex size-11 items-center justify-center rounded-lg transition-colors disabled:opacity-50',
                 tone === 'editorial' ? 'text-white/70 hover:bg-white/10' : 'text-neutral-500 hover:bg-white',
               )}
               aria-label="정렬 편집 취소"
@@ -260,7 +257,7 @@ const SidebarSortEditor = ({
               onClick={() => saveMutation.mutate()}
               disabled={!isReady || !hasChanges || saveMutation.isPending}
               className={cn(
-                'inline-flex h-8 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+                'inline-flex h-11 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50',
                 tone === 'editorial'
                   ? 'bg-[#bed925] text-[#06172f] hover:bg-[#cde83a]'
                   : 'bg-mainGreen text-white hover:bg-green-700',
@@ -350,12 +347,10 @@ const SortModePicker = ({
   value,
   onChange,
   tone,
-  compact = false,
 }: {
   value: SidebarSortMode;
   onChange: (mode: SidebarSortMode) => void;
   tone: Tone;
-  compact?: boolean;
 }) => (
   <div className="grid grid-cols-3 gap-1" role="group" aria-label="정렬 방식">
     {SORT_OPTIONS.map((option) => (
@@ -364,11 +359,10 @@ const SortModePicker = ({
         type="button"
         onClick={() => onChange(option.mode)}
         className={cn(
-          'rounded-lg border px-1.5 text-center font-medium transition-colors',
-          compact ? 'min-h-9 text-[11px]' : 'min-h-11 text-xs',
+          'min-h-11 rounded-lg border px-1.5 text-center text-xs font-medium transition-colors',
           tone === 'editorial' && value === option.mode && 'border-[#45d6ec]/60 bg-[#102d54] text-white',
           tone === 'editorial' && value !== option.mode && 'border-white/10 text-white/60 hover:bg-white/5',
-          tone === 'default' && value === option.mode && 'border-mainGreen text-mainGreen bg-white shadow-sm',
+          tone === 'default' && value === option.mode && 'border-mainGreen bg-subGreen/50 text-neutral-900',
           tone === 'default' && value !== option.mode && 'border-transparent text-neutral-500 hover:bg-white/70',
         )}
         aria-pressed={value === option.mode}
@@ -409,7 +403,8 @@ const SortableCategory = ({
     id: `category-${category.categoryId}`,
     disabled: categoryMode !== 'CUSTOM',
   });
-  const style = { transform: CSS.Transform.toString(transform), transition };
+  const style = { transform: CSS.Translate.toString(transform), transition };
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <li
@@ -426,7 +421,7 @@ const SortableCategory = ({
           <button
             type="button"
             className={cn(
-              'flex size-8 shrink-0 touch-none items-center justify-center rounded-lg transition-colors',
+              'flex size-11 shrink-0 touch-none items-center justify-center rounded-lg transition-colors',
               tone === 'editorial'
                 ? 'text-white/40 hover:bg-white/10 hover:text-white'
                 : 'text-neutral-400 hover:bg-neutral-100',
@@ -458,24 +453,19 @@ const SortableCategory = ({
           )}
           aria-expanded={isExpanded}
         >
-          {isExpanded ? (
-            <FolderOpen className={cn('size-4 shrink-0', tone === 'editorial' ? 'text-[#45d6ec]' : 'text-mainGreen')} />
-          ) : (
-            <Folder className={cn('size-4 shrink-0', tone === 'editorial' ? 'text-[#45d6ec]' : 'text-mainGreen')} />
-          )}
-          <span className="min-w-0 flex-1 truncate">{category.categoryName}</span>
+          <span className="min-w-0 flex-1 leading-6 break-words">{category.categoryName}</span>
           <ChevronDown
             className={cn('size-3.5 shrink-0 transition-transform', isExpanded && 'rotate-180')}
             aria-hidden
           />
         </button>
 
-        <Popover>
+        <Popover modal open={settingsOpen} onOpenChange={setSettingsOpen}>
           <PopoverTrigger asChild>
             <button
               type="button"
               className={cn(
-                'relative flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors',
+                'relative flex size-11 shrink-0 items-center justify-center rounded-lg transition-colors',
                 tone === 'editorial'
                   ? 'text-white/55 hover:bg-white/10 hover:text-white'
                   : 'hover:text-mainGreen text-neutral-500 hover:bg-neutral-100',
@@ -493,12 +483,26 @@ const SortableCategory = ({
               )}
             </button>
           </PopoverTrigger>
-          <PopoverContent side="right" align="start" sideOffset={8} className="w-60 p-3 text-neutral-950">
+          <PopoverContent
+            data-sidebar-sort-settings
+            onEscapeKeyDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setSettingsOpen(false);
+            }}
+            side="right"
+            align="start"
+            sideOffset={8}
+            collisionPadding={16}
+            className="z-[60] w-60 max-w-[calc(100vw-32px)] p-3 text-neutral-950"
+          >
             <div className="mb-3">
               <p className="text-sm font-semibold">대회 순서</p>
-              <p className="mt-0.5 text-xs text-neutral-500">{category.categoryName} 안에서 적용돼요.</p>
+              <p className="mt-0.5 text-xs leading-5 break-words text-neutral-500">
+                {category.categoryName} 안에서 적용돼요.
+              </p>
             </div>
-            <SortModePicker value={contestMode} onChange={onContestModeChange} tone="default" compact />
+            <SortModePicker value={contestMode} onChange={onContestModeChange} tone="default" />
             {contestMode === 'CUSTOM' && (
               <p className="mt-2 text-[11px] leading-4 text-neutral-500">
                 폴더를 펼친 뒤 대회를 끌어 순서를 바꿔주세요.
@@ -510,9 +514,9 @@ const SortableCategory = ({
 
       <ul
         className={cn(
-          'flex flex-col overflow-hidden border-l transition-all duration-200',
-          tone === 'editorial' ? 'ml-8 border-[#45d6ec]/30 pl-2' : 'border-mainGreen/25 ml-8 pl-2',
-          isExpanded ? 'max-h-96 pb-1 opacity-100' : 'max-h-0 opacity-0',
+          'flex-col border-l',
+          tone === 'editorial' ? 'ml-2 border-[#45d6ec]/30 pl-1' : 'border-mainGreen/25 ml-2 pl-1',
+          isExpanded ? 'flex pb-1' : 'hidden',
         )}
       >
         {category.contests.length === 0 ? (
@@ -557,7 +561,7 @@ const SortableContest = ({
     id: `contest-${contest.contestId}`,
     disabled,
   });
-  const style = { transform: CSS.Transform.toString(transform), transition };
+  const style = { transform: CSS.Translate.toString(transform), transition };
 
   return (
     <li
@@ -577,7 +581,7 @@ const SortableContest = ({
         <button
           type="button"
           className={cn(
-            'flex size-7 shrink-0 touch-none items-center justify-center rounded-md transition-colors',
+            'flex size-11 shrink-0 touch-none items-center justify-center rounded-md transition-colors',
             tone === 'editorial'
               ? 'text-white/35 hover:bg-white/10 hover:text-white'
               : 'text-neutral-400 hover:bg-neutral-100',
@@ -589,16 +593,7 @@ const SortableContest = ({
           <GripVertical className="size-3.5" aria-hidden />
         </button>
       )}
-      <CircleDot
-        className={cn(
-          'size-2.5 shrink-0',
-          contest.isCurrent &&
-            (tone === 'editorial' ? 'fill-[#bed925] text-[#bed925]' : 'fill-mainGreen text-mainGreen'),
-          !contest.isCurrent && (tone === 'editorial' ? 'text-white/25' : 'text-lightGray'),
-        )}
-        aria-hidden
-      />
-      <span className="min-w-0 flex-1 truncate">{contest.contestName}</span>
+      <span className="min-w-0 flex-1 leading-6 break-words">{contest.contestName}</span>
     </li>
   );
 };

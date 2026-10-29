@@ -1,0 +1,91 @@
+--- a/src/layout/Header.tsx
++++ b/src/layout/Header.tsx
+@@ -5,6 +5,8 @@
+ import { useImageBlob } from '@hooks/useImageBlob';
+ import { useOutsideClick } from '@hooks/useOutsideClick';
+ import { useToast } from '@hooks/useToast';
++import { HiMenu } from 'react-icons/hi';
++import logoOpusAdmin from './admin/logo-opus-admin.svg';
+ import { Bell, List, LogOut, Settings, UserRound } from 'lucide-react';
+ import { PiChalkboardTeacher } from 'react-icons/pi';
+ import { useSidebar } from './SidebarContext';
+@@ -235,7 +237,7 @@
+     <header
+       className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
+         isAdminRoute
+-          ? 'bg-white pl-[272px]'
++          ? 'min-h-16 bg-white lg:pl-[272px]'
+           : isHomeRoute
+             ? 'border-b border-white/35 bg-[#06172f] text-white'
+             : 'shadow-b-lg bg-white'
+@@ -260,6 +262,27 @@
+                 />
+               </Link>
+             </>
++          )}
++          {isAdminRoute && (
++            <div className="flex min-w-0 items-center gap-3 lg:hidden">
++              <Link to="/admin" aria-label="관리자 대시보드로 이동">
++                <img src={logoOpusAdmin} alt="OPUS Admin" className="h-7 w-auto" />
++              </Link>
++              {isAdmin && (
++                <button
++                  id="admin-menu-trigger"
++                  type="button"
++                  aria-label="관리자 메뉴 열기"
++                  aria-expanded={isSidebarOpen}
++                  aria-controls="admin-mobile-navigation"
++                  onClick={toggle}
++                  className="border-lightGray text-mainBlue hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2"
++                >
++                  <HiMenu className="size-4" aria-hidden />
++                  관리 메뉴
++                </button>
++              )}
++            </div>
+           )}
+           {isSidebarRoute && !isAdminRoute && (
+             <button
+--- a/src/layout/Sidebar.tsx
++++ b/src/layout/Sidebar.tsx
+@@ -1,4 +1,4 @@
+-import { type ReactElement, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
++import { lazy, type ReactElement, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
+ import { ChevronDown, ListRestart, MessageSquareShare } from 'lucide-react';
+ import { NavLink, useMatch } from 'react-router-dom';
+ import { GroupedContestResponseDto } from '@dto/contestsDto';
+@@ -8,7 +8,8 @@
+ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ToolTip';
+ import { EXTERNAL_LINKS } from '@constants/external-links';
+ import useAuth from '@hooks/useAuth';
+-import SidebarSortEditor from '@layout/SidebarSortEditor';
++import DeferredContent from '@components/DeferredContent';
++const SidebarSortEditor = lazy(() => import('@layout/SidebarSortEditor'));
+
+ type Tone = 'default' | 'editorial';
+ const focusClass = 'focus-visible:outline-2 focus-visible:outline-offset-2';
+@@ -112,14 +113,16 @@
+           </div>
+         )}
+         {isSorting && isAdmin ? (
+-          <SidebarSortEditor
+-            groups={groups}
+-            expandedCategoryId={expandedCategoryId}
+-            onToggleCategory={toggleCategory}
+-            onCancel={closeSortEditor}
+-            onSaved={closeSortEditor}
+-            tone={tone}
+-          />
++          <DeferredContent loadingMessage="정렬 도구를 불러오는 중입니다." onCancel={closeSortEditor} tone={tone}>
++            <SidebarSortEditor
++              groups={groups}
++              expandedCategoryId={expandedCategoryId}
++              onToggleCategory={toggleCategory}
++              onCancel={closeSortEditor}
++              onSaved={closeSortEditor}
++              tone={tone}
++            />
++          </DeferredContent>
+         ) : query.isPending ? (
+           <div role="status" className="space-y-4 px-3 py-4">
+             <span className="sr-only">대회 목록을 불러오고 있어요.</span>
