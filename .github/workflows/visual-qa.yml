@@ -1,4 +1,4 @@
-name: Visual QA
+name: Browser QA
 
 on:
   pull_request:
@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   visual-qa:
+    # Preserve the existing check/job identity for branch protection consumers.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -29,19 +30,21 @@ jobs:
       - name: Install app dependencies
         run: npm ci
 
-      - name: Install isolated browser tooling
-        run: |
-          npm install --prefix .qa --no-save --package-lock=false playwright@1.55.0
-          node .qa/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
 
-      - name: Capture public-page screenshots
-        run: npm run qa:visual
+      - name: Typecheck browser tests
+        run: npm run test:browser:typecheck
 
-      - name: Upload screenshots and diagnostics
-        if: always()
+      - name: Run browser tests
+        run: npm run test:browser
+
+      - name: Upload failure traces, screenshots and diagnostics
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: opus-visual-qa-${{ github.run_id }}
-          path: .qa/visual/
+          name: opus-browser-qa-${{ github.run_id }}
+          path: .qa/browser/
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14

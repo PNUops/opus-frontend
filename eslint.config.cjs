@@ -45,7 +45,7 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.config.cjs', 'tests/**/*.test.cjs', 'tests/browser-visual-qa.cjs'],
+    files: ['**/*.config.cjs', 'tests/**/*.test.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: {
@@ -55,6 +55,10 @@ module.exports = [
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
     },
+  },
+  {
+    files: ['playwright.config.ts', 'tests/browser/**/*.ts'],
+    languageOptions: { globals: { ...globals.node } },
   },
   prettierConfig,
 ];
