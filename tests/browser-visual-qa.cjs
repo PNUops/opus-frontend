@@ -231,6 +231,8 @@ function writeArtifacts() {
 }
 
 (async () => {
+  // Prevent screenshots from a previous local run from appearing in this run's artifact.
+  fs.rmSync(outputDirectory, { recursive: true, force: true });
   fs.mkdirSync(outputDirectory, { recursive: true });
   try {
     await startServer();
@@ -257,25 +259,39 @@ function writeArtifacts() {
 
       try {
         for (const screen of screens) {
-          await page.goto(new URL(screen.path, baseUrl).toString(), { waitUntil: 'domcontentloaded' });
-          await assertPageReady(page, screen);
-          if (screen.name === 'signin') {
-            await page.getByRole('button', { name: '확인', exact: true }).first().waitFor();
-            await capture(page, 'signin-onboarding', viewport, false);
-            await page.getByRole('button', { name: '확인', exact: true }).first().click();
-            await page.waitForFunction(() => localStorage.getItem('signupLeaderMsgConfirmed') === 'true');
+          try {
+            await page.goto(new URL(screen.path, baseUrl).toString(), { waitUntil: 'domcontentloaded' });
+            await assertPageReady(page, screen);
+            if (screen.name === 'signin') {
+              await page.getByRole('button', { name: '확인', exact: true }).first().waitFor();
+              await capture(page, 'signin-onboarding', viewport, false);
+              await page.getByRole('button', { name: '확인', exact: true }).first().click();
+              await page.waitForFunction(() => localStorage.getItem('signupLeaderMsgConfirmed') === 'true');
+            }
+            await capture(page, screen.name, viewport);
+          } catch (error) {
+            if (interrupted) throw error;
+            const message = `${viewport.name}/${screen.name}: ${error.stack || String(error)}`;
+            errors.push(message);
+            console.error(message);
           }
-          await capture(page, screen.name, viewport);
         }
 
         if (viewport.name === 'mobile') {
-          await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
-          await assertPageReady(page, screens[0]);
-          await page.getByRole('button', { name: '메뉴 열기' }).click();
-          await capture(page, 'home-sidebar-open', viewport, false);
+          try {
+            await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+            await assertPageReady(page, screens[0]);
+            await page.getByRole('button', { name: '메뉴 열기' }).click();
+            await capture(page, 'home-sidebar-open', viewport, false);
+          } catch (error) {
+            if (interrupted) throw error;
+            const message = `${viewport.name}/home-sidebar-open: ${error.stack || String(error)}`;
+            errors.push(message);
+            console.error(message);
+          }
         }
 
-        assert.deepEqual(pageErrors, [], `${viewport.name} 화면에서 처리되지 않은 JavaScript 오류가 발생했습니다.`);
+        errors.push(...pageErrors.map((message) => `${viewport.name} 화면의 처리되지 않은 JavaScript 오류: ${message}`));
       } finally {
         await context.close();
       }
