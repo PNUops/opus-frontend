@@ -1,3 +1,4 @@
+import type { Ref } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 
@@ -8,6 +9,7 @@ import { getAdvisorRoleLabel } from '../utils/format';
 import { AdvisorSubmissionPanel } from './AdvisorSubmissionPanel';
 
 interface AdvisorProjectCardProps {
+  targetRef?: Ref<HTMLElement>;
   contestId: number;
   expanded: boolean;
   feedbackDrafts: Record<number, string>;
@@ -25,6 +27,7 @@ interface AdvisorProjectCardProps {
 }
 
 export const AdvisorProjectCard = ({
+  targetRef,
   contestId,
   expanded,
   feedbackDrafts,
@@ -44,8 +47,9 @@ export const AdvisorProjectCard = ({
 
   return (
     <article
+      ref={targetRef}
       className={cn(
-        'rounded-lg border border-blue-200 bg-white px-5 py-4 text-sm transition-colors',
+        'scroll-mt-4 rounded-lg border border-blue-200 bg-white px-3 py-4 text-sm transition-colors xl:px-5',
         expanded && 'bg-blue-50/20',
       )}
     >
@@ -54,7 +58,9 @@ export const AdvisorProjectCard = ({
           <span className="text-mainBlue rounded-md bg-blue-50 px-3 py-1.5 text-xs font-bold">
             {getAdvisorRoleLabel(project.roleType)}
           </span>
-          <h3 className="text-base font-bold text-neutral-950">{project.projectName}</h3>
+          <h3 className="min-w-0 text-base leading-6 font-semibold break-words text-neutral-950">
+            {project.projectName}
+          </h3>
           <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">{project.trackName}</span>
           <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">{project.teamName}</span>
         </div>
@@ -67,17 +73,17 @@ export const AdvisorProjectCard = ({
           <span>피드백 작성 대기 {project.pendingFeedbackCount}건</span>
         </div>
 
-        <div className="flex gap-3 xl:justify-self-end">
+        <div className="flex flex-wrap gap-3 xl:justify-self-end">
           <Link
             to={`/contest/${contestId}/teams/view/${project.teamId}`}
-            className="border-mainBlue text-mainBlue inline-flex h-10 items-center justify-center rounded-md border px-4 text-center text-sm font-semibold transition-colors hover:bg-blue-50"
+            className="border-mainBlue text-mainBlue focus-visible:outline-mainBlue inline-flex min-h-11 items-center justify-center rounded-md border px-3 text-center text-sm font-medium transition-colors hover:bg-blue-50 focus-visible:outline-2"
           >
             프로젝트 보기
           </Link>
           <button
             type="button"
             onClick={onToggle}
-            className="border-mainBlue text-mainBlue inline-flex h-10 items-center justify-center rounded-md border px-4 text-center text-sm font-semibold transition-colors hover:bg-blue-50"
+            className="border-mainBlue text-mainBlue focus-visible:outline-mainBlue inline-flex min-h-11 items-center justify-center rounded-md border px-3 text-center text-sm font-medium transition-colors hover:bg-blue-50 focus-visible:outline-2"
             aria-expanded={expanded}
           >
             피드백 작성
@@ -92,6 +98,7 @@ export const AdvisorProjectCard = ({
           expanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
         )}
         aria-hidden={!expanded}
+        inert={!expanded}
       >
         <div
           className={cn(

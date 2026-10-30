@@ -8,8 +8,12 @@ import { teamsHandlers } from './teams';
 import { meHandlers } from './me';
 import { memberHandlers } from './member';
 import { teamCommentsHandlers } from './teamComments';
+import { notificationScenarioHandlers } from './notificationScenario';
+import { http, HttpResponse } from 'msw';
+import { API_BASE_URL } from '../../constants/env';
 
 export const handlers = [
+  ...notificationScenarioHandlers,
   ...contestsHandler,
   ...noticesHandler,
   ...statisticsHandlers,
@@ -20,4 +24,11 @@ export const handlers = [
   ...meHandlers,
   ...memberHandlers,
   ...teamCommentsHandlers,
+  ...(import.meta.env.MODE === 'mock'
+    ? [
+        http.all(`${API_BASE_URL}/api/*`, () =>
+          HttpResponse.json({ message: '이 API는 MSW 시나리오에 없습니다.' }, { status: 501 }),
+        ),
+      ]
+    : []),
 ];

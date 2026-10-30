@@ -1,0 +1,157 @@
+diff --git a/src/layout/Header.tsx b/src/layout/Header.tsx
+index 8bce009..4d277a1 100644
+--- a/src/layout/Header.tsx
++++ b/src/layout/Header.tsx
+@@ -6,7 +6,8 @@ import { useImageBlob } from '@hooks/useImageBlob';
+ import { useOutsideClick } from '@hooks/useOutsideClick';
+ import { useToast } from '@hooks/useToast';
+ import { HiMenu } from 'react-icons/hi';
+-import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
++import logoOpusAdmin from './admin/logo-opus-admin.svg';
++import { Bell, List, LogOut, Settings, UserRound } from 'lucide-react';
+ import { PiChalkboardTeacher } from 'react-icons/pi';
+ import { useSidebar } from './SidebarContext';
+ import ProfileButton from './ProfileButton';
+@@ -207,7 +208,7 @@ const Header = () => {
+   const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
+   const toast = useToast();
+   const location = useLocation();
+-  const { toggle } = useSidebar();
++  const { toggle, isOpen: isSidebarOpen, triggerRef } = useSidebar();
+   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+   const profileTriggerRef = useRef<HTMLButtonElement>(null);
+   const notificationQuery = useQuery({
+@@ -238,27 +239,14 @@ const Header = () => {
+     <header
+       className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
+         isAdminRoute
+-          ? 'bg-white pl-[272px]'
++          ? 'min-h-16 bg-white lg:pl-[272px]'
+           : isHomeRoute
+             ? 'border-b border-white/35 bg-[#06172f] text-white'
+             : 'shadow-b-lg bg-white'
+       }`}
+     >
+       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
+-        <div className="flex items-center gap-2">
+-          {isSidebarRoute && !isAdminRoute && (
+-            <Button
+-              onClick={toggle}
+-              className={`flex h-9 w-9 items-center justify-center p-0 lg:hidden ${
+-                isHomeRoute
+-                  ? 'border border-white/40 bg-white/10 text-white hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-[#45d6ec] focus-visible:outline-none'
+-                  : 'text-black'
+-              }`}
+-              aria-label="메뉴 열기"
+-            >
+-              <HiMenu className="h-4 w-4" />
+-            </Button>
+-          )}
++        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+           {!isAdminRoute && (
+             <>
+               <Link to="/" viewTransition={!isHomeRoute} className="max-sm:hidden">
+@@ -277,6 +265,43 @@ const Header = () => {
+               </Link>
+             </>
+           )}
++          {isAdminRoute && (
++            <div className="flex min-w-0 items-center gap-3 lg:hidden">
++              <Link to="/admin" aria-label="관리자 대시보드로 이동">
++                <img src={logoOpusAdmin} alt="OPUS Admin" className="h-7 w-auto" />
++              </Link>
++              {isAdmin && (
++                <button
++                  id="admin-menu-trigger"
++                  type="button"
++                  aria-label="관리자 메뉴 열기"
++                  aria-expanded={isSidebarOpen}
++                  aria-controls="admin-mobile-navigation"
++                  onClick={toggle}
++                  className="border-lightGray text-mainBlue hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2"
++                >
++                  <HiMenu className="size-4" aria-hidden />
++                  관리 메뉴
++                </button>
++              )}
++            </div>
++          )}
++          {isSidebarRoute && !isAdminRoute && (
++            <button
++              ref={triggerRef}
++              type="button"
++              onClick={toggle}
++              aria-label="대회 목록 열기"
++              aria-expanded={isSidebarOpen}
++              aria-controls={isSidebarOpen ? 'contest-navigation-drawer' : undefined}
++              aria-haspopup="dialog"
++              className={`flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-md border px-2.5 text-sm xl:hidden ${isHomeRoute ? 'border-white/30 text-white hover:bg-white/10 focus-visible:outline-[#45d6ec]' : 'border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue text-neutral-700'} focus-visible:outline-2 focus-visible:outline-offset-2`}
++            >
++              <List size={18} aria-hidden />
++              <span className="sm:hidden">대회</span>
++              <span className="hidden sm:inline">대회 목록</span>
++            </button>
++          )}
+         </div>
+
+         <div className="relative flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
+diff --git a/src/constants/notification.ts b/src/constants/notification.ts
+index 1d768f0..e2f3a2f 100644
+--- a/src/constants/notification.ts
++++ b/src/constants/notification.ts
+@@ -3,7 +3,6 @@ import type { NotificationTargetType } from '@dto/notificationDto';
+ export const notificationTargetTypeLabel: Record<NotificationTargetType, string> = {
+   TEAM: '프로젝트',
+   TEAM_COMMENT: '댓글',
+-  TEAM_AWARD: '수상',
+   TEAM_AWARDS: '수상',
+   SUBMISSION_COMPLETED: '제출',
+   SUBMISSION_FEEDBACK: '피드백',
+diff --git a/src/types/DTO/notificationDto.ts b/src/types/DTO/notificationDto.ts
+index 174eef3..cd9bc45 100644
+--- a/src/types/DTO/notificationDto.ts
++++ b/src/types/DTO/notificationDto.ts
+@@ -1,7 +1,6 @@
+ export type NotificationTargetType =
+   | 'TEAM'
+   | 'TEAM_COMMENT'
+-  | 'TEAM_AWARD'
+   | 'TEAM_AWARDS'
+   | 'SUBMISSION_COMPLETED'
+   | 'SUBMISSION_FEEDBACK'
+diff --git a/src/utils/notification/targetPath.ts b/src/utils/notification/targetPath.ts
+index 821a1db..7889b24 100644
+--- a/src/utils/notification/targetPath.ts
++++ b/src/utils/notification/targetPath.ts
+@@ -57,7 +57,6 @@ export const getNotificationTarget = (notification: NotificationDto): string | T
+         : null;
+     case 'TEAM':
+     case 'TEAM_COMMENT':
+-    case 'TEAM_AWARD':
+     case 'TEAM_AWARDS':
+       return getTeamNotificationTarget({ ...notification, targetType: notification.targetType }, url);
+     default:
+diff --git a/src/utils/notification/teamTargetPath.ts b/src/utils/notification/teamTargetPath.ts
+index 094c87d..ef72797 100644
+--- a/src/utils/notification/teamTargetPath.ts
++++ b/src/utils/notification/teamTargetPath.ts
+@@ -1,10 +1,7 @@
+ import type { NotificationDto, NotificationTargetType } from '@dto/notificationDto';
+ import { parsePositiveId } from '@utils/id';
+
+-export type TeamNotificationType = Extract<
+-  NotificationTargetType,
+-  'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARD' | 'TEAM_AWARDS'
+->;
++export type TeamNotificationType = Extract<NotificationTargetType, 'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARDS'>;
+
+ export type TeamNotificationTarget = {
+   targetType: TeamNotificationType;
+@@ -43,7 +40,6 @@ export const buildTeamNotificationTargetPath = (
+       return `/me/contests/${contestId}/teams/${teamId}/dashboard`;
+     case 'TEAM_COMMENT':
+       return `/contest/${contestId}/teams/view/${teamId}#comments`;
+-    case 'TEAM_AWARD':
+     case 'TEAM_AWARDS':
+       return `/contest/${contestId}/teams/view/${teamId}#awards`;
+   }

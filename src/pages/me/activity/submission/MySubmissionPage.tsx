@@ -1,21 +1,28 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 import { useContestIdOrRedirect, useTeamIdOrRedirect } from '@hooks/useId';
 import QueryWrapper from '@providers/QueryWrapper';
 import { mySubmissionSummaryOption, mySubmissionTimelineOption } from '@queries/submission';
+import { parsePositiveId } from '@utils/id';
 
 import { SubmissionSummaryCards } from './components/SubmissionSummaryCards';
 import { SubmissionTimeline } from './components/SubmissionTimeline';
 import { SubmissionList } from './components/SubmissionList';
 
 const MySubmissionPage = () => {
+  const { contestId, teamId } = useParams();
+  if (parsePositiveId(contestId) === null || parsePositiveId(teamId) === null) {
+    return <p className="text-midGray p-6">제출물을 확인할 대회와 팀 정보를 찾지 못했습니다.</p>;
+  }
+
   return (
     <div className="flex flex-col gap-10">
-      <QueryWrapper loadingStyle="h-48 rounded-md my-0" errorStyle="h-48">
+      <QueryWrapper key={`timeline:${contestId}:${teamId}`} loadingStyle="h-48 rounded-md my-0" errorStyle="h-48">
         <SubmissionTimelineSection />
       </QueryWrapper>
 
-      <QueryWrapper loadingStyle="h-72 rounded-md my-0" errorStyle="h-72">
+      <QueryWrapper key={`list:${contestId}:${teamId}`} loadingStyle="h-72 rounded-md my-0" errorStyle="h-72">
         <SubmissionList />
       </QueryWrapper>
     </div>
@@ -29,8 +36,12 @@ const SubmissionTimelineSection = () => {
   const contestId = useContestIdOrRedirect();
   const teamId = useTeamIdOrRedirect();
 
-  const { data: summary } = useSuspenseQuery(mySubmissionSummaryOption(contestId, teamId));
-  const { data: timeline } = useSuspenseQuery(mySubmissionTimelineOption(contestId, teamId));
+  const summaryQuery = useSuspenseQuery(mySubmissionSummaryOption(contestId, teamId));
+  const timelineQuery = useSuspenseQuery(mySubmissionTimelineOption(contestId, teamId));
+  if (summaryQuery.error && !summaryQuery.isFetching) throw summaryQuery.error;
+  if (timelineQuery.error && !timelineQuery.isFetching) throw timelineQuery.error;
+  const summary = summaryQuery.data;
+  const timeline = timelineQuery.data;
 
   return (
     <section className="flex flex-col gap-8">

@@ -1,21 +1,13 @@
-import { useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Bell, CheckCheck, ChevronRight, RotateCw } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { Bell, CheckCheck, ChevronRight, RotateCw, X } from 'lucide-react';
 
-import { markAllNotificationsAsRead, markNotificationAsRead } from '@apis/notification';
 import Spinner from '@components/Spinner';
 import { cn } from '@components/lib/utils';
+import { notificationTargetTypeLabel } from '@constants/notification';
 import { useOutsideClick } from '@hooks/useOutsideClick';
-import { invalidateNotificationQueries, NOTIFICATIONS_QUERY_KEY } from '@queries/notification';
+import { useNotificationActions } from '@hooks/useNotificationActions';
 import type { NotificationDto } from '@dto/notificationDto';
-import {
-  formatNotificationCreatedAt,
-  markAllNotificationsAsReadInCache,
-  markNotificationAsReadInCache,
-  notificationTargetTypeLabel,
-  resolveNotificationTargetPath,
-} from '@utils/notification';
+import { formatNotificationCreatedAt } from '@utils/notification';
 
 interface NotificationOverlayProps {
   isOpen: boolean;
@@ -23,6 +15,7 @@ interface NotificationOverlayProps {
   isLoading: boolean;
   isError: boolean;
   onClose: () => void;
+  onCloseAutoFocus?: () => void;
   onRetry: () => void;
 }
 
@@ -32,109 +25,87 @@ const NotificationOverlay = ({
   isLoading,
   isError,
   onClose,
+  onCloseAutoFocus,
   onRetry,
 }: NotificationOverlayProps) => {
   const overlayRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryClient = useQueryClient();
+  const { busy, close, openNotification, markAllRead } = useNotificationActions(isOpen, onClose);
   const unreadCount = notifications.filter((notification) => !notification.isRead).length;
-
   useOutsideClick(overlayRef, () => {
-    if (isOpen) {
-      onClose();
-    }
+    if (isOpen) close();
   });
-
-  const markAsReadMutation = useMutation({
-    mutationFn: markNotificationAsRead,
-    onMutate: (notificationId) => {
-      const previousNotifications = queryClient.getQueryData<NotificationDto[]>(NOTIFICATIONS_QUERY_KEY);
-      markNotificationAsReadInCache(queryClient, notificationId);
-
-      return { previousNotifications };
-    },
-    onError: (_error, _notificationId, context) => {
-      queryClient.setQueryData(NOTIFICATIONS_QUERY_KEY, context?.previousNotifications);
-    },
-    onSettled: () => {
-      void invalidateNotificationQueries(queryClient);
-    },
-  });
-
-  const markAllAsReadMutation = useMutation({
-    mutationFn: markAllNotificationsAsRead,
-    onMutate: () => {
-      const previousNotifications = queryClient.getQueryData<NotificationDto[]>(NOTIFICATIONS_QUERY_KEY);
-      markAllNotificationsAsReadInCache(queryClient);
-
-      return { previousNotifications };
-    },
-    onError: (_error, _variables, context) => {
-      queryClient.setQueryData(NOTIFICATIONS_QUERY_KEY, context?.previousNotifications);
-    },
-    onSettled: () => {
-      void invalidateNotificationQueries(queryClient);
-    },
-  });
-
-  const handleNotificationClick = (notification: NotificationDto) => {
-    const moveToTarget = async () => {
-      const targetPathPromise = resolveNotificationTargetPath(queryClient, notification);
-
-      if (!notification.isRead) {
-        try {
-          await markAsReadMutation.mutateAsync(notification.id);
-        } catch {
-          void invalidateNotificationQueries(queryClient);
-        }
-      }
-
-      const targetPath = await targetPathPromise;
-      onClose();
-      if (targetPath) {
-        navigate(targetPath, { viewTransition: location.pathname === '/' });
-      }
+  useEffect(() => {
+    if (isOpen) overlayRef.current?.focus({ preventScroll: true });
+  }, [isOpen]);
+  const closeAndFocus = () => {
+    close();
+    requestAnimationFrame(() => onCloseAutoFocus?.());
+  };
+  useEffect(() => {
+    if (!isOpen) return;
+    // 읽음 처리로 누른 버튼이 disabled되면 포커스가 body로 이동할 수 있다.
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      event.preventDefault();
+      close();
+      requestAnimationFrame(() => onCloseAutoFocus?.());
     };
-
-    void moveToTarget();
-  };
-
-  const handleMarkAllAsRead = () => {
-    markAllAsReadMutation.mutate();
-  };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, close, onCloseAutoFocus]);
 
   return (
     <div
       ref={overlayRef}
+      role="dialog"
+      aria-label="알림"
       aria-hidden={!isOpen}
+      inert={!isOpen}
+      tabIndex={-1}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopPropagation();
+          closeAndFocus();
+        }
+      }}
       className={cn(
-        'border-lightGray absolute top-full right-0 z-50 mt-3 w-[min(360px,calc(100vw-32px))] origin-top-right rounded-lg border bg-white shadow-xl transition duration-150 ease-out',
+        'border-lightGray absolute top-full right-0 z-50 mt-3 flex max-h-[min(560px,calc(100dvh-112px))] w-[min(380px,calc(100vw-32px))] origin-top-right flex-col rounded-lg border bg-white text-neutral-900 shadow-lg transition duration-150 ease-out outline-none motion-reduce:transition-none',
         isOpen
           ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
           : 'pointer-events-none -translate-y-1 scale-95 opacity-0',
       )}
     >
-      <div className="border-lightGray flex items-center justify-between gap-3 border-b px-5 py-4">
+      <div className="border-lightGray flex shrink-0 items-center justify-between gap-2 border-b px-4 py-3">
         <div className="flex min-w-0 items-center gap-3">
           <Bell className="text-mainGreen size-5 shrink-0" />
           <div className="min-w-0">
             <h2 className="font-bold text-neutral-900">알림</h2>
-            <p className="text-midGray text-xs">읽지 않은 알림 {unreadCount}개</p>
+            <p className="mt-0.5 text-xs text-neutral-600">읽지 않은 알림 {unreadCount}개</p>
           </div>
         </div>
-        <button
-          type="button"
-          className="hover:bg-whiteGray text-midGray inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors hover:text-neutral-900 disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={handleMarkAllAsRead}
-          disabled={unreadCount === 0 || markAllAsReadMutation.isPending}
-        >
-          <CheckCheck size={14} />
-          모두 읽음
-        </button>
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            type="button"
+            className="hover:bg-whiteGray focus-visible:outline-mainBlue inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs text-neutral-700 transition-colors focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={() => void markAllRead()}
+            disabled={unreadCount === 0 || busy}
+          >
+            <CheckCheck size={14} />
+            모두 읽음
+          </button>
+          <button
+            type="button"
+            aria-label="알림 닫기"
+            onClick={closeAndFocus}
+            className="hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md text-neutral-600 focus-visible:outline-2"
+          >
+            <X size={18} aria-hidden />
+          </button>
+        </div>
       </div>
 
-      <div className="max-h-[440px] overflow-y-auto">
+      <div className="min-h-0 overflow-y-auto overscroll-contain">
         {isLoading && <NotificationLoading />}
         {isError && !isLoading && <NotificationError onRetry={onRetry} />}
         {!isLoading && !isError && notifications.length === 0 && <NotificationEmpty />}
@@ -144,8 +115,8 @@ const NotificationOverlay = ({
               <NotificationItem
                 key={notification.id}
                 notification={notification}
-                isPending={markAsReadMutation.isPending}
-                onClick={() => handleNotificationClick(notification)}
+                isPending={busy}
+                onClick={() => void openNotification(notification)}
               />
             ))}
           </ul>
@@ -170,7 +141,7 @@ const NotificationItem = ({
     <li>
       <button
         type="button"
-        className="hover:bg-whiteGray flex w-full items-start gap-3 rounded-lg px-5 py-4 text-left transition-colors disabled:cursor-wait"
+        className="hover:bg-whiteGray focus-visible:outline-mainBlue flex w-full items-start gap-3 px-4 py-4 text-left transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 disabled:cursor-wait"
         onClick={onClick}
         disabled={isPending}
       >
@@ -179,22 +150,29 @@ const NotificationItem = ({
         />
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
-            <span className={cn('truncate text-sm font-bold', notification.isRead && 'text-neutral-500')}>
+            <span
+              className={cn(
+                'min-w-0 flex-1 text-sm leading-6 font-medium break-words text-neutral-950',
+                notification.isRead && 'text-neutral-600',
+              )}
+            >
               {notification.title}
             </span>
             <span className="bg-whiteGray shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium text-neutral-600">
-              {notificationTargetTypeLabel[notification.targetType]}
+              {notificationTargetTypeLabel[notification.targetType] ?? '알림'}
             </span>
           </span>
           <span
             className={cn(
               'mt-1 line-clamp-2 text-sm leading-5 text-neutral-700',
-              notification.isRead && 'text-midGray',
+              notification.isRead && 'text-neutral-600',
             )}
           >
             {notification.content}
           </span>
-          <span className="text-midGray mt-2 block text-xs">{formatNotificationCreatedAt(notification.createdAt)}</span>
+          <span className="mt-2 block text-xs text-neutral-600">
+            {formatNotificationCreatedAt(notification.createdAt)}
+          </span>
         </span>
         <ChevronRight className="text-midGray mt-1 size-4 shrink-0" />
       </button>

@@ -2,6 +2,7 @@ import type { AdvisorProject, AdvisorSubmissionFile } from '../types';
 import { AdvisorProjectCard } from './AdvisorProjectCard';
 
 interface AdvisorProjectListProps {
+  notificationTeamId: number | null;
   contestId: number;
   expandedTeamId: number | null;
   feedbackDrafts: Record<number, string>;
@@ -19,6 +20,7 @@ interface AdvisorProjectListProps {
 }
 
 export const AdvisorProjectList = ({
+  notificationTeamId,
   contestId,
   expandedTeamId,
   feedbackDrafts,
@@ -34,6 +36,40 @@ export const AdvisorProjectList = ({
   onSelectSubmission,
   onToggleProject,
 }: AdvisorProjectListProps) => {
+  const { key: navigationKey } = useLocation();
+  const targetRef = useRef<HTMLElement>(null);
+  const scrolledKey = useRef<string | null>(null);
+  const targetTeamId = projects.find((project) => project.teamId === notificationTeamId)?.teamId ?? null;
+
+  useEffect(() => {
+    if (targetTeamId === null || loadingTeamId === targetTeamId || scrolledKey.current === navigationKey) return;
+    let cancelled = false;
+    const frame = requestAnimationFrame(async () => {
+      await document.fonts.ready;
+      if (cancelled) return;
+      const target = targetRef.current;
+      if (!target) return;
+      const transitions =
+        target.parentElement
+          ?.getAnimations({ subtree: true })
+          .filter(
+            (animation) => animation instanceof CSSTransition && animation.transitionProperty === 'grid-template-rows',
+          ) ?? [];
+      await Promise.all(transitions.map((animation) => animation.finished.catch(() => undefined)));
+      if (cancelled) return;
+      scrolledKey.current = navigationKey;
+      target.scrollIntoView({
+        block: 'start',
+        inline: 'nearest',
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
+  }, [navigationKey, targetTeamId, loadingTeamId]);
+
   if (projects.length === 0) {
     return (
       <section className="border-lightGray text-midGray flex min-h-45 items-center justify-center rounded-lg border bg-white text-sm font-medium">
@@ -48,6 +84,7 @@ export const AdvisorProjectList = ({
       <div className="flex flex-col gap-4">
         {projects.map((project) => (
           <AdvisorProjectCard
+            targetRef={project.teamId === targetTeamId ? targetRef : undefined}
             key={project.teamId}
             contestId={contestId}
             project={project}
@@ -69,3 +106,5 @@ export const AdvisorProjectList = ({
     </section>
   );
 };
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
