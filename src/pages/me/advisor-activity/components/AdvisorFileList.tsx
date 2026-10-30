@@ -15,7 +15,7 @@ export const AdvisorFileList = ({ files, onDownload, onRemove }: AdvisorFileList
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex min-w-0 flex-wrap gap-2">
       {files.map((file) => (
         <div
           key={`${file.source ?? 'file'}-${file.submissionId ?? 'none'}-${file.fileId}-${file.fileName}`}
@@ -24,11 +24,13 @@ export const AdvisorFileList = ({ files, onDownload, onRemove }: AdvisorFileList
           <button
             type="button"
             onClick={() => onDownload(file)}
-            className="flex min-w-0 items-center gap-2 px-2.5 py-1.5 text-left"
+            className="focus-visible:outline-mainBlue flex min-h-11 min-w-0 items-center gap-2 rounded-md px-2.5 py-1.5 text-left focus-visible:outline-2"
           >
             <FileText size={16} className="text-midGray shrink-0" />
-            <span className="max-w-64 truncate text-xs font-medium text-neutral-800">{file.fileName}</span>
-            <span className="text-midGray shrink-0 text-xs">{formatFileSize(file.fileSize)}</span>
+            <span className="min-w-0 flex-1 text-xs leading-5 break-all text-neutral-800">
+              {file.fileName}
+              <span className="block text-neutral-600">{formatFileSize(file.fileSize)}</span>
+            </span>
             <Download size={14} className="text-midGray shrink-0" />
           </button>
           {onRemove && (
@@ -36,7 +38,7 @@ export const AdvisorFileList = ({ files, onDownload, onRemove }: AdvisorFileList
               type="button"
               onClick={() => onRemove(file)}
               aria-label={`${file.fileName} 첨부 제거`}
-              className="text-midGray hover:text-mainRed flex h-8 w-8 shrink-0 items-center justify-center rounded-r-md transition-colors"
+              className="hover:text-mainRed focus-visible:outline-mainBlue flex size-11 shrink-0 items-center justify-center rounded-r-md text-neutral-600 transition-colors focus-visible:outline-2"
             >
               <X size={14} />
             </button>

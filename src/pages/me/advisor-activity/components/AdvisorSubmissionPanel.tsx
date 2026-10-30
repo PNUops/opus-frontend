@@ -50,7 +50,7 @@ export const AdvisorSubmissionPanel = ({
 
   return (
     <div className="border-lightGray mt-4 overflow-hidden rounded-md border bg-white">
-      <div className="bg-whiteGray hidden grid-cols-[1.4fr_1fr_2fr_6.5rem] gap-4 px-5 py-3 text-xs font-bold text-neutral-800 md:grid">
+      <div className="bg-whiteGray hidden grid-cols-[minmax(0,1.4fr)_100px_minmax(0,2fr)_110px] gap-4 px-4 py-3 text-xs font-medium text-neutral-800 xl:grid">
         <span>제출물 항목</span>
         <span>피드백 상태</span>
         <span>제출 파일</span>
@@ -69,17 +69,24 @@ export const AdvisorSubmissionPanel = ({
                 selected ? 'border-mainBlue border' : 'border-lightGray border-t first:border-t-0',
               )}
             >
-              <div className="grid gap-4 px-5 py-4 md:grid-cols-[1.4fr_1fr_2fr_6.5rem] md:items-center">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-semibold text-neutral-950">{submission.submissionItemName}</span>
-                  <span className="text-midGray text-xs md:hidden">제출물 항목</span>
+              <div className="grid grid-cols-2 gap-3 px-4 py-4 xl:grid-cols-[minmax(0,1.4fr)_100px_minmax(0,2fr)_110px] xl:items-center xl:gap-4">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <span className="text-sm leading-6 font-medium break-words text-neutral-950">
+                    {submission.submissionItemName}
+                  </span>
+                  <span className="text-xs text-neutral-600 xl:hidden">제출물 항목</span>
                 </div>
-                <AdvisorStatusBadge status={submission.feedbackStatus} />
-                <AdvisorFileList files={submission.files} onDownload={onDownloadFile} />
+                <div className="flex justify-end xl:justify-start">
+                  <AdvisorStatusBadge status={submission.feedbackStatus} />
+                </div>
+                <div className="col-span-2 min-w-0 xl:col-span-1">
+                  <AdvisorFileList files={submission.files} onDownload={onDownloadFile} />
+                </div>
                 <button
                   type="button"
                   onClick={() => onSelectSubmission(submission.submissionId)}
-                  className="border-mainBlue text-mainBlue inline-flex h-9 items-center justify-center justify-self-start rounded-md border px-3 text-xs font-semibold transition-colors hover:bg-blue-50 md:justify-self-center"
+                  className="border-mainBlue text-mainBlue focus-visible:outline-mainBlue col-span-2 inline-flex min-h-11 items-center justify-center justify-self-end rounded-md border px-3 text-xs font-medium transition-colors hover:bg-blue-50 focus-visible:outline-2 xl:col-span-1 xl:justify-self-center"
+                  aria-expanded={selected}
                 >
                   자세히 보기
                 </button>
@@ -93,7 +100,7 @@ export const AdvisorSubmissionPanel = ({
               >
                 <div className="overflow-hidden">
                   {selected && (
-                    <div className="px-5 pb-5">
+                    <div className="px-3 pb-4 xl:px-5 xl:pb-5">
                       <AdvisorFeedbackEditor
                         value={feedbackDrafts[submission.submissionId] ?? ''}
                         files={submission.feedbackFiles ?? []}

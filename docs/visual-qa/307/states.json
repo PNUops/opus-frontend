@@ -1,0 +1,101 @@
+{
+  "results": [
+    "1440 long title/body remain inside viewport",
+    "1440 keyboard open/Tab/Escape/focus restoration",
+    "768 long title/body remain inside viewport",
+    "768 keyboard open/Tab/Escape/focus restoration",
+    "390 long title/body remain inside viewport",
+    "390 keyboard open/Tab/Escape/focus restoration",
+    "browser draft text and attached File survive submission changes",
+    "failed browser save preserves draft and local file",
+    "browser remove and save use the selected submission ID",
+    "contest URL switches retain independent edits"
+  ],
+  "captures": [
+    {
+      "name": "long-notifications",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "error",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "loading",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "long-notifications",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "error",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "loading",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "long-notifications",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "empty",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "loading",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "compact",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "feedback-draft",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}

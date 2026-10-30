@@ -1,0 +1,167 @@
+{
+  "checks": [
+    {
+      "name": "student-notifications",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-arrival",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-content",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-notifications",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-arrival",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-content",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-notifications",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-arrival",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-content",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-notifications",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-arrival",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-content",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-notifications",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-arrival",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-content",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-notifications",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-arrival",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-content",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-notifications",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-arrival",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "student-content",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-notifications",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-arrival",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-content",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-notifications",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-arrival",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-content",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}

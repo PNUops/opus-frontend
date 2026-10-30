@@ -1,0 +1,51 @@
+{
+  "results": [
+    "all seven student notification types preserve server URLs and submission-item selection",
+    "unknown submission item opens no unrelated detail and duplicate query blocks navigation",
+    "external target is blocked without a fallback route",
+    "Escape restores the profile trigger; hidden panel is inert",
+    "failed bulk read rolls back the optimistic badge and blocks duplicate individual requests",
+    "successful bulk read is serialized with pending refetch and is not overwritten by stale data",
+    "closing the panel cancels delayed legacy navigation",
+    "route changes cancel delayed legacy navigation",
+    "legacy team/comments/awards preserve canonical route anchors",
+    "professor single/bulk/unassignment preserve recipient paths and scroll to the assigned team",
+    "professor rejects unassigned/duplicate team selections and stale permission results",
+    "mentor single/bulk/unassignment preserve recipient paths and scroll to the assigned team",
+    "mentor rejects unassigned/duplicate team selections and stale permission results",
+    "account change prevents late rollback from restoring old notifications"
+  ],
+  "captures": [
+    {
+      "name": "read-error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-deep-link",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "professor-permission-error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-deep-link",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    },
+    {
+      "name": "mentor-permission-error",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1
+    }
+  ],
+  "failures": []
+}
