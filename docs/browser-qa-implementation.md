@@ -178,7 +178,8 @@ test.describe('진행 중인 대회가 없는 경우', () => {
 
 로컬 [.github/workflows/visual-qa.yml](../.github/workflows/visual-qa.yml)의 설정은 다음과 같습니다.
 
-- `develop` 대상 PR 및 `workflow_dispatch` 실행.
+- `develop` 대상 PR 중 `🎨 UI/UX` 라벨이 붙은 PR에서 자동 실행. PR 생성·커밋 갱신·재오픈·라벨 추가/제거 시 조건을 다시 확인하며, 라벨이 없으면 `visual-qa` job을 건너뜁니다.
+- 라벨 기준은 연결된 이슈가 아닌 PR입니다. `workflow_dispatch` 수동 실행은 라벨 없이도 가능합니다.
 - Node 22 → `npm ci` → Chromium·OS 의존성 설치 → `test:browser:typecheck` → `test:browser`.
 - 테스트 실패를 Actions 실패로 전달.
 - 실패 시 `.qa/browser/`만 `opus-browser-qa-${{ github.run_id }}` artifact로 업로드. 숨김 경로 포함, 보관 기간 14일.

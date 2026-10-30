@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:submission": "node --test tests/submission-save.test.cjs",
+    "test:signup": "node --test tests/signup-contract.test.cjs",
     "test:browser": "playwright test",
     "test:browser:ui": "playwright test --ui",
     "test:browser:debug": "playwright test --debug",
