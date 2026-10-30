@@ -1,0 +1,33 @@
+{
+  "checks": [
+    {
+      "name": "submission-long",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      },
+      "scrolling": {
+        "top": 0,
+        "bodyTop": 77,
+        "itemTop": 77,
+        "active": "H3"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "width": 390,
+      "case": "long"
+    }
+  ],
+  "failures": []
+}
