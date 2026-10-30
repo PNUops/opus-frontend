@@ -3,6 +3,7 @@ name: Browser QA
 on:
   pull_request:
     branches: [develop]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
 
 permissions:
@@ -15,6 +16,8 @@ concurrency:
 jobs:
   visual-qa:
     # Preserve the existing check/job identity for branch protection consumers.
+    # Automatic QA is opt-in via the PR label; manual runs remain available.
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, '🎨 UI/UX')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
