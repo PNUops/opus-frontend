@@ -25,3 +25,6 @@ dist-ssr
 
 *.env
 tsconfig.tsbuildinfo
+
+# Browser QA reports, traces and local tooling caches
+.qa/
