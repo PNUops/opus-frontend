@@ -8,7 +8,7 @@ const unusedImports = require('eslint-plugin-unused-imports');
 
 module.exports = [
   {
-    ignores: ['dist/**', 'node_modules/**'],
+    ignores: ['dist/**', 'node_modules/**', '.qa/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -55,6 +55,10 @@ module.exports = [
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
     },
+  },
+  {
+    files: ['playwright.config.ts', 'tests/browser/**/*.ts'],
+    languageOptions: { globals: { ...globals.node } },
   },
   prettierConfig,
 ];
