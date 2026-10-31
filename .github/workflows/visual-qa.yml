@@ -1,0 +1,53 @@
+name: Browser QA
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-qa-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual-qa:
+    # Preserve the existing check/job identity for branch protection consumers.
+    # Automatic QA is opt-in via the PR label; manual runs remain available.
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, '🎨 UI/UX')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Typecheck browser tests
+        run: npm run test:browser:typecheck
+
+      - name: Run browser tests
+        run: npm run test:browser
+
+      - name: Upload failure traces, screenshots and diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: opus-browser-qa-${{ github.run_id }}
+          path: .qa/browser/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
