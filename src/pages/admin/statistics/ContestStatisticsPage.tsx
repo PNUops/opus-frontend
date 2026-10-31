@@ -1,13 +1,15 @@
-import VoteRankingSection from './VoteRankingSection';
-import StatCardsSection from './StatCardsSection';
+import { Navigate } from 'react-router-dom';
+import { useContestId } from '@hooks/useId';
+import { VoteReportSection } from './VoteReportSection';
 import VoteLogSection from './VoteLogSection';
 
 const ContestStatisticsPage = () => {
+  const contestId = useContestId();
+  if (contestId === null || !Number.isSafeInteger(contestId) || contestId <= 0) return <Navigate to="/admin" replace />;
   return (
-    <div className="flex flex-col gap-10">
-      <VoteRankingSection />
-      <StatCardsSection />
-      <VoteLogSection />
+    <div className="flex min-w-0 flex-col gap-10">
+      <VoteReportSection key={contestId} contestId={contestId} />
+      <VoteLogSection key={`log-${contestId}`} />
     </div>
   );
 };

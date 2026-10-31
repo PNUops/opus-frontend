@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, type Ref } from 'react';
 import { cn } from '@components/lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 import { useAdminUi } from './AdminUiContext';
@@ -52,7 +52,8 @@ export const AdminActionButton = ({
   size,
   children,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>) => {
+}: ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants> & { ref?: Ref<HTMLButtonElement> }) => {
   const isAdminUi = useAdminUi();
   return (
     <button className={cn((isAdminUi ? adminButtonVariants : buttonVariants)({ variant, size, className }))} {...props}>
