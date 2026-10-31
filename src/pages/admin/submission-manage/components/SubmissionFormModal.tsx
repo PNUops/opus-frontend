@@ -115,7 +115,7 @@ export const SubmissionFormModal = ({
             value={values.name}
             onChange={(e) => update('name', e.target.value)}
             placeholder="제출 항목 이름"
-            className="w-full text-sm"
+            className="w-full text-base sm:text-sm"
           />
         </FormRow>
 
@@ -146,7 +146,7 @@ export const SubmissionFormModal = ({
             onChange={(e) => update('description', e.target.value)}
             placeholder="제출 항목에 대한 설명을 입력해주세요."
             rows={4}
-            className="w-full text-sm"
+            className="w-full text-base sm:text-sm"
           />
         </FormRow>
 
@@ -234,12 +234,12 @@ const FormRow = ({ label, align = 'center', children }: FormRowProps) => {
   return (
     <div
       className={cn(
-        'grid grid-cols-1 gap-2 sm:grid-cols-[96px_1fr] sm:gap-4',
+        'grid grid-cols-1 gap-2 sm:grid-cols-[96px_minmax(0,1fr)] sm:gap-4',
         align === 'center' ? 'items-center' : 'items-start',
       )}
     >
-      <div className={cn('text-darkGray text-sm font-medium', align === 'start' && 'pt-2')}>{label}</div>
-      <div>{children}</div>
+      <div className={cn('text-darkGray text-sm font-medium', align === 'start' && 'sm:pt-2')}>{label}</div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 };
@@ -272,12 +272,12 @@ const NumberStepper = ({
   onChange: (value: number) => void;
 }) => {
   return (
-    <div className="border-input flex h-11 w-32 items-center justify-between rounded-md border px-1">
+    <div className="border-input flex h-11 w-36 items-center justify-between rounded-md border px-1">
       <button
         type="button"
         aria-label="파일 수 줄이기"
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="hover:text-darkGray flex h-10 w-10 items-center justify-center text-neutral-600 disabled:opacity-40"
+        className="hover:text-darkGray flex size-11 items-center justify-center text-neutral-600 disabled:opacity-40"
         disabled={value <= min}
       >
         <Minus size={14} />
@@ -287,7 +287,7 @@ const NumberStepper = ({
         type="button"
         aria-label="파일 수 늘리기"
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="hover:text-darkGray flex h-10 w-10 items-center justify-center text-neutral-600 disabled:opacity-40"
+        className="hover:text-darkGray flex size-11 items-center justify-center text-neutral-600 disabled:opacity-40"
         disabled={value >= max}
       >
         <Plus size={14} />

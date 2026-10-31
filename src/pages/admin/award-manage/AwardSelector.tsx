@@ -106,7 +106,7 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
   const isPendingAction = isUpdatingTeamAwards || isCreatingContestAward || isDeletingContestAward;
 
   return (
-    <div className="flex w-full items-center gap-4">
+    <div className="flex w-full min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
       <label className="w-30 flex-shrink-0 text-sm leading-none">상훈 명칭</label>
       <Popover
         open={isOpen}
@@ -119,7 +119,7 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
           <button
             type="button"
             aria-label="상훈 선택"
-            className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 min-w-0 flex-1 items-center justify-between rounded-md border px-3 py-2 text-left focus-visible:outline-2"
+            className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 w-full min-w-0 flex-1 items-center justify-between rounded-md border px-3 py-2 text-left focus-visible:outline-2"
           >
             {awards.length > 0 ? (
               <span className="flex flex-wrap gap-2">
@@ -134,13 +134,13 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="flex max-h-[min(480px,80dvh)] w-fit max-w-[calc(100vw-32px)] flex-col overflow-auto p-0 text-sm shadow-sm"
+          className="flex max-h-[min(440px,var(--radix-popover-content-available-height))] w-[360px] max-w-[calc(100vw-32px)] flex-col overflow-y-auto p-0 text-sm shadow-sm"
           sideOffset={4}
           collisionPadding={16}
         >
-          <div className="bg-whiteGray flex items-center gap-4 p-4">
+          <div className="bg-whiteGray flex flex-wrap items-center gap-4 p-4">
             {filteredTeamAwardsList.length > 0 && (
-              <div className="flex items-center gap-3">
+              <div className="flex min-w-0 flex-wrap items-center gap-3">
                 {filteredTeamAwardsList.map((award, index) => (
                   <AwardTag
                     key={index}
@@ -153,12 +153,11 @@ const AwardSelector = ({ contestId, teamId, awards }: AwardSelectorProps) => {
                 ))}
               </div>
             )}
-            <div className="inline-grid min-w-[50px] items-center">
-              <span className="invisible col-start-1 row-start-1 px-1 whitespace-pre">{newAwardName}</span>
+            <div className="min-w-0 flex-1 basis-full">
               <Input
                 appearance="admin"
                 aria-label="새 상훈 이름"
-                className="col-start-1 row-start-1 min-w-32 text-sm"
+                className="w-full min-w-0 text-sm"
                 value={newAwardName}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAwardName(e.target.value)}
                 placeholder={newAwardName ? '' : '추가 상훈 입력...'}

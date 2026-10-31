@@ -1,5 +1,6 @@
 import Input from '@components/Input';
-import { AdminTable } from '@components/admin/AdminTable';
+import { AdminResponsiveList } from '@components/admin/AdminResponsiveList';
+import { AdminMobileFilters } from '@components/admin/AdminMobileFilters';
 import { ReactNode, useMemo, useState } from 'react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -23,7 +24,6 @@ import { SubmissionStatusBadge } from './SubmissionBadges';
 import { SubmissionDetailDrawer } from './SubmissionDetailDrawer';
 import { SubmissionFeedbackDrawer } from './SubmissionFeedbackDrawer';
 
-const TABLE_HEADERS = ['팀 이름', '분과', '제출 항목', '제출 상태', '최초 제출일시', '최종 제출일시'];
 const PAGE_SIZE = 10;
 
 type StatusFilter = SubmissionStatus | '';
@@ -153,41 +153,77 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
     <div className="flex flex-col gap-5">
       {/* 필터 */}
       <div className="flex flex-wrap items-center gap-2">
-        <FilterDropDown
-          variant="select"
-          label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
-          value={typeFilter}
-          options={typeOptions}
-          onChange={(v) => {
-            setTypeFilter(v);
-            resetToFirstPage();
-          }}
-        />
-        <FilterDropDown<StatusFilter>
-          variant="select"
-          label={SUBMISSION_STATUS_FILTER_OPTIONS.find((o) => o.value === statusFilter)?.label ?? '제출 상태'}
-          value={statusFilter}
-          options={SUBMISSION_STATUS_FILTER_OPTIONS}
-          onChange={(v) => {
-            setStatusFilter(v);
-            resetToFirstPage();
-          }}
-        />
-        <FilterDropDown
-          variant="select"
-          label={trackOptions.find((o) => o.value === trackFilter)?.label ?? '분과'}
-          value={trackFilter}
-          options={trackOptions}
-          onChange={(v) => {
-            setTrackFilter(v);
-            resetToFirstPage();
-          }}
-        />
-        <div className="relative flex-1">
-          <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-600" />
+        <AdminMobileFilters
+          title="제출 현황 필터"
+          onReset={handleReset}
+          fields={[
+            {
+              id: 'type',
+              label: '제출 항목',
+              value: typeFilter,
+              options: typeOptions,
+              onChange: (value) => {
+                setTypeFilter(value);
+                resetToFirstPage();
+              },
+            },
+            {
+              id: 'status',
+              label: '제출 상태',
+              value: statusFilter,
+              options: SUBMISSION_STATUS_FILTER_OPTIONS,
+              onChange: (value) => {
+                setStatusFilter(value as StatusFilter);
+                resetToFirstPage();
+              },
+            },
+            {
+              id: 'track',
+              label: '분과',
+              value: trackFilter,
+              options: trackOptions,
+              onChange: (value) => {
+                setTrackFilter(value);
+                resetToFirstPage();
+              },
+            },
+          ]}
+        >
+          <FilterDropDown
+            variant="select"
+            label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
+            value={typeFilter}
+            options={typeOptions}
+            onChange={(v) => {
+              setTypeFilter(v);
+              resetToFirstPage();
+            }}
+          />
+          <FilterDropDown<StatusFilter>
+            variant="select"
+            label={SUBMISSION_STATUS_FILTER_OPTIONS.find((o) => o.value === statusFilter)?.label ?? '제출 상태'}
+            value={statusFilter}
+            options={SUBMISSION_STATUS_FILTER_OPTIONS}
+            onChange={(v) => {
+              setStatusFilter(v);
+              resetToFirstPage();
+            }}
+          />
+          <FilterDropDown
+            variant="select"
+            label={trackOptions.find((o) => o.value === trackFilter)?.label ?? '분과'}
+            value={trackFilter}
+            options={trackOptions}
+            onChange={(v) => {
+              setTrackFilter(v);
+              resetToFirstPage();
+            }}
+          />
+        </AdminMobileFilters>
+        <div className="relative min-w-0 flex-1">
+          <Search size={16} className="text-midGray absolute top-1/2 left-3 -translate-y-1/2" />
           <Input
             appearance="admin"
-            aria-label="팀 이름 검색"
             type="text"
             value={search}
             onChange={(e) => {
@@ -195,6 +231,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
               resetToFirstPage();
             }}
             placeholder="팀 이름으로 검색"
+            aria-label="팀 이름으로 검색"
             className="w-full pl-9 text-sm"
           />
         </div>
@@ -202,7 +239,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
           type="button"
           onClick={handleReset}
           aria-label="필터 초기화"
-          className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md border text-neutral-600 transition-colors focus-visible:outline-2"
+          className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue hidden size-11 items-center justify-center rounded-md border text-neutral-600 transition-colors focus-visible:outline-2 sm:flex"
         >
           <RefreshCw size={16} />
         </button>
@@ -244,70 +281,59 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
       </div>
 
       {/* 리스트 */}
-      <div className="overflow-x-auto">
-        <AdminTable className="w-full min-w-[900px] border-collapse">
-          <thead>
-            <tr className="border-lightGray border-b">
-              {TABLE_HEADERS.map((header) => (
-                <th key={header} className="px-4 py-3 text-left text-sm font-medium whitespace-nowrap">
-                  {header}
-                </th>
-              ))}
-              <th className="px-4 py-3 text-center text-sm font-medium whitespace-nowrap">작업</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pagedRows.length === 0 ? (
-              <tr>
-                <td colSpan={TABLE_HEADERS.length + 1} className="py-12 text-center text-sm text-neutral-600">
-                  제출 현황이 없어요.
-                </td>
-              </tr>
-            ) : (
-              pagedRows.map((submission) => (
-                <tr
-                  key={`${submission.teamId}-${submission.submissionItemName}`}
-                  className="border-lightGray border-b last:border-b-0"
-                >
-                  <td className="text-darkGray px-4 py-4 text-sm font-medium whitespace-nowrap">
-                    {submission.teamName}
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.trackName}</td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">{submission.submissionItemName}</td>
-                  <td className="px-4 py-4">
-                    <SubmissionStatusBadge status={submission.status} />
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">{formatDateTime(submission.firstSubmittedAt)}</td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">{formatDateTime(submission.lastModifiedAt)}</td>
-                  <td className="px-4 py-4">
-                    <div className="flex justify-center gap-1.5">
-                      <ActionIconButton
-                        label="상세보기"
-                        icon={<Eye size={16} />}
-                        disabled={submission.submissionId === null}
-                        onClick={() => setDetailTarget(submission)}
-                      />
-                      <ActionIconButton
-                        label="피드백"
-                        icon={<MessageSquare size={16} />}
-                        disabled={submission.submissionId === null}
-                        onClick={() => setFeedbackTarget(submission)}
-                      />
-                      <ActionIconButton
-                        label="다운로드"
-                        variant="solid"
-                        disabled={submission.submissionId === null}
-                        icon={<Download size={16} />}
-                        onClick={() => handleDownloadSubmission(submission)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </AdminTable>
-      </div>
+      <AdminResponsiveList
+        label="제출 현황 목록"
+        items={pagedRows}
+        getKey={(submission) => `${submission.teamId}-${submission.submissionItemName}`}
+        primaryKey="team"
+        emptyText="제출 현황이 없어요."
+        tableClassName="min-w-[900px]"
+        columns={[
+          { key: 'team', label: '팀 이름', render: (submission) => submission.teamName },
+          { key: 'track', label: '분과', render: (submission) => submission.trackName },
+          { key: 'item', label: '제출 항목', render: (submission) => submission.submissionItemName },
+          {
+            key: 'status',
+            label: '제출 상태',
+            render: (submission) => <SubmissionStatusBadge status={submission.status} />,
+          },
+          {
+            key: 'first',
+            label: '최초 제출일시',
+            render: (submission) => formatDateTime(submission.firstSubmittedAt),
+            className: 'whitespace-nowrap',
+          },
+          {
+            key: 'last',
+            label: '최근 수정일시',
+            render: (submission) => formatDateTime(submission.lastModifiedAt),
+            className: 'whitespace-nowrap',
+          },
+        ]}
+        actions={(submission) => (
+          <>
+            <ActionIconButton
+              label="상세보기"
+              icon={<Eye size={16} />}
+              disabled={submission.submissionId === null}
+              onClick={() => setDetailTarget(submission)}
+            />
+            <ActionIconButton
+              label="피드백"
+              icon={<MessageSquare size={16} />}
+              disabled={submission.submissionId === null}
+              onClick={() => setFeedbackTarget(submission)}
+            />
+            <ActionIconButton
+              label="다운로드"
+              variant="solid"
+              icon={<Download size={16} />}
+              disabled={submission.submissionId === null}
+              onClick={() => handleDownloadSubmission(submission)}
+            />
+          </>
+        )}
+      />
 
       {/* 하단 */}
       <div className="flex items-center justify-between">

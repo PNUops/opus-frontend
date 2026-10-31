@@ -1,4 +1,5 @@
-import { AdminTable } from '@components/admin/AdminTable';
+import { AdminResponsiveList } from '@components/admin/AdminResponsiveList';
+import { AdminMobileFilters } from '@components/admin/AdminMobileFilters';
 import { useMemo, useState } from 'react';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Download, RefreshCw } from 'lucide-react';
@@ -13,8 +14,6 @@ import { submissionDownloadsOption } from '@queries/submission';
 import { downloadFromResponse } from '@utils/download';
 import { getApiErrorMessage } from '@utils/error';
 import type { SubmissionArchiveResponseDto, SubmissionDownloadTargetDto } from '@dto/submissionDto';
-
-const TABLE_HEADERS = ['제출 항목', '분과', '제출 팀 수', '예상 용량'];
 
 const rowKey = (archive: SubmissionArchiveResponseDto) => `${archive.submissionTypeId}-${archive.trackId}`;
 
@@ -128,33 +127,43 @@ export const SubmissionDownloadTab = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <FilterDropDown
-            variant="select"
-            label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
-            value={typeFilter}
-            options={typeOptions}
-            onChange={setTypeFilter}
-          />
-          <FilterDropDown
-            variant="select"
-            label={trackOptions.find((o) => o.value === trackFilter)?.label ?? '분과'}
-            value={trackFilter}
-            options={trackOptions}
-            onChange={setTrackFilter}
-          />
-          <button
-            type="button"
-            onClick={handleReset}
-            aria-label="필터 초기화"
-            className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md border text-neutral-600 transition-colors focus-visible:outline-2"
+          <AdminMobileFilters
+            title="다운로드 필터"
+            onReset={handleReset}
+            fields={[
+              { id: 'type', label: '제출 항목', value: typeFilter, options: typeOptions, onChange: setTypeFilter },
+              { id: 'track', label: '분과', value: trackFilter, options: trackOptions, onChange: setTrackFilter },
+            ]}
           >
-            <RefreshCw size={16} />
-          </button>
+            <FilterDropDown
+              variant="select"
+              label={typeOptions.find((o) => o.value === typeFilter)?.label ?? '제출 항목'}
+              value={typeFilter}
+              options={typeOptions}
+              onChange={setTypeFilter}
+            />
+            <FilterDropDown
+              variant="select"
+              label={trackOptions.find((o) => o.value === trackFilter)?.label ?? '분과'}
+              value={trackFilter}
+              options={trackOptions}
+              onChange={setTrackFilter}
+            />
+            <button
+              type="button"
+              onClick={handleReset}
+              aria-label="필터 초기화"
+              className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md border text-neutral-600 transition-colors focus-visible:outline-2"
+            >
+              <RefreshCw size={16} />
+            </button>
+          </AdminMobileFilters>
         </div>
         <AdminActionButton
           size="sm"
+          className="max-lg:min-h-11"
           onClick={handleDownloadSelected}
           disabled={selectedKeys.size === 0 || downloadMutation.isPending}
         >
@@ -163,73 +172,48 @@ export const SubmissionDownloadTab = () => {
         </AdminActionButton>
       </div>
 
-      <div className="overflow-x-auto">
-        <AdminTable className="w-full min-w-[720px] border-collapse">
-          <thead>
-            <tr className="border-lightGray border-b">
-              <th className="w-12 px-4 py-3">
-                <div className="flex justify-center">
-                  <Checkbox checked={isAllSelected} onChange={toggleAll} ariaLabel="전체 선택" />
-                </div>
-              </th>
-              {TABLE_HEADERS.map((header) => (
-                <th key={header} className="px-4 py-3 text-left text-sm font-medium whitespace-nowrap">
-                  {header}
-                </th>
-              ))}
-              <th className="px-4 py-3 text-center text-sm font-medium whitespace-nowrap">작업</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredArchives.length === 0 ? (
-              <tr>
-                <td colSpan={TABLE_HEADERS.length + 2} className="py-12 text-center text-sm text-neutral-600">
-                  다운로드할 제출물이 없어요.
-                </td>
-              </tr>
-            ) : (
-              filteredArchives.map((archive) => {
-                const key = rowKey(archive);
-                return (
-                  <tr key={key} className="border-lightGray border-b last:border-b-0">
-                    <td className="px-4 py-4">
-                      <div className="flex justify-center">
-                        <Checkbox
-                          checked={selectedKeys.has(key)}
-                          onChange={() => toggleRow(key)}
-                          ariaLabel={`${archive.submissionItemName} ${archive.trackName} 선택`}
-                        />
-                      </div>
-                    </td>
-                    <td className="text-darkGray px-4 py-4 text-sm font-medium whitespace-nowrap">
-                      {archive.submissionItemName}
-                    </td>
-                    <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">{archive.trackName}</td>
-                    <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
-                      {archive.submittedTeamCount}개
-                    </td>
-                    <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-600">
-                      {formatSize(archive.estimatedSize)}
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex justify-center">
-                        <AdminActionButton
-                          size="icon"
-                          className="h-8 w-8"
-                          aria-label="다운로드"
-                          onClick={() => handleDownloadRow(archive)}
-                        >
-                          <Download size={16} />
-                        </AdminActionButton>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </AdminTable>
+      <div className="flex min-h-11 items-center gap-2 text-sm lg:hidden">
+        <Checkbox checked={isAllSelected} onChange={toggleAll} ariaLabel="표시된 항목 전체 선택" touchTarget />
+        전체 선택
       </div>
+      <AdminResponsiveList
+        label="제출 파일 다운로드 목록"
+        items={filteredArchives}
+        getKey={rowKey}
+        primaryKey="name"
+        emptyText="다운로드할 제출물이 없어요."
+        tableClassName="min-w-[720px]"
+        columns={[
+          {
+            key: 'selection',
+            label: '선택',
+            header: <Checkbox checked={isAllSelected} onChange={toggleAll} ariaLabel="전체 선택" />,
+            render: (archive) => (
+              <Checkbox
+                touchTarget
+                checked={selectedKeys.has(rowKey(archive))}
+                onChange={() => toggleRow(rowKey(archive))}
+                ariaLabel={`${archive.submissionItemName} ${archive.trackName} 선택`}
+              />
+            ),
+          },
+          { key: 'name', label: '제출 항목', render: (archive) => archive.submissionItemName },
+          { key: 'track', label: '분과', render: (archive) => archive.trackName },
+          { key: 'count', label: '제출 팀 수', render: (archive) => `${archive.submittedTeamCount}개` },
+          { key: 'size', label: '예상 용량', render: (archive) => formatSize(archive.estimatedSize) },
+        ]}
+        actions={(archive) => (
+          <AdminActionButton
+            size="icon"
+            className="h-11 w-11 lg:h-8 lg:w-8"
+            aria-label="다운로드"
+            disabled={downloadMutation.isPending}
+            onClick={() => handleDownloadRow(archive)}
+          >
+            <Download size={16} />
+          </AdminActionButton>
+        )}
+      />
     </div>
   );
 };

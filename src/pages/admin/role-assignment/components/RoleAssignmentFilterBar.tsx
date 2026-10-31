@@ -23,8 +23,8 @@ export const RoleAssignmentFilterBar = ({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
-        <div className="relative min-w-[280px] flex-1 md:max-w-[390px]">
+      <div className="flex min-w-0 basis-full flex-wrap items-center gap-3 sm:flex-1 sm:basis-auto">
+        <div className="relative min-w-0 flex-1 md:max-w-[390px]">
           <Search size={18} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-500" />
           <Input
             appearance="admin"

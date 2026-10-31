@@ -44,12 +44,14 @@ const NoticeManagePage = () => {
           ) : (
             notices.map((notice, index) => (
               <AdminCardRow key={notice.noticeId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
-                <div className="flex w-full items-center gap-4 py-1">
-                  <p className="w-10 flex-shrink-0 text-center text-sm text-neutral-600">{(index ?? 0) + 1}</p>
-                  <div className="flex min-w-0 flex-1 items-center gap-6">
-                    <p className="text-darkGray flex-1 truncate font-medium">{notice.title}</p>
+                <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-2 py-1 lg:flex lg:items-center lg:gap-4">
+                  <p className="hidden w-10 flex-shrink-0 text-center text-sm text-neutral-600 lg:block">
+                    {(index ?? 0) + 1}
+                  </p>
+                  <div className="col-start-1 row-start-1 flex min-w-0 flex-1 items-center gap-6">
+                    <p className="text-darkGray min-w-0 flex-1 font-medium break-words lg:truncate">{notice.title}</p>
                   </div>
-                  <div className="flex w-[180px] flex-shrink-0 justify-center">
+                  <div className="col-start-1 row-start-2 flex justify-start lg:w-[180px] lg:flex-shrink-0 lg:justify-center">
                     <time
                       dateTime={notice.createdAt}
                       className="text-xs whitespace-nowrap text-neutral-600 tabular-nums"
@@ -57,7 +59,7 @@ const NoticeManagePage = () => {
                       {dayjs(notice.createdAt).format('YYYY. MM. DD. HH:mm')}
                     </time>
                   </div>
-                  <div className="flex w-10 flex-shrink-0 justify-end">
+                  <div className="col-start-2 row-start-1 flex shrink-0 justify-end lg:w-10">
                     <AdminPopoverMenu>
                       <AdminPopoverEditButton
                         onEdit={() => {

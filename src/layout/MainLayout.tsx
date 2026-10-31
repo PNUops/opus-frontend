@@ -27,11 +27,7 @@ const MainLayout = () => {
       <SidebarProvider>
         <div
           className={
-            isAdminRoute
-              ? 'min-w-[1024px]'
-              : shouldFillViewport
-                ? 'flex min-h-svh min-w-[350px] flex-col'
-                : 'min-w-[350px]'
+            isAdminRoute ? 'min-w-0' : shouldFillViewport ? 'flex min-h-svh min-w-[350px] flex-col' : 'min-w-[350px]'
           }
         >
           <Header />

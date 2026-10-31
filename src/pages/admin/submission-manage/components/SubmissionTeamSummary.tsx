@@ -10,10 +10,10 @@ export const SubmissionTeamSummary = ({ detail }: { detail: SubmissionDetailResp
   return (
     <div>
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-darkGray text-xl font-bold">{detail.teamName}</h3>
+        <h3 className="text-darkGray min-w-0 flex-1 text-xl font-bold break-words">{detail.teamName}</h3>
         <SubmissionStatusBadge status={detail.status} />
       </div>
-      <p className="mt-1 text-sm text-neutral-600">{detail.projectOverview}</p>
+      <p className="mt-1 text-sm break-words text-neutral-600">{detail.projectOverview}</p>
 
       <ul className="mt-4 flex list-disc flex-col gap-2 pl-4 text-sm marker:text-gray-400">
         <InfoRow label="분과" value={detail.trackName} />
@@ -28,7 +28,7 @@ export const SubmissionTeamSummary = ({ detail }: { detail: SubmissionDetailResp
 
 const InfoRow = ({ label, value }: { label: string; value: ReactNode }) => {
   return (
-    <li>
+    <li className="break-words">
       <span className="text-darkGray font-semibold">{label}</span> <span className="text-gray-600">{value}</span>
     </li>
   );

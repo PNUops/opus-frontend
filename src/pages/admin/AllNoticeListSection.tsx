@@ -51,8 +51,11 @@ const AllNoticeList = () => {
 
   return notices.map((notice) => (
     <AdminCardRow key={notice.noticeId} className="border-b-lightGray px-2.5 not-last:border-b">
-      <div className="flex min-w-0 flex-1 items-baseline gap-6">
-        <time dateTime={notice.createdAt} className="shrink-0 text-xs text-neutral-600 tabular-nums">
+      <div className="flex min-w-0 flex-1 flex-col gap-1 pr-3 lg:flex-row lg:items-baseline lg:gap-6">
+        <time
+          dateTime={notice.createdAt}
+          className="order-2 shrink-0 text-xs whitespace-nowrap text-neutral-600 tabular-nums lg:order-none"
+        >
           {dayjs(notice.createdAt).format('YYYY.MM.DD HH:mm')}
         </time>
         <div className="min-w-0 break-words">{notice.title}</div>

@@ -19,7 +19,7 @@ const AdminLayout = () => {
     <AdminUiProvider>
       <div className="min-h-[calc(100vh_-_var(--h-header))] bg-white">
         <AdminSidebar />
-        <main className="ml-[272px] min-h-[calc(100vh_-_var(--h-header))] min-w-[752px] bg-white">
+        <main className="min-h-[calc(100vh_-_var(--h-header))] min-w-0 bg-white lg:ml-[272px]">
           <Outlet />
         </main>
       </div>
