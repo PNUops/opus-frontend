@@ -7,9 +7,10 @@ import type { NoticeListDto } from '@dto/noticeDto';
 import { NoticeNewIndicator } from '@components/notice';
 import { getNoticePath, isRecentNotice } from '@utils/notice';
 
-const signalSectionClassName = 'm-2.5 min-w-0 w-[min(100%,40rem)]';
+const signalSectionClassName = 'm-0 min-w-0 w-full min-[721px]:m-2.5 min-[721px]:w-[min(100%,40rem)]';
 const signalHeaderClassName = 'flex items-center justify-between gap-3 border-b border-[rgba(229,240,252,0.2)] pb-2.5';
-const signalLabelClassName = 'm-0 text-[0.58rem] font-[800] tracking-[0.12em] text-[var(--opus-home-cyan)]';
+const signalLabelClassName =
+  'm-0 text-[0.65rem] font-[800] tracking-[0.12em] text-[var(--opus-home-cyan)] min-[721px]:text-[0.58rem]';
 
 const NoticeSignalSection = () => {
   const { data: notices } = useSuspenseQuery(noticeOption());
@@ -26,7 +27,9 @@ const NoticeSignalSection = () => {
           ))}
         </ol>
       ) : (
-        <p className="m-0 px-px pt-3 pb-1 text-[0.72rem] text-[rgba(248,246,240,0.54)]">새로운 공지가 없습니다.</p>
+        <p className="m-0 px-px py-5 text-[0.82rem] text-[var(--opus-home-muted)] min-[721px]:pt-3 min-[721px]:pb-1 min-[721px]:text-[0.72rem]">
+          새로운 공지가 없습니다.
+        </p>
       )}
     </section>
   );
@@ -67,7 +70,7 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
       <Link
         to={getNoticePath(notice.noticeId)}
         viewTransition
-        className="group relative -mx-2 grid min-h-[50px] grid-cols-[42px_minmax(0,1fr)] items-center gap-2.5 rounded-lg p-2 text-inherit no-underline transition-[background-color,color] duration-150 hover:bg-[rgba(69,214,236,0.08)] hover:text-[var(--opus-home-cyan)] focus-visible:bg-[rgba(69,214,236,0.08)] focus-visible:text-[var(--opus-home-cyan)] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[var(--opus-home-cyan)] min-[721px]:-mx-2.5 min-[721px]:min-h-12 min-[721px]:grid-cols-[76px_minmax(0,1fr)] min-[721px]:gap-3.5 min-[721px]:px-2.5"
+        className="group relative -mx-2 grid min-h-[60px] grid-cols-[42px_minmax(0,1fr)] items-center gap-2.5 rounded-lg p-2 text-inherit no-underline transition-[background-color,color] duration-150 hover:bg-[rgba(69,214,236,0.08)] hover:text-[var(--opus-home-cyan)] focus-visible:bg-[rgba(69,214,236,0.08)] focus-visible:text-[var(--opus-home-cyan)] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[var(--opus-home-cyan)] min-[721px]:-mx-2.5 min-[721px]:min-h-12 min-[721px]:grid-cols-[76px_minmax(0,1fr)] min-[721px]:gap-3.5 min-[721px]:px-2.5"
       >
         <span
           aria-hidden="true"
@@ -81,7 +84,7 @@ function NoticeSignalItem({ notice }: NoticeSignalItemProps) {
           <span className="inline min-[721px]:hidden">{createdAt.format('MM.DD')}</span>
         </time>
         <span className="flex min-w-0 items-center gap-[5px]">
-          <span className="block max-w-full min-w-0 flex-[0_1_auto] truncate text-[0.8rem] leading-[1.3] font-[680] text-[var(--opus-home-ink)] transition-colors duration-150 group-hover:text-white group-focus-visible:text-white min-[721px]:text-[0.84rem] min-[721px]:leading-[1.35]">
+          <span className="line-clamp-2 max-w-full min-w-0 flex-[0_1_auto] text-[0.875rem] leading-[1.5] font-semibold break-words text-[var(--opus-home-ink)] transition-colors duration-150 group-hover:text-white group-focus-visible:text-white min-[721px]:block min-[721px]:truncate min-[721px]:text-[0.84rem] min-[721px]:leading-[1.35] min-[721px]:font-[680]">
             {notice.title}
           </span>
           {showNewIndicator && (
@@ -100,7 +103,7 @@ export const NoticeSignalSkeleton = () => (
       {Array.from({ length: 5 }).map((_, index) => (
         <span
           key={index}
-          className="block h-[50px] w-full animate-pulse border-b border-[rgba(229,240,252,0.1)] bg-[rgba(229,240,252,0.08)] min-[721px]:h-12"
+          className="block h-[60px] w-full animate-pulse border-b border-[rgba(229,240,252,0.1)] bg-[rgba(229,240,252,0.08)] min-[721px]:h-12"
         />
       ))}
     </div>
@@ -111,7 +114,9 @@ export const NoticeSignalError = ({ resetErrorBoundary }: FallbackProps) => (
   <section className={signalSectionClassName} role="alert">
     <NoticeSignalHeader />
     <div className="flex min-h-[62px] items-center justify-between gap-3">
-      <p className="m-0 text-[0.7rem] text-[var(--opus-home-muted)]">공지를 불러오지 못했습니다.</p>
+      <p className="m-0 text-[0.82rem] text-[var(--opus-home-muted)] min-[721px]:text-[0.7rem]">
+        공지를 불러오지 못했습니다.
+      </p>
       <button
         type="button"
         onClick={resetErrorBoundary}

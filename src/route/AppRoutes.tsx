@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import MainLayout from '@layout/MainLayout';
+import AuthLayout from '@layout/AuthLayout';
 
 import MainPage from '@pages/main/MainPage';
 import ProjectEditPage from '@pages/project-editor/ProjectEditPage';
@@ -59,10 +60,15 @@ const AppRoutes = () =>
           ],
         },
         {
-          element: <FullContainerLayout />,
+          element: <AuthLayout />,
           children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
+          ],
+        },
+        {
+          element: <FullContainerLayout />,
+          children: [
             { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectDetailPage /> },
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
