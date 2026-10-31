@@ -39,6 +39,7 @@ const GithubCard = ({ githubUrl }: GithubCardProps) => {
     retry: false,
   });
 
+  if (!githubUrl) return null;
   if (isPending) return <GithubCardSkeleton />;
   if (isError || !data) return null;
 

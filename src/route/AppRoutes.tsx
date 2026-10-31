@@ -3,6 +3,8 @@ import DeferredContent from '@components/DeferredContent';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import MainLayout from '@layout/MainLayout';
+import AuthLayout from '@layout/AuthLayout';
+
 import MainPage from '@pages/main/MainPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
@@ -72,11 +74,15 @@ const AppRoutes = () =>
           ],
         },
         {
-          element: <FullContainerLayout />,
+          element: <AuthLayout />,
           children: [
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
-            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectDetailPage /> },
+          ],
+        },
+        {
+          element: <FullContainerLayout />,
+          children: [
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/callback', element: <OAuthCallback /> },
@@ -84,6 +90,14 @@ const AppRoutes = () =>
             { path: 'notices/:noticeId', element: <NoticeDetailPage /> },
             { path: 'notices/:contestId/:noticeId', element: <NoticeDetailPage /> },
           ],
+        },
+        {
+          path: 'contest/:contestId/teams/view/:teamId',
+          element: (
+            <FullContainer fillViewport={false}>
+              <ProjectDetailPage />
+            </FullContainer>
+          ),
         },
         {
           path: 'me',
