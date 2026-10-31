@@ -35,6 +35,7 @@ const SignUpForm = () => {
         studentId: formState.studentNumber,
         email: formState.email,
         password: formState.password,
+        memberType: 'STUDENT', // TODO: 회원가입 시 선택 가능하도록 변경
       });
     }
   };
