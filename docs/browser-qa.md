@@ -99,6 +99,7 @@ Playwright는 **사용자 행동과 화면 결과를 검증**하는 도구이고
 - 일반 도메인 테스트는 **반드시 `fixtures/test`에서 `test`, `expect`를 가져옵니다.** `tests/browser/<domain>/*.spec.ts` 기준 경로는 `../fixtures/test`입니다. 네트워크 가드·MSW 준비 확인·JavaScript 오류 검사·진단 수집은 이 공통 Fixture에 있으며, `@playwright/test`의 `test`를 직접 사용하면 적용되지 않습니다. 인프라 검증처럼 가드를 직접 설치하고 차단 결과를 검사하는 테스트는 목적이 명시된 예외입니다.
 - 테스트명은 **행동 + 기대 결과**로 작성합니다. 예: `잘못된 비밀번호 입력 시 로그인 화면을 유지하고 오류를 표시한다`.
 - `getByRole`, `getByLabel`, `getByPlaceholder` 등 사용자 관점 Locator를 우선합니다. 동일한 텍스트가 많으면 범위를 좁힙니다. 안정적인 접근성 이름이 없다면 UI 자체의 접근성을 먼저 검토합니다.
+- 알림은 `getByRole('status')` 안에서 메시지가 보이는지 확인합니다. 보조기기용 상태 접두어까지 합쳐지는 `getByText(message, { exact: true })`에 의존하지 않습니다. 오류 시나리오는 안내뿐 아니라 인증 상태·화면 유지·재시도 등 사용자에게 중요한 결과도 함께 검증합니다. 접근성 개선이나 내부 마크업 변경만으로 깨진 선택자를 맞추려고 제품 코드를 변경하지 않습니다.
 - `waitForTimeout()`으로 시간을 추측하지 말고 `expect(...).toBeVisible()`, `toHaveURL()`, `toBeEnabled()` 같은 자동 재시도 Assertion을 사용합니다.
 - `expect` 없이 클릭만 하거나 스크린샷만 찍는 테스트는 기능 성공을 증명하지 못합니다.
 - `page.route().fulfill()`로 테스트마다 제2의 API Mock 체계를 만들지 말고 기존 MSW와 시나리오 Fixture를 우선 사용합니다. 네트워크 차단·격리 검증 등 정당한 예외는 목적을 문서화합니다.
