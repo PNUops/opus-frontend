@@ -11,10 +11,7 @@ const VoteFilterSelect = ({ selectedFilter, onChange, rankings }: VoteFilterSele
   const tracks = Array.from(new Set(rankings.map((r) => r.trackName)));
   return (
     <Select value={selectedFilter} onValueChange={onChange}>
-      <SelectTrigger
-        aria-label="순위 보기"
-        className="border-lightGray focus-visible:ring-mainBlue h-11 w-full max-w-64 text-neutral-700 shadow-none"
-      >
+      <SelectTrigger appearance="admin" aria-label="순위 보기" className="w-full max-w-64 gap-3">
         <SelectValue />
       </SelectTrigger>
       <SelectContent className="max-h-[min(20rem,var(--radix-select-content-available-height))] max-w-[calc(100vw-32px)]">

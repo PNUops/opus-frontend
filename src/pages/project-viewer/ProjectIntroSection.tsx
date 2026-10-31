@@ -1,82 +1,86 @@
-import { useNavigate } from 'react-router-dom';
-
-import { FaGithub, FaYoutube } from 'react-icons/fa';
-import { FaEdit } from 'react-icons/fa';
+import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { FaAward, FaGithub, FaYoutube } from 'react-icons/fa';
+import { FiArrowUpRight, FiEdit2 } from 'react-icons/fi';
 import { RiLink } from 'react-icons/ri';
-import { FiExternalLink } from 'react-icons/fi';
-import AwardTag from '@components/AwardTag';
+
 import { TeamDetailDto } from '@dto/teams/teamsDto';
 
 interface ProjectIntroSectionProps {
   data: TeamDetailDto;
   isEditor: boolean;
+  children: ReactNode;
 }
 
-const UrlButton = ({ url }: { url: string }) => {
-  const getIconAndText = () => {
-    if (url.includes('github.com')) {
-      return { icon: <FaGithub className="text-black" />, text: 'GitHub' };
-    }
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      return { icon: <FaYoutube className="text-red-500" />, text: 'Youtube' };
-    }
-    if (url.includes('https://')) {
-      return { icon: <RiLink className="text-mainGreen" />, text: '프로젝트 보러가기' };
-    }
-    return undefined;
-  };
+const actionClassName =
+  'inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-lightGray bg-white px-4 text-sm font-medium text-gray-700 transition-colors hover:border-mainGreen hover:text-mainGreen focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-mainGreen';
 
-  const result = getIconAndText();
+const UrlButton = ({ url }: { url: string }) => {
+  const result = url.includes('github.com')
+    ? { icon: <FaGithub aria-hidden />, text: 'GitHub' }
+    : url.includes('youtube.com') || url.includes('youtu.be')
+      ? { icon: <FaYoutube aria-hidden />, text: 'YouTube' }
+      : url.includes('https://')
+        ? { icon: <RiLink aria-hidden />, text: '프로젝트 보러가기' }
+        : null;
+
   if (!result) return null;
-  const { icon, text } = result;
 
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="border-mainGreen text-mainGreen hover:border-mainGreen inline-flex h-10 w-auto items-center justify-center gap-2 rounded-full border px-5 transition-colors duration-200 hover:bg-[#D1F3E1]/60 focus:outline-none"
-    >
-      {icon}
-      <span className="text-exsm font-medium whitespace-nowrap">{text}</span>
-      <FiExternalLink className="text-subGreen shrink-0" />
+    <a href={url} target="_blank" rel="noopener noreferrer" className={actionClassName}>
+      {result.icon}
+      <span>{result.text}</span>
+      <FiArrowUpRight aria-hidden className="shrink-0" />
+      <span className="sr-only">(새 창)</span>
     </a>
   );
 };
 
-const ProjectIntroSection = ({ data, isEditor }: ProjectIntroSectionProps) => {
-  const navigate = useNavigate();
-  const { awards, contestId, teamId, teamName, projectName, productionPath } = data;
+const ProjectIntroSection = ({ data, isEditor, children }: ProjectIntroSectionProps) => {
+  const { awards, contestId, contestName, trackName, teamId, teamName, projectName, productionPath } = data;
   const visibleAwards = awards.filter((award) => award.awardName && award.awardColor);
 
   return (
-    <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between">
-      <div className="flex flex-col items-start gap-2 self-start md:self-auto">
-        <div className="sm:text-title pt-1 text-xl leading-none font-bold">{projectName}</div>
-        <div className="text-midGray text-exsm font-bold sm:text-sm">{teamName}</div>
+    <header className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm leading-relaxed text-gray-600">
+        <Link
+          to={`/contest/${contestId}`}
+          className="hover:text-mainGreen focus-visible:outline-mainGreen rounded-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4"
+        >
+          {contestName}
+        </Link>
+        {trackName && <span className="border-lightGray border-l pl-3">{trackName}</span>}
+      </div>
+      <div className="flex flex-col gap-3">
+        <h1 className="text-2xl leading-[1.4] font-bold [overflow-wrap:anywhere] break-keep sm:text-3xl">
+          {projectName?.trim() || '프로젝트명 미등록'}
+        </h1>
+        {teamName?.trim() && <p className="text-base leading-relaxed break-words text-gray-600">{teamName}</p>}
         {visibleAwards.length > 0 && (
-          <div id="awards" className="flex max-w-full scroll-mt-24 flex-wrap gap-2 pt-1">
+          <div id="awards" className="flex max-w-full scroll-mt-24 flex-wrap gap-2">
             {visibleAwards.map((award) => (
-              <AwardTag key={award.awardId} awardName={award.awardName} awardColor={award.awardColor} />
+              <span
+                key={award.awardId}
+                className="bg-whiteGray inline-flex max-w-full items-center gap-2 rounded-full px-3 py-1 text-sm font-medium text-gray-700"
+              >
+                <FaAward aria-hidden className="shrink-0" style={{ color: award.awardColor }} />
+                <span className="min-w-0 break-words">{award.awardName}</span>
+              </span>
             ))}
           </div>
         )}
       </div>
-      <div className="flex items-center gap-3">
-        {isEditor && (
-          <div className="flex">
-            <button
-              onClick={() => navigate(`/contest/${contestId}/teams/edit/${teamId}`)}
-              className="border-midGray text-exsm text-midGray hover:text-mainGreen hover:border-mainGreen flex h-10 w-auto items-center justify-center gap-2 rounded-full border px-5 transition-colors duration-200 hover:cursor-pointer hover:bg-[#D1F3E1]/60"
-            >
-              <span className="whitespace-nowrap">수정하기</span>
-              <FaEdit className="text-lightGray shrink-0" />
-            </button>
-          </div>
-        )}
+      <div className="flex flex-wrap items-center gap-2 pt-1">
+        {children}
         {productionPath && <UrlButton url={productionPath} />}
+        {isEditor && (
+          <Link to={`/contest/${contestId}/teams/edit/${teamId}`} className={actionClassName}>
+            <FiEdit2 aria-hidden />
+            수정하기
+          </Link>
+        )}
       </div>
-    </div>
+    </header>
   );
 };
 

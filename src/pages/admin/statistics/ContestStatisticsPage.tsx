@@ -7,7 +7,7 @@ const ContestStatisticsPage = () => {
   const contestId = useContestId();
   if (contestId === null || !Number.isSafeInteger(contestId) || contestId <= 0) return <Navigate to="/admin" replace />;
   return (
-    <div className="flex min-w-0 flex-col gap-12">
+    <div className="flex min-w-0 flex-col gap-10">
       <VoteReportSection key={contestId} contestId={contestId} />
       <VoteLogSection key={`log-${contestId}`} />
     </div>

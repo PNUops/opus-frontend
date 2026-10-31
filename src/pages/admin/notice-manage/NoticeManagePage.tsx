@@ -1,9 +1,9 @@
+import { AdminQueryState } from '@components/admin/AdminQueryState';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
-import Tag from '@components/Tag';
 import {
   AdminHeader,
   AdminCardRow,
@@ -22,7 +22,9 @@ const NoticeManagePage = () => {
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
   const [selectedNoticeId, setSelectedNoticeId] = useState<number | null>(null);
 
-  const { data: notices } = useQuery(contestNoticeOption(contestId));
+  const listQuery = useQuery(contestNoticeOption(contestId));
+
+  const { data: notices } = listQuery;
 
   return (
     <div className="flex w-full flex-col">
@@ -33,43 +35,52 @@ const NoticeManagePage = () => {
         onButtonClick={() => setCreateOpen(true)}
       />
       <div className="h-[35px]" />
-      <div className="flex flex-col gap-2">
-        {!notices || notices.length === 0 ? (
-          <div className="bg-whiteGray text-midGray rounded-md p-4 text-center">아직 등록된 공지사항이 없어요.</div>
-        ) : (
-          notices.map((notice, index) => (
-            <AdminCardRow key={notice.noticeId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
-              <div className="flex w-full items-center gap-4 py-1">
-                <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
-                <div className="flex min-w-0 flex-1 items-center gap-6">
-                  <p className="text-darkGray flex-1 truncate font-medium">{notice.title}</p>
+      <AdminQueryState query={listQuery}>
+        <div className="flex flex-col gap-2">
+          {!notices || notices.length === 0 ? (
+            <div className="bg-whiteGray rounded-md p-4 text-center text-neutral-600">
+              아직 등록된 공지사항이 없어요.
+            </div>
+          ) : (
+            notices.map((notice, index) => (
+              <AdminCardRow key={notice.noticeId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
+                <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-2 py-1 lg:flex lg:items-center lg:gap-4">
+                  <p className="hidden w-10 flex-shrink-0 text-center text-sm text-neutral-600 lg:block">
+                    {(index ?? 0) + 1}
+                  </p>
+                  <div className="col-start-1 row-start-1 flex min-w-0 flex-1 items-center gap-6">
+                    <p className="text-darkGray min-w-0 flex-1 font-medium break-words lg:truncate">{notice.title}</p>
+                  </div>
+                  <div className="col-start-1 row-start-2 flex justify-start lg:w-[180px] lg:flex-shrink-0 lg:justify-center">
+                    <time
+                      dateTime={notice.createdAt}
+                      className="text-xs whitespace-nowrap text-neutral-600 tabular-nums"
+                    >
+                      {dayjs(notice.createdAt).format('YYYY. MM. DD. HH:mm')}
+                    </time>
+                  </div>
+                  <div className="col-start-2 row-start-1 flex shrink-0 justify-end lg:w-10">
+                    <AdminPopoverMenu>
+                      <AdminPopoverEditButton
+                        onEdit={() => {
+                          setSelectedNoticeId(notice.noticeId);
+                          setEditOpen(true);
+                        }}
+                      />
+                      <AdminPopoverDeleteButton
+                        onDelete={() => {
+                          setSelectedNoticeId(notice.noticeId);
+                          setDeleteOpen(true);
+                        }}
+                      />
+                    </AdminPopoverMenu>
+                  </div>
                 </div>
-                <div className="flex w-[180px] flex-shrink-0 justify-center">
-                  <Tag className="border-mainGreen bg-subGreen text-mainGreen w-fit border px-2 py-0.5 text-xs whitespace-nowrap">
-                    {dayjs(notice.createdAt).format('YYYY. MM. DD. HH:mm')}
-                  </Tag>
-                </div>
-                <div className="flex w-10 flex-shrink-0 justify-end">
-                  <AdminPopoverMenu>
-                    <AdminPopoverEditButton
-                      onEdit={() => {
-                        setSelectedNoticeId(notice.noticeId);
-                        setEditOpen(true);
-                      }}
-                    />
-                    <AdminPopoverDeleteButton
-                      onDelete={() => {
-                        setSelectedNoticeId(notice.noticeId);
-                        setDeleteOpen(true);
-                      }}
-                    />
-                  </AdminPopoverMenu>
-                </div>
-              </div>
-            </AdminCardRow>
-          ))
-        )}
-      </div>
+              </AdminCardRow>
+            ))
+          )}
+        </div>
+      </AdminQueryState>
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         {contestId && (
           <ContestNoticeModal

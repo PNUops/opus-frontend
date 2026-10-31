@@ -13,7 +13,7 @@ const AwardEditForm = ({ contestId, viewAdmin }: AwardEditFormProps) => {
   }
 
   return (
-    <div className="flex h-[100px] w-full flex-col gap-4">
+    <div className="flex min-h-[100px] w-full flex-col gap-4">
       <TeamSelector teamList={viewAdmin.teamList} onChange={viewAdmin.onSelectTeam} />
       {viewAdmin.selectedTeamId !== undefined && (
         <AwardSelector contestId={contestId} teamId={viewAdmin.selectedTeamId} awards={viewAdmin.awards} />
