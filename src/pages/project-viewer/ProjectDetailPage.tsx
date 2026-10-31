@@ -4,7 +4,7 @@ import { useTeamId } from '@hooks/useId';
 import useAuth from '@hooks/useAuth';
 
 import ProjectIntroSection from './ProjectIntroSection';
-import CarouselSection from './CarouselSection';
+import ProjectMediaSection from './ProjectMediaSection';
 import LikeSection from './LikeSection';
 import ProjectDetailSection from './ProjectDetailSection';
 
@@ -17,28 +17,18 @@ import { getRequiredFields } from '@apis/requiredFields';
 import { defaultRequiredFields } from '@constants/requiredFields';
 import { RequiredFieldsDto } from '@dto/requiredFieldsDto';
 
-import {
-  ProjectIntroSectionSkeleton,
-  CarouselSectionSkeleton,
-  LikeSectionSkeleton,
-  DetailSectionSkeleton,
-  MediaSectionSkeleton,
-  CommentSectionSkeleton,
-} from './DetailSkeleton';
+import { ProjectIntroSectionSkeleton, CarouselSectionSkeleton, DetailSectionSkeleton } from './DetailSkeleton';
 
 import { canEditTeamPage } from '@utils/auth';
 import { useToast } from '@hooks/useToast';
 
-const ProjectDetailPage = () => {
-  const teamId = useTeamId();
-  if (!teamId) return <div>Team ID not found.</div>;
-
+const ProjectDetailContent = ({ teamId }: { teamId: number }) => {
   const { isAdmin, isAdvisor, user } = useAuth();
   const memberId = user?.id;
   const toast = useToast();
   const posterNotFoundToast = useRef(false);
 
-  const { data, isLoading, error } = useQuery(teamDetailOption(teamId));
+  const { data, isLoading, error, refetch } = useQuery(teamDetailOption(teamId));
   const { data: posterResult } = useQuery<PosterResult>({
     queryKey: ['poster', teamId],
     queryFn: () => getPoster(teamId),
@@ -75,63 +65,76 @@ const ProjectDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div>
+      <div role="status" aria-label="프로젝트를 불러오는 중" className="flex flex-col gap-8">
         <ProjectIntroSectionSkeleton />
-        <div className="h-5" />
-        <CarouselSectionSkeleton />
-        <div className="h-7" />
-        <LikeSectionSkeleton />
-        <div className="h-20" />
         <DetailSectionSkeleton />
-        <div className="h-20" />
-        <MediaSectionSkeleton />
-        <div className="h-20" />
-        <CommentSectionSkeleton />
+        <CarouselSectionSkeleton />
       </div>
     );
   }
 
-  if (error) return <div>Error: {String(error)}</div>;
-  if (!data) return <div>Failed to load data.</div>;
+  if (error || !data) {
+    return (
+      <div role="alert" className="py-12 text-center">
+        <h1 className="text-xl font-semibold">프로젝트를 불러오지 못했어요.</h1>
+        <p className="mt-3 text-sm text-gray-600">잠시 후 다시 시도해 주세요.</p>
+        <button
+          type="button"
+          onClick={() => void refetch()}
+          className="border-lightGray focus-visible:outline-mainGreen mt-4 min-h-11 rounded-md border px-5 text-sm focus-visible:outline-2"
+        >
+          다시 시도
+        </button>
+      </div>
+    );
+  }
 
   const youtubeUrl = data.youTubePath ?? '';
   const githubUrl = data.githubPath ?? '';
 
   return (
-    <div className="min-w-xs px-2 sm:px-5">
-      <ProjectIntroSection data={data} isEditor={isEditorOfThisTeam} />
-      {posterUrl && (
-        <>
-          <div className="h-10" />
-          <section className="from-subGreen/20 to-whiteGray/50 border-lightGray rounded-2xl border bg-gradient-to-br p-3 sm:p-5">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="sm:text-title text-xl font-bold">Poster</h2>
-              <span className="text-midGray rounded-full bg-white px-3 py-1 text-xs">Team Poster</span>
-            </div>
-            <div className="border-lightGray bg-whiteGray/40 relative mx-auto w-full max-w-xl overflow-hidden rounded-xl border">
-              <img src={posterUrl} alt={`${data.projectName} poster`} className="w-full object-contain" />
-            </div>
-          </section>
-        </>
-      )}
-      <div className="h-10" />
-      <CarouselSection
-        teamId={data.teamId}
-        previewIds={data.previewIds}
-        youtubeUrl={youtubeUrl}
-        isEditor={isEditorOfThisTeam}
-        imagesRequired={requiredFields.imagesRequired}
-      />
-      <div className="h-10" />
-      <LikeSection contestId={data.contestId} teamId={data.teamId} isLiked={data.isLiked} isVoted={data.isVoted} />
-      <div className="h-10" />
-      <ProjectDetailSection data={data} />
-      <div className="h-10" />
-      <GithubCard githubUrl={githubUrl} />
-      <div className="h-28" />
-      <ProjectDiscussionSection teamId={data.teamId} canViewFeedback={canViewFeedback} />
-    </div>
+    <article className="mx-auto max-w-5xl">
+      <ProjectIntroSection data={data} isEditor={isEditorOfThisTeam}>
+        <LikeSection contestId={data.contestId} teamId={data.teamId} isLiked={data.isLiked} isVoted={data.isVoted} />
+      </ProjectIntroSection>
+      <nav aria-label="프로젝트 내용 탐색" className="border-lightGray my-7 flex flex-wrap gap-x-6 border-y sm:my-8">
+        {[
+          { id: 'overview', label: '소개' },
+          { id: 'media', label: '자료' },
+          { id: 'comments', label: '댓글' },
+          ...(canViewFeedback ? [{ id: 'feedback', label: '피드백' }] : []),
+        ].map(({ id, label }) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className="hover:text-mainGreen focus-visible:outline-mainGreen inline-flex min-h-12 items-center rounded-sm text-sm font-medium text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+      <div className="flex flex-col gap-9 sm:gap-12">
+        <ProjectDetailSection data={data} />
+        <ProjectMediaSection
+          teamId={data.teamId}
+          projectName={data.projectName}
+          posterUrl={posterUrl}
+          previewIds={data.previewIds}
+          youtubeUrl={youtubeUrl}
+          isEditor={isEditorOfThisTeam}
+          imagesRequired={requiredFields.imagesRequired}
+        />
+        {githubUrl && <GithubCard githubUrl={githubUrl} />}
+        <ProjectDiscussionSection teamId={data.teamId} canViewFeedback={canViewFeedback} />
+      </div>
+    </article>
   );
+};
+
+const ProjectDetailPage = () => {
+  const teamId = useTeamId();
+  if (!teamId) return <p role="alert">프로젝트를 찾을 수 없습니다.</p>;
+  return <ProjectDetailContent key={teamId} teamId={teamId} />;
 };
 
 export default ProjectDetailPage;

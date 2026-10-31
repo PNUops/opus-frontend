@@ -30,7 +30,7 @@ const VoteLogList = () => {
     queryFn: () => getVoteLog(contestId, { page: page - 1, size: 20 }),
   });
 
-  if (voteLogs.totalElements === 0) return <NoData className="h-30" />;
+  if (voteLogs.totalElements === 0) return <NoData className="h-30 text-sm font-normal text-neutral-600" />;
 
   return (
     <div className="flex flex-col gap-5">

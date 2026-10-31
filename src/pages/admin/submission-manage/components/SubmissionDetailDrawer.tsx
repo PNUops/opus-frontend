@@ -21,7 +21,7 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile
           <button
             type="button"
             aria-label="닫기"
-            className="text-midGray hover:text-darkGray flex size-11 shrink-0 items-center justify-center rounded-md focus-visible:outline-2"
+            className="hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 shrink-0 items-center justify-center rounded-md text-neutral-600 focus-visible:outline-2"
           >
             <PanelRightClose size={20} />
           </button>
@@ -34,7 +34,7 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile
         <SubmissionTeamSummary detail={detail} />
 
         {/* 제출 파일 */}
-        <section className="border-lightGray rounded-xl border p-4">
+        <section className="border-lightGray rounded-lg border p-4">
           <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold">
             제출 파일
             <span className="text-mainBlue">{detail.files.length}</span>
@@ -47,16 +47,16 @@ export const SubmissionDetailDrawer = ({ detail, onViewFeedbacks, onDownloadFile
                 onClick={() => onDownloadFile(file)}
                 className="hover:bg-whiteGray flex items-center gap-3 rounded-md py-2 text-left transition-colors"
               >
-                <FileText size={18} className="text-midGray shrink-0" />
+                <FileText size={18} className="shrink-0 text-neutral-600" />
                 <span className="text-darkGray min-w-0 flex-1 text-sm break-words">{file.fileName}</span>
-                <span className="text-midGray shrink-0 text-xs">{formatFileSize(file.fileSize)}</span>
+                <span className="shrink-0 text-xs text-neutral-600">{formatFileSize(file.fileSize)}</span>
               </button>
             ))}
           </div>
         </section>
 
         {/* 피드백 */}
-        <section className="border-lightGray flex items-center justify-between gap-4 rounded-xl border p-4">
+        <section className="border-lightGray flex items-center justify-between gap-4 rounded-lg border p-4">
           <h4 className="flex items-center gap-2 text-sm font-semibold">
             피드백
             <span className="text-mainBlue">{detail.feedbackCount}</span>

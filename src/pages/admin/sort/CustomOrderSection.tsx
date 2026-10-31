@@ -67,7 +67,7 @@ const CustomOrderSection = () => {
       <div className="rounded-lg border-2 px-5 py-4">
         <div className="mb-4 flex items-center gap-3">
           <h2 className="text-xl font-semibold">직접 설정</h2>
-          <span className="text-midGray text-xs font-normal">팀명, 프로젝트명, 수상 정보</span>
+          <span className="text-xs font-normal text-neutral-600">팀명, 프로젝트명, 수상 정보</span>
         </div>
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <SortableContext items={localTeams.map((t) => t.teamId)}>
@@ -120,7 +120,7 @@ const TeamRow = ({ team }: { team: TeamListItemResponseDto }) => {
         {...attributes}
         {...listeners}
         aria-label={`${teamName} 순서 변경`}
-        className="text-midGray focus-visible:outline-mainBlue col-start-2 row-start-1 row-end-4 flex size-11 touch-none items-center justify-center rounded-md hover:bg-neutral-100 focus-visible:outline-2 lg:col-start-auto lg:row-auto"
+        className="focus-visible:outline-mainBlue col-start-2 row-start-1 row-end-4 flex size-11 touch-none items-center justify-center rounded-md text-neutral-600 hover:bg-neutral-100 focus-visible:outline-2 lg:col-start-auto lg:row-auto"
       >
         <PiDotsSixVerticalBold className="text-lg" aria-hidden />
       </button>

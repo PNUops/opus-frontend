@@ -8,14 +8,14 @@ const ServiceInfoSection = () => {
       <AdminCardTop>
         <h2 className="text-2xl font-bold">서비스 관련 정보</h2>
       </AdminCardTop>
-      <div className="min-w-0 p-5">
+      <div className="px-5 py-4">
         <a
           href={DEVELOPMENT_PLAN_URL}
           target="_blank"
-          rel="noopener noreferrer"
-          className="text-mainBlue inline-flex min-h-11 items-center leading-6 break-words underline underline-offset-4"
+          rel="noreferrer"
+          className="text-mainBlue focus-visible:outline-mainBlue inline-flex min-h-11 items-center text-sm leading-6 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2"
         >
-          2025 SW프로젝트 관리시스템 개발 계획
+          2025 SW프로젝트 관리시스템 개발 계획 (새 탭)
         </a>
       </div>
     </AdminCard>

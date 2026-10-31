@@ -17,6 +17,7 @@ const MainPage = () => {
   const contestSectionRef = useRef<HTMLDivElement>(null);
   const liveIndexBackRef = useRef<HTMLButtonElement>(null);
   const liveIndexTriggerRef = useRef<HTMLButtonElement>(null);
+  const pendingViewFocusRef = useRef(false);
   const previousScrollPositionRef = useRef(0);
   const swapTimerRef = useRef<number | null>(null);
   const transitionTimerRef = useRef<number | null>(null);
@@ -32,8 +33,18 @@ const MainPage = () => {
     [],
   );
 
+  useEffect(() => {
+    if (!pendingViewFocusRef.current || transitionDirection !== null) return;
+
+    const focusTarget = view === 'live-index' ? liveIndexBackRef.current : liveIndexTriggerRef.current;
+    focusTarget?.focus({ preventScroll: true });
+    pendingViewFocusRef.current = false;
+  }, [view, transitionDirection]);
+
   const moveToView = (nextView: MainView, returnToContest = false) => {
     if (nextView === view || transitionDirection) return;
+
+    pendingViewFocusRef.current = true;
 
     if (nextView === 'live-index') previousScrollPositionRef.current = window.scrollY;
 
@@ -44,12 +55,10 @@ const MainPage = () => {
       setView(nextView);
       window.requestAnimationFrame(() => {
         if (nextView === 'live-index') {
-          liveIndexBackRef.current?.focus({ preventScroll: true });
           if (reduceMotion) contestSectionRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
           return;
         }
 
-        liveIndexTriggerRef.current?.focus({ preventScroll: true });
         if (returnToContest) {
           contestSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
@@ -89,19 +98,22 @@ const MainPage = () => {
 
   return (
     <main className="opus-home">
-      <Masthead onExploreContests={handleExploreContests} />
-
-      {view === 'default' && (
-        <button
-          ref={liveIndexTriggerRef}
-          type="button"
-          className="opus-live-index-trigger"
-          onClick={() => moveToView('live-index')}
-          disabled={transitionDirection !== null}
-        >
-          숫자로 보는 OPUS <span aria-hidden="true">↗</span>
-        </button>
-      )}
+      <Masthead
+        onExploreContests={handleExploreContests}
+        statisticsAction={
+          view === 'default' && (
+            <button
+              ref={liveIndexTriggerRef}
+              type="button"
+              className="opus-live-index-trigger"
+              onClick={() => moveToView('live-index')}
+              disabled={transitionDirection !== null}
+            >
+              숫자로 보는 OPUS <span aria-hidden="true">↗</span>
+            </button>
+          )
+        }
+      />
 
       <div ref={contestSectionRef} className="opus-main-view-region">
         {view === 'default' ? (

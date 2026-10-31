@@ -1,5 +1,6 @@
 import type { Key, ReactNode } from 'react';
 import { useMediaQuery } from '@react-hookz/web';
+import { AdminTable } from './AdminTable';
 import { cn } from '@utils/classname';
 
 export interface AdminListColumn<T> {
@@ -65,7 +66,7 @@ export const AdminResponsiveList = <T,>({
 
   return (
     <div className="overflow-x-auto">
-      <table className={cn('w-full min-w-[860px] border-collapse text-sm', tableClassName)}>
+      <AdminTable className={cn('w-full min-w-[860px] border-collapse text-sm', tableClassName)}>
         <caption className="sr-only">{label}</caption>
         <thead className="bg-whiteGray">
           <tr className="border-lightGray border-b">
@@ -109,7 +110,7 @@ export const AdminResponsiveList = <T,>({
             ))
           )}
         </tbody>
-      </table>
+      </AdminTable>
     </div>
   );
 };

@@ -1,25 +1,32 @@
 import PasswordInput from '@components/PasswordInput';
+import AuthField from '../auth/AuthField';
+import { authInputClass, authPasswordToggleClass } from '../auth/styles';
 
 interface Props {
   value: string;
   setValue: (value: string) => void;
   error?: string;
+  onBlur?: () => void;
 }
 
-const PasswordRow = ({ value, setValue, error }: Props) => {
-  const PASSWORD_PLACEHOLDER = '영어, 숫자, 특수문자 포함 8~16자';
+const PasswordRow = ({ value, setValue, error, onBlur }: Props) => {
   return (
-    <>
-      <label className="flex items-center gap-1">
-        <span className="text-mainRed">*</span>
-        <span className="text-midGray">비밀번호</span>
-      </label>
-      <div>
-        <PasswordInput value={value} onChange={(e) => setValue(e.target.value)} placeholder={PASSWORD_PLACEHOLDER} />
-        <p className="text-mainRed mt-1">{error}</p>
-      </div>
-      <div />
-    </>
+    <AuthField id="signup-password" label="비밀번호" error={error} hint="영어, 숫자, 특수문자를 포함한 8~16자">
+      <PasswordInput
+        id="signup-password"
+        name="password"
+        autoComplete="new-password"
+        aria-required="true"
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? 'signup-password-hint signup-password-error' : 'signup-password-hint'}
+        className={`${authInputClass} pr-12`}
+        toggleClassName={authPasswordToggleClass}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={onBlur}
+        placeholder="비밀번호 입력"
+      />
+    </AuthField>
   );
 };
 export default PasswordRow;

@@ -1,6 +1,27 @@
 import { ButtonHTMLAttributes } from 'react';
 import { cn } from '@components/lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
+import { useAdminUi } from './AdminUiContext';
+
+const adminButtonVariants = cva(
+  'inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-mainBlue focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-lightGray disabled:bg-whiteGray disabled:text-neutral-500 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  {
+    variants: {
+      variant: {
+        default: 'bg-mainBlue text-white hover:brightness-110',
+        destructive: 'bg-destructive text-white hover:brightness-95',
+        outline: 'border-lightGray hover:bg-whiteGray border bg-white text-neutral-700',
+      },
+      size: {
+        default: 'min-h-11 px-4 py-2',
+        sm: 'min-h-9 px-3 py-1.5',
+        lg: 'min-h-11 px-6 py-2.5',
+        icon: 'size-11 p-0',
+      },
+    },
+    defaultVariants: { variant: 'default', size: 'default' },
+  },
+);
 
 const buttonVariants = cva(
   'disabled:bg-midGray flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap text-white transition-colors disabled:pointer-events-none hover:shadow-lg [&_svg]:pointer-events-none [&_svg]:shrink-0',
@@ -32,8 +53,9 @@ export const AdminActionButton = ({
   children,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>) => {
+  const isAdminUi = useAdminUi();
   return (
-    <button className={cn(buttonVariants({ variant, size, className }))} {...props}>
+    <button className={cn((isAdminUi ? adminButtonVariants : buttonVariants)({ variant, size, className }))} {...props}>
       {children}
     </button>
   );

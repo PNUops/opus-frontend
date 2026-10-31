@@ -1,3 +1,4 @@
+import { AdminResponsiveList } from '@components/admin/AdminResponsiveList';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -9,8 +10,7 @@ import {
   AdminPopoverEditButton,
   AdminPopoverMenu,
 } from '@components/admin';
-import FilterDropDown from '@components/FilterDropDown';
-import { AdminResponsiveList } from '@components/admin/AdminResponsiveList';
+import { AdminFilterSelect as FilterDropDown } from '@components/admin/AdminFilterSelect';
 import { Dialog, DialogContent, DialogTitle } from '@components/ui/dialog';
 import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
@@ -120,15 +120,17 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
     OPERATION_STATUS_FILTER_OPTIONS.find((option) => option.value === statusFilter)?.label ?? '운영 상태';
 
   const handleEdit = (submission: SubmissionItemResponseDto) => {
+    updateMutation.reset();
     setModalState({ mode: 'edit', item: submission });
   };
 
   const handleDeleteConfirm = () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || deleteMutation.isPending) return;
     deleteMutation.mutate(deleteTarget.contestSubmissionItemId);
   };
 
   const handleSubmit = (payload: SubmissionItemRequestDto) => {
+    if (createMutation.isPending || updateMutation.isPending) return;
     if (modalState?.mode === 'edit') {
       updateMutation.mutate({ id: modalState.item.contestSubmissionItemId, payload });
     } else {
@@ -147,10 +149,10 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
           onChange={setStatusFilter}
         />
         <AdminActionButton
-          variant="outline"
-          size="sm"
-          className="border-mainBlue text-mainBlue hover:bg-blue-50 max-lg:min-h-11"
-          onClick={() => setModalState({ mode: 'create' })}
+          onClick={() => {
+            createMutation.reset();
+            setModalState({ mode: 'create' });
+          }}
         >
           + 제출 항목 추가
         </AdminActionButton>
@@ -200,19 +202,26 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
             </button>
             <AdminPopoverMenu>
               <AdminPopoverEditButton onEdit={() => handleEdit(submission)} />
-              <AdminPopoverDeleteButton onDelete={() => setDeleteTarget(submission)} />
+              <AdminPopoverDeleteButton
+                onDelete={() => {
+                  deleteMutation.reset();
+                  setDeleteTarget(submission);
+                }}
+              />
             </AdminPopoverMenu>
           </>
         )}
       />
 
-      <p className="text-midGray text-xs">제출 항목이 설정된 최신 순서대로 표시됩니다.</p>
+      <p className="text-xs text-neutral-600">제출 항목이 설정된 최신 순서대로 표시됩니다.</p>
 
       <Dialog open={modalState !== null} onOpenChange={(open) => !open && setModalState(null)}>
         {modalState &&
           (modalState.mode === 'create' ? (
             <SubmissionFormModal
               mode="create"
+              isPending={createMutation.isPending}
+              isError={createMutation.isError}
               tracks={tracks}
               onSubmit={handleSubmit}
               onClose={() => setModalState(null)}
@@ -220,6 +229,8 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
           ) : editSetting ? (
             <SubmissionFormModal
               mode="edit"
+              isPending={updateMutation.isPending}
+              isError={updateMutation.isError}
               tracks={tracks}
               initialValues={settingToFormValues(editSetting)}
               onSubmit={handleSubmit}
@@ -235,6 +246,8 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
           <AdminDeleteConfirmModal
             title={`'${deleteTarget.name}' 제출 항목을 삭제하시겠어요?`}
             onDelete={handleDeleteConfirm}
+            isPending={deleteMutation.isPending}
+            isError={deleteMutation.isError}
           />
         )}
       </Dialog>
@@ -243,8 +256,8 @@ export const SubmissionSettingTab = ({ onViewStatus }: SubmissionSettingTabProps
 };
 
 const FormModalLoading = () => (
-  <DialogContent className="w-[600px] max-w-[92vw] items-stretch gap-5">
+  <DialogContent appearance="admin" className="w-[600px] max-w-[92vw] items-stretch gap-5">
     <DialogTitle className="text-xl font-bold text-gray-900">제출 항목 수정</DialogTitle>
-    <p className="text-midGray py-10 text-center text-sm">설정값을 불러오고 있어요.</p>
+    <p className="py-10 text-center text-sm text-neutral-600">설정값을 불러오고 있어요.</p>
   </DialogContent>
 );

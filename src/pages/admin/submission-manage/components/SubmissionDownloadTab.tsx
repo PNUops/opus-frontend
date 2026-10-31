@@ -6,7 +6,7 @@ import { Download, RefreshCw } from 'lucide-react';
 
 import { AdminActionButton } from '@components/admin';
 import Checkbox from '@components/ui/Checkbox';
-import FilterDropDown from '@components/FilterDropDown';
+import { AdminFilterSelect as FilterDropDown } from '@components/admin/AdminFilterSelect';
 import { useToast } from '@hooks/useToast';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import { postSubmissionDownloads } from '@apis/submission';
@@ -155,7 +155,7 @@ export const SubmissionDownloadTab = () => {
               type="button"
               onClick={handleReset}
               aria-label="필터 초기화"
-              className="border-lightGray text-midGray flex h-8.5 w-8.5 items-center justify-center rounded-sm border transition-colors hover:bg-gray-100"
+              className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md border text-neutral-600 transition-colors focus-visible:outline-2"
             >
               <RefreshCw size={16} />
             </button>

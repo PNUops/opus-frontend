@@ -20,10 +20,7 @@ const ContestSelect = ({ contestId, onChange }: ContestSelectProps) => {
 
   return (
     <Select onValueChange={onChange} value={contestId}>
-      <SelectTrigger
-        className="border-subGreen h-10 w-fit min-w-[220px] rounded-none border-0 border-b-2 shadow-none focus:ring-0 focus:ring-offset-0 focus:outline-none"
-        iconClassName="stroke-mainGreen opacity-100 h-5 w-5"
-      >
+      <SelectTrigger appearance="admin" className="w-fit min-w-[220px] gap-3">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

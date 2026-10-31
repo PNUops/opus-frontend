@@ -20,7 +20,7 @@ const TeamSelector = ({ teamList, onChange }: TeamSelectorProps) => {
     <div className="flex w-full min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
       <label className="w-30 flex-shrink-0 text-sm leading-none">수상 팀</label>
       <Select value={selectedValue} onValueChange={handleValueChange}>
-        <SelectTrigger className="focus:outline:none focus:border-mainGreen w-full overflow-hidden border text-sm focus:ring-0">
+        <SelectTrigger appearance="admin" aria-label="수상 팀" className="w-full">
           <SelectValue placeholder="수상팀을 선택해주세요." className="truncate" />
         </SelectTrigger>
         <SelectContent className="max-h-72 text-sm">

@@ -24,13 +24,13 @@ export const FileFormatSelect = ({ value, onChange }: FileFormatSelectProps) => 
           <button
             key={format}
             type="button"
-            aria-pressed={active}
             onClick={() => toggle(format)}
+            aria-pressed={active}
             className={cn(
-              'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors max-sm:min-h-11',
+              'focus-visible:outline-mainBlue min-h-11 rounded-md border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2',
               active
                 ? 'border-mainBlue text-mainBlue bg-blue-50'
-                : 'border-input text-midGray bg-white hover:bg-gray-50',
+                : 'border-input bg-white text-neutral-600 hover:bg-gray-50',
             )}
           >
             {FILE_FORMAT_EXTENSION[format]}
