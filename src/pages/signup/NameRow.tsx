@@ -6,9 +6,10 @@ interface Props {
   value: string;
   setValue: (value: string) => void;
   error?: string;
+  onBlur?: () => void;
 }
 
-const NameRow = ({ value, setValue, error }: Props) => {
+const NameRow = ({ value, setValue, error, onBlur }: Props) => {
   return (
     <AuthField id="signup-name" label="이름" error={error}>
       <Input
@@ -21,6 +22,7 @@ const NameRow = ({ value, setValue, error }: Props) => {
         className={authInputClass}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onBlur={onBlur}
       />
     </AuthField>
   );

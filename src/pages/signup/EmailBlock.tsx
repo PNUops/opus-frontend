@@ -9,6 +9,7 @@ interface Props {
   isEmailVerified: boolean;
   setIsEmailVerified: (value: boolean) => void;
   error?: string;
+  onBlur?: () => void;
   emailVerificationMutationFn: (request: EmailVerificationRequestDTO) => Promise<any>;
   emailVerificationCodeMutationFn: (request: EmailVerificationCodeRequestDTO) => Promise<any>;
 }
@@ -19,6 +20,7 @@ const EmailBlock = ({
   isEmailVerified,
   setIsEmailVerified,
   error,
+  onBlur,
   emailVerificationMutationFn,
   emailVerificationCodeMutationFn,
 }: Props) => {
@@ -56,6 +58,7 @@ const EmailBlock = ({
         setIsMailSent={setIsMailSent}
         startCooldown={startCooldown}
         error={isEmailVerified ? undefined : error}
+        onBlur={onBlur}
         mutationFn={emailVerificationMutationFn}
       />
       <EmailVerifyRow

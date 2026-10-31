@@ -6,9 +6,10 @@ interface Props {
   value: string;
   setValue: (value: string) => void;
   error?: string;
+  onBlur?: () => void;
 }
 
-const PasswordConfirmRow = ({ value, setValue, error }: Props) => {
+const PasswordConfirmRow = ({ value, setValue, error, onBlur }: Props) => {
   return (
     <AuthField id="signup-password-confirm" label="비밀번호 확인" error={error}>
       <PasswordInput
@@ -22,6 +23,7 @@ const PasswordConfirmRow = ({ value, setValue, error }: Props) => {
         toggleClassName={authPasswordToggleClass}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onBlur={onBlur}
         placeholder="비밀번호 다시 입력"
       />
     </AuthField>

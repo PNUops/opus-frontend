@@ -17,10 +17,20 @@ interface Props {
   setIsMailSent: (value: boolean) => void;
   startCooldown: () => void;
   error?: string;
+  onBlur?: () => void;
   mutationFn: (request: EmailVerificationRequestDTO) => Promise<any>;
 }
 
-const EmailRow = ({ email, setEmail, isEmailVerified, setIsMailSent, startCooldown, error, mutationFn }: Props) => {
+const EmailRow = ({
+  email,
+  setEmail,
+  isEmailVerified,
+  setIsMailSent,
+  startCooldown,
+  error,
+  onBlur,
+  mutationFn,
+}: Props) => {
   const [isFirstSend, setIsFirstSend] = useState(true);
   const [isSendable, setIsSendable] = useState(true);
   const COOLDOWN_SEC = 30;
@@ -103,6 +113,7 @@ const EmailRow = ({ email, setEmail, isEmailVerified, setIsMailSent, startCooldo
           placeholder="example@pusan.ac.kr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onBlur={onBlur}
         />
         <Button
           type="button"

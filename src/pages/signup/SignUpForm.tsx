@@ -14,7 +14,7 @@ import { authPrimaryButtonClass, authSecondaryButtonClass } from '../auth/styles
 import { useRef } from 'react';
 
 const SignUpForm = () => {
-  const { formState, updateField, formError, validate } = useSignUpFormState();
+  const { formState, updateField, formError, validateField, validate } = useSignUpFormState();
   const navigate = useNavigate();
   const toast = useToast();
   const requestInFlight = useRef(false);
@@ -51,11 +51,17 @@ const SignUpForm = () => {
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col gap-5" aria-busy={mutation.isPending}>
       <div className="grid gap-5 sm:grid-cols-2">
-        <NameRow value={formState.name} setValue={(val) => updateField('name', val)} error={formError.name} />
+        <NameRow
+          value={formState.name}
+          setValue={(val) => updateField('name', val)}
+          error={formError.name}
+          onBlur={() => validateField('name')}
+        />
         <StudentNumberRow
           value={formState.studentNumber}
           setValue={(val) => updateField('studentNumber', val)}
           error={formError.studentNumber}
+          onBlur={() => validateField('studentNumber')}
         />
       </div>
 
@@ -66,6 +72,7 @@ const SignUpForm = () => {
           isEmailVerified={formState.isEmailVerified}
           setIsEmailVerified={(val) => updateField('isEmailVerified', val)}
           error={formError.email}
+          onBlur={() => validateField('email')}
           emailVerificationMutationFn={postEmailVerification}
           emailVerificationCodeMutationFn={patchEmailVerificationCode}
         />
@@ -75,11 +82,13 @@ const SignUpForm = () => {
         value={formState.password}
         setValue={(val) => updateField('password', val)}
         error={formError.password}
+        onBlur={() => validateField('password')}
       />
       <PasswordConfirmRow
         value={formState.passwordConfirm}
         setValue={(val) => updateField('passwordConfirm', val)}
         error={formError.passwordConfirm}
+        onBlur={() => validateField('passwordConfirm')}
       />
       <div className="mt-1 grid grid-cols-[1fr_2fr] gap-3">
         <Button type="button" variant="outline" onClick={() => navigate(-1)} className={authSecondaryButtonClass}>
