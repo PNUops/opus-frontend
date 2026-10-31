@@ -60,6 +60,7 @@ export const SubmissionUploadModal = ({
   const toast = useToast();
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const savingRef = useRef(false);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [deletedFileIds, setDeletedFileIds] = useState<number[]>([]);
@@ -188,8 +189,13 @@ export const SubmissionUploadModal = ({
 
   return (
     <DialogContent
-      className="w-[520px] max-w-[92vw] items-stretch gap-5"
+      className="flex max-h-[calc(100dvh-2rem)] w-[600px] max-w-[calc(100vw-2rem)] items-stretch gap-0 overflow-hidden rounded-xl p-0 pt-0 pr-0 [&>button]:top-2 [&>button]:right-2 [&>button]:flex [&>button]:size-11 [&>button]:items-center [&>button]:justify-center"
       closeDisabled={isSaving}
+      onOpenAutoFocus={(event) => {
+        event.preventDefault();
+        // 파일 선택 버튼에 자동 포커스되면 긴 설명의 시작 부분이 스크롤되어 가려진다.
+        titleRef.current?.focus({ preventScroll: true });
+      }}
       onEscapeKeyDown={(event) => {
         if (savingRef.current) event.preventDefault();
       }}
@@ -197,116 +203,137 @@ export const SubmissionUploadModal = ({
         if (savingRef.current) event.preventDefault();
       }}
     >
-      <DialogTitle className="text-xl font-bold text-gray-900">제출물 업로드</DialogTitle>
-
-      {/* 제출물 정보 */}
-      <div className="flex flex-col gap-1">
-        <h4 className="text-darkGray text-base font-bold">{submissionItemName}</h4>
-        <p className="text-midGray text-sm">{description}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
-        <InfoItem icon={<CalendarDays size={16} />} label="시작일시" value={formatDateTimeWithDay(setting.startAt)} />
-        <InfoItem icon={<CalendarDays size={16} />} label="마감일시" value={formatDateTimeWithDay(setting.endAt)} />
-        <InfoItem
-          icon={<FileCheck size={16} />}
-          label="지각 제출"
-          value={setting.allowLateSubmission ? '허용함' : '허용 안 함'}
-        />
-        <InfoItem icon={<Eye size={16} />} label="공개 범위" value={VISIBILITY_LABEL[setting.visibility]} />
-      </div>
-
-      {/* 제약 박스 */}
-      <ul className="border-subGreen text-mainGreen flex list-disc flex-col gap-1 rounded-lg border bg-green-50/60 py-3 pr-4 pl-8 text-sm marker:text-green-500">
-        <li>파일 형식: {allowedFormats.join(', ')}</li>
-        <li>파일 크기: {setting.maxFileSizeMb}MB</li>
-        <li>파일 개수: {setting.maxFileCount}개</li>
-      </ul>
-
-      {/* 드래그 앤 드롭 */}
-      <button
-        type="button"
-        disabled={isSaving}
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          addFiles(e.dataTransfer.files);
-        }}
-        className="border-lightGray text-midGray hover:border-mainGreen flex flex-col items-center gap-2 rounded-lg border border-dashed py-8 transition-colors"
-      >
-        <UploadCloud size={28} className="text-gray-400" />
-        <span className="text-sm">파일을 여기로 드래그하거나 클릭하여 업로드 하세요.</span>
-      </button>
-      <input
-        ref={inputRef}
-        type="file"
-        multiple
-        disabled={isSaving}
-        accept={allowedFormats.join(',')}
-        className="hidden"
-        onChange={(e) => {
-          addFiles(e.target.files);
-          e.target.value = '';
-        }}
-      />
-
-      {/* 파일 목록 */}
-      {totalCount > 0 && (
-        <div className="flex max-h-44 flex-col gap-2 overflow-y-auto">
-          {retainedFiles.map((file) => (
-            <FileRow
-              key={`existing-${file.fileId}`}
-              name={file.fileName}
-              size={formatFileSize(file.fileSize)}
-              disabled={isSaving}
-              onRemove={() => {
-                if (!savingRef.current) setDeletedFileIds((prev) => [...prev, file.fileId]);
-              }}
-            />
-          ))}
-          {newFiles.map((file, index) => (
-            <FileRow
-              key={`new-${index}`}
-              name={file.name}
-              size={formatFileSize(file.size)}
-              disabled={isSaving}
-              onRemove={() => removeNewFile(index)}
-            />
-          ))}
-        </div>
-      )}
-
-      {deletedFileIds.length > 0 && (
-        <p className="text-midGray text-sm" role="status">
-          기존 파일 {deletedFileIds.length}개가 저장 시 삭제돼요. 취소하면 변경되지 않아요.
-        </p>
-      )}
-      {deletedFileIds.length > 0 && totalCount === 0 && (
-        <p className="text-mainRed text-sm" role="alert">
-          제출 파일을 최소 1개 남겨야 저장할 수 있어요. 취소하면 기존 파일이 유지돼요.
-        </p>
-      )}
-      {isReplacementBlocked && (
-        <p className="text-mainRed text-sm" role="alert">
-          파일 1개 제한 항목은 기존 제출물을 유지하며 교체할 수 없어 저장이 제한돼요. 취소하면 기존 파일이 유지돼요.
-        </p>
-      )}
-
-      {/* 푸터 */}
-      <div className="flex justify-end gap-3">
-        <DialogClose asChild>
-          <AdminActionButton variant="outline" onClick={onClose} disabled={isSaving}>
-            취소
-          </AdminActionButton>
-        </DialogClose>
-        <AdminActionButton
-          className="bg-mainGreen hover:bg-green-700"
-          onClick={handleSave}
-          disabled={isSaving || isReplacementBlocked || totalCount === 0}
+      <div className="shrink-0 px-5 py-4 pr-16 sm:px-6 sm:pr-16">
+        <DialogTitle
+          ref={titleRef}
+          tabIndex={-1}
+          className="text-xl leading-7 font-semibold text-gray-900 outline-none"
         >
-          {isSaving ? '저장 중...' : '저장'}
-        </AdminActionButton>
+          제출물 업로드
+        </DialogTitle>
+      </div>
+
+      <div className="flex min-h-0 flex-col gap-5 overflow-y-auto overscroll-contain px-5 pb-5 sm:px-6">
+        {/* 제출물 정보 */}
+        <div className="flex flex-col gap-1">
+          <h4 className="text-base leading-6 font-semibold [overflow-wrap:anywhere] text-gray-900">
+            {submissionItemName}
+          </h4>
+          <p className="text-sm leading-6 [overflow-wrap:anywhere] whitespace-pre-wrap text-gray-600">{description}</p>
+        </div>
+
+        <div className="flex flex-col gap-2.5">
+          <InfoItem icon={<CalendarDays size={16} />} label="시작일시" value={formatDateTimeWithDay(setting.startAt)} />
+          <InfoItem icon={<CalendarDays size={16} />} label="마감일시" value={formatDateTimeWithDay(setting.endAt)} />
+          <InfoItem
+            icon={<FileCheck size={16} />}
+            label="지각 제출"
+            value={setting.allowLateSubmission ? '허용함' : '허용 안 함'}
+          />
+          <InfoItem icon={<Eye size={16} />} label="공개 범위" value={VISIBILITY_LABEL[setting.visibility]} />
+        </div>
+
+        {/* 제약 박스 */}
+        <ul className="bg-subGreen/40 flex list-disc flex-col gap-1 rounded-lg py-3 pr-4 pl-8 text-sm leading-5 [overflow-wrap:anywhere] text-green-800">
+          <li>파일 형식: {allowedFormats.join(', ') || '제한 없음'}</li>
+          <li>파일당 최대 {setting.maxFileSizeMb}MB</li>
+          <li>최대 {setting.maxFileCount}개 첨부</li>
+        </ul>
+
+        {/* 드래그 앤 드롭 */}
+        <button
+          type="button"
+          disabled={isSaving}
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            addFiles(e.dataTransfer.files);
+          }}
+          className="border-lightGray bg-whiteGray hover:border-mainGreen focus-visible:outline-mainGreen flex shrink-0 flex-col items-center gap-2 rounded-lg border border-dashed px-4 py-5 text-gray-600 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60"
+        >
+          <UploadCloud size={28} className="text-gray-400" />
+          <span className="text-sm leading-6">파일 선택 또는 끌어 놓기</span>
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          disabled={isSaving}
+          accept={allowedFormats.join(',')}
+          className="hidden"
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.target.value = '';
+          }}
+        />
+
+        {/* 파일 목록 */}
+        {totalCount > 0 && (
+          <div className="divide-lightGray border-lightGray divide-y rounded-lg border">
+            {retainedFiles.map((file) => (
+              <FileRow
+                key={`existing-${file.fileId}`}
+                name={file.fileName}
+                size={formatFileSize(file.fileSize)}
+                disabled={isSaving}
+                onRemove={() => {
+                  if (!savingRef.current) setDeletedFileIds((prev) => [...prev, file.fileId]);
+                }}
+              />
+            ))}
+            {newFiles.map((file, index) => (
+              <FileRow
+                key={`new-${index}`}
+                name={file.name}
+                size={formatFileSize(file.size)}
+                disabled={isSaving}
+                onRemove={() => removeNewFile(index)}
+              />
+            ))}
+          </div>
+        )}
+
+        {deletedFileIds.length > 0 && (
+          <p className="text-sm leading-6 text-gray-600" role="status">
+            기존 파일 {deletedFileIds.length}개가 저장 시 삭제돼요. 취소하면 변경되지 않아요.
+          </p>
+        )}
+      </div>
+
+      {/* 저장 제한 사유와 액션은 본문 스크롤 밖에 함께 둔다. */}
+      <div className="border-lightGray flex shrink-0 flex-col gap-3 border-t px-5 py-4 sm:px-6">
+        {deletedFileIds.length > 0 && totalCount === 0 && (
+          <p className="text-sm leading-6 text-red-700" role="alert">
+            제출 파일을 최소 1개 남겨야 저장할 수 있어요. 취소하면 기존 파일이 유지돼요.
+          </p>
+        )}
+        {isReplacementBlocked && (
+          <p className="text-sm leading-6 text-red-700" role="alert">
+            파일 1개 제한 항목은 교체할 수 없어요. 취소하면 기존 파일이 유지돼요.
+          </p>
+        )}
+        <div className="flex justify-end gap-3">
+          <DialogClose asChild>
+            <AdminActionButton
+              variant="outline"
+              size="lg"
+              className="focus-visible:outline-mainGreen flex-1 text-gray-600 hover:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 sm:flex-none"
+              onClick={onClose}
+              disabled={isSaving}
+            >
+              취소
+            </AdminActionButton>
+          </DialogClose>
+          <AdminActionButton
+            size="lg"
+            className="focus-visible:outline-mainGreen flex-1 bg-green-700 hover:bg-green-800 hover:shadow-none focus-visible:outline-2 focus-visible:outline-offset-2 sm:flex-none"
+            onClick={handleSave}
+            disabled={isSaving || isReplacementBlocked || totalCount === 0}
+          >
+            {isSaving ? '저장 중...' : '저장'}
+          </AdminActionButton>
+        </div>
       </div>
     </DialogContent>
   );
@@ -314,10 +341,10 @@ export const SubmissionUploadModal = ({
 
 const InfoItem = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) => {
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <span className="text-midGray shrink-0">{icon}</span>
-      <span className="text-midGray w-16 shrink-0">{label}</span>
-      <span className="text-darkGray">{value}</span>
+    <div className="flex items-start gap-2 text-sm leading-6">
+      <span className="shrink-0 pt-1 text-gray-500">{icon}</span>
+      <span className="w-16 shrink-0 text-gray-600 sm:w-20">{label}</span>
+      <span className="min-w-0 text-gray-800">{value}</span>
     </div>
   );
 };
@@ -334,16 +361,18 @@ const FileRow = ({
   disabled: boolean;
 }) => {
   return (
-    <div className="border-lightGray flex items-center gap-3 rounded-lg border px-3 py-2.5">
-      <FileText size={18} className="text-midGray shrink-0" />
-      <span className="text-darkGray flex-1 truncate text-sm">{name}</span>
-      <span className="text-midGray shrink-0 text-xs">{size}</span>
+    <div className="flex items-center gap-3 py-2 pr-1 pl-3">
+      <FileText size={18} className="shrink-0 text-gray-500" />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm leading-6 [overflow-wrap:anywhere] text-gray-800">{name}</p>
+        <p className="text-xs leading-5 text-gray-500">{size}</p>
+      </div>
       <button
         type="button"
         onClick={onRemove}
         disabled={disabled}
-        aria-label="파일 삭제"
-        className="text-midGray hover:text-darkGray shrink-0"
+        aria-label={`${name} 삭제`}
+        className="focus-visible:outline-mainGreen flex size-11 shrink-0 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-40"
       >
         <X size={16} />
       </button>
