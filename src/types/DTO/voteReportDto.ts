@@ -1,8 +1,8 @@
 export interface VoteReportRankingDto {
   rank: number;
   teamId: number;
-  teamName: string;
-  projectName: string;
+  teamName: string | null;
+  projectName: string | null;
   trackName: string | null;
   voteCount: number;
 }

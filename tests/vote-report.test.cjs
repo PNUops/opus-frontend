@@ -5,6 +5,60 @@ const vm = require('node:vm');
 const test = require('node:test');
 const ts = require('typescript');
 
+function loadRankingList() {
+  const load = (relativePath) => {
+    const source = ts.transpileModule(fs.readFileSync(path.join(__dirname, relativePath), 'utf8'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText;
+    const exports = {};
+    vm.runInNewContext(source, {
+      exports,
+      require: (name) => (name === '@utils/classname' ? load('../src/utils/classname.ts') : require(name)),
+    });
+    return exports;
+  };
+  return load('../src/pages/admin/statistics/VoteRankingList.tsx').default;
+}
+
+test('ranking rows render missing team/project names without losing ranks, votes or track filtering', () => {
+  const { createElement } = require('react');
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const RankingList = loadRankingList();
+  for (const [teamName, projectName] of [
+    [null, '프로젝트'],
+    ['팀', null],
+    [null, null],
+    ['', '  '],
+  ]) {
+    const rankings = [{ rank: 2, teamId: 7, teamName, projectName, trackName: null, voteCount: 0 }];
+    for (const selectedFilter of ['all', 'grouped', 'track:null']) {
+      const html = renderToStaticMarkup(createElement(RankingList, { rankings, selectedFilter }));
+      assert.ok(html.includes(teamName?.trim() || '팀명 미등록'));
+      assert.ok(html.includes(projectName?.trim() || '프로젝트명 미등록'));
+      assert.ok(html.includes('분과 미지정'));
+      assert.ok(html.includes('aria-label="2위"'));
+      assert.ok(html.includes('0표'));
+      assert.ok(!html.includes('전체 이름 보기'));
+    }
+  }
+});
+
+test('long ranking names still offer expansion when another name is missing', () => {
+  const { createElement } = require('react');
+  const { renderToStaticMarkup } = require('react-dom/server');
+  const RankingList = loadRankingList();
+  const projectName = '긴 프로젝트 이름 '.repeat(10);
+  const html = renderToStaticMarkup(
+    createElement(RankingList, {
+      selectedFilter: 'all',
+      rankings: [{ rank: 1, teamId: 8, teamName: null, projectName, trackName: null, voteCount: 12 }],
+    }),
+  );
+  assert.ok(html.includes(projectName.trim()));
+  assert.ok(html.includes('전체 이름 보기'));
+  assert.ok(html.includes('aria-expanded="false"'));
+});
+
 function loadApi(get, logs = []) {
   const source = ts.transpileModule(fs.readFileSync(path.join(__dirname, '../src/apis/voteReport.ts'), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true },

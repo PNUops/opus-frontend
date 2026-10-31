@@ -6,7 +6,9 @@ const RankingItem = ({ item }: { item: VoteReportRankingDto }) => {
   const [expanded, setExpanded] = useState(false);
   const namesId = useId();
   const trackId = useId();
-  const hasLongName = item.teamName.length > 30 || item.projectName.length > 50 || (item.trackName?.length ?? 0) > 30;
+  const teamName = item.teamName?.trim() || '팀명 미등록';
+  const projectName = item.projectName?.trim() || '프로젝트명 미등록';
+  const hasLongName = teamName.length > 30 || projectName.length > 50 || (item.trackName?.length ?? 0) > 30;
   const collapsed = hasLongName && !expanded;
   return (
     <li className="grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 py-5 sm:grid-cols-[3rem_minmax(0,1fr)_minmax(6rem,0.5fr)_5rem] sm:items-center sm:gap-x-5">
@@ -18,10 +20,10 @@ const RankingItem = ({ item }: { item: VoteReportRankingDto }) => {
       </span>
       <div id={namesId} className="min-w-0">
         <p className={cn('text-sm leading-6 font-medium break-words text-neutral-900', collapsed && 'line-clamp-2')}>
-          {item.teamName}
+          {teamName}
         </p>
         <p className={cn('mt-1 text-sm leading-6 break-words text-neutral-600', collapsed && 'line-clamp-2')}>
-          {item.projectName}
+          {projectName}
         </p>
       </div>
       <p
