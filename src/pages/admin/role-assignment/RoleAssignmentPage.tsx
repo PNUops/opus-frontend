@@ -1,8 +1,8 @@
+import { AdminQueryState } from '@components/admin/AdminQueryState';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import ConfirmModal from '@components/ConfirmModal';
-import { AdminHeader } from '@components/admin';
+import { AdminHeader, AdminDeleteConfirmModal } from '@components/admin';
 import { Dialog } from '@components/ui/dialog';
 import { deleteContestStaff, getContestStaff } from '@apis/contestStaff';
 import { ROLE_LABEL } from '@constants/roleAssignment';
@@ -37,16 +37,22 @@ const RoleAssignmentPage = () => {
 
   const assignmentQueryKey = ['contestStaff', contestId, activeRole, search.trim()];
 
-  const { data: assignments = [] } = useQuery({
+  const assignmentsQuery = useQuery({
     queryKey: assignmentQueryKey,
     queryFn: () => getContestStaff({ contestId, memberType: activeRole, search: search.trim() || undefined }),
   });
 
-  const { mutate: deleteAssignment } = useMutation({
+  const {
+    mutate: deleteAssignment,
+    isPending: isDeleting,
+    isError: deleteFailed,
+    reset: resetDelete,
+  } = useMutation({
     mutationFn: (contestMemberId: number) => deleteContestStaff(contestId, contestMemberId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contestStaff', contestId] });
       toast('배정을 삭제했어요.', 'success');
+      setDeleteTarget(null);
     },
     onError: (error) => {
       toast(getApiErrorMessage(error, '배정 삭제에 실패했어요.'), 'error');
@@ -54,10 +60,11 @@ const RoleAssignmentPage = () => {
   });
 
   const handleDeleteConfirm = () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || isDeleting) return;
     deleteAssignment(deleteTarget.contestMemberId);
-    setDeleteTarget(null);
   };
+
+  const { data: assignments = [] } = assignmentsQuery;
 
   return (
     <div className="flex w-full flex-col gap-10">
@@ -76,11 +83,16 @@ const RoleAssignmentPage = () => {
           onAssignClick={() => setModalState({ mode: 'create', role: activeRole })}
         />
 
-        <RoleAssignmentTable
-          assignments={assignments}
-          onEdit={(assignment) => setModalState({ mode: 'edit', assignment })}
-          onDelete={setDeleteTarget}
-        />
+        <AdminQueryState query={assignmentsQuery}>
+          <RoleAssignmentTable
+            assignments={assignments}
+            onEdit={(assignment) => setModalState({ mode: 'edit', assignment })}
+            onDelete={(assignment) => {
+              resetDelete();
+              setDeleteTarget(assignment);
+            }}
+          />
+        </AdminQueryState>
       </div>
 
       <Dialog open={modalState !== null} onOpenChange={(open) => !open && setModalState(null)}>
@@ -94,17 +106,19 @@ const RoleAssignmentPage = () => {
         )}
       </Dialog>
 
-      <ConfirmModal
-        isOpen={deleteTarget !== null}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setDeleteTarget(null)}
-        message="역할 배정을 삭제하시겠어요?"
-        description={
-          deleteTarget
-            ? `${deleteTarget.name}님의 ${ROLE_LABEL[deleteTarget.roleType]} 담당 팀 배정이 삭제됩니다.`
-            : undefined
-        }
-      />
+      <Dialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AdminDeleteConfirmModal
+          onDelete={handleDeleteConfirm}
+          isPending={isDeleting}
+          isError={deleteFailed}
+          title="역할 배정을 삭제하시겠어요?"
+          description={
+            deleteTarget
+              ? `${deleteTarget.name}님의 ${ROLE_LABEL[deleteTarget.roleType]} 담당 팀 배정이 삭제됩니다.`
+              : undefined
+          }
+        />
+      </Dialog>
     </div>
   );
 };

@@ -63,7 +63,7 @@ const CustomOrderSection = () => {
       <div className="rounded-lg border-2 px-5 py-4">
         <div className="mb-4 flex items-center gap-3">
           <h2 className="text-xl font-semibold">직접 설정</h2>
-          <span className="text-midGray text-xs font-normal">팀명, 프로젝트명, 수상 정보</span>
+          <span className="text-xs font-normal text-neutral-600">팀명, 프로젝트명, 수상 정보</span>
         </div>
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={localTeams.map((t) => t.teamId)}>
@@ -113,7 +113,7 @@ const TeamRow = ({ team }: { team: TeamListItemResponseDto }) => {
       ) : (
         <span />
       )}
-      <PiDotsSixVerticalBold className="text-midGray ml-auto text-lg opacity-0 group-hover:opacity-100" />
+      <PiDotsSixVerticalBold className="ml-auto text-lg text-neutral-600 opacity-0 group-hover:opacity-100" />
     </span>
   );
 };

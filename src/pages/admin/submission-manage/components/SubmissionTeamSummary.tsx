@@ -13,7 +13,7 @@ export const SubmissionTeamSummary = ({ detail }: { detail: SubmissionDetailResp
         <h3 className="text-darkGray text-xl font-bold">{detail.teamName}</h3>
         <SubmissionStatusBadge status={detail.status} />
       </div>
-      <p className="text-midGray mt-1 text-sm">{detail.projectOverview}</p>
+      <p className="mt-1 text-sm text-neutral-600">{detail.projectOverview}</p>
 
       <ul className="mt-4 flex list-disc flex-col gap-2 pl-4 text-sm marker:text-gray-400">
         <InfoRow label="분과" value={detail.trackName} />

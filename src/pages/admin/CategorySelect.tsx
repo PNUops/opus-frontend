@@ -27,7 +27,7 @@ const CategorySelect = ({ categoryId, onChange }: CategorySelectProps) => {
 
   return (
     <Select onValueChange={onChange} value={categoryId}>
-      <SelectTrigger className="border-lightGray bg-whiteGray h-10 w-[250px] rounded-sm shadow-none">
+      <SelectTrigger appearance="admin" className="w-[250px]">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

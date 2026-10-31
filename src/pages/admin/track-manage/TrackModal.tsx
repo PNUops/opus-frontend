@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import { FaRegEdit } from 'react-icons/fa';
-import Button from '@components/Button';
 import Input from '@components/Input';
-import { useToast } from '@hooks/useToast';
-import { DialogClose, DialogContent, DialogTitle } from '@components/ui/dialog';
-import { AdminActionButton } from '@components/admin';
+import { AdminFormError } from '@components/admin/AdminFormError';
+import { DialogContent, DialogTitle } from '@components/ui/dialog';
+import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 
 interface TrackModalProps {
   type: 'create' | 'edit';
   prevName?: string;
   onSubmit: (trackName: string) => void;
   onClose: () => void;
+  isPending: boolean;
+  isError: boolean;
 }
 
-export const TrackModal = ({ type, prevName, onSubmit, onClose }: TrackModalProps) => {
+export const TrackModal = ({ type, prevName, onSubmit, onClose, isPending, isError }: TrackModalProps) => {
   const [trackName, setTrackName] = useState<string>(prevName ?? '');
-  const toast = useToast();
+  const [nameError, setNameError] = useState('');
 
   const handleClose = () => {
     setTrackName(prevName ?? '');
@@ -23,35 +23,41 @@ export const TrackModal = ({ type, prevName, onSubmit, onClose }: TrackModalProp
   };
 
   const handleSubmit = () => {
-    if (!trackName) {
-      toast('분과 이름을 입력해주세요.', 'error');
+    if (isPending) return;
+    if (!trackName.trim()) {
+      setNameError('분과 이름을 입력해주세요.');
       return;
     }
-    onSubmit(trackName);
+    onSubmit(trackName.trim());
   };
 
   return (
-    <DialogContent>
-      <div className="text-mainBlue mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-        <FaRegEdit size={20} />
-      </div>
-      <DialogTitle className="text-center text-lg font-semibold text-gray-800">{`${type === 'create' ? '추가' : '수정'}할 분과 이름을 입력하세요.`}</DialogTitle>
+    <DialogContent appearance="admin" className="w-[440px]" closeDisabled={isPending}>
+      <DialogTitle>{`분과 ${type === 'create' ? '추가' : '수정'}`}</DialogTitle>
       <Input
+        appearance="admin"
+        aria-label="분과 이름"
         type="text"
+        disabled={isPending}
         value={trackName}
-        onChange={(e) => setTrackName(e.target.value)}
+        onChange={(e) => {
+          setTrackName(e.target.value);
+          setNameError('');
+        }}
+        aria-invalid={!!nameError}
         placeholder="분과를 입력하세요."
-        className="bg-whiteGray h-12 rounded-lg"
+        className="min-h-11"
       />
-      <div className="flex justify-center gap-4">
-        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+      <AdminFormError
+        message={nameError || (isError ? '저장에 실패했어요. 입력 내용을 확인하고 다시 시도해주세요.' : undefined)}
+      />
+      <div className="flex flex-wrap justify-end gap-3">
+        <AdminActionButton variant={'outline'} size={'lg'} onClick={handleClose} disabled={isPending}>
           {'닫기'}
         </AdminActionButton>
-        <DialogClose asChild>
-          <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSubmit}>
-            {`${type === 'create' ? '추가' : '수정'}하기`}
-          </AdminActionButton>
-        </DialogClose>
+        <AdminActionButton size={'lg'} onClick={handleSubmit} disabled={isPending} aria-busy={isPending}>
+          {isPending ? '저장 중…' : `${type === 'create' ? '추가' : '수정'}하기`}
+        </AdminActionButton>
       </div>
     </DialogContent>
   );
@@ -60,24 +66,18 @@ export const TrackModal = ({ type, prevName, onSubmit, onClose }: TrackModalProp
 interface TrackDeleteConfirmModalProps {
   trackName: string;
   onSubmit: () => void;
+  isPending: boolean;
+  isError: boolean;
 }
 
-export const TrackDeleteConfirmModal = ({ trackName, onSubmit }: TrackDeleteConfirmModalProps) => {
+export const TrackDeleteConfirmModal = ({ trackName, onSubmit, isPending, isError }: TrackDeleteConfirmModalProps) => {
   return (
-    <DialogContent>
-      <h3 className="text-center text-lg font-semibold text-gray-800">{`${trackName} 분과를 삭제하시겠습니까?`}</h3>
-      <div className="flex gap-4">
-        <DialogClose asChild>
-          <Button className="border-lightGray text-midGray rounded-full border px-5 py-3 hover:bg-gray-100">
-            {'닫기'}
-          </Button>
-        </DialogClose>
-        <DialogClose asChild>
-          <Button className="rounded-full bg-red-700 px-5 py-3" onClick={onSubmit}>
-            {'삭제'}
-          </Button>
-        </DialogClose>
-      </div>
-    </DialogContent>
+    <AdminDeleteConfirmModal
+      title="분과를 삭제하시겠습니까?"
+      description={trackName}
+      onDelete={onSubmit}
+      isPending={isPending}
+      isError={isError}
+    />
   );
 };

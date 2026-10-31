@@ -93,23 +93,36 @@ interface OngoingContestSlotProps {
 
 const slotStyle = {
   available: 'bg-mainBlue text-white hover:cursor-pointer',
-  occupied: 'bg-mainGreen text-white hover:cursor-default',
-  disabled: 'bg-lightGray text-midGray hover:cursor-not-allowed',
+  occupied: 'bg-subGreen text-neutral-800',
+  disabled: 'bg-lightGray text-neutral-600 hover:cursor-not-allowed',
 };
 
-const OngoingContestSlot = ({ type, text, onClick, onDelete }: OngoingContestSlotProps) => (
-  <button
-    className={cn('flex items-center gap-2.5 rounded-md px-3.5 py-2.5 text-sm', slotStyle[type])}
-    disabled={type === 'disabled'}
-    onClick={onClick}
-  >
-    <span>{text}</span>
-    {type === 'occupied' && (
-      <TiDeleteOutline
-        className="mt-0.5 fill-white hover:cursor-pointer hover:fill-red-600"
-        size={20}
-        onClick={onDelete}
-      />
-    )}
-  </button>
-);
+const OngoingContestSlot = ({ type, text, onClick, onDelete }: OngoingContestSlotProps) => {
+  if (type === 'occupied')
+    return (
+      <div className={cn('flex min-h-11 items-center gap-2 rounded-md pl-3.5 text-sm', slotStyle.occupied)}>
+        <span className="min-w-0 break-words">{text}</span>
+        <button
+          type="button"
+          aria-label={`${text} 진행 중 대회 설정 해제`}
+          onClick={onDelete}
+          className="focus-visible:outline-mainBlue flex size-11 shrink-0 items-center justify-center rounded-md hover:bg-white/50 focus-visible:outline-2"
+        >
+          <TiDeleteOutline size={20} aria-hidden />
+        </button>
+      </div>
+    );
+  return (
+    <button
+      type="button"
+      className={cn(
+        'focus-visible:outline-mainBlue flex min-h-11 items-center rounded-md px-3.5 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-offset-2',
+        slotStyle[type],
+      )}
+      disabled={type === 'disabled'}
+      onClick={onClick}
+    >
+      {text}
+    </button>
+  );
+};

@@ -1,10 +1,12 @@
+import Input from '@components/Input';
+import { AdminTable } from '@components/admin/AdminTable';
 import { ReactNode, useMemo, useState } from 'react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Clock, Download, Eye, MessageSquare, RefreshCw, Search, Users } from 'lucide-react';
 import type { SubmissionFileResponseDto } from '@dto/submissionDto';
 
-import FilterDropDown from '@components/FilterDropDown';
+import { AdminFilterSelect as FilterDropDown } from '@components/admin/AdminFilterSelect';
 import Pagination from '@components/Pagination';
 import { Sheet, SheetContent, SheetTitle } from '@components/ui/sheet';
 import { useToast } from '@hooks/useToast';
@@ -182,8 +184,10 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
           }}
         />
         <div className="relative flex-1">
-          <Search size={16} className="text-midGray absolute top-1/2 left-3 -translate-y-1/2" />
-          <input
+          <Search size={16} className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-600" />
+          <Input
+            appearance="admin"
+            aria-label="팀 이름 검색"
             type="text"
             value={search}
             onChange={(e) => {
@@ -191,14 +195,14 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
               resetToFirstPage();
             }}
             placeholder="팀 이름으로 검색"
-            className="border-lightGray placeholder:text-midGray h-9 w-full rounded-md border pr-3 pl-9 text-sm focus:outline-none"
+            className="w-full pl-9 text-sm"
           />
         </div>
         <button
           type="button"
           onClick={handleReset}
           aria-label="필터 초기화"
-          className="border-lightGray text-midGray flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-gray-100"
+          className="border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md border text-neutral-600 transition-colors focus-visible:outline-2"
         >
           <RefreshCw size={16} />
         </button>
@@ -219,7 +223,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
           sub={`${percent(stats.submitted, stats.total)}%`}
           icon={<Clock size={18} />}
           iconClass="bg-subGreen text-mainGreen"
-          subClass="text-mainGreen"
+          subClass="text-neutral-700"
         />
         <StatCard
           label="미제출"
@@ -227,7 +231,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
           sub={`${percent(stats.notSubmitted, stats.total)}%`}
           icon={<Clock size={18} />}
           iconClass="bg-yellow-50 text-yellow-600"
-          subClass="text-yellow-600"
+          subClass="text-neutral-700"
         />
         <StatCard
           label="지각 제출"
@@ -241,7 +245,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
 
       {/* 리스트 */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] border-collapse">
+        <AdminTable className="w-full min-w-[900px] border-collapse">
           <thead>
             <tr className="border-lightGray border-b">
               {TABLE_HEADERS.map((header) => (
@@ -255,7 +259,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
           <tbody>
             {pagedRows.length === 0 ? (
               <tr>
-                <td colSpan={TABLE_HEADERS.length + 1} className="text-midGray py-12 text-center text-sm">
+                <td colSpan={TABLE_HEADERS.length + 1} className="py-12 text-center text-sm text-neutral-600">
                   제출 현황이 없어요.
                 </td>
               </tr>
@@ -302,18 +306,18 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
               ))
             )}
           </tbody>
-        </table>
+        </AdminTable>
       </div>
 
       {/* 하단 */}
       <div className="flex items-center justify-between">
-        <p className="text-midGray shrink-0 text-sm">전체 {filtered.length.toLocaleString()}건</p>
+        <p className="shrink-0 text-sm text-neutral-600">전체 {filtered.length.toLocaleString()}건</p>
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
       </div>
 
       {/* 상세보기 Drawer */}
       <Sheet open={detailTarget !== null} onOpenChange={(open) => !open && setDetailTarget(null)}>
-        <SheetContent className="gap-0 p-0">
+        <SheetContent className="w-full gap-0 p-0 sm:max-w-md">
           {detailTarget &&
             (detailData ? (
               <SubmissionDetailDrawer
@@ -332,7 +336,7 @@ export const SubmissionStatusTab = ({ initialTypeFilter = '' }: SubmissionStatus
 
       {/* 피드백 Drawer */}
       <Sheet open={feedbackTarget !== null} onOpenChange={(open) => !open && setFeedbackTarget(null)}>
-        <SheetContent className="gap-0 p-0">
+        <SheetContent className="w-full gap-0 p-0 sm:max-w-md">
           {feedbackTarget &&
             (feedbackDetailData ? (
               <SubmissionFeedbackDrawer
@@ -360,11 +364,11 @@ interface StatCardProps {
   subClass?: string;
 }
 
-const StatCard = ({ label, value, sub, icon, iconClass, subClass = 'text-midGray' }: StatCardProps) => {
+const StatCard = ({ label, value, sub, icon, iconClass, subClass = 'text-neutral-600' }: StatCardProps) => {
   return (
     <div className="border-lightGray flex items-center justify-between rounded-xl border p-4">
       <div className="flex flex-col gap-1">
-        <span className="text-midGray text-xs">{label}</span>
+        <span className="text-xs text-neutral-600">{label}</span>
         <span className="text-darkGray text-xl font-bold">{value}</span>
         <span className={cn('text-xs font-medium', subClass)}>{sub}</span>
       </div>
@@ -386,7 +390,7 @@ const DrawerLoading = () => (
     <div className="border-lightGray flex items-center gap-2 border-b px-5 py-4">
       <SheetTitle className="text-base font-semibold">불러오는 중...</SheetTitle>
     </div>
-    <div className="text-midGray flex flex-1 items-center justify-center text-sm">제출 정보를 불러오고 있어요.</div>
+    <div className="flex flex-1 items-center justify-center text-sm text-neutral-600">제출 정보를 불러오고 있어요.</div>
   </div>
 );
 
@@ -399,7 +403,7 @@ const ActionIconButton = ({ label, icon, onClick, variant = 'soft', disabled = f
       aria-label={label}
       title={label}
       className={cn(
-        'flex h-8 w-8 items-center justify-center rounded-md transition-colors disabled:opacity-40',
+        'focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-40',
         variant === 'solid' ? 'bg-mainBlue text-white hover:bg-blue-800' : 'text-mainBlue bg-blue-50 hover:bg-blue-100',
       )}
     >
