@@ -1,101 +1,96 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
 import { TeamDetailDto } from '@dto/teams/teamsDto';
-import { IoEllipsisHorizontal } from 'react-icons/io5';
 
 interface ProjectDetailSectionProps {
   data: TeamDetailDto;
 }
 
+const OVERVIEW_PREVIEW_LENGTH = 220;
+
 const ProjectDetailSection = ({ data }: ProjectDetailSectionProps) => {
   const { professorName, teamMembers, overview } = data;
+  const [isExpanded, setIsExpanded] = useState(false);
+  const overviewRef = useRef<HTMLElement>(null);
+  const safeOverview = overview?.trim() ?? '';
+  const shouldTruncate = safeOverview.length > OVERVIEW_PREVIEW_LENGTH;
+  const preview = safeOverview.slice(0, OVERVIEW_PREVIEW_LENGTH);
+  const paragraphEnd = preview.lastIndexOf('\n\n');
+  const previewText = paragraphEnd >= 100 ? preview.slice(0, paragraphEnd) : preview;
+  const visibleText = !isExpanded && shouldTruncate ? `${previewText.trimEnd()}…` : safeOverview;
+  const contributors = teamMembers.filter(
+    (member) => member.teamMemberName?.trim() && ['ROLE_팀장', 'ROLE_팀원'].includes(member.roleType),
+  );
+  const hasContributors = !!professorName?.trim() || contributors.length > 0;
 
-  const teamLeaderName = teamMembers.find((member) => member.roleType === 'ROLE_팀장')?.teamMemberName;
-  const teamMemberNames = teamMembers
-    .map((member) => (member.roleType === 'ROLE_팀원' ? member.teamMemberName : null))
-    .filter(Boolean) as string[];
-
-  const hasProfessor = !!professorName?.trim();
-  const hasTeamLeader = !!teamLeaderName?.trim();
-  const hasTeamMembers = teamMemberNames.length > 0;
-  const hasContributors = hasProfessor || hasTeamLeader || hasTeamMembers;
-  const hasOverview = overview?.trim();
-  const safeOverview = overview ?? '';
-  const OVERVIEW_LENGTH = 500;
-
-  const [isFolded, setIsFolded] = useState(true);
-  const shouldTruncate = safeOverview.length > OVERVIEW_LENGTH;
-  const visibleText = isFolded && shouldTruncate ? safeOverview.slice(0, OVERVIEW_LENGTH) : safeOverview;
+  const toggleOverview = () => {
+    if (isExpanded && (overviewRef.current?.getBoundingClientRect().top ?? 0) < 0) {
+      overviewRef.current?.scrollIntoView({ block: 'start' });
+    }
+    setIsExpanded((current) => !current);
+  };
 
   return (
-    <>
-      {hasContributors && (
-        <div className="flex flex-col gap-3">
-          <div className="sm:text-title text-xl font-bold">Contributors</div>
-          {(hasProfessor || hasTeamLeader || hasTeamMembers) && (
-            <div className="flex flex-col gap-2 sm:gap-3">
-              {hasProfessor && (
-                <div className="flex items-start gap-2">
-                  <span className="text-mainGreen/60 border-mainGreen/50 inline-flex h-8 w-[70px] items-center justify-center rounded-full border px-3 text-xs font-medium whitespace-nowrap">
-                    지도교수
-                  </span>
-                  <span className="bg-whiteGray inline-flex h-8 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-slate-800">
-                    {professorName}
-                  </span>
-                </div>
-              )}
-              {hasTeamLeader && (
-                <div className="flex items-start gap-2">
-                  <span className="text-mainGreen/60 border-mainGreen/50 inline-flex h-8 w-[70px] items-center justify-center rounded-full border px-3 text-xs font-medium whitespace-nowrap">
-                    팀장
-                  </span>
-                  <span className="bg-whiteGray inline-flex h-8 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-slate-800">
-                    {teamLeaderName}
-                  </span>
-                </div>
-              )}
-              {hasTeamMembers && (
-                <div className="flex items-start gap-2">
-                  <span className="text-mainGreen/60 border-mainGreen/50 inline-flex h-8 w-[70px] items-center justify-center rounded-full border px-3 text-xs font-medium whitespace-nowrap">
-                    팀원
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {teamMemberNames.map((name) => (
-                      <span
-                        key={name}
-                        className="bg-whiteGray inline-flex h-8 items-center rounded-full px-3 text-sm font-medium whitespace-nowrap text-slate-800"
-                      >
-                        {name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {hasOverview && (
-        <>
-          <div className="h-10" />
-          <div className="flex flex-col gap-3">
-            <div className="sm:text-title text-xl font-bold">Overview</div>
-            <div className="bg-whiteGray text-exsm rounded p-4 leading-[1.7] whitespace-pre-wrap sm:text-sm">
+    <div
+      className={`grid gap-8 ${hasContributors ? 'md:grid-cols-[minmax(0,1fr)_200px] lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-12' : ''}`}
+    >
+      <section
+        ref={overviewRef}
+        id="overview"
+        aria-labelledby="project-overview-title"
+        className="min-w-0 scroll-mt-24"
+      >
+        <h2 id="project-overview-title" className="mb-4 text-lg font-semibold">
+          프로젝트 소개
+        </h2>
+        {safeOverview ? (
+          <>
+            <p
+              id="project-overview-content"
+              className="text-[15px] leading-[1.85] [overflow-wrap:anywhere] whitespace-pre-wrap text-gray-700"
+            >
               {visibleText}
-              {shouldTruncate && (
-                <button
-                  className="bg-subGreen text-mainGreen mx-3 cursor-pointer rounded-full px-3 py-1 text-xs hover:bg-emerald-100"
-                  onClick={() => setIsFolded(!isFolded)}
-                >
-                  {isFolded ? <IoEllipsisHorizontal /> : '간략히'}
-                </button>
-              )}
-            </div>
-          </div>
-        </>
+            </p>
+            {shouldTruncate && (
+              <button
+                type="button"
+                aria-expanded={isExpanded}
+                aria-controls="project-overview-content"
+                onClick={toggleOverview}
+                className="text-mainBlue focus-visible:outline-mainBlue mt-3 inline-flex min-h-11 items-center gap-2 rounded-sm text-sm font-medium underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4"
+              >
+                {isExpanded ? '소개 접기' : '소개 전체 읽기'}
+                {isExpanded ? <FiChevronUp aria-hidden /> : <FiChevronDown aria-hidden />}
+              </button>
+            )}
+          </>
+        ) : (
+          <p className="text-sm leading-relaxed text-gray-500">프로젝트 소개가 아직 등록되지 않았습니다.</p>
+        )}
+      </section>
+      {hasContributors && (
+        <section id="contributors" aria-labelledby="project-contributors-title" className="min-w-0 scroll-mt-24">
+          <h2 id="project-contributors-title" className="mb-4 text-lg font-semibold">
+            팀 정보
+          </h2>
+          <dl className="flex flex-col gap-3 text-sm leading-relaxed">
+            {professorName?.trim() && (
+              <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-3">
+                <dt className="text-gray-500">지도교수</dt>
+                <dd className="break-words text-gray-700">{professorName}</dd>
+              </div>
+            )}
+            {contributors.map((member) => (
+              <div key={member.memberId} className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-3">
+                <dt className="text-gray-500">{member.roleType === 'ROLE_팀장' ? '팀장' : '팀원'}</dt>
+                <dd className="break-words text-gray-700">{member.teamMemberName}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       )}
-    </>
+    </div>
   );
 };
 
