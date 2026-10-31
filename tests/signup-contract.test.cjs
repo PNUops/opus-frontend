@@ -19,6 +19,135 @@ function loadModule(relativePath, mocks) {
   return exports;
 }
 
+function renderSignUpFormState() {
+  const state = [];
+  let cursor = 0;
+  const { useSignUpFormState } = loadModule('src/pages/signup/useSignUpFormState.ts', {
+    react: {
+      useState: (initialValue) => {
+        const index = cursor++;
+        if (!(index in state)) state[index] = initialValue;
+        return [state[index], (next) => (state[index] = typeof next === 'function' ? next(state[index]) : next)];
+      },
+    },
+    '@utils/email': loadModule('src/utils/email.ts', {}),
+    '@utils/password': loadModule('src/utils/password.ts', {}),
+  });
+  return () => {
+    cursor = 0;
+    return useSignUpFormState();
+  };
+}
+
+test('email errors appear on blur and update while editing without showing untouched field errors', () => {
+  const render = renderSignUpFormState();
+  assert.deepEqual({ ...render().formError }, {});
+  render().validateField('email');
+  assert.deepEqual({ ...render().formError }, {});
+
+  render().updateField('email', 'student@example.com');
+  assert.deepEqual({ ...render().formError }, {});
+
+  render().validateField('email');
+  assert.deepEqual({ ...render().formError }, { email: '부산대학교 이메일(@pusan.ac.kr)이 아닙니다.' });
+
+  render().updateField('email', 'student@pusan.ac.kr');
+  assert.deepEqual({ ...render().formError }, {});
+
+  render().updateField('email', 'student@example.com');
+  assert.equal(render().formError.email, '부산대학교 이메일(@pusan.ac.kr)이 아닙니다.');
+});
+
+test('blurring empty fields without entering anything does not show errors', () => {
+  const render = renderSignUpFormState();
+  for (const field of ['name', 'studentNumber', 'email', 'password', 'passwordConfirm']) {
+    render().validateField(field);
+    assert.deepEqual({ ...render().formError }, {});
+  }
+});
+
+test('clearing entered fields shows the required message on blur and clears after correction', () => {
+  for (const [field, value] of [
+    ['name', '테스트 학생'],
+    ['studentNumber', '202600001'],
+    ['email', 'student@pusan.ac.kr'],
+    ['password', 'Test123!'],
+    ['passwordConfirm', 'Test123!'],
+  ]) {
+    for (const blank of ['', '   ']) {
+      const render = renderSignUpFormState();
+      if (field === 'passwordConfirm') render().updateField('password', 'Test123!');
+      render().updateField(field, value);
+      render().updateField(field, blank);
+      assert.deepEqual({ ...render().formError }, {});
+      render().validateField(field);
+      assert.deepEqual({ ...render().formError }, { [field]: '필수 입력 항목입니다.' });
+      render().updateField(field, value);
+      assert.deepEqual({ ...render().formError }, {});
+    }
+  }
+});
+
+test('password rules and confirmation stay current after blur, including changes to the original password', () => {
+  const render = renderSignUpFormState();
+  render().updateField('password', 'short');
+  assert.deepEqual({ ...render().formError }, {});
+  render().validateField('password');
+  assert.equal(render().formError.password, '8~16자, 영어, 숫자, 특수문자(@$!%*#?&~)를 포함하여야 합니다.');
+
+  render().updateField('password', 'Test123!');
+  assert.deepEqual({ ...render().formError }, {});
+  render().updateField('passwordConfirm', 'different');
+  assert.deepEqual({ ...render().formError }, {});
+  render().validateField('passwordConfirm');
+  assert.equal(render().formError.passwordConfirm, '비밀번호가 일치하지 않습니다.');
+
+  render().updateField('passwordConfirm', 'Test123!');
+  assert.deepEqual({ ...render().formError }, {});
+  render().updateField('password', 'NewTest123!');
+  assert.equal(render().formError.passwordConfirm, '비밀번호가 일치하지 않습니다.');
+  render().updateField('passwordConfirm', 'NewTest123!');
+  assert.deepEqual({ ...render().formError }, {});
+});
+
+test('submission validates untouched fields and requires email verification until it succeeds', () => {
+  const render = renderSignUpFormState();
+  assert.equal(render().validate(), false);
+  assert.deepEqual(
+    { ...render().formError },
+    {
+      name: '필수 입력 항목입니다.',
+      studentNumber: '필수 입력 항목입니다.',
+      email: '필수 입력 항목입니다.',
+      password: '필수 입력 항목입니다.',
+      passwordConfirm: '필수 입력 항목입니다.',
+    },
+  );
+
+  render().updateField('name', '테스트 학생');
+  render().updateField('studentNumber', '202600001');
+  render().updateField('email', 'student@pusan.ac.kr');
+  render().updateField('password', 'Test123!');
+  render().updateField('passwordConfirm', 'different');
+  assert.deepEqual(
+    { ...render().formError },
+    {
+      email: '이메일 인증이 필요합니다.',
+      passwordConfirm: '비밀번호가 일치하지 않습니다.',
+    },
+  );
+  render().updateField('passwordConfirm', 'Test123!');
+  assert.equal(render().validate(), false);
+
+  render().updateField('isEmailVerified', true);
+  assert.deepEqual({ ...render().formError }, {});
+  assert.equal(render().validate(), true);
+
+  render().updateField('isEmailVerified', false);
+  assert.equal(render().formError.email, '이메일 인증이 필요합니다.');
+  assert.equal(render().validate(), false);
+});
+
 const student = {
   name: '테스트 학생',
   studentNumber: '202600001',
