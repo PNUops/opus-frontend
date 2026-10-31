@@ -1,47 +1,61 @@
+import { lazy, type ComponentType } from 'react';
+import DeferredContent from '@components/DeferredContent';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import MainLayout from '@layout/MainLayout';
 import AuthLayout from '@layout/AuthLayout';
 
 import MainPage from '@pages/main/MainPage';
-import ProjectEditPage from '@pages/project-editor/ProjectEditPage';
-import ProjectDetailPage from '@pages/project-viewer/ProjectDetailPage';
-import SignInPage from '@pages/signin/SignInPage';
-import SignUpPage from '@pages/signup/SignUpPage';
-import FindPage from '@pages/find/FindPage';
-import OAuthCallback from '@pages/signin/SocialSignIn/OAuthCallback';
-import NoticeDetailPage from '@pages/notice/NoticeDetailPage';
-import NoticeListPage from '@pages/notice/NoticeListPage';
-import ContestPage from '@pages/contest/ContestPage';
 import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
-import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
-import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
 import SidebarLayout from '@layout/SidebarLayout';
-import SortManagePage from '@pages/admin/sort/SortManagePage';
-import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
-import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
-import NoticeManagePage from '@pages/admin/notice-manage/NoticeManagePage';
-import AwardManagePage from '@pages/admin/award-manage/AwardManagePage';
-import ContestCreatePage from '@pages/admin/create/ContestCreatePage';
-import BannerManagePage from '@pages/admin/banner/BannerManagePage';
-import NotFoundPage from '@pages/common/NotFoundPage';
-import VoteManagePage from '@pages/admin/votes/VoteManagePage';
-import ContestManagePage from '@pages/admin/contest-manage/ContestManagePage';
-import ContestStatisticsPage from '@pages/admin/statistics/ContestStatisticsPage';
-import TeamSettingPage from '@pages/admin/team-setting/TeamSettingPage';
 import MyPageLayout from '@layout/me/MyPageLayout';
-import ActivityPage from '@pages/me/activity/ActivityPage';
-import AccountPage from '@pages/me/account/AccountPage';
-import MyLikePage from '@pages/me/activity/sub/MyLikePage';
-import MyCommentPage from '@pages/me/activity/sub/MyCommentPage';
-import MySubmissionPage from '@pages/me/activity/submission/MySubmissionPage';
-import SubmissionManagePage from '@pages/admin/submission-manage/SubmissionManagePage';
-import TeamDashboardPage from '@pages/me/team/TeamDashboardPage';
-import RoleAssignmentPage from '@pages/admin/role-assignment/RoleAssignmentPage';
-import AdvisorActivityPage from '@pages/me/advisor-activity/AdvisorActivityPage';
+
+const lazyPage = (load: () => Promise<{ default: ComponentType }>) => {
+  const Page = lazy(load);
+  return function LazyPage() {
+    return (
+      <DeferredContent>
+        <Page />
+      </DeferredContent>
+    );
+  };
+};
+
+const ProjectEditPage = lazyPage(() => import('@pages/project-editor/ProjectEditPage'));
+const ProjectDetailPage = lazyPage(() => import('@pages/project-viewer/ProjectDetailPage'));
+const SignInPage = lazyPage(() => import('@pages/signin/SignInPage'));
+const SignUpPage = lazyPage(() => import('@pages/signup/SignUpPage'));
+const FindPage = lazyPage(() => import('@pages/find/FindPage'));
+const OAuthCallback = lazyPage(() => import('@pages/signin/SocialSignIn/OAuthCallback'));
+const NoticeDetailPage = lazyPage(() => import('@pages/notice/NoticeDetailPage'));
+const NoticeListPage = lazyPage(() => import('@pages/notice/NoticeListPage'));
+const ContestPage = lazyPage(() => import('@pages/contest/ContestPage'));
+const AdminDashBoardPage = lazyPage(() => import('@pages/admin/AdminDashBoardPage'));
+const ProjectManagePage = lazyPage(() => import('@pages/admin/project-manage/ProjectManagePage'));
+const SortManagePage = lazyPage(() => import('@pages/admin/sort/SortManagePage'));
+const RequiredFieldsPage = lazyPage(() => import('@pages/admin/required-field/RequiredFieldsPage'));
+const TrackManagePage = lazyPage(() => import('@pages/admin/track-manage/TrackManagePage'));
+const NoticeManagePage = lazyPage(() => import('@pages/admin/notice-manage/NoticeManagePage'));
+const AwardManagePage = lazyPage(() => import('@pages/admin/award-manage/AwardManagePage'));
+const ContestCreatePage = lazyPage(() => import('@pages/admin/create/ContestCreatePage'));
+const BannerManagePage = lazyPage(() => import('@pages/admin/banner/BannerManagePage'));
+const NotFoundPage = lazyPage(() => import('@pages/common/NotFoundPage'));
+const VoteManagePage = lazyPage(() => import('@pages/admin/votes/VoteManagePage'));
+const ContestManagePage = lazyPage(() => import('@pages/admin/contest-manage/ContestManagePage'));
+const ContestStatisticsPage = lazyPage(() => import('@pages/admin/statistics/ContestStatisticsPage'));
+const TeamSettingPage = lazyPage(() => import('@pages/admin/team-setting/TeamSettingPage'));
+const ActivityPage = lazyPage(() => import('@pages/me/activity/ActivityPage'));
+const AccountPage = lazyPage(() => import('@pages/me/account/AccountPage'));
+const MyLikePage = lazyPage(() => import('@pages/me/activity/sub/MyLikePage'));
+const MyCommentPage = lazyPage(() => import('@pages/me/activity/sub/MyCommentPage'));
+const MySubmissionPage = lazyPage(() => import('@pages/me/activity/submission/MySubmissionPage'));
+const SubmissionManagePage = lazyPage(() => import('@pages/admin/submission-manage/SubmissionManagePage'));
+const TeamDashboardPage = lazyPage(() => import('@pages/me/team/TeamDashboardPage'));
+const RoleAssignmentPage = lazyPage(() => import('@pages/admin/role-assignment/RoleAssignmentPage'));
+const AdvisorActivityPage = lazyPage(() => import('@pages/me/advisor-activity/AdvisorActivityPage'));
 
 const AppRoutes = () =>
   createBrowserRouter([

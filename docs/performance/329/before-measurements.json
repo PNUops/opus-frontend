@@ -1,0 +1,344 @@
+{
+  "phase": "before",
+  "browser": "140.0.7339.16",
+  "node": "v22.13.1",
+  "options": {
+    "cpuRate": 4,
+    "latencyMs": 50,
+    "bytesPerSecond": 1250000,
+    "runs": 5,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "conditions": "Vite preview production build; fresh context and disabled HTTP cache; API and fonts replay local safe fixtures; no MSW runtime; same reduced-motion setting.",
+  "samples": [
+    {
+      "run": 1,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 2772,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 697.063,
+        "taskDurationMs": 2440.853
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 1,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 1316,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 496.627,
+        "taskDurationMs": 976.3770000000001
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 1,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1800,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 933.578,
+        "taskDurationMs": 2839.913
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928,
+      "adminReadyMs": 1385.0999999996275,
+      "adminScripts": [],
+      "adminAdditionalJsRequests": 0,
+      "adminAdditionalJsBodyBytes": 0,
+      "adminScriptDurationMs": 190.10799999999995
+    },
+    {
+      "run": 2,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 1588,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 627.425,
+        "taskDurationMs": 2412.904
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 2,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 1232,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 459.26,
+        "taskDurationMs": 938.378
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 2,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1904,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 1176.573,
+        "taskDurationMs": 3204.993
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928,
+      "adminReadyMs": 891.1000000005588,
+      "adminScripts": [],
+      "adminAdditionalJsRequests": 0,
+      "adminAdditionalJsBodyBytes": 0,
+      "adminScriptDurationMs": 175.92100000000005
+    },
+    {
+      "run": 3,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 1632,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 827.283,
+        "taskDurationMs": 2860.759
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 3,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 1488,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 592.172,
+        "taskDurationMs": 1152.066
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 3,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1528,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 933.431,
+        "taskDurationMs": 2826.705
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928,
+      "adminReadyMs": 1065.800000000745,
+      "adminScripts": [],
+      "adminAdditionalJsRequests": 0,
+      "adminAdditionalJsBodyBytes": 0,
+      "adminScriptDurationMs": 242.32999999999993
+    },
+    {
+      "run": 4,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 1388,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 723.186,
+        "taskDurationMs": 2284.4289999999996
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 4,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 1252,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 530.169,
+        "taskDurationMs": 1026.3899999999999
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 4,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1940,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 732.976,
+        "taskDurationMs": 3067.059
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928,
+      "adminReadyMs": 1279.4000000003725,
+      "adminScripts": [],
+      "adminAdditionalJsRequests": 0,
+      "adminAdditionalJsBodyBytes": 0,
+      "adminScriptDurationMs": 230.48799999999994
+    },
+    {
+      "run": 5,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 1364,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 728.358,
+        "taskDurationMs": 2566.147
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 5,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 1124,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 455.818,
+        "taskDurationMs": 769.491
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928
+    },
+    {
+      "run": 5,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1620,
+        "scripts": [
+          {
+            "path": "/assets/index-DlXww4sz.js",
+            "transferSize": 335228,
+            "encodedBodySize": 334928,
+            "decodedBodySize": 1116007
+          }
+        ],
+        "scriptDurationMs": 760.441,
+        "taskDurationMs": 3581.186
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 335228,
+      "initialJsBodyBytes": 334928,
+      "adminReadyMs": 1189.2999999998137,
+      "adminScripts": [],
+      "adminAdditionalJsRequests": 0,
+      "adminAdditionalJsBodyBytes": 0,
+      "adminScriptDurationMs": 100.40899999999999
+    }
+  ],
+  "failures": []
+}

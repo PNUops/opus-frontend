@@ -1,0 +1,919 @@
+{
+  "phase": "routes-only",
+  "browser": "140.0.7339.16",
+  "node": "v22.13.1",
+  "options": {
+    "cpuRate": 4,
+    "latencyMs": 50,
+    "bytesPerSecond": 1250000,
+    "runs": 5,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "conditions": "Vite preview production build; fresh context and disabled HTTP cache; API and fonts replay local safe fixtures; no MSW runtime; same reduced-motion setting.",
+  "samples": [
+    {
+      "run": 1,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 2264,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 572.623,
+        "taskDurationMs": 2441.0029999999997
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090
+    },
+    {
+      "run": 1,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 876,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          },
+          {
+            "path": "/assets/SignInPage-B_hNyCbY.js",
+            "transferSize": 1961,
+            "encodedBodySize": 1661,
+            "decodedBodySize": 3770
+          },
+          {
+            "path": "/assets/Input-D3CMUKnC.js",
+            "transferSize": 530,
+            "encodedBodySize": 230,
+            "decodedBodySize": 230
+          },
+          {
+            "path": "/assets/PasswordInput-CGAOl9HA.js",
+            "transferSize": 796,
+            "encodedBodySize": 496,
+            "decodedBodySize": 496
+          },
+          {
+            "path": "/assets/signIn-CQjNgDNV.js",
+            "transferSize": 707,
+            "encodedBodySize": 407,
+            "decodedBodySize": 407
+          },
+          {
+            "path": "/assets/email-BPE3zpVT.js",
+            "transferSize": 362,
+            "encodedBodySize": 62,
+            "decodedBodySize": 62
+          },
+          {
+            "path": "/assets/Backdrop-DsWu_G3U.js",
+            "transferSize": 498,
+            "encodedBodySize": 198,
+            "decodedBodySize": 198
+          }
+        ],
+        "scriptDurationMs": 313.572,
+        "taskDurationMs": 610.057
+      },
+      "initialJsRequests": 7,
+      "initialJsTransferBytes": 228244,
+      "initialJsBodyBytes": 226144
+    },
+    {
+      "run": 1,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1120,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 517.826,
+        "taskDurationMs": 1715.868
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090,
+      "adminReadyMs": 2550.2999999998137,
+      "adminScripts": [
+        {
+          "path": "/assets/AdminDashBoardPage-DwDpZNIq.js",
+          "transferSize": 4469,
+          "encodedBodySize": 4169,
+          "decodedBodySize": 12385
+        },
+        {
+          "path": "/assets/AdminCard-BnTLwV4e.js",
+          "transferSize": 889,
+          "encodedBodySize": 589,
+          "decodedBodySize": 589
+        },
+        {
+          "path": "/assets/AdminPopover-54PwvWGg.js",
+          "transferSize": 896,
+          "encodedBodySize": 596,
+          "decodedBodySize": 1184
+        },
+        {
+          "path": "/assets/index-CnVpOm3E.js",
+          "transferSize": 702,
+          "encodedBodySize": 402,
+          "decodedBodySize": 1053
+        },
+        {
+          "path": "/assets/index-BSWxRHsr.js",
+          "transferSize": 2859,
+          "encodedBodySize": 2559,
+          "decodedBodySize": 6510
+        },
+        {
+          "path": "/assets/dialog-C8x38wm6.js",
+          "transferSize": 5083,
+          "encodedBodySize": 4783,
+          "decodedBodySize": 13957
+        },
+        {
+          "path": "/assets/index-BmAim952.js",
+          "transferSize": 1043,
+          "encodedBodySize": 743,
+          "decodedBodySize": 743
+        },
+        {
+          "path": "/assets/NoData-BlX9hwEy.js",
+          "transferSize": 521,
+          "encodedBodySize": 221,
+          "decodedBodySize": 221
+        },
+        {
+          "path": "/assets/Input-D3CMUKnC.js",
+          "transferSize": 530,
+          "encodedBodySize": 230,
+          "decodedBodySize": 230
+        },
+        {
+          "path": "/assets/TextArea-DPzRKJLn.js",
+          "transferSize": 525,
+          "encodedBodySize": 225,
+          "decodedBodySize": 225
+        },
+        {
+          "path": "/assets/AdminDeleteConfirmModal-DbVoZEvE.js",
+          "transferSize": 848,
+          "encodedBodySize": 548,
+          "decodedBodySize": 548
+        },
+        {
+          "path": "/assets/category-CZqDai7a.js",
+          "transferSize": 449,
+          "encodedBodySize": 149,
+          "decodedBodySize": 149
+        },
+        {
+          "path": "/assets/category-BA1xV1St.js",
+          "transferSize": 616,
+          "encodedBodySize": 316,
+          "decodedBodySize": 316
+        }
+      ],
+      "adminAdditionalJsRequests": 13,
+      "adminAdditionalJsBodyBytes": 15530,
+      "adminScriptDurationMs": 475.46299999999997
+    },
+    {
+      "run": 2,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 984,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 463.09299999999996,
+        "taskDurationMs": 1721.453
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090
+    },
+    {
+      "run": 2,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 844,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          },
+          {
+            "path": "/assets/SignInPage-B_hNyCbY.js",
+            "transferSize": 1961,
+            "encodedBodySize": 1661,
+            "decodedBodySize": 3770
+          },
+          {
+            "path": "/assets/Input-D3CMUKnC.js",
+            "transferSize": 530,
+            "encodedBodySize": 230,
+            "decodedBodySize": 230
+          },
+          {
+            "path": "/assets/PasswordInput-CGAOl9HA.js",
+            "transferSize": 796,
+            "encodedBodySize": 496,
+            "decodedBodySize": 496
+          },
+          {
+            "path": "/assets/signIn-CQjNgDNV.js",
+            "transferSize": 707,
+            "encodedBodySize": 407,
+            "decodedBodySize": 407
+          },
+          {
+            "path": "/assets/Backdrop-DsWu_G3U.js",
+            "transferSize": 498,
+            "encodedBodySize": 198,
+            "decodedBodySize": 198
+          },
+          {
+            "path": "/assets/email-BPE3zpVT.js",
+            "transferSize": 362,
+            "encodedBodySize": 62,
+            "decodedBodySize": 62
+          }
+        ],
+        "scriptDurationMs": 287.989,
+        "taskDurationMs": 589.7320000000001
+      },
+      "initialJsRequests": 7,
+      "initialJsTransferBytes": 228244,
+      "initialJsBodyBytes": 226144
+    },
+    {
+      "run": 2,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1160,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 588.288,
+        "taskDurationMs": 1970.859
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090,
+      "adminReadyMs": 925,
+      "adminScripts": [
+        {
+          "path": "/assets/AdminDashBoardPage-DwDpZNIq.js",
+          "transferSize": 4469,
+          "encodedBodySize": 4169,
+          "decodedBodySize": 12385
+        },
+        {
+          "path": "/assets/AdminCard-BnTLwV4e.js",
+          "transferSize": 889,
+          "encodedBodySize": 589,
+          "decodedBodySize": 589
+        },
+        {
+          "path": "/assets/AdminPopover-54PwvWGg.js",
+          "transferSize": 896,
+          "encodedBodySize": 596,
+          "decodedBodySize": 1184
+        },
+        {
+          "path": "/assets/index-CnVpOm3E.js",
+          "transferSize": 702,
+          "encodedBodySize": 402,
+          "decodedBodySize": 1053
+        },
+        {
+          "path": "/assets/index-BSWxRHsr.js",
+          "transferSize": 2859,
+          "encodedBodySize": 2559,
+          "decodedBodySize": 6510
+        },
+        {
+          "path": "/assets/dialog-C8x38wm6.js",
+          "transferSize": 5083,
+          "encodedBodySize": 4783,
+          "decodedBodySize": 13957
+        },
+        {
+          "path": "/assets/index-BmAim952.js",
+          "transferSize": 1043,
+          "encodedBodySize": 743,
+          "decodedBodySize": 743
+        },
+        {
+          "path": "/assets/NoData-BlX9hwEy.js",
+          "transferSize": 521,
+          "encodedBodySize": 221,
+          "decodedBodySize": 221
+        },
+        {
+          "path": "/assets/Input-D3CMUKnC.js",
+          "transferSize": 530,
+          "encodedBodySize": 230,
+          "decodedBodySize": 230
+        },
+        {
+          "path": "/assets/TextArea-DPzRKJLn.js",
+          "transferSize": 525,
+          "encodedBodySize": 225,
+          "decodedBodySize": 225
+        },
+        {
+          "path": "/assets/AdminDeleteConfirmModal-DbVoZEvE.js",
+          "transferSize": 848,
+          "encodedBodySize": 548,
+          "decodedBodySize": 548
+        },
+        {
+          "path": "/assets/category-CZqDai7a.js",
+          "transferSize": 449,
+          "encodedBodySize": 149,
+          "decodedBodySize": 149
+        },
+        {
+          "path": "/assets/category-BA1xV1St.js",
+          "transferSize": 616,
+          "encodedBodySize": 316,
+          "decodedBodySize": 316
+        }
+      ],
+      "adminAdditionalJsRequests": 13,
+      "adminAdditionalJsBodyBytes": 15530,
+      "adminScriptDurationMs": 176.34699999999998
+    },
+    {
+      "run": 3,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 968,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 449.063,
+        "taskDurationMs": 1481.625
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090
+    },
+    {
+      "run": 3,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 836,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          },
+          {
+            "path": "/assets/SignInPage-B_hNyCbY.js",
+            "transferSize": 1961,
+            "encodedBodySize": 1661,
+            "decodedBodySize": 3770
+          },
+          {
+            "path": "/assets/Input-D3CMUKnC.js",
+            "transferSize": 530,
+            "encodedBodySize": 230,
+            "decodedBodySize": 230
+          },
+          {
+            "path": "/assets/PasswordInput-CGAOl9HA.js",
+            "transferSize": 796,
+            "encodedBodySize": 496,
+            "decodedBodySize": 496
+          },
+          {
+            "path": "/assets/signIn-CQjNgDNV.js",
+            "transferSize": 707,
+            "encodedBodySize": 407,
+            "decodedBodySize": 407
+          },
+          {
+            "path": "/assets/email-BPE3zpVT.js",
+            "transferSize": 362,
+            "encodedBodySize": 62,
+            "decodedBodySize": 62
+          },
+          {
+            "path": "/assets/Backdrop-DsWu_G3U.js",
+            "transferSize": 498,
+            "encodedBodySize": 198,
+            "decodedBodySize": 198
+          }
+        ],
+        "scriptDurationMs": 302.42900000000003,
+        "taskDurationMs": 638.208
+      },
+      "initialJsRequests": 7,
+      "initialJsTransferBytes": 228244,
+      "initialJsBodyBytes": 226144
+    },
+    {
+      "run": 3,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 992,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 526.642,
+        "taskDurationMs": 2070.391
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090,
+      "adminReadyMs": 1966.2999999998137,
+      "adminScripts": [
+        {
+          "path": "/assets/AdminDashBoardPage-DwDpZNIq.js",
+          "transferSize": 4469,
+          "encodedBodySize": 4169,
+          "decodedBodySize": 12385
+        },
+        {
+          "path": "/assets/AdminCard-BnTLwV4e.js",
+          "transferSize": 889,
+          "encodedBodySize": 589,
+          "decodedBodySize": 589
+        },
+        {
+          "path": "/assets/AdminPopover-54PwvWGg.js",
+          "transferSize": 896,
+          "encodedBodySize": 596,
+          "decodedBodySize": 1184
+        },
+        {
+          "path": "/assets/index-CnVpOm3E.js",
+          "transferSize": 702,
+          "encodedBodySize": 402,
+          "decodedBodySize": 1053
+        },
+        {
+          "path": "/assets/index-BSWxRHsr.js",
+          "transferSize": 2859,
+          "encodedBodySize": 2559,
+          "decodedBodySize": 6510
+        },
+        {
+          "path": "/assets/dialog-C8x38wm6.js",
+          "transferSize": 5083,
+          "encodedBodySize": 4783,
+          "decodedBodySize": 13957
+        },
+        {
+          "path": "/assets/index-BmAim952.js",
+          "transferSize": 1043,
+          "encodedBodySize": 743,
+          "decodedBodySize": 743
+        },
+        {
+          "path": "/assets/NoData-BlX9hwEy.js",
+          "transferSize": 521,
+          "encodedBodySize": 221,
+          "decodedBodySize": 221
+        },
+        {
+          "path": "/assets/Input-D3CMUKnC.js",
+          "transferSize": 530,
+          "encodedBodySize": 230,
+          "decodedBodySize": 230
+        },
+        {
+          "path": "/assets/TextArea-DPzRKJLn.js",
+          "transferSize": 525,
+          "encodedBodySize": 225,
+          "decodedBodySize": 225
+        },
+        {
+          "path": "/assets/AdminDeleteConfirmModal-DbVoZEvE.js",
+          "transferSize": 848,
+          "encodedBodySize": 548,
+          "decodedBodySize": 548
+        },
+        {
+          "path": "/assets/category-CZqDai7a.js",
+          "transferSize": 449,
+          "encodedBodySize": 149,
+          "decodedBodySize": 149
+        },
+        {
+          "path": "/assets/category-BA1xV1St.js",
+          "transferSize": 616,
+          "encodedBodySize": 316,
+          "decodedBodySize": 316
+        }
+      ],
+      "adminAdditionalJsRequests": 13,
+      "adminAdditionalJsBodyBytes": 15530,
+      "adminScriptDurationMs": 346.8079999999999
+    },
+    {
+      "run": 4,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 992,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 432.096,
+        "taskDurationMs": 1590.067
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090
+    },
+    {
+      "run": 4,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 872,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          },
+          {
+            "path": "/assets/SignInPage-B_hNyCbY.js",
+            "transferSize": 1961,
+            "encodedBodySize": 1661,
+            "decodedBodySize": 3770
+          },
+          {
+            "path": "/assets/Input-D3CMUKnC.js",
+            "transferSize": 530,
+            "encodedBodySize": 230,
+            "decodedBodySize": 230
+          },
+          {
+            "path": "/assets/PasswordInput-CGAOl9HA.js",
+            "transferSize": 796,
+            "encodedBodySize": 496,
+            "decodedBodySize": 496
+          },
+          {
+            "path": "/assets/signIn-CQjNgDNV.js",
+            "transferSize": 707,
+            "encodedBodySize": 407,
+            "decodedBodySize": 407
+          },
+          {
+            "path": "/assets/email-BPE3zpVT.js",
+            "transferSize": 362,
+            "encodedBodySize": 62,
+            "decodedBodySize": 62
+          },
+          {
+            "path": "/assets/Backdrop-DsWu_G3U.js",
+            "transferSize": 498,
+            "encodedBodySize": 198,
+            "decodedBodySize": 198
+          }
+        ],
+        "scriptDurationMs": 297.821,
+        "taskDurationMs": 580.048
+      },
+      "initialJsRequests": 7,
+      "initialJsTransferBytes": 228244,
+      "initialJsBodyBytes": 226144
+    },
+    {
+      "run": 4,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 1016,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 493.782,
+        "taskDurationMs": 1783.2630000000001
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090,
+      "adminReadyMs": 1712.0999999996275,
+      "adminScripts": [
+        {
+          "path": "/assets/AdminDashBoardPage-DwDpZNIq.js",
+          "transferSize": 4469,
+          "encodedBodySize": 4169,
+          "decodedBodySize": 12385
+        },
+        {
+          "path": "/assets/AdminCard-BnTLwV4e.js",
+          "transferSize": 889,
+          "encodedBodySize": 589,
+          "decodedBodySize": 589
+        },
+        {
+          "path": "/assets/AdminPopover-54PwvWGg.js",
+          "transferSize": 896,
+          "encodedBodySize": 596,
+          "decodedBodySize": 1184
+        },
+        {
+          "path": "/assets/index-CnVpOm3E.js",
+          "transferSize": 702,
+          "encodedBodySize": 402,
+          "decodedBodySize": 1053
+        },
+        {
+          "path": "/assets/index-BSWxRHsr.js",
+          "transferSize": 2859,
+          "encodedBodySize": 2559,
+          "decodedBodySize": 6510
+        },
+        {
+          "path": "/assets/dialog-C8x38wm6.js",
+          "transferSize": 5083,
+          "encodedBodySize": 4783,
+          "decodedBodySize": 13957
+        },
+        {
+          "path": "/assets/index-BmAim952.js",
+          "transferSize": 1043,
+          "encodedBodySize": 743,
+          "decodedBodySize": 743
+        },
+        {
+          "path": "/assets/NoData-BlX9hwEy.js",
+          "transferSize": 521,
+          "encodedBodySize": 221,
+          "decodedBodySize": 221
+        },
+        {
+          "path": "/assets/Input-D3CMUKnC.js",
+          "transferSize": 530,
+          "encodedBodySize": 230,
+          "decodedBodySize": 230
+        },
+        {
+          "path": "/assets/TextArea-DPzRKJLn.js",
+          "transferSize": 525,
+          "encodedBodySize": 225,
+          "decodedBodySize": 225
+        },
+        {
+          "path": "/assets/AdminDeleteConfirmModal-DbVoZEvE.js",
+          "transferSize": 848,
+          "encodedBodySize": 548,
+          "decodedBodySize": 548
+        },
+        {
+          "path": "/assets/category-CZqDai7a.js",
+          "transferSize": 449,
+          "encodedBodySize": 149,
+          "decodedBodySize": 149
+        },
+        {
+          "path": "/assets/category-BA1xV1St.js",
+          "transferSize": 616,
+          "encodedBodySize": 316,
+          "decodedBodySize": 316
+        }
+      ],
+      "adminAdditionalJsRequests": 13,
+      "adminAdditionalJsBodyBytes": 15530,
+      "adminScriptDurationMs": 265.09700000000004
+    },
+    {
+      "run": 5,
+      "scenario": "home",
+      "initial": {
+        "lcpMs": 1004,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 539.851,
+        "taskDurationMs": 1740.926
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090
+    },
+    {
+      "run": 5,
+      "scenario": "signin",
+      "initial": {
+        "lcpMs": 816,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          },
+          {
+            "path": "/assets/SignInPage-B_hNyCbY.js",
+            "transferSize": 1961,
+            "encodedBodySize": 1661,
+            "decodedBodySize": 3770
+          },
+          {
+            "path": "/assets/Input-D3CMUKnC.js",
+            "transferSize": 530,
+            "encodedBodySize": 230,
+            "decodedBodySize": 230
+          },
+          {
+            "path": "/assets/PasswordInput-CGAOl9HA.js",
+            "transferSize": 796,
+            "encodedBodySize": 496,
+            "decodedBodySize": 496
+          },
+          {
+            "path": "/assets/signIn-CQjNgDNV.js",
+            "transferSize": 707,
+            "encodedBodySize": 407,
+            "decodedBodySize": 407
+          },
+          {
+            "path": "/assets/email-BPE3zpVT.js",
+            "transferSize": 362,
+            "encodedBodySize": 62,
+            "decodedBodySize": 62
+          },
+          {
+            "path": "/assets/Backdrop-DsWu_G3U.js",
+            "transferSize": 498,
+            "encodedBodySize": 198,
+            "decodedBodySize": 198
+          }
+        ],
+        "scriptDurationMs": 313.11499999999995,
+        "taskDurationMs": 797.318
+      },
+      "initialJsRequests": 7,
+      "initialJsTransferBytes": 228244,
+      "initialJsBodyBytes": 226144
+    },
+    {
+      "run": 5,
+      "scenario": "admin-transition",
+      "initial": {
+        "lcpMs": 996,
+        "scripts": [
+          {
+            "path": "/assets/index-BQT-Gs-q.js",
+            "transferSize": 223390,
+            "encodedBodySize": 223090,
+            "decodedBodySize": 688658
+          }
+        ],
+        "scriptDurationMs": 438.454,
+        "taskDurationMs": 1939.7759999999998
+      },
+      "initialJsRequests": 1,
+      "initialJsTransferBytes": 223390,
+      "initialJsBodyBytes": 223090,
+      "adminReadyMs": 1396.5999999996275,
+      "adminScripts": [
+        {
+          "path": "/assets/AdminDashBoardPage-DwDpZNIq.js",
+          "transferSize": 4469,
+          "encodedBodySize": 4169,
+          "decodedBodySize": 12385
+        },
+        {
+          "path": "/assets/AdminCard-BnTLwV4e.js",
+          "transferSize": 889,
+          "encodedBodySize": 589,
+          "decodedBodySize": 589
+        },
+        {
+          "path": "/assets/AdminPopover-54PwvWGg.js",
+          "transferSize": 896,
+          "encodedBodySize": 596,
+          "decodedBodySize": 1184
+        },
+        {
+          "path": "/assets/index-CnVpOm3E.js",
+          "transferSize": 702,
+          "encodedBodySize": 402,
+          "decodedBodySize": 1053
+        },
+        {
+          "path": "/assets/index-BSWxRHsr.js",
+          "transferSize": 2859,
+          "encodedBodySize": 2559,
+          "decodedBodySize": 6510
+        },
+        {
+          "path": "/assets/dialog-C8x38wm6.js",
+          "transferSize": 5083,
+          "encodedBodySize": 4783,
+          "decodedBodySize": 13957
+        },
+        {
+          "path": "/assets/index-BmAim952.js",
+          "transferSize": 1043,
+          "encodedBodySize": 743,
+          "decodedBodySize": 743
+        },
+        {
+          "path": "/assets/NoData-BlX9hwEy.js",
+          "transferSize": 521,
+          "encodedBodySize": 221,
+          "decodedBodySize": 221
+        },
+        {
+          "path": "/assets/Input-D3CMUKnC.js",
+          "transferSize": 530,
+          "encodedBodySize": 230,
+          "decodedBodySize": 230
+        },
+        {
+          "path": "/assets/TextArea-DPzRKJLn.js",
+          "transferSize": 525,
+          "encodedBodySize": 225,
+          "decodedBodySize": 225
+        },
+        {
+          "path": "/assets/AdminDeleteConfirmModal-DbVoZEvE.js",
+          "transferSize": 848,
+          "encodedBodySize": 548,
+          "decodedBodySize": 548
+        },
+        {
+          "path": "/assets/category-CZqDai7a.js",
+          "transferSize": 449,
+          "encodedBodySize": 149,
+          "decodedBodySize": 149
+        },
+        {
+          "path": "/assets/category-BA1xV1St.js",
+          "transferSize": 616,
+          "encodedBodySize": 316,
+          "decodedBodySize": 316
+        }
+      ],
+      "adminAdditionalJsRequests": 13,
+      "adminAdditionalJsBodyBytes": 15530,
+      "adminScriptDurationMs": 240.70300000000003
+    }
+  ],
+  "failures": []
+}
