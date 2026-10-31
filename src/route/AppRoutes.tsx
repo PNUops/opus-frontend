@@ -69,7 +69,6 @@ const AppRoutes = () =>
         {
           element: <FullContainerLayout />,
           children: [
-            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectDetailPage /> },
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/callback', element: <OAuthCallback /> },
@@ -77,6 +76,14 @@ const AppRoutes = () =>
             { path: 'notices/:noticeId', element: <NoticeDetailPage /> },
             { path: 'notices/:contestId/:noticeId', element: <NoticeDetailPage /> },
           ],
+        },
+        {
+          path: 'contest/:contestId/teams/view/:teamId',
+          element: (
+            <FullContainer fillViewport={false}>
+              <ProjectDetailPage />
+            </FullContainer>
+          ),
         },
         {
           path: 'me',
