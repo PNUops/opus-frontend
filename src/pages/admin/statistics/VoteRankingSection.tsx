@@ -1,23 +1,26 @@
 import { useState } from 'react';
-import { defaultRankFilter } from '@constants/statistics';
-import { AdminHeader } from '@components/admin';
-import QueryWrapper from '@providers/QueryWrapper';
+import type { VoteReportRankingDto } from '@dto/voteReportDto';
 import VoteFilterSelect from './VoteFilterSelect';
 import VoteRankingList from './VoteRankingList';
 
-const VoteRankingSection = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>(defaultRankFilter[0]);
-
+const VoteRankingSection = ({ rankings }: { rankings: VoteReportRankingDto[] }) => {
+  const [filter, setFilter] = useState('all');
+  const selectedFilter =
+    filter === 'all' || filter === 'grouped' || rankings.some((r) => `track:${JSON.stringify(r.trackName)}` === filter)
+      ? filter
+      : 'all';
   return (
-    <section className="flex flex-col gap-5">
-      <AdminHeader title="투표 순위" description="순위 | 팀 | 프로젝트 | 분과 | 투표수">
-        <QueryWrapper loadingStyle="h-10 my-0 rounded-sm w-[180px]" errorStyle="h-10">
-          <VoteFilterSelect selectedFilter={selectedFilter} onChange={(value) => setSelectedFilter(value)} />
-        </QueryWrapper>
-      </AdminHeader>
-      <QueryWrapper loadingStyle="h-60 my-0 rounded-sm" errorStyle="h-60">
-        <VoteRankingList selectedFilter={selectedFilter} />
-      </QueryWrapper>
+    <section className="flex min-w-0 flex-col gap-5" aria-labelledby="vote-ranking-title">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 id="vote-ranking-title" className="text-lg font-semibold text-neutral-900">
+            팀별 순위
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-neutral-600">동점과 0표인 팀을 포함한 전체 순위입니다.</p>
+        </div>
+        <VoteFilterSelect selectedFilter={selectedFilter} onChange={setFilter} rankings={rankings} />
+      </div>
+      <VoteRankingList selectedFilter={selectedFilter} rankings={rankings} />
     </section>
   );
 };

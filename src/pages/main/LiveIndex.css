@@ -557,7 +557,7 @@
   top: var(--transition-top, 0);
   right: 0;
   bottom: 0;
-  left: var(--spacing-sidebar);
+  left: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(3, minmax(0, 1fr));
@@ -703,10 +703,12 @@
 
 @media (max-width: 720px) {
   .opus-live-index-trigger {
-    right: 16px;
+    position: static;
+    flex-shrink: 0;
     min-height: 40px;
     padding: 8px 13px;
-    font-size: 0.7rem;
+    box-shadow: none;
+    font-size: 0.72rem;
   }
 
   .opus-live-index-shell,

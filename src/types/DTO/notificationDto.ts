@@ -1,7 +1,6 @@
 export type NotificationTargetType =
   | 'TEAM'
   | 'TEAM_COMMENT'
-  | 'TEAM_AWARD'
   | 'TEAM_AWARDS'
   | 'SUBMISSION_COMPLETED'
   | 'SUBMISSION_FEEDBACK'

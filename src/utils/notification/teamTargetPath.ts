@@ -1,10 +1,7 @@
 import type { NotificationDto, NotificationTargetType } from '@dto/notificationDto';
 import { parsePositiveId } from '@utils/id';
 
-export type TeamNotificationType = Extract<
-  NotificationTargetType,
-  'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARD' | 'TEAM_AWARDS'
->;
+export type TeamNotificationType = Extract<NotificationTargetType, 'TEAM' | 'TEAM_COMMENT' | 'TEAM_AWARDS'>;
 
 export type TeamNotificationTarget = {
   targetType: TeamNotificationType;
@@ -43,7 +40,6 @@ export const buildTeamNotificationTargetPath = (
       return `/me/contests/${contestId}/teams/${teamId}/dashboard`;
     case 'TEAM_COMMENT':
       return `/contest/${contestId}/teams/view/${teamId}#comments`;
-    case 'TEAM_AWARD':
     case 'TEAM_AWARDS':
       return `/contest/${contestId}/teams/view/${teamId}#awards`;
   }

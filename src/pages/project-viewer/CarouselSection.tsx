@@ -62,10 +62,12 @@ const ArrowButton = ({
 
   return (
     <button
+      type="button"
+      aria-label={direction === 'left' ? '이전 프로젝트 자료' : '다음 프로젝트 자료'}
       onClick={onClick}
-      className={`focus:outline-none ${className} text-lightGray hover:text-mainGreen hover:cursor-pointer hover:bg-[#D1F3E1]/20`}
+      className={`${className} hover:text-mainGreen hover:bg-subGreen/20 focus-visible:outline-mainGreen flex min-h-11 min-w-11 items-center justify-center text-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2`}
     >
-      <Icon size={size} className="animate-pulse p-2 transition-colors duration-200 ease-in-out" />
+      <Icon aria-hidden size={size} className="p-2 transition-colors duration-200 ease-in-out" />
     </button>
   );
 };
@@ -83,17 +85,23 @@ const IndicatorDots = ({
     {Array.from({ length: count }).map((_, index) => (
       <button
         key={index}
+        type="button"
+        aria-label={`${index + 1}번째 프로젝트 자료`}
+        aria-current={currentIndex === index ? 'true' : undefined}
         onClick={() => onClick(index)}
-        className={`h-2 w-2 rounded-full transition-all duration-200 hover:cursor-pointer hover:bg-[#D1F3E1] ${
-          currentIndex === index ? 'bg-mainGreen' : 'bg-lightGray'
-        }`}
-      />
+        className="focus-visible:outline-mainGreen flex h-11 w-8 items-center justify-center rounded-full focus-visible:outline-2"
+      >
+        <span
+          aria-hidden
+          className={`h-2 w-2 rounded-full ${currentIndex === index ? 'bg-mainGreen' : 'bg-lightGray'}`}
+        />
+      </button>
     ))}
   </>
 );
 
 const ErrorMessage = ({ icon: Icon, message }: { icon: React.ElementType; message: React.ReactNode }) => (
-  <div className="text-lightGray absolute inset-0 flex h-full w-full animate-pulse flex-col items-center justify-center gap-5 bg-white px-4">
+  <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center gap-5 bg-white px-4 text-gray-500">
     <Icon size={40} />
     <span className="text-center text-xs">{message}</span>
   </div>
@@ -142,12 +150,14 @@ const MediaRenderer = ({
   currentMedia,
   embedUrl,
   imageLoaded,
+  loadFailed,
   setImageLoaded,
   setLoadFailed,
 }: {
   currentMedia: MediaType;
   embedUrl: string | null;
   imageLoaded: boolean;
+  loadFailed: boolean;
   setImageLoaded: (loaded: boolean) => void;
   setLoadFailed: (failed: boolean) => void;
 }) => {
@@ -161,6 +171,8 @@ const MediaRenderer = ({
 
   if (typeof currentMedia === 'object' && currentMedia !== null) {
     if (currentMedia.status === 'success') {
+      if (loadFailed) return <ErrorMessage icon={FaSadTear} message="이미지를 표시할 수 없습니다." />;
+
       return (
         <>
           {!imageLoaded && (
@@ -193,7 +205,7 @@ const MediaRenderer = ({
 const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequired }: CarouselSectionProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [, setLoadFailed] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const toast = useToast();
   const imageNotFoundToast = useRef(false);
@@ -322,6 +334,10 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequi
     trackMouse: false,
   });
 
+  if (previewIds.length === 0 && !embedUrl) {
+    return <p className="py-4 text-sm leading-relaxed text-gray-500">추가 이미지나 영상이 아직 등록되지 않았습니다.</p>;
+  }
+
   return (
     <div {...handlers} className="flex h-full w-full flex-col items-center gap-4">
       <div className="relative flex w-full items-center justify-center">
@@ -331,6 +347,7 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequi
               currentMedia={currentMedia}
               embedUrl={embedUrl}
               imageLoaded={imageLoaded}
+              loadFailed={loadFailed}
               setImageLoaded={setImageLoaded}
               setLoadFailed={setLoadFailed}
             />
@@ -342,7 +359,7 @@ const CarouselSection = ({ teamId, previewIds, youtubeUrl, isEditor, imagesRequi
         <div className="mt-4 flex w-full max-w-2xl items-center justify-between px-3">
           <ArrowButton direction="left" onClick={goToPrev} size={40} className="rounded-full" />
 
-          <div className="flex gap-5">
+          <div className="flex flex-wrap justify-center gap-1">
             <IndicatorDots count={visibleImages.length} currentIndex={currentIndex} onClick={goToSlide} />
           </div>
 

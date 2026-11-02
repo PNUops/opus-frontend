@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FaRegEdit } from 'react-icons/fa';
 import Input from '@components/Input';
+import { AdminFormError } from '@components/admin/AdminFormError';
 import { useToast } from '@hooks/useToast';
 import { DialogContent, DialogTitle } from '@components/ui/dialog';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
@@ -16,6 +16,7 @@ interface CategoryModalProps {
 
 export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps) => {
   const [categoryName, setCategoryName] = useState<string>(prevData?.categoryName ?? '');
+  const [nameError, setNameError] = useState('');
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -34,30 +35,35 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
     closeModal();
   };
 
-  const handleSubmit = async () => {
-    if (!categoryName) {
-      toast('카테고리 이름을 입력해주세요.', 'error');
+  const isPending = categoryCreate.isPending || categoryEdit.isPending;
+
+  const handleSubmit = () => {
+    if (isPending) return;
+    if (!categoryName.trim()) {
+      setNameError('카테고리 이름을 입력해주세요.');
       return;
     }
 
     if (type === 'create') {
-      await categoryCreate.mutateAsync(categoryName.trim(), {
+      categoryCreate.mutate(categoryName.trim(), {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['category'] });
           toast('카테고리가 추가되었습니다.', 'success');
           setCategoryName('');
+          closeModal();
         },
         onError: () => {
           toast('카테고리 추가에 실패했습니다.', 'error');
         },
       });
     } else if (type === 'edit' && prevData) {
-      await categoryEdit.mutateAsync(
+      categoryEdit.mutate(
         { categoryId: prevData.categoryId, categoryName: categoryName.trim() },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['category'] });
             toast('카테고리가 수정되었습니다.', 'success');
+            closeModal();
           },
           onError: () => {
             toast('카테고리 수정에 실패했습니다.', 'error');
@@ -65,28 +71,39 @@ export const CategoryModal = ({ type, prevData, closeModal }: CategoryModalProps
         },
       );
     }
-    closeModal();
   };
 
   return (
-    <DialogContent>
-      <div className="text-mainBlue mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-        <FaRegEdit size={20} />
-      </div>
-      <DialogTitle>{`${type === 'create' ? '추가' : '수정'}할 카테고리 이름을 입력하세요.`}</DialogTitle>
+    <DialogContent appearance="admin" className="w-[440px]" closeDisabled={isPending}>
+      <DialogTitle>{`카테고리 ${type === 'create' ? '추가' : '수정'}`}</DialogTitle>
       <Input
+        appearance="admin"
+        aria-label="카테고리 이름"
         type="text"
+        disabled={isPending}
         value={categoryName}
-        onChange={(e) => setCategoryName(e.target.value)}
+        onChange={(e) => {
+          setCategoryName(e.target.value);
+          setNameError('');
+        }}
+        aria-invalid={!!nameError}
         placeholder="카테고리를 입력하세요."
-        className="bg-whiteGray h-12 rounded-lg"
+        className="min-h-11"
       />
-      <div className="flex justify-center gap-4">
-        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+      <AdminFormError
+        message={
+          nameError ||
+          (categoryCreate.isError || categoryEdit.isError
+            ? '저장에 실패했어요. 입력 내용을 확인하고 다시 시도해주세요.'
+            : undefined)
+        }
+      />
+      <div className="flex flex-wrap justify-end gap-3">
+        <AdminActionButton variant={'outline'} size={'lg'} onClick={handleClose} disabled={isPending}>
           {'닫기'}
         </AdminActionButton>
-        <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSubmit}>
-          {`${type === 'create' ? '추가' : '수정'}하기`}
+        <AdminActionButton size={'lg'} onClick={handleSubmit} disabled={isPending} aria-busy={isPending}>
+          {isPending ? '저장 중…' : `${type === 'create' ? '추가' : '수정'}하기`}
         </AdminActionButton>
       </div>
     </DialogContent>
@@ -107,20 +124,27 @@ export const CategoryDeleteConfirmModal = ({ category, closeModal }: CategoryDel
     mutationFn: (categoryId: number) => deleteCategory(categoryId),
   });
 
-  const onDelete = async () => {
-    await categoryDelete.mutateAsync(category.categoryId, {
+  const onDelete = () => {
+    if (categoryDelete.isPending) return;
+    categoryDelete.mutate(category.categoryId, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['category'] });
         toast('카테고리가 삭제되었습니다.', 'success');
+        closeModal();
       },
       onError: () => {
         toast('카테고리 삭제에 실패했습니다.', 'error');
       },
     });
-    closeModal();
   };
 
   return (
-    <AdminDeleteConfirmModal title={`${category.categoryName} 카테고리를 삭제하시겠습니까?`} onDelete={onDelete} />
+    <AdminDeleteConfirmModal
+      title="카테고리를 삭제하시겠습니까?"
+      description={category.categoryName}
+      onDelete={onDelete}
+      isPending={categoryDelete.isPending}
+      isError={categoryDelete.isError}
+    />
   );
 };

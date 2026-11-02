@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import MainLayout from '@layout/MainLayout';
+import AuthLayout from '@layout/AuthLayout';
 
 import MainPage from '@pages/main/MainPage';
 import ProjectEditPage from '@pages/project-editor/ProjectEditPage';
@@ -18,7 +19,6 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
-import SidebarLayout from '@layout/SidebarLayout';
 import SortManagePage from '@pages/admin/sort/SortManagePage';
 import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
@@ -48,22 +48,21 @@ const AppRoutes = () =>
       path: '/',
       element: <MainLayout />,
       children: [
+        { index: true, element: <MainPage /> },
         {
-          element: <SidebarLayout />,
+          element: <FullContainerLayout />,
+          children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
+        },
+        {
+          element: <AuthLayout />,
           children: [
-            { index: true, element: <MainPage /> },
-            {
-              element: <FullContainerLayout />,
-              children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
-            },
+            { path: 'signin', element: <SignInPage /> },
+            { path: 'signup', element: <SignUpPage /> },
           ],
         },
         {
           element: <FullContainerLayout />,
           children: [
-            { path: 'signin', element: <SignInPage /> },
-            { path: 'signup', element: <SignUpPage /> },
-            { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectDetailPage /> },
             { path: 'contest/:contestId/teams/edit/:teamId', element: <ProjectEditPage /> },
             { path: 'find', element: <FindPage /> },
             { path: 'oauth/callback', element: <OAuthCallback /> },
@@ -71,6 +70,14 @@ const AppRoutes = () =>
             { path: 'notices/:noticeId', element: <NoticeDetailPage /> },
             { path: 'notices/:contestId/:noticeId', element: <NoticeDetailPage /> },
           ],
+        },
+        {
+          path: 'contest/:contestId/teams/view/:teamId',
+          element: (
+            <FullContainer fillViewport={false}>
+              <ProjectDetailPage />
+            </FullContainer>
+          ),
         },
         {
           path: 'me',

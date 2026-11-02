@@ -1,3 +1,4 @@
+import { AdminFormError } from '@components/admin/AdminFormError';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, ChevronDown, X } from 'lucide-react';
@@ -144,7 +145,11 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
     }));
   };
 
-  const { mutate: submitAssignment, isPending: isSubmitting } = useMutation({
+  const {
+    mutate: submitAssignment,
+    isPending: isSubmitting,
+    isError: submitFailed,
+  } = useMutation({
     mutationFn: () => {
       if (assignment) {
         return updateContestStaff(contestId, assignment.contestMemberId, {
@@ -178,6 +183,7 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
   });
 
   const handleSubmit = () => {
+    if (isSubmitting) return;
     if (!isEditMode && selectedMembers.length === 0) {
       toast('역할을 배정할 회원을 선택해주세요.', 'error');
       return;
@@ -198,13 +204,20 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
   const submittingButtonText = isEditMode ? '수정 중' : '배정 중';
 
   return (
-    <DialogContent className="max-h-[calc(100vh-32px)] w-[600px] max-w-[92vw] grid-rows-[auto_minmax(0,1fr)_auto] items-stretch gap-8 overflow-hidden rounded-lg border bg-white p-6 sm:max-h-[calc(100vh-48px)] sm:p-8">
+    <DialogContent
+      appearance="admin"
+      closeDisabled={isSubmitting}
+      onEscapeKeyDown={(event) => {
+        if (isTeamDropdownOpen) event.preventDefault();
+      }}
+      className="max-h-[calc(100vh-32px)] w-[600px] max-w-[92vw] grid-rows-[auto_minmax(0,1fr)_auto] items-stretch gap-8 overflow-hidden rounded-lg border bg-white p-6 sm:max-h-[calc(100vh-48px)] sm:p-8"
+    >
       <div className="flex flex-col gap-2">
         <DialogTitle className="text-2xl leading-8 font-bold text-black">{dialogTitle}</DialogTitle>
-        <p className="text-midGray text-sm leading-5">{dialogDescription}</p>
+        <p className="text-sm leading-5 text-neutral-600">{dialogDescription}</p>
       </div>
 
-      <div className="flex min-h-0 flex-col gap-5 overflow-y-auto pr-1">
+      <fieldset disabled={isSubmitting} className="flex min-h-0 min-w-0 flex-col gap-5 overflow-y-auto pr-1">
         <ModalField
           label="회원 이메일"
           field="member"
@@ -232,20 +245,21 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
               ))}
               {!isEditMode && (
                 <input
+                  aria-label="회원 이메일 검색"
                   ref={memberInputRef}
                   type="search"
                   value={values.memberEmailQuery}
                   onChange={(event) => handleMemberQueryChange(event.target.value)}
                   placeholder={selectedMembers.length > 0 ? '이메일 추가 검색' : '회원 이메일로 검색'}
-                  className="placeholder:text-midGray h-8 min-w-[180px] flex-1 text-sm focus:outline-none"
+                  className="h-8 min-w-[180px] flex-1 text-sm placeholder:text-neutral-600 focus:outline-none"
                 />
               )}
               {!isEditMode && memberKeyword.length > 0 && (
                 <div className="border-lightGray flex max-h-48 w-full basis-full flex-col overflow-y-auto rounded-md border bg-white p-1">
                   {isDebouncingMemberSearch || isFetchingMembers ? (
-                    <p className="text-midGray py-4 text-center text-sm">검색 중이에요.</p>
+                    <p className="py-4 text-center text-sm text-neutral-600">검색 중이에요.</p>
                   ) : memberOptions.length === 0 ? (
-                    <p className="text-midGray py-4 text-center text-sm">검색 결과가 없어요.</p>
+                    <p className="py-4 text-center text-sm text-neutral-600">검색 결과가 없어요.</p>
                   ) : (
                     memberOptions.map((member) => (
                       <MemberOption
@@ -285,6 +299,7 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
             <Popover
               open={isTeamDropdownOpen}
               onOpenChange={(open) => {
+                if (open && isSubmitting) return;
                 setIsTeamDropdownOpen(open);
                 setFocusedField(open ? 'team' : null);
               }}
@@ -298,10 +313,19 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
                   role="button"
                   tabIndex={0}
                   aria-expanded={isTeamDropdownOpen}
+                  aria-label="담당 팀 선택"
+                  aria-disabled={isSubmitting}
+                  onKeyDown={(event) => {
+                    if (isSubmitting) return;
+                    if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+                      event.preventDefault();
+                      setIsTeamDropdownOpen((open) => !open);
+                    }
+                  }}
                 >
                   <div className="flex min-h-7 min-w-0 flex-1 flex-wrap gap-2">
                     {selectedTeams.length === 0 ? (
-                      <span className="text-midGray flex h-7 items-center text-sm">팀 이름</span>
+                      <span className="flex h-7 items-center text-sm text-neutral-600">팀 이름</span>
                     ) : (
                       selectedTeams.map((team) => (
                         <TeamChip key={team.teamId} team={team} onRemove={() => toggleTeam(team.teamId)} />
@@ -310,7 +334,7 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
                   </div>
                   <ChevronDown
                     className={cn(
-                      'text-midGray size-4 shrink-0 transition-transform',
+                      'size-4 shrink-0 text-neutral-600 transition-transform',
                       isTeamDropdownOpen && 'rotate-180',
                     )}
                     aria-hidden
@@ -321,15 +345,20 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
               <PopoverContent
                 align="start"
                 sideOffset={4}
+                onEscapeKeyDown={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setIsTeamDropdownOpen(false);
+                }}
                 onOpenAutoFocus={(event) => event.preventDefault()}
                 onWheel={(event) => event.stopPropagation()}
                 onTouchMove={(event) => event.stopPropagation()}
                 className="border-lightGray pointer-events-auto z-[70] max-h-56 w-[var(--radix-popover-trigger-width)] overflow-y-auto overscroll-contain bg-white p-1 shadow-lg"
               >
                 {isFetchingTeams && availableTeams.length === 0 ? (
-                  <p className="text-midGray py-4 text-center text-sm">팀 목록을 불러오는 중이에요.</p>
+                  <p className="py-4 text-center text-sm text-neutral-600">팀 목록을 불러오는 중이에요.</p>
                 ) : availableTeams.length === 0 ? (
-                  <p className="text-midGray py-4 text-center text-sm">선택할 팀이 없어요.</p>
+                  <p className="py-4 text-center text-sm text-neutral-600">선택할 팀이 없어요.</p>
                 ) : (
                   availableTeams.map((team) => (
                     <TeamOption
@@ -344,17 +373,34 @@ export const RoleAssignmentModal = ({ contestId, defaultRole, assignment, onClos
             </Popover>
           </div>
         </ModalField>
-      </div>
+      </fieldset>
 
-      <div className="flex justify-end gap-2 pt-1">
-        <DialogClose asChild>
-          <AdminActionButton type="button" variant="outline" className="min-w-[100px]" onClick={onClose}>
-            취소
+      <div className="flex flex-col gap-3">
+        <AdminFormError
+          message={submitFailed ? '저장에 실패했어요. 입력 내용을 확인하고 다시 시도해주세요.' : undefined}
+        />
+        <div className="flex justify-end gap-3 pt-1">
+          <DialogClose asChild>
+            <AdminActionButton
+              type="button"
+              variant="outline"
+              className="min-w-[100px]"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
+              취소
+            </AdminActionButton>
+          </DialogClose>
+          <AdminActionButton
+            type="button"
+            className="min-w-[100px]"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? submittingButtonText : submitButtonText}
           </AdminActionButton>
-        </DialogClose>
-        <AdminActionButton type="button" className="min-w-[100px]" onClick={handleSubmit}>
-          {isSubmitting ? submittingButtonText : submitButtonText}
-        </AdminActionButton>
+        </div>
       </div>
     </DialogContent>
   );
@@ -444,7 +490,7 @@ const MemberOption = ({ member, selected, onToggle }: MemberOptionProps) => {
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-darkGray truncate text-sm font-medium">{member.name}</span>
-        <span className="text-midGray truncate text-sm">{member.email}</span>
+        <span className="truncate text-sm text-neutral-600">{member.email}</span>
       </span>
     </button>
   );
@@ -458,7 +504,7 @@ const TeamChip = ({ team, onRemove }: { team: AssignableTeam; onRemove: () => vo
       <span className="min-w-0 truncate">{teamName}</span>
       <button
         type="button"
-        className="text-midGray shrink-0 rounded-full p-0.5 hover:bg-white"
+        className="shrink-0 rounded-full p-0.5 text-neutral-600 hover:bg-white"
         onClick={(event) => {
           event.stopPropagation();
           onRemove();

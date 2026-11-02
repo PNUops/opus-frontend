@@ -1,13 +1,15 @@
+import { AdminQueryState } from '@components/admin/AdminQueryState';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { getProjectsAdmin } from '@apis/contest';
 import { deleteTeam } from '@apis/team';
-import ConfirmModal from '@components/ConfirmModal';
+import { Dialog } from '@components/ui/dialog';
 import { twMerge } from 'tailwind-merge';
 import Tag from '@components/Tag';
 import {
   AdminHeader,
+  AdminDeleteConfirmModal,
   AdminCardRow,
   AdminPopoverMenu,
   AdminPopoverEditButton,
@@ -26,24 +28,33 @@ const ProjectManagePage = () => {
   const contestId = useContestIdOrRedirect();
   const handleCreateProject = () => navigate(`/admin/contest/${contestId}/projects/create`);
   const handleDeleteTeam = (teamId: number) => {
+    if (isDeleting) return;
     deleteTeamMutation(teamId);
   };
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
-  const { data: projectsAdmin } = useQuery({
+  const listQuery = useQuery({
     queryKey: ['projects', contestId],
     queryFn: () => getProjectsAdmin(contestId),
     enabled: !!contestId,
   });
 
-  const { mutate: deleteTeamMutation } = useMutation({
+  const {
+    mutate: deleteTeamMutation,
+    isPending: isDeleting,
+    isError: deleteFailed,
+    reset: resetDelete,
+  } = useMutation({
     mutationFn: (teamId: number) => deleteTeam(teamId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects', contestId] });
       invalidateMyActivityQueries(queryClient);
+      setDeleteTarget(null);
     },
     onError: () => toast('팀 삭제에 실패했어요', 'error'),
   });
+
+  const { data: projectsAdmin } = listQuery;
 
   return (
     <div className="flex w-full flex-col">
@@ -54,51 +65,66 @@ const ProjectManagePage = () => {
         buttonLabel="+ 새 프로젝트"
       />
       <div className="h-[35px]" />
-      <div className="flex flex-col gap-2">
-        {!projectsAdmin || projectsAdmin.length === 0 ? (
-          <div className="bg-whiteGray text-midGray rounded-md p-4 text-center">아직 등록된 프로젝트가 없어요.</div>
-        ) : (
-          projectsAdmin.map((proj, index) => (
-            <AdminCardRow key={proj.teamId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
-              <div className="flex w-full items-center gap-4 py-1">
-                <p className="text-midGray w-10 flex-shrink-0 text-center text-sm">{(index ?? 0) + 1}</p>
-                <div className="flex min-w-0 flex-1 items-center gap-6">
-                  <p className="text-darkGray w-[150px] flex-shrink-0 truncate font-medium">
-                    {proj.teamName ?? '미지정'}
+      <AdminQueryState query={listQuery}>
+        <div className="flex flex-col gap-2">
+          {!projectsAdmin || projectsAdmin.length === 0 ? (
+            <div className="bg-whiteGray rounded-md p-4 text-center text-neutral-600">
+              아직 등록된 프로젝트가 없어요.
+            </div>
+          ) : (
+            projectsAdmin.map((proj, index) => (
+              <AdminCardRow key={proj.teamId} className={twMerge('border-lightGray', 'even:bg-slate-50')}>
+                <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-3 py-1 lg:flex lg:items-center lg:gap-4">
+                  <p className="hidden w-10 flex-shrink-0 text-center text-sm text-neutral-600 lg:block">
+                    {(index ?? 0) + 1}
                   </p>
-                  <p className="flex-1 truncate text-gray-600">{proj.projectName ?? '미지정'}</p>
-                  <div className="flex w-[100px] flex-shrink-0 justify-center">
-                    <TrackTag name={proj.trackName ?? '미지정'} />
+                  <div className="col-start-1 row-start-1 flex min-w-0 flex-1 flex-col items-start gap-2 lg:flex-row lg:items-center lg:gap-6">
+                    <p className="text-darkGray max-w-full font-medium break-words lg:w-[150px] lg:flex-shrink-0 lg:truncate">
+                      {proj.teamName ?? '미지정'}
+                    </p>
+                    <p className="max-w-full min-w-0 text-sm leading-6 break-words text-gray-600 lg:flex-1 lg:truncate">
+                      {proj.projectName ?? '미지정'}
+                    </p>
+                    <div className="flex max-w-full justify-start lg:w-[100px] lg:flex-shrink-0 lg:justify-center">
+                      <TrackTag name={proj.trackName ?? '미지정'} />
+                    </div>
+                  </div>
+
+                  <div className="col-start-1 row-start-2 w-fit lg:w-[80px] lg:flex-shrink-0">
+                    <SubmissionTag isSubmitted={proj.isSubmitted} />
+                  </div>
+                  <div className="col-start-2 row-start-1 flex shrink-0 justify-end lg:w-10">
+                    <AdminPopoverMenu>
+                      <AdminPopoverEditButton
+                        onEdit={() => {
+                          navigate(`/contest/${contestId}/teams/edit/${proj.teamId}`);
+                          close();
+                        }}
+                      />
+                      <AdminPopoverDeleteButton
+                        onDelete={() => {
+                          resetDelete();
+                          setDeleteTarget(proj.teamId);
+                        }}
+                      />
+                    </AdminPopoverMenu>
                   </div>
                 </div>
-
-                <div className="w-[80px] flex-shrink-0">
-                  <SubmissionTag isSubmitted={proj.isSubmitted} />
-                </div>
-                <div className="flex w-10 flex-shrink-0 justify-end">
-                  <AdminPopoverMenu>
-                    <AdminPopoverEditButton
-                      onEdit={() => {
-                        navigate(`/contest/${contestId}/teams/edit/${proj.teamId}`);
-                        close();
-                      }}
-                    />
-                    <AdminPopoverDeleteButton onDelete={() => setDeleteTarget(proj.teamId)} />
-                  </AdminPopoverMenu>
-                </div>
-                <ConfirmModal
-                  isOpen={deleteTarget !== null}
-                  onConfirm={() => {
-                    if (deleteTarget !== null) handleDeleteTeam(deleteTarget);
-                    setDeleteTarget(null);
-                  }}
-                  onCancel={() => setDeleteTarget(null)}
-                />
-              </div>
-            </AdminCardRow>
-          ))
-        )}
-      </div>
+              </AdminCardRow>
+            ))
+          )}
+        </div>
+      </AdminQueryState>
+      <Dialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AdminDeleteConfirmModal
+          title="프로젝트 팀을 삭제하시겠습니까?"
+          isPending={isDeleting}
+          isError={deleteFailed}
+          onDelete={() => {
+            if (deleteTarget !== null) handleDeleteTeam(deleteTarget);
+          }}
+        />
+      </Dialog>
     </div>
   );
 };
@@ -108,11 +134,11 @@ export default ProjectManagePage;
 type SubmissionTagProps = { isSubmitted: boolean };
 const SubmissionTag = ({ isSubmitted }: SubmissionTagProps) => {
   const label = isSubmitted ? '제출' : '미제출';
-  const colorClass = isSubmitted ? 'bg-blue-300' : 'bg-midGray';
-  return <Tag className={colorClass}>{label}</Tag>;
+  const colorClass = isSubmitted ? 'bg-subGreen' : 'bg-whiteGray';
+  return <Tag className={`${colorClass} rounded-md whitespace-nowrap text-neutral-800`}>{label}</Tag>;
 };
 
 const TrackTag = ({ name }: { name: string }) => {
   const colorClass = getColorClassForLabel(name);
-  return <Tag className={colorClass}>{name}</Tag>;
+  return <Tag className={`${colorClass} rounded-md whitespace-nowrap text-neutral-700`}>{name}</Tag>;
 };

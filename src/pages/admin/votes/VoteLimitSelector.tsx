@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, ChangeEvent, useEffect } from 'react';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import Input from '@components/Input';
+import { AdminActionButton } from '@components/admin';
 import { MAX_VOTE_PER_PERSON } from '@constants/votes';
 import { useToast } from '@hooks/useToast';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -42,10 +43,35 @@ const VoteLimitSelector = ({ maxVotesLimit, setMaxVotesLimit }: VoteLimitSelecto
   };
 
   return (
-    <div className="flex items-center gap-5">
-      <FiMinus size={18} onClick={() => onButtonClick('minus')} className="stroke-mainGreen hover:cursor-pointer" />
-      <Input value={maxVotesLimit} onChange={onInputChange} className="h-10 max-w-10 p-0 text-center text-[16px]" />
-      <FiPlus size={18} onClick={() => onButtonClick('plus')} className="stroke-mainGreen hover:cursor-pointer" />
+    <div className="flex items-center gap-2">
+      <AdminActionButton
+        type="button"
+        variant="outline"
+        size="icon"
+        aria-label="투표권 수 줄이기"
+        disabled={maxVotesLimit <= 0}
+        onClick={() => onButtonClick('minus')}
+      >
+        <FiMinus />
+      </AdminActionButton>
+      <Input
+        appearance="admin"
+        aria-label="1인당 투표권 수"
+        inputMode="numeric"
+        value={maxVotesLimit}
+        onChange={onInputChange}
+        className="h-11 w-14 px-2 text-center"
+      />
+      <AdminActionButton
+        type="button"
+        variant="outline"
+        size="icon"
+        aria-label="투표권 수 늘리기"
+        disabled={maxVotesLimit >= MAX_VOTE_PER_PERSON}
+        onClick={() => onButtonClick('plus')}
+      >
+        <FiPlus />
+      </AdminActionButton>
     </div>
   );
 };

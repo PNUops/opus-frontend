@@ -57,7 +57,6 @@ export const getNotificationTarget = (notification: NotificationDto): string | T
         : null;
     case 'TEAM':
     case 'TEAM_COMMENT':
-    case 'TEAM_AWARD':
     case 'TEAM_AWARDS':
       return getTeamNotificationTarget({ ...notification, targetType: notification.targetType }, url);
     default:

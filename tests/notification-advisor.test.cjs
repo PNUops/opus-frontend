@@ -171,14 +171,15 @@ test('legacy routes reuse the team query, preserve anchors, and handle lookup fa
   for (const [type, expected] of [
     ['TEAM', '/me/contests/7/teams/2/dashboard'],
     ['TEAM_COMMENT', '/contest/7/teams/view/2#comments'],
-    ['TEAM_AWARD', '/contest/7/teams/view/2#awards'],
     ['TEAM_AWARDS', '/contest/7/teams/view/2#awards'],
   ]) {
     assert.equal(await resolve(notification(type, '/teams/2')), expected);
   }
-  assert.equal(calls.length, 4);
+  assert.equal(calls.length, 3);
   assert.equal(await resolve(notification('TEAM', '/contest/7/teams/view/2')), '/me/contests/7/teams/2/dashboard');
-  assert.equal(calls.length, 4, 'explicit contest routes need no lookup');
+  assert.equal(calls.length, 3, 'explicit contest routes need no lookup');
+  assert.equal(await resolve(notification('TEAM_AWARD', '/teams/2')), null);
+  assert.equal(calls.length, 3, 'removed award type must not trigger a lookup');
   assert.equal(await resolve(notification('TEAM', '', 2)), '/me/contests/7/teams/2/dashboard');
   assert.equal(await resolve(notification('TEAM', '', -1)), null);
   for (contestId of [0, Number.MAX_SAFE_INTEGER + 1, 'error']) {

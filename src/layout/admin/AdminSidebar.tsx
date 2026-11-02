@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ChevronDown, Home, LayoutGrid, MessageSquareShare } from 'lucide-react';
+import { ChevronDown, Home, LayoutGrid, MessageSquareShare, X } from 'lucide-react';
+import { useMediaQuery } from '@react-hookz/web';
+import { useSidebar } from '@layout/SidebarContext';
+import { Sheet, SheetClose, SheetContent, SheetTitle } from '@components/ui/sheet';
 
 import logoOpusAdmin from './logo-opus-admin.svg';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
@@ -85,7 +88,7 @@ const getActiveSectionTitle = (pathname: string, contestId?: string) => {
 
 const dashboardLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'relative flex h-10 items-center gap-3 border-l-[3px] px-5 text-[15px] font-semibold transition-colors',
+    'relative flex min-h-11 items-center gap-3 border-l-[3px] px-5 text-[15px] font-semibold transition-colors lg:min-h-10',
     isActive
       ? 'border-l-mainBlue bg-mainBlue/8 text-gray-950'
       : 'border-l-transparent text-gray-800 hover:bg-mainBlue/5',
@@ -93,28 +96,84 @@ const dashboardLinkClass = ({ isActive }: { isActive: boolean }) =>
 
 const contestLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'flex h-9 items-center border-l-[3px] px-5 text-[14px] font-medium transition-colors',
+    'flex min-h-11 items-center border-l-[3px] px-5 py-2 text-[14px] font-medium transition-colors lg:min-h-9 lg:py-0',
     isActive
       ? 'border-l-mainBlue bg-mainBlue/8 text-gray-950'
       : 'border-l-transparent text-gray-700 hover:bg-mainBlue/5',
   );
 
 const utilityItemClass =
-  'hover:bg-mainBlue/5 flex h-10 items-center gap-3 border-l-[3px] border-l-transparent px-5 text-[14px] font-medium text-gray-700 transition-colors hover:text-gray-950';
+  'hover:bg-mainBlue/5 flex min-h-11 items-center gap-3 border-l-[3px] border-l-transparent px-5 text-[14px] font-medium text-gray-700 transition-colors hover:text-gray-950 lg:min-h-10';
 
 const AdminSidebar = () => {
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const { isOpen, open, close } = useSidebar();
+  const location = useLocation();
+
+  useEffect(() => {
+    close();
+  }, [location.pathname, isDesktop, close]);
+
+  if (!isDesktop) {
+    return (
+      <Sheet open={isOpen} onOpenChange={(nextOpen) => (nextOpen ? open() : close())}>
+        <SheetContent
+          id="admin-mobile-navigation"
+          side="left"
+          className="w-[min(360px,calc(100vw-32px))] gap-0 bg-white pb-[env(safe-area-inset-bottom)] motion-reduce:animate-none"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            document.getElementById('admin-menu-trigger')?.focus();
+          }}
+        >
+          <SheetTitle className="sr-only">관리자 메뉴</SheetTitle>
+          <SheetClose asChild>
+            <button
+              type="button"
+              aria-label="관리자 메뉴 닫기"
+              className="hover:bg-whiteGray focus-visible:outline-mainBlue absolute top-2 right-2 flex size-11 items-center justify-center rounded-md text-neutral-600 focus-visible:outline-2"
+            >
+              <X size={20} aria-hidden />
+            </button>
+          </SheetClose>
+          <AdminSidebarContent />
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
   return (
     <aside
       aria-label="관리자 사이드 내비게이션"
       className="border-lightGray fixed top-0 bottom-0 left-0 z-30 flex w-[272px] flex-col border-r bg-white"
     >
+      <AdminSidebarContent />
+    </aside>
+  );
+};
+
+const AdminSidebarContent = () => {
+  const { close } = useSidebar();
+  return (
+    <>
       <div className="h-header flex items-center justify-center px-6">
-        <Link to="/admin" aria-label="관리자 대시보드로 이동" className="flex items-center justify-center" replace>
+        <Link
+          to="/admin"
+          onClick={close}
+          aria-label="관리자 대시보드로 이동"
+          className="flex items-center justify-center"
+          replace
+        >
           <img src={logoOpusAdmin} alt="OPUS Admin" className="h-14 w-auto max-w-[196px]" />
         </Link>
       </div>
 
-      <nav className="min-h-0 flex-1 overflow-y-auto py-5">
+      <nav
+        className="min-h-0 flex-1 overflow-y-auto py-5"
+        onClick={(event) => {
+          if ((event.target as HTMLElement).closest('a[href]')) close();
+        }}
+      >
         <NavLink to="/admin" end className={dashboardLinkClass} replace>
           <LayoutGrid className="h-5 w-5 text-gray-500" strokeWidth={1.8} />
           <span>대시보드</span>
@@ -147,11 +206,13 @@ const AdminSidebar = () => {
           </span>
         </a>
       </div>
-    </aside>
+    </>
   );
 };
 
 const AdminContestSidebarContent = () => {
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const { close } = useSidebar();
   const contestId = useContestId();
   const location = useLocation();
   const navigate = useNavigate();
@@ -166,6 +227,7 @@ const AdminContestSidebarContent = () => {
 
   const handleContestChange = (nextContestId: string) => {
     navigate(`/admin/contest/${nextContestId}`, { replace: true });
+    close();
   };
 
   const handleSectionOpen = (sectionTitle: string) => {
@@ -181,7 +243,8 @@ const AdminContestSidebarContent = () => {
       <div className="mx-5 mt-6">
         <Select value={selectedContestId} onValueChange={handleContestChange}>
           <SelectTrigger
-            className="border-lightGray h-10 w-full rounded-none border-0 border-b bg-transparent px-0 py-0 text-[15px] font-normal text-gray-900 shadow-none focus:ring-0 focus:ring-offset-0 focus:outline-none"
+            aria-label="관리할 대회"
+            className="border-lightGray min-h-11 w-full rounded-none border-0 border-b bg-transparent px-0 py-0 text-[15px] font-normal text-gray-900 shadow-none focus:ring-0 focus:ring-offset-0 focus:outline-none lg:min-h-10"
             iconClassName="stroke-mainBlue h-4 w-4 opacity-100"
             disabled={contests.length === 0}
           >
@@ -207,6 +270,8 @@ const AdminContestSidebarContent = () => {
             section={section}
             onClose={handleSectionClose}
             onOpen={handleSectionOpen}
+            onToggle={() => setOpenSectionTitle((current) => (current === section.title ? null : section.title))}
+            isDesktop={!!isDesktop}
           />
         ))}
       </div>
@@ -221,19 +286,30 @@ interface AdminSidebarSectionProps {
   section: AdminSidebarSection;
   onClose: () => void;
   onOpen: (sectionTitle: string) => void;
+  onToggle: () => void;
+  isDesktop: boolean;
 }
 
-const AdminSidebarSection = ({ contestId, isActive, isOpen, section, onClose, onOpen }: AdminSidebarSectionProps) => {
+const AdminSidebarSection = ({
+  contestId,
+  isActive,
+  isOpen,
+  section,
+  onClose,
+  onOpen,
+  onToggle,
+  isDesktop,
+}: AdminSidebarSectionProps) => {
   return (
-    <section onMouseEnter={() => onOpen(section.title)} onMouseLeave={onClose}>
+    <section onMouseEnter={() => isDesktop && onOpen(section.title)} onMouseLeave={() => isDesktop && onClose()}>
       <button
         type="button"
         className={cn(
-          'flex h-10 w-full items-center justify-between px-5 text-left text-[13px] transition-colors',
+          'flex min-h-11 w-full items-center justify-between px-5 text-left text-[13px] transition-colors lg:min-h-10',
           isActive ? 'text-mainBlue' : 'hover:bg-mainBlue/5 hover:text-gray-700',
         )}
         aria-expanded={isOpen}
-        onClick={() => onOpen(section.title)}
+        onClick={onToggle}
       >
         <span>{section.title}</span>
         <ChevronDown
@@ -248,7 +324,7 @@ const AdminSidebarSection = ({ contestId, isActive, isOpen, section, onClose, on
           isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
         )}
       >
-        <ul className="min-h-0 overflow-hidden">
+        <ul inert={!isOpen} className="min-h-0 overflow-hidden">
           {section.links.map((link) => (
             <li key={link.label}>
               <AdminSidebarItem contestId={contestId} link={link} />
