@@ -16,7 +16,7 @@
 
   --spacing-sidebar: 280px;
   --spacing-container: 1448px;
-  --spacing-header: 104px;
+  --spacing-header: 80px;
   --spacing-footer: 120px;
 
   --w-sidebar: 280px;
@@ -26,14 +26,14 @@
   --max-w-sidebar: 280px;
   --min-w-sidebar: 280px;
 
-  --h-header: 104px;
+  --h-header: var(--spacing-header);
   --h-sidebar: 1120px;
   --h-footer: 140px;
   --h-page: 3351px;
 
   --min-h-sidebar: 1120px;
   --min-h-footer: 100px;
-  --min-h-header: 104px;
+  --min-h-header: var(--spacing-header);
 
   --animate-fade-slide-in-out: fade-slide-in-out 2s ease-in-out forwards;
 
@@ -60,6 +60,7 @@
 @layer base {
   html {
     font-family: var(--font-base);
+    scroll-padding-top: var(--spacing-header);
   }
 }
 

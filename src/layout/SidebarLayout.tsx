@@ -34,7 +34,7 @@ const SidebarLayout = () => {
           <div
             id="desktop-contest-navigation"
             ref={desktopRef}
-            className="sticky top-0 h-[calc(100dvh-var(--spacing-header))]"
+            className="top-header sticky h-[calc(100dvh-var(--spacing-header))]"
           >
             <Sidebar
               tone={tone}

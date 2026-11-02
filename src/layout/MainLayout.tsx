@@ -10,11 +10,13 @@ import useScrollToTop from '@hooks/useScrollToTop';
 import { Toaster } from '@components/Toaster';
 import AxiosInterceptorProvider from '@providers/AxiosInterceptorProvider';
 import { SidebarProvider } from './SidebarContext';
+import { cn } from '@utils/classname';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isHomeRoute = location.pathname === '/';
   useScrollToTop();
 
   if (!isAuthInit) return <></>;
@@ -22,7 +24,7 @@ const MainLayout = () => {
   return (
     <AxiosInterceptorProvider>
       <SidebarProvider>
-        <div className={isAdminRoute ? 'min-w-[1024px]' : 'min-w-[350px]'}>
+        <div className={cn(isAdminRoute ? 'min-w-[1024px]' : 'min-w-[350px]', isHomeRoute && 'min-h-dvh bg-[#06172f]')}>
           <Header />
           <div>
             <Outlet />
