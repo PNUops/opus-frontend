@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useId, useMemo, useRef, useState } from 'react';
+import { useMutation, useMutationState, useQuery, useQueryClient } from '@tanstack/react-query';
 import { RefreshCw } from 'lucide-react';
 
 import { getAdvisorFeedbackFile, getAdvisorSubmissionFile, putAdvisorFeedback } from '@apis/advisor';
@@ -15,6 +15,16 @@ import type { AdvisorActivityContest, AdvisorProject, AdvisorSubmissionFile } fr
 
 const MAX_FEEDBACK_FILE_COUNT = 5;
 type FeedbackEdit = { description?: string; files: AdvisorSubmissionFile[]; removeFileIds: number[] };
+type SaveFeedbackVariables = {
+  description: string;
+  files: File[];
+  removeFileIds: number[];
+  submissionId: number;
+  teamId: number;
+  contestId: number;
+  editKey: string;
+  uploadedFileIds: number[];
+};
 const EMPTY_FEEDBACK_EDIT: FeedbackEdit = { files: [], removeFileIds: [] };
 const feedbackEditKey = (contestId: number | null, teamId: number | null, submissionId: number) =>
   `${contestId}:${teamId}:${submissionId}`;
@@ -52,8 +62,14 @@ const AdvisorActivityPage = () => {
   } = useAdvisorSelection(isAdvisor);
   // 페이지가 마운트된 동안 대회·팀·제출물별 초안과 첨부파일을 보존한다.
   const [feedbackEdits, setFeedbackEdits] = useState<Record<string, FeedbackEdit>>({});
+  // 같은 렌더에서 발생하는 연속 저장도 차단한다. 화면의 저장 상태는 mutation cache에서 읽는다.
   const pendingKeysRef = useRef(new Set<string>());
-  const [pendingKeys, setPendingKeys] = useState<Set<string>>(() => new Set());
+  const mutationScope = useId();
+  const mutationKey = ['advisorFeedback', 'save', mutationScope];
+  const pendingKeys = useMutationState({
+    filters: { mutationKey, exact: true, status: 'pending' },
+    select: (mutation) => (mutation.state.variables as SaveFeedbackVariables).editKey,
+  });
 
   const advisorFeedbackQuery = useQuery({
     ...advisorFeedbackOption(contestId ?? 0, selectedSubmissionId ?? 0),
@@ -61,22 +77,14 @@ const AdvisorActivityPage = () => {
   });
 
   const saveFeedbackMutation = useMutation({
+    mutationKey,
     mutationFn: ({
       description,
       files,
       removeFileIds,
       submissionId,
       contestId: targetContestId,
-    }: {
-      description: string;
-      files: File[];
-      removeFileIds: number[];
-      submissionId: number;
-      teamId: number;
-      contestId: number;
-      editKey: string;
-      uploadedFileIds: number[];
-    }) => {
+    }: SaveFeedbackVariables) => {
       return putAdvisorFeedback(targetContestId, submissionId, { description, files, removeFileIds });
     },
     onSuccess: async (
@@ -103,7 +111,6 @@ const AdvisorActivityPage = () => {
     },
     onSettled: (_data, _error, { editKey }) => {
       pendingKeysRef.current.delete(editKey);
-      setPendingKeys(new Set(pendingKeysRef.current));
     },
   });
 
@@ -278,7 +285,6 @@ const AdvisorActivityPage = () => {
     }
 
     pendingKeysRef.current.add(editKey);
-    setPendingKeys(new Set(pendingKeysRef.current));
     saveFeedbackMutation.mutate({
       description,
       files: selectedEdit.files.map((file) => file.sourceFile).filter((file): file is File => file !== undefined),
@@ -351,7 +357,7 @@ const AdvisorActivityPage = () => {
         loadingTeamId={teamSubmissionsQuery.isLoading ? expandedTeamId : null}
         savingSubmissionId={
           selectedSubmissionId !== null &&
-          pendingKeys.has(feedbackEditKey(contestId, expandedTeamId, selectedSubmissionId))
+          pendingKeys.includes(feedbackEditKey(contestId, expandedTeamId, selectedSubmissionId))
             ? selectedSubmissionId
             : null
         }

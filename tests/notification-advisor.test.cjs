@@ -282,10 +282,8 @@ function createAdvisor() {
   const state = [];
   let cursor = 0;
   let changed = false;
-  let mutationOptions;
-  let pending = false;
-  let variables;
   let task;
+  const queryClient = new QueryClient({ defaultOptions: { mutations: { retry: false, gcTime: Infinity } } });
   const ctx = {
     contest: '1',
     search: '?teamId=11',
@@ -309,6 +307,7 @@ function createAdvisor() {
       ];
     },
     useMemo: (fn) => fn(),
+    useId: () => 'advisor-test',
     useRef: (initial) => react.useState(() => ({ current: initial }))[0],
   };
   const queryOptions = (kind, ...ids) => ({ queryKey: [kind, ...ids] });
@@ -340,7 +339,8 @@ function createAdvisor() {
       invalidateAdvisorActivityQueries: async (_client, ...ids) => ctx.invalidations.push(ids),
     },
     '@tanstack/react-query': {
-      useQueryClient: () => ({}),
+      useQueryClient: () => queryClient,
+      useMutationState: ({ filters, select }) => queryClient.getMutationCache().findAll(filters).map(select),
       useQuery(option) {
         const [kind, contest, id] = option.queryKey;
         if (option.enabled) ctx.calls.push(option.queryKey);
@@ -364,23 +364,10 @@ function createAdvisor() {
         return { data, isSuccess: option.enabled && !isError, isError, isLoading: false, refetch: async () => {} };
       },
       useMutation(options) {
-        mutationOptions = options;
         return {
-          isPending: pending,
-          variables,
           mutate(input) {
-            variables = input;
-            pending = true;
-            task = Promise.resolve()
-              .then(() => options.mutationFn(input))
-              .then(
-                (value) => mutationOptions.onSuccess(value, input),
-                (error) => mutationOptions.onError(error, input),
-              )
-              .finally(() => {
-                mutationOptions.onSettled?.(undefined, undefined, input);
-                pending = false;
-              });
+            const mutation = queryClient.getMutationCache().build(queryClient, options);
+            task = mutation.execute(input).catch(() => {});
           },
         };
       },
