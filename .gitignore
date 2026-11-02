@@ -25,3 +25,6 @@ dist-ssr
 
 *.env
 tsconfig.tsbuildinfo
+
+# Local visual QA artifacts
+docs/visual-qa/
