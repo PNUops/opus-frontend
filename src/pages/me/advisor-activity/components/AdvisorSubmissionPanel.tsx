@@ -1,9 +1,11 @@
 import { useId } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { cn } from '@utils/classname';
 
 import type { AdvisorSubmission, AdvisorSubmissionFile } from '../types';
+import { getFeedbackStatusLabel } from '../utils/format';
 import { AdvisorFeedbackEditor } from './AdvisorFeedbackEditor';
 import { AdvisorFileList } from './AdvisorFileList';
 import { AdvisorStatusBadge } from './AdvisorStatusBadge';
@@ -36,6 +38,8 @@ export const AdvisorSubmissionPanel = ({
   onSelectSubmission,
 }: AdvisorSubmissionPanelProps) => {
   const panelId = useId();
+  const detailsId = `${panelId}-details`;
+  const selectedSubmission = submissions.find((submission) => submission.submissionId === selectedSubmissionId);
 
   if (isLoading) {
     return (
@@ -54,94 +58,108 @@ export const AdvisorSubmissionPanel = ({
   }
 
   return (
-    <div className="border-lightGray mt-4 overflow-hidden rounded-md border bg-white">
-      <div className="bg-whiteGray hidden grid-cols-[minmax(0,1.4fr)_100px_minmax(0,2fr)_120px] gap-4 px-4 py-3 text-xs font-medium text-neutral-800 xl:grid">
-        <span>제출물 항목</span>
-        <span>피드백 상태</span>
-        <span>제출 파일</span>
-        <span className="text-center">작업</span>
+    <div className="border-lightGray mt-5 grid min-w-0 gap-5 border-t pt-5 xl:grid-cols-[minmax(180px,0.85fr)_minmax(0,2.4fr)] xl:gap-6">
+      <div className="hidden min-w-0 xl:block" role="group" aria-labelledby={`${panelId}-list-title`}>
+        <div className="flex items-center justify-between gap-2 px-3">
+          <h4 id={`${panelId}-list-title`} className="text-sm font-semibold text-neutral-900">
+            제출물
+          </h4>
+          <span className="text-xs text-neutral-500">{submissions.length}개</span>
+        </div>
+        <ul className="mt-3 flex max-h-[480px] flex-col gap-1 overflow-y-auto pr-1">
+          {submissions.map((submission) => {
+            const selected = submission.submissionId === selectedSubmissionId;
+            return (
+              <li key={submission.submissionId}>
+                <button
+                  type="button"
+                  onClick={() => onSelectSubmission(submission.submissionId)}
+                  aria-label={`${submission.submissionItemName} 선택`}
+                  aria-pressed={selected}
+                  aria-controls={detailsId}
+                  className={cn(
+                    'focus-visible:outline-mainBlue flex min-h-20 w-full items-center gap-2 rounded-md px-3 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2',
+                    selected ? 'bg-whiteGray text-mainBlue' : 'hover:bg-whiteGray text-neutral-800',
+                  )}
+                >
+                  <span className="flex min-w-0 flex-1 flex-col items-start gap-2">
+                    <span className="w-full text-sm leading-5 font-medium break-words">
+                      {submission.submissionItemName}
+                    </span>
+                    <AdvisorStatusBadge status={submission.feedbackStatus} />
+                  </span>
+                  <ChevronRight size={16} aria-hidden className={cn('shrink-0', !selected && 'invisible')} />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
-      <div className="flex flex-col">
-        {submissions.map((submission) => {
-          const selected = submission.submissionId === selectedSubmissionId;
-          const detailsId = `${panelId}-submission-${submission.submissionId}`;
-          const triggerId = `${detailsId}-trigger`;
-
-          return (
-            <div key={submission.submissionId} className="border-lightGray border-t bg-white first:border-t-0">
-              <div
-                className={cn(
-                  'grid grid-cols-[minmax(0,1fr)_auto] gap-3 px-4 py-4 xl:grid-cols-[minmax(0,1.4fr)_100px_minmax(0,2fr)_120px] xl:items-center xl:gap-4',
-                  selected && 'bg-blue-50/60',
-                )}
+      <div className="flex min-w-0 flex-col gap-2 xl:hidden">
+        <label htmlFor={`${panelId}-select`} className="text-sm font-semibold text-neutral-900">
+          제출물 선택
+        </label>
+        <Select
+          value={selectedSubmissionId?.toString() ?? ''}
+          onValueChange={(value) => onSelectSubmission(Number(value))}
+        >
+          <SelectTrigger
+            id={`${panelId}-select`}
+            aria-label="제출물 선택"
+            className="border-lightGray focus:border-mainBlue h-11 min-w-0 gap-3 bg-white text-neutral-900 shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none"
+          >
+            <SelectValue placeholder="제출물을 선택해주세요." />
+          </SelectTrigger>
+          <SelectContent className="w-(--radix-select-trigger-width) max-w-[calc(100vw-2rem)]">
+            {submissions.map((submission) => (
+              <SelectItem
+                key={submission.submissionId}
+                value={submission.submissionId.toString()}
+                className="min-h-11 whitespace-normal [&>span:last-child]:min-w-0 [&>span:last-child]:break-words"
               >
-                <div className="flex min-w-0 flex-col gap-1">
-                  <span className="text-sm leading-6 font-medium break-words text-neutral-950">
-                    {submission.submissionItemName}
-                  </span>
-                  <span className="text-xs text-neutral-600 xl:hidden">제출물 항목</span>
-                </div>
-                <div className="flex justify-end xl:justify-start">
-                  <AdvisorStatusBadge status={submission.feedbackStatus} />
-                </div>
-                <div className="col-span-2 flex min-w-0 flex-wrap items-center justify-between gap-3 xl:contents">
-                  <div className="min-w-0 flex-1 basis-40 xl:basis-auto">
-                    <AdvisorFileList files={submission.files} onDownload={onDownloadFile} />
-                  </div>
-                  <button
-                    id={triggerId}
-                    type="button"
-                    onClick={() => onSelectSubmission(submission.submissionId)}
-                    className="border-mainBlue text-mainBlue focus-visible:outline-mainBlue ml-auto inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-md border bg-white px-3 text-xs font-medium transition-colors hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 xl:ml-0 xl:justify-self-center"
-                    aria-label={`${submission.submissionItemName} ${selected ? '상세 접기' : '자세히 보기'}`}
-                    aria-controls={detailsId}
-                    aria-expanded={selected}
-                  >
-                    {selected ? '접기' : '자세히 보기'}
-                    <ChevronDown
-                      size={14}
-                      aria-hidden
-                      className={cn('transition-transform motion-reduce:transition-none', selected && 'rotate-180')}
-                    />
-                  </button>
-                </div>
-              </div>
+                {submission.submissionItemName} · {getFeedbackStatusLabel(submission.feedbackStatus)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-              <div
-                id={detailsId}
-                role="region"
-                aria-labelledby={triggerId}
-                aria-hidden={!selected}
-                inert={!selected}
-                className={cn(
-                  'grid transition-[grid-template-rows,opacity] duration-300 ease-out motion-reduce:transition-none',
-                  selected ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-                )}
-              >
-                <div className="min-h-0 overflow-hidden">
-                  {selected && (
-                    <div className="border-lightGray border-t px-4 py-5 xl:px-5">
-                      <AdvisorFeedbackEditor
-                        submissionItemName={submission.submissionItemName}
-                        value={feedbackDrafts[submission.submissionId] ?? ''}
-                        files={submission.feedbackFiles ?? []}
-                        isLoading={submission.isFeedbackLoading}
-                        isSaving={savingSubmissionId === submission.submissionId}
-                        onAttachFiles={(files) => onAttachFeedbackFiles(submission.submissionId, files)}
-                        onChange={(value) => onChangeFeedback(submission.submissionId, value)}
-                        onDownloadFile={onDownloadFile}
-                        onRemoveFile={(file) => onRemoveFeedbackFile(submission.submissionId, file)}
-                        onSave={() => onSaveFeedback(submission.submissionId)}
-                      />
-                    </div>
-                  )}
-                </div>
+      <section id={detailsId} aria-label="선택한 제출물 검토" className="border-lightGray min-w-0 xl:border-l xl:pl-6">
+        {selectedSubmission ? (
+          <>
+            <div className="flex items-start justify-between gap-3">
+              <h4 className="min-w-0 text-base leading-6 font-semibold break-words text-neutral-950">
+                {selectedSubmission.submissionItemName}
+              </h4>
+              <div className="shrink-0">
+                <AdvisorStatusBadge status={selectedSubmission.feedbackStatus} />
               </div>
             </div>
-          );
-        })}
-      </div>
+            <div className="border-lightGray mt-5 flex min-w-0 flex-col gap-2 border-b pb-5">
+              <h5 className="text-xs font-semibold text-neutral-700">제출 파일</h5>
+              <AdvisorFileList files={selectedSubmission.files} onDownload={onDownloadFile} />
+            </div>
+            <div className="mt-5">
+              <AdvisorFeedbackEditor
+                key={selectedSubmission.submissionId}
+                submissionItemName={selectedSubmission.submissionItemName}
+                value={feedbackDrafts[selectedSubmission.submissionId] ?? ''}
+                files={selectedSubmission.feedbackFiles ?? []}
+                isLoading={selectedSubmission.isFeedbackLoading}
+                isSaving={savingSubmissionId === selectedSubmission.submissionId}
+                onAttachFiles={(files) => onAttachFeedbackFiles(selectedSubmission.submissionId, files)}
+                onChange={(value) => onChangeFeedback(selectedSubmission.submissionId, value)}
+                onDownloadFile={onDownloadFile}
+                onRemoveFile={(file) => onRemoveFeedbackFile(selectedSubmission.submissionId, file)}
+                onSave={() => onSaveFeedback(selectedSubmission.submissionId)}
+              />
+            </div>
+          </>
+        ) : (
+          <p className="py-10 text-center text-sm text-neutral-600">검토할 제출물을 선택해주세요.</p>
+        )}
+      </section>
     </div>
   );
 };

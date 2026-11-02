@@ -392,23 +392,28 @@ function activeSubmission(props) {
     .submissions.find((submission) => submission.submissionId === props.selectedSubmissionId);
 }
 
-test('submission details toggle closed and reopen without losing draft text or attachments', () => {
+test('submission selection stays open and preserves drafts and attachments across item and team changes', () => {
   const ctx = createAdvisor();
   assert.equal(ctx.page().selectedSubmissionId, 110);
   ctx.page().onChangeFeedback(110, 'draft before closing');
   ctx.page().onAttachFeedbackFiles(110, [localFile]);
   ctx.page().onSelectSubmission(110);
-  assert.equal(ctx.page().selectedSubmissionId, null, 'the initially selected submission can be collapsed');
-  assert.equal(ctx.page().selectedSubmissionId, null, 'rerendering must not automatically reopen the first item');
+  assert.equal(ctx.page().selectedSubmissionId, 110, 'selecting the current item must keep the editor open');
   ctx.page().onSelectSubmission(999);
-  assert.equal(ctx.page().selectedSubmissionId, null, 'invalid selections cannot reopen a panel');
-  ctx.page().onSelectSubmission(110);
+  assert.equal(ctx.page().selectedSubmissionId, 110, 'invalid selections cannot change the active item');
   assert.equal(ctx.page().feedbackDrafts[110], 'draft before closing');
   assert.ok(activeSubmission(ctx.page()).feedbackFiles.some((file) => file.sourceFile === localFile));
   ctx.page().onSelectSubmission(111);
   assert.equal(ctx.page().selectedSubmissionId, 111);
   ctx.page().onSelectSubmission(111);
-  assert.equal(ctx.page().selectedSubmissionId, null, 'other submissions can also be collapsed');
+  assert.equal(ctx.page().selectedSubmissionId, 111, 'selecting another item twice must keep its editor open');
+  ctx.page().onSelectSubmission(110);
+  assert.equal(ctx.page().feedbackDrafts[110], 'draft before closing');
+  assert.ok(activeSubmission(ctx.page()).feedbackFiles.some((file) => file.sourceFile === localFile));
+  ctx.page().onToggleProject({ teamId: 11 });
+  assert.equal(ctx.page().selectedSubmissionId, null, 'closing the team hides its editor');
+  ctx.page().onToggleProject({ teamId: 11 });
+  assert.equal(ctx.page().feedbackDrafts[110], 'draft before closing', 'reopening the team keeps the draft');
   ctx.page().onToggleProject({ teamId: 12 });
   assert.equal(ctx.page().selectedSubmissionId, 120, 'opening another team retains its default selection');
   ctx.search = '?teamId=11';

@@ -48,10 +48,7 @@ export const AdvisorProjectCard = ({
   return (
     <article
       ref={targetRef}
-      className={cn(
-        'scroll-mt-4 rounded-lg border border-blue-200 bg-white px-3 py-4 text-sm transition-colors xl:px-5',
-        expanded && 'bg-blue-50/20',
-      )}
+      className="border-lightGray scroll-mt-4 rounded-lg border bg-white px-3 py-4 text-sm xl:px-5"
     >
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:items-center xl:gap-8">
         <div className="flex min-w-0 flex-wrap items-center gap-2.5 sm:gap-4">

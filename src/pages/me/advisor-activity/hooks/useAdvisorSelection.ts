@@ -28,10 +28,9 @@ export const useAdvisorSelection = (isAdvisor: boolean) => {
   const [selection, setSelection] = useState<{
     scope: string;
     teamId: number | null | undefined;
-    submissionId: number | null | undefined;
-  }>({ scope, teamId: undefined, submissionId: undefined });
-  const currentSelection =
-    selection.scope === scope ? selection : { scope, teamId: undefined, submissionId: undefined };
+    submissionId: number | null;
+  }>({ scope, teamId: undefined, submissionId: null });
+  const currentSelection = selection.scope === scope ? selection : { scope, teamId: undefined, submissionId: null };
   // effect를 기다리는 동안 이전 선택으로 조회하지 않도록 같은 렌더에서 선택 범위를 맞춘다.
   if (selection.scope !== scope) setSelection(currentSelection);
 
@@ -52,24 +51,22 @@ export const useAdvisorSelection = (isAdvisor: boolean) => {
     expandedTeamId !== null && teamSubmissionsQuery.isSuccess && teamSubmissionsQuery.data.teamId === expandedTeamId
       ? teamSubmissionsQuery.data
       : undefined;
-  // undefined는 최초 항목 선택, null은 사용자가 상세 패널을 접은 상태다.
-  const selectedSubmissionId =
-    currentSelection.submissionId === null
-      ? null
-      : teamSubmissions?.submissions.some((submission) => submission.submissionId === currentSelection.submissionId)
-        ? (currentSelection.submissionId ?? null)
-        : (teamSubmissions?.submissions[0]?.submissionId ?? null);
+  const selectedSubmissionId = teamSubmissions?.submissions.some(
+    (submission) => submission.submissionId === currentSelection.submissionId,
+  )
+    ? currentSelection.submissionId
+    : (teamSubmissions?.submissions[0]?.submissionId ?? null);
 
   const toggleTeam = (teamId: number) => {
     if (!advisorProjects.some((project) => project.teamId === teamId)) return;
-    setSelection({ scope, teamId: expandedTeamId === teamId ? null : teamId, submissionId: undefined });
+    setSelection({ scope, teamId: expandedTeamId === teamId ? null : teamId, submissionId: null });
   };
   const selectSubmission = (submissionId: number) => {
     if (!teamSubmissions?.submissions.some((submission) => submission.submissionId === submissionId)) return;
     setSelection({
       scope,
       teamId: expandedTeamId,
-      submissionId: selectedSubmissionId === submissionId ? null : submissionId,
+      submissionId,
     });
   };
 

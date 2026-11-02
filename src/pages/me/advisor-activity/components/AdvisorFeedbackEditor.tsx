@@ -47,7 +47,7 @@ export const AdvisorFeedbackEditor = ({
   return (
     <div className="flex min-w-0 flex-col gap-4" aria-busy={isLoading || isSaving}>
       <div className="flex flex-col gap-1">
-        <h4 className="text-mainBlue text-sm font-semibold">{submissionItemName} 피드백</h4>
+        <h5 className="text-sm font-semibold text-neutral-900">피드백 작성</h5>
         <p className="text-xs leading-5 text-neutral-600">
           제출물을 확인하고 피드백을 작성해주세요. 작성한 피드백은 팀과 관리자에게 공유됩니다.
         </p>
@@ -73,7 +73,7 @@ export const AdvisorFeedbackEditor = ({
         disabled={isLoading || isSaving}
         onChange={(event) => onChange(event.target.value)}
         placeholder={isLoading ? '피드백을 불러오는 중입니다.' : '제출물에 대한 피드백을 작성해주세요.'}
-        className="border-lightGray focus:border-mainBlue focus-visible:ring-mainBlue/20 disabled:bg-whiteGray h-36 w-full resize-y overflow-y-auto rounded-md border bg-white p-3 text-sm leading-relaxed transition-colors outline-none placeholder:text-neutral-500 focus-visible:ring-2 disabled:cursor-wait"
+        className="border-lightGray focus:border-mainBlue focus-visible:ring-mainBlue/20 disabled:bg-whiteGray h-44 min-h-36 w-full resize-y overflow-y-auto rounded-md border bg-white p-3 text-sm leading-relaxed transition-colors outline-none placeholder:text-neutral-500 focus-visible:ring-2 disabled:cursor-wait"
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
