@@ -1,3 +1,5 @@
+import { useScrollToTarget } from '@hooks/useScrollToTarget';
+
 import type { AdvisorProject, AdvisorSubmissionFile } from '../types';
 import { AdvisorProjectCard } from './AdvisorProjectCard';
 
@@ -36,39 +38,12 @@ export const AdvisorProjectList = ({
   onSelectSubmission,
   onToggleProject,
 }: AdvisorProjectListProps) => {
-  const { key: navigationKey } = useLocation();
-  const targetRef = useRef<HTMLElement>(null);
-  const scrolledKey = useRef<string | null>(null);
   const targetTeamId = projects.find((project) => project.teamId === notificationTeamId)?.teamId ?? null;
-
-  useEffect(() => {
-    if (targetTeamId === null || loadingTeamId === targetTeamId || scrolledKey.current === navigationKey) return;
-    let cancelled = false;
-    const frame = requestAnimationFrame(async () => {
-      await document.fonts.ready;
-      if (cancelled) return;
-      const target = targetRef.current;
-      if (!target) return;
-      const transitions =
-        target.parentElement
-          ?.getAnimations({ subtree: true })
-          .filter(
-            (animation) => animation instanceof CSSTransition && animation.transitionProperty === 'grid-template-rows',
-          ) ?? [];
-      await Promise.all(transitions.map((animation) => animation.finished.catch(() => undefined)));
-      if (cancelled) return;
-      scrolledKey.current = navigationKey;
-      target.scrollIntoView({
-        block: 'start',
-        inline: 'nearest',
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-      });
-    });
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(frame);
-    };
-  }, [navigationKey, targetTeamId, loadingTeamId]);
+  const { targetRef } = useScrollToTarget<HTMLElement>({
+    targetId: targetTeamId,
+    enabled: loadingTeamId !== targetTeamId,
+    oncePerNavigation: true,
+  });
 
   if (projects.length === 0) {
     return (
@@ -106,5 +81,3 @@ export const AdvisorProjectList = ({
     </section>
   );
 };
-import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';

@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
 
 import { useSearchParamId } from '@hooks/useId';
+import { useScrollToTarget } from '@hooks/useScrollToTarget';
 import { mySubmissionsOption } from '@queries/submission';
 import { cn } from '@utils/classname';
 
@@ -15,54 +14,18 @@ const GRID_COLS =
 
 export const SubmissionList = ({ contestId, teamId }: { contestId: number; teamId: number }) => {
   const [submissionItemIdParam, setSubmissionItemIdParam] = useSearchParamId('submissionItemId');
-  const { key: navigationKey } = useLocation();
-  const expandedItemRef = useRef<HTMLDivElement>(null);
-  const skipNextScrollRef = useRef(false);
 
   const { data: items, error, isFetching } = useSuspenseQuery(mySubmissionsOption(contestId, teamId));
   const expandedItemId = items.find((item) => item.submissionItemId === submissionItemIdParam)?.submissionItemId;
 
-  useEffect(() => {
-    if (skipNextScrollRef.current) {
-      skipNextScrollRef.current = false;
-      return;
-    }
-    if (expandedItemId === undefined) return;
-
-    // 경로 이동 시 실행되는 공통 최상단 스크롤 이후, 렌더링된 제출 항목으로 이동한다.
-    let cancelled = false;
-    const frame = requestAnimationFrame(async () => {
-      await document.fonts.ready;
-      if (cancelled) return;
-      const item = expandedItemRef.current;
-      if (!item) return;
-
-      // 이전 패널이 접히면서 대상 항목의 위치가 바뀌므로 높이 전환이 끝난 뒤 스크롤한다.
-      const transitions =
-        item.parentElement
-          ?.getAnimations({ subtree: true })
-          .filter(
-            (animation) => animation instanceof CSSTransition && animation.transitionProperty === 'grid-template-rows',
-          ) ?? [];
-      await Promise.all(transitions.map((animation) => animation.finished.catch(() => undefined)));
-      if (cancelled) return;
-
-      item.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-        block: 'start',
-        inline: 'nearest',
-      });
-    });
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(frame);
-    };
-  }, [navigationKey, expandedItemId]);
+  const { targetRef: expandedItemRef, skipNextScroll } = useScrollToTarget<HTMLDivElement>({
+    targetId: expandedItemId,
+  });
 
   if (error && !isFetching) throw error;
 
   const handleTogglePanel = (submissionItemId: number, isExpanded: boolean) => {
-    skipNextScrollRef.current = true;
+    skipNextScroll();
     setSubmissionItemIdParam(isExpanded ? null : submissionItemId);
   };
 
