@@ -19,7 +19,6 @@ import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
 import AdminDashBoardPage from '@pages/admin/AdminDashBoardPage';
 import ProjectManagePage from '@pages/admin/project-manage/ProjectManagePage';
-import SidebarLayout from '@layout/SidebarLayout';
 import SortManagePage from '@pages/admin/sort/SortManagePage';
 import RequiredFieldsPage from '@pages/admin/required-field/RequiredFieldsPage';
 import TrackManagePage from '@pages/admin/track-manage/TrackManagePage';
@@ -49,15 +48,10 @@ const AppRoutes = () =>
       path: '/',
       element: <MainLayout />,
       children: [
+        { index: true, element: <MainPage /> },
         {
-          element: <SidebarLayout />,
-          children: [
-            { index: true, element: <MainPage /> },
-            {
-              element: <FullContainerLayout />,
-              children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
-            },
-          ],
+          element: <FullContainerLayout />,
+          children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
         },
         {
           element: <AuthLayout />,

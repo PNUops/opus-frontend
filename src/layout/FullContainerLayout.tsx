@@ -3,9 +3,11 @@ import FullContainer from './FullContainer';
 
 const FullContainerLayout = () => {
   return (
-    <FullContainer>
-      <Outlet />
-    </FullContainer>
+    <main>
+      <FullContainer>
+        <Outlet />
+      </FullContainer>
+    </main>
   );
 };
 
