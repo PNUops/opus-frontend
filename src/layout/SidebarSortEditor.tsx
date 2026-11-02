@@ -143,10 +143,10 @@ const SidebarSortEditor = ({
         queryClient.invalidateQueries({ queryKey: ['groupedContests'] }),
         queryClient.invalidateQueries({ queryKey: ['sidebarSortSettings'] }),
       ]);
-      toast('사이드바 순서를 저장했어요.', 'success');
+      toast('대회 메뉴 순서를 저장했어요.', 'success');
       onSaved();
     },
-    onError: (error) => toast(getApiErrorMessage(error, '사이드바 순서를 저장하지 못했어요.'), 'error'),
+    onError: (error) => toast(getApiErrorMessage(error, '대회 메뉴 순서를 저장하지 못했어요.'), 'error'),
   });
 
   const handleCategoryModeChange = (mode: SidebarSortMode) => {
@@ -222,7 +222,7 @@ const SidebarSortEditor = ({
           ? '[&_button:focus-visible]:outline-[#45d6ec]'
           : '[&_button:focus-visible]:outline-mainBlue',
       )}
-      aria-label="사이드바 순서 편집"
+      aria-label="대회 메뉴 순서 편집"
     >
       <section
         className={cn(

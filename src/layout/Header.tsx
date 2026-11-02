@@ -5,9 +5,9 @@ import useAuth from '@hooks/useAuth';
 import { useImageBlob } from '@hooks/useImageBlob';
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { useToast } from '@hooks/useToast';
-import { Bell, List, LogOut, Settings, UserRound } from 'lucide-react';
+import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
 import { PiChalkboardTeacher } from 'react-icons/pi';
-import { useSidebar } from './SidebarContext';
+import ContestNavigation from './ContestNavigation';
 import ProfileButton from './ProfileButton';
 import NotificationOverlay from './NotificationOverlay';
 import Button from '@components/Button';
@@ -205,7 +205,6 @@ const Header = () => {
   const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
   const toast = useToast();
   const location = useLocation();
-  const { toggle, isOpen: isSidebarOpen, triggerRef } = useSidebar();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationQuery = useQuery({
     ...notificationOption(),
@@ -228,10 +227,9 @@ const Header = () => {
   };
 
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
   const isHomeRoute = location.pathname === '/';
 
-  return (
+  const renderHeader = (navigation: ReactNode) => (
     <header
       className={`lg:h-header md:h-header xs:h-8 sticky top-0 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
         isAdminRoute
@@ -242,17 +240,17 @@ const Header = () => {
       }`}
     >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-2 md:gap-8 lg:gap-16 lg:px-10">
-        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4 lg:gap-8">
           {!isAdminRoute && (
             <>
-              <Link to="/" viewTransition={!isHomeRoute} className="max-sm:hidden">
+              <Link to="/" viewTransition={!isHomeRoute} className="shrink-0 max-sm:hidden">
                 <img
                   className={`w-auto sm:h-6 md:h-7 lg:h-8 ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/Logo.svg"
                   alt="부산대학교 SW프로젝트관리시스템 로고"
                 />
               </Link>
-              <Link to="/" viewTransition={!isHomeRoute} className="items-center sm:hidden">
+              <Link to="/" viewTransition={!isHomeRoute} className="shrink-0 items-center sm:hidden">
                 <img
                   className={`h-7 w-auto ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/swOpsLogo-sm.png"
@@ -261,25 +259,10 @@ const Header = () => {
               </Link>
             </>
           )}
-          {isSidebarRoute && !isAdminRoute && (
-            <button
-              ref={triggerRef}
-              type="button"
-              onClick={toggle}
-              aria-label="대회 목록 열기"
-              aria-expanded={isSidebarOpen}
-              aria-controls={isSidebarOpen ? 'contest-navigation-drawer' : undefined}
-              aria-haspopup="dialog"
-              className={`flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-md border px-2.5 text-sm xl:hidden ${isHomeRoute ? 'border-white/30 text-white hover:bg-white/10 focus-visible:outline-[#45d6ec]' : 'border-lightGray hover:bg-whiteGray focus-visible:outline-mainBlue text-neutral-700'} focus-visible:outline-2 focus-visible:outline-offset-2`}
-            >
-              <List size={18} aria-hidden />
-              <span className="sm:hidden">대회</span>
-              <span className="hidden sm:inline">대회 목록</span>
-            </button>
-          )}
+          {navigation}
         </div>
 
-        <div className="relative flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
+        <div className="relative flex shrink-0 items-center justify-end gap-2 md:gap-4 lg:gap-8">
           {isSignedIn ? (
             <>
               <HeaderProfileMenu
@@ -317,6 +300,12 @@ const Header = () => {
         </div>
       </div>
     </header>
+  );
+
+  return isAdminRoute ? (
+    renderHeader(null)
+  ) : (
+    <ContestNavigation editorial={isHomeRoute}>{renderHeader}</ContestNavigation>
   );
 };
 
