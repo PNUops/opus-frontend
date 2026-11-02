@@ -50,8 +50,11 @@ const AppRoutes = () =>
         { index: true, element: <MainPage /> },
         {
           element: <FullContainerLayout />,
+          children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
+        },
+        {
+          element: <FullContainerLayout />,
           children: [
-            { path: 'contest/:contestId', element: <ContestPage /> },
             { path: 'signin', element: <SignInPage /> },
             { path: 'signup', element: <SignUpPage /> },
             { path: 'contest/:contestId/teams/view/:teamId', element: <ProjectDetailPage /> },
