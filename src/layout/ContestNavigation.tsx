@@ -239,7 +239,7 @@ const ContestNavigation = ({
         sideOffset={0}
         collisionPadding={0}
         className={cn(
-          'z-40 max-h-[min(640px,var(--radix-popover-content-available-height))] w-screen max-w-full origin-top overflow-hidden rounded-none rounded-b-2xl border-0 bg-(--contest-surface) p-0 text-(--contest-ink) shadow-[0_18px_32px_-20px_rgb(15_23_42/28%)] motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none',
+          'z-40 max-h-[min(640px,var(--radix-popover-content-available-height))] w-(--radix-popover-trigger-width) max-w-full origin-top overflow-hidden rounded-none rounded-b-2xl border-0 bg-(--contest-surface) p-0 text-(--contest-ink) shadow-[0_18px_32px_-20px_rgb(15_23_42/28%)] motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none',
           themeClass,
           focusClass,
         )}
