@@ -1,16 +1,12 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { parsePositiveId } from '@utils/id';
+import { parsePositiveId, parseSinglePositiveId } from '@utils/id';
 
-const createNumericIdHook =
-  <TKey extends string>(key: TKey) =>
-  () => {
-    const params = useParams<Record<TKey, string | undefined>>();
-    const raw = params[key as keyof typeof params];
-    const parsed = Number(raw);
-    return !raw || isNaN(parsed) ? null : parsed;
-  };
+const createNumericIdHook = (key: string) => () => {
+  const params = useParams();
+  return parsePositiveId(params[key]);
+};
 
 const createNumericIdOrRedirectHook =
   (useIdHook: () => number | null, defaultRedirect: string) =>
@@ -36,8 +32,7 @@ export const useNoticeId = createNumericIdHook('noticeId');
 /** 중복 쿼리와 잘못된 ID는 null로 처리하고, 갱신 시 다른 쿼리는 보존한다. */
 export const useSearchParamId = (key: string) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const values = searchParams.getAll(key);
-  const id = values.length === 1 ? parsePositiveId(values[0]) : null;
+  const id = parseSinglePositiveId(searchParams.getAll(key));
 
   const setId = (value: number | null) => {
     if (value !== null && parsePositiveId(value) === null) return;

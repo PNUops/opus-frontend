@@ -70,12 +70,12 @@ function notification(targetType, redirectUrl, targetId = 99) {
   return { id: 1, targetType, redirectUrl, targetId, isRead: false, title: 'title', content: 'content' };
 }
 
-test('query ID updates preserve unrelated parameters while legacy route hooks retain their contract', () => {
+test('route and query IDs share strict validation while query updates preserve unrelated parameters', () => {
   let params = new URLSearchParams('submissionItemId=2&tab=files');
-  let routeId = '1e2';
+  let routeId = '1';
   const load = createLoader({
     'react-router-dom': {
-      useParams: () => ({ contestId: routeId }),
+      useParams: () => ({ contestId: routeId, teamId: routeId, noticeId: routeId }),
       useSearchParams: () => [
         params,
         (update, options) => {
@@ -85,20 +85,84 @@ test('query ID updates preserve unrelated parameters while legacy route hooks re
       ],
     },
   });
-  const { useContestId, useSearchParamId } = load('src/hooks/useId.ts');
-  assert.equal(useContestId(), 100);
-  routeId = '1.5';
-  assert.equal(useContestId(), 1.5);
+  const { useContestId, useTeamId, useNoticeId, useSearchParamId } = load('src/hooks/useId.ts');
+  for (const [raw, expected] of [
+    ['1', 1],
+    ['42', 42],
+    [String(Number.MAX_SAFE_INTEGER), Number.MAX_SAFE_INTEGER],
+    ['', null],
+    ['0', null],
+    ['-1', null],
+    ['01', null],
+    ['+1', null],
+    [' 1', null],
+    ['1 ', null],
+    ['1e2', null],
+    ['0x10', null],
+    ['1.5', null],
+    ['Infinity', null],
+    ['NaN', null],
+    ['9007199254740993', null],
+  ]) {
+    routeId = raw;
+    params.set('submissionItemId', raw);
+    assert.equal(useContestId(), expected, `contestId: ${raw}`);
+    assert.equal(useTeamId(), expected, `teamId: ${raw}`);
+    assert.equal(useNoticeId(), expected, `noticeId: ${raw}`);
+    assert.equal(useSearchParamId('submissionItemId')[0], expected, `query ID: ${raw}`);
+  }
+  routeId = undefined;
+  params.delete('submissionItemId');
+  assert.equal(useContestId(), null);
+  assert.equal(useSearchParamId('submissionItemId')[0], null);
+  params.set('submissionItemId', '2');
   assert.equal(useSearchParamId('submissionItemId')[0], 2);
   useSearchParamId('submissionItemId')[1](3);
   assert.equal(params.get('tab'), 'files');
   assert.equal(params.get('submissionItemId'), '3');
-  useSearchParamId('submissionItemId')[1](1.5);
-  assert.equal(params.get('submissionItemId'), '3');
+  for (const invalid of [0, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+    useSearchParamId('submissionItemId')[1](invalid);
+    assert.equal(params.get('submissionItemId'), '3');
+  }
+  params.append('submissionItemId', '3');
+  assert.equal(useSearchParamId('submissionItemId')[0], null, 'repeated identical query IDs are invalid');
+  useSearchParamId('submissionItemId')[1](3);
+  assert.equal(params.getAll('submissionItemId').length, 1);
   params.append('submissionItemId', '4');
   assert.equal(useSearchParamId('submissionItemId')[0], null);
   useSearchParamId('submissionItemId')[1](null);
   assert.equal(params.toString(), 'tab=files');
+});
+
+test('redirect hooks navigate only for invalid IDs and retain their default and custom destinations', () => {
+  let raw = '42';
+  const effects = [];
+  const navigations = [];
+  const load = createLoader({
+    react: { useEffect: (effect) => effects.push(effect) },
+    'react-router-dom': {
+      useParams: () => ({ contestId: raw, teamId: raw, noticeId: raw }),
+      useNavigate:
+        () =>
+        (...args) =>
+          navigations.push(args),
+    },
+  });
+  const { useContestIdOrRedirect, useTeamIdOrRedirect, useNoticeIdOrRedirect } = load('src/hooks/useId.ts');
+  for (const hook of [useContestIdOrRedirect, useTeamIdOrRedirect, useNoticeIdOrRedirect]) {
+    assert.equal(hook(), 42);
+    effects.splice(0).forEach((effect) => effect());
+    assert.equal(navigations.length, 0);
+    for (const destination of [undefined, '/me/activity']) {
+      raw = '1e2';
+      hook(destination);
+      effects.splice(0).forEach((effect) => effect());
+      const [redirectTo, options] = navigations.pop();
+      assert.equal(redirectTo, destination ?? '/');
+      assert.equal(options.replace, true);
+    }
+    raw = '42';
+  }
 });
 
 test('all seven new types preserve server paths; submission IDs never become team IDs', () => {

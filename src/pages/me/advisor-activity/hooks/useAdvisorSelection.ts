@@ -3,17 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, useSearchParams } from 'react-router-dom';
 
 import { advisorContestsOption, advisorProjectsOption, advisorTeamSubmissionsOption } from '@queries/advisor';
-import { parsePositiveId } from '@utils/id';
+import { parseSinglePositiveId } from '@utils/id';
 
 export const useAdvisorSelection = (isAdvisor: boolean) => {
   const { contestId: contestIdParam } = useParams<{ contestId?: string }>();
   const [searchParams] = useSearchParams();
   const contestParams = contestIdParam === undefined ? searchParams.getAll('contestId') : [contestIdParam];
   const teamParams = searchParams.getAll('teamId');
-  const requestedContestId =
-    contestParams.length === 0 ? undefined : contestParams.length === 1 ? parsePositiveId(contestParams[0]) : null;
-  const requestedTeamId =
-    teamParams.length === 0 ? undefined : teamParams.length === 1 ? parsePositiveId(teamParams[0]) : null;
+  const requestedContestId = contestParams.length === 0 ? undefined : parseSinglePositiveId(contestParams);
+  const requestedTeamId = teamParams.length === 0 ? undefined : parseSinglePositiveId(teamParams);
 
   const advisorContestsQuery = useQuery({ ...advisorContestsOption(), enabled: isAdvisor });
   const contests = isAdvisor && advisorContestsQuery.isSuccess ? advisorContestsQuery.data : [];

@@ -1,5 +1,5 @@
 import type { NotificationDto } from '@dto/notificationDto';
-import { parsePositiveId } from '@utils/id';
+import { parsePositiveId, parseSinglePositiveId } from '@utils/id';
 
 import { getTeamNotificationTarget, type TeamNotificationTarget } from './teamTargetPath';
 
@@ -24,14 +24,9 @@ const getInternalNotificationUrl = (path: string) => {
 const isValidRouteMatch = (match: RegExpMatchArray | null) =>
   match !== null && match.slice(1).every((id) => parsePositiveId(id) !== null);
 
-const isSubmissionNotificationPath = (url: URL) => {
-  const itemIds = url.searchParams.getAll('submissionItemId');
-  return (
-    isValidRouteMatch(url.pathname.match(/^\/me\/contests\/([1-9]\d*)\/teams\/([1-9]\d*)\/submissions$/)) &&
-    itemIds.length === 1 &&
-    parsePositiveId(itemIds[0]) !== null
-  );
-};
+const isSubmissionNotificationPath = (url: URL) =>
+  isValidRouteMatch(url.pathname.match(/^\/me\/contests\/([1-9]\d*)\/teams\/([1-9]\d*)\/submissions$/)) &&
+  parseSinglePositiveId(url.searchParams.getAll('submissionItemId')) !== null;
 
 /** 신규 알림은 서버 경로를, 기존 팀 알림은 경로 계산에 필요한 ID를 반환한다. */
 export const getNotificationTarget = (notification: NotificationDto): string | TeamNotificationTarget | null => {

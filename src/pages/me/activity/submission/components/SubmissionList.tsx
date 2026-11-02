@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 
-import { useContestIdOrRedirect, useSearchParamId, useTeamIdOrRedirect } from '@hooks/useId';
+import { useSearchParamId } from '@hooks/useId';
 import { mySubmissionsOption } from '@queries/submission';
 import { cn } from '@utils/classname';
 
@@ -13,9 +13,7 @@ import { SubmissionDetailPanel } from './SubmissionDetailPanel';
 const GRID_COLS =
   'grid grid-cols-2 items-start gap-3 xl:grid-cols-[minmax(0,1fr)_160px_110px_200px_110px] xl:items-center xl:gap-4';
 
-export const SubmissionList = () => {
-  const contestId = useContestIdOrRedirect();
-  const teamId = useTeamIdOrRedirect();
+export const SubmissionList = ({ contestId, teamId }: { contestId: number; teamId: number }) => {
   const [submissionItemIdParam, setSubmissionItemIdParam] = useSearchParamId('submissionItemId');
   const { key: navigationKey } = useLocation();
   const expandedItemRef = useRef<HTMLDivElement>(null);
