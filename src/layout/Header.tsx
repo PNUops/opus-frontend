@@ -290,7 +290,17 @@ const Header = () => {
 
         <div className="relative flex shrink-0 items-center justify-end gap-2 md:gap-4 lg:gap-8">
           {isSignedIn ? (
-            <>
+            <NotificationOverlay
+              isOpen={isNotificationOpen}
+              notifications={notifications}
+              isLoading={notificationQuery.isPending}
+              isError={notificationQuery.isError}
+              onClose={() => setIsNotificationOpen(false)}
+              onCloseAutoFocus={() => profileTriggerRef.current?.focus({ preventScroll: true })}
+              onRetry={() => {
+                void notificationQuery.refetch();
+              }}
+            >
               <HeaderProfileMenu
                 buttonRef={profileTriggerRef}
                 username={user?.name}
@@ -301,18 +311,7 @@ const Header = () => {
                 onNotificationClick={handleNotificationOpen}
                 viewTransition={isHomeRoute}
               />
-              <NotificationOverlay
-                isOpen={isNotificationOpen}
-                notifications={notifications}
-                isLoading={notificationQuery.isPending}
-                isError={notificationQuery.isError}
-                onClose={() => setIsNotificationOpen(false)}
-                onCloseAutoFocus={() => profileTriggerRef.current?.focus({ preventScroll: true })}
-                onRetry={() => {
-                  void notificationQuery.refetch();
-                }}
-              />
-            </>
+            </NotificationOverlay>
           ) : (
             <Button
               onClick={isSignedIn ? handleSignout : () => navigate('/signin', { viewTransition: isHomeRoute })}

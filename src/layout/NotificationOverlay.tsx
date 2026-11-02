@@ -1,15 +1,16 @@
-import { useEffect, useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { Bell, CheckCheck, ChevronRight, RotateCw, X } from 'lucide-react';
 
 import Spinner from '@components/Spinner';
 import { cn } from '@components/lib/utils';
+import { Popover, PopoverAnchor, PopoverContent } from '@components/ui/popover';
 import { notificationTargetTypeLabel } from '@constants/notification';
-import { useOutsideClick } from '@hooks/useOutsideClick';
 import { useNotificationActions } from '@hooks/useNotificationActions';
 import type { NotificationDto } from '@dto/notificationDto';
 import { formatNotificationCreatedAt } from '@utils/notification';
 
 interface NotificationOverlayProps {
+  children: ReactNode;
   isOpen: boolean;
   notifications: NotificationDto[];
   isLoading: boolean;
@@ -20,6 +21,7 @@ interface NotificationOverlayProps {
 }
 
 const NotificationOverlay = ({
+  children,
   isOpen,
   notifications,
   isLoading,
@@ -31,98 +33,81 @@ const NotificationOverlay = ({
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const { busy, close, openNotification, markAllRead } = useNotificationActions(isOpen, onClose);
   const unreadCount = notifications.filter((notification) => !notification.isRead).length;
-  useOutsideClick(overlayRef, () => {
-    if (isOpen) close();
-  });
-  useEffect(() => {
-    if (isOpen) overlayRef.current?.focus({ preventScroll: true });
-  }, [isOpen]);
-  const closeAndFocus = () => {
-    close();
-    requestAnimationFrame(() => onCloseAutoFocus?.());
-  };
-  useEffect(() => {
-    if (!isOpen) return;
-    // 읽음 처리로 누른 버튼이 disabled되면 포커스가 body로 이동할 수 있다.
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || event.defaultPrevented) return;
-      event.preventDefault();
-      close();
-      requestAnimationFrame(() => onCloseAutoFocus?.());
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, close, onCloseAutoFocus]);
 
   return (
-    <div
-      ref={overlayRef}
-      role="dialog"
-      aria-label="알림"
-      aria-hidden={!isOpen}
-      inert={!isOpen}
-      tabIndex={-1}
-      onKeyDown={(event) => {
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          event.stopPropagation();
-          closeAndFocus();
-        }
+    <Popover
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) close();
       }}
-      className={cn(
-        'border-lightGray absolute top-full right-0 z-50 mt-3 flex max-h-[min(560px,calc(100dvh-112px))] w-[min(380px,calc(100vw-32px))] origin-top-right flex-col rounded-lg border bg-white text-neutral-900 shadow-lg transition duration-150 ease-out outline-none motion-reduce:transition-none',
-        isOpen
-          ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
-          : 'pointer-events-none -translate-y-1 scale-95 opacity-0',
-      )}
     >
-      <div className="border-lightGray flex shrink-0 items-center justify-between gap-2 border-b px-4 py-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <Bell className="text-mainGreen size-5 shrink-0" />
-          <div className="min-w-0">
-            <h2 className="font-bold text-neutral-900">알림</h2>
-            <p className="mt-0.5 text-xs text-neutral-600">읽지 않은 알림 {unreadCount}개</p>
+      <PopoverAnchor>{children}</PopoverAnchor>
+      <PopoverContent
+        ref={overlayRef}
+        aria-label="알림"
+        align="end"
+        sideOffset={12}
+        collisionPadding={16}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          overlayRef.current?.focus({ preventScroll: true });
+        }}
+        onCloseAutoFocus={(event) => {
+          if (onCloseAutoFocus) {
+            event.preventDefault();
+            onCloseAutoFocus();
+          }
+        }}
+        className="border-lightGray flex max-h-[min(560px,var(--radix-popover-content-available-height))] w-[min(380px,calc(100vw-32px))] flex-col rounded-lg bg-white p-0 text-neutral-900 shadow-lg motion-reduce:animate-none"
+      >
+        <div className="border-lightGray flex shrink-0 items-center justify-between gap-2 border-b px-4 py-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <Bell className="text-mainGreen size-5 shrink-0" />
+            <div className="min-w-0">
+              <h2 className="font-bold text-neutral-900">알림</h2>
+              <p className="mt-0.5 text-xs text-neutral-600">읽지 않은 알림 {unreadCount}개</p>
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              className="hover:bg-whiteGray focus-visible:outline-mainBlue inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs text-neutral-700 transition-colors focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() => void markAllRead()}
+              disabled={unreadCount === 0 || busy}
+            >
+              <CheckCheck size={14} />
+              모두 읽음
+            </button>
+            <button
+              type="button"
+              aria-label="알림 닫기"
+              onClick={close}
+              className="hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md text-neutral-600 focus-visible:outline-2"
+            >
+              <X size={18} aria-hidden />
+            </button>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
-          <button
-            type="button"
-            className="hover:bg-whiteGray focus-visible:outline-mainBlue inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-xs text-neutral-700 transition-colors focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
-            onClick={() => void markAllRead()}
-            disabled={unreadCount === 0 || busy}
-          >
-            <CheckCheck size={14} />
-            모두 읽음
-          </button>
-          <button
-            type="button"
-            aria-label="알림 닫기"
-            onClick={closeAndFocus}
-            className="hover:bg-whiteGray focus-visible:outline-mainBlue flex size-11 items-center justify-center rounded-md text-neutral-600 focus-visible:outline-2"
-          >
-            <X size={18} aria-hidden />
-          </button>
-        </div>
-      </div>
 
-      <div className="min-h-0 overflow-y-auto overscroll-contain">
-        {isLoading && <NotificationLoading />}
-        {isError && !isLoading && <NotificationError onRetry={onRetry} />}
-        {!isLoading && !isError && notifications.length === 0 && <NotificationEmpty />}
-        {!isLoading && !isError && notifications.length > 0 && (
-          <ul className="divide-lightGray divide-y">
-            {notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                isPending={busy}
-                onClick={() => void openNotification(notification)}
-              />
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+        <div className="min-h-0 overflow-y-auto overscroll-contain">
+          {isLoading && <NotificationLoading />}
+          {isError && !isLoading && <NotificationError onRetry={onRetry} />}
+          {!isLoading && !isError && notifications.length === 0 && <NotificationEmpty />}
+          {!isLoading && !isError && notifications.length > 0 && (
+            <ul className="divide-lightGray divide-y">
+              {notifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  notification={notification}
+                  isPending={busy}
+                  onClick={() => void openNotification(notification)}
+                />
+              ))}
+            </ul>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
