@@ -13,7 +13,6 @@ type NotificationRouteIds = {
 export const notificationTargetTypeLabel: Record<NotificationTargetType, string> = {
   TEAM: '프로젝트',
   TEAM_COMMENT: '댓글',
-  TEAM_AWARD: '수상',
   TEAM_AWARDS: '수상',
 };
 
@@ -74,7 +73,6 @@ const buildNotificationTargetPath = (
       return `/me/contests/${contestId}/teams/${teamId}/dashboard`;
     case 'TEAM_COMMENT':
       return `/contest/${contestId}/teams/view/${teamId}#comments`;
-    case 'TEAM_AWARD':
     case 'TEAM_AWARDS':
       return `/contest/${contestId}/teams/view/${teamId}#awards`;
   }

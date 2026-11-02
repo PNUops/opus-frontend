@@ -29,10 +29,10 @@ const CreateRequiredFields = () => {
         />
       </QueryWrapper>
       <div className="flex items-center justify-center gap-6">
-        <AdminActionButton size="lg" className="rounded-full" variant="outline" onClick={() => navigate('/admin')}>
+        <AdminActionButton size="lg" variant="outline" onClick={() => navigate('/admin')}>
           나중에 설정하기
         </AdminActionButton>
-        <AdminActionButton size="lg" className="rounded-full" disabled={isPending} onClick={handleButtonClick}>
+        <AdminActionButton size="lg" disabled={isPending} onClick={handleButtonClick}>
           설정하기
         </AdminActionButton>
       </div>

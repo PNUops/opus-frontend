@@ -703,10 +703,12 @@
 
 @media (max-width: 720px) {
   .opus-live-index-trigger {
-    right: 16px;
+    position: static;
+    flex-shrink: 0;
     min-height: 40px;
     padding: 8px 13px;
-    font-size: 0.7rem;
+    box-shadow: none;
+    font-size: 0.72rem;
   }
 
   .opus-live-index-shell,

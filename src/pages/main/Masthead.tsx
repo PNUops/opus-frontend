@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import QueryWrapper from '@providers/QueryWrapper';
 import OpusMascot from './OpusMascot';
 import CampusNoticeHologram from './CampusNoticeHologram';
@@ -5,9 +6,10 @@ import NoticeSignalSection, { NoticeSignalError, NoticeSignalSkeleton } from './
 
 interface MastheadProps {
   onExploreContests: () => void;
+  statisticsAction?: ReactNode;
 }
 
-const Masthead = ({ onExploreContests }: MastheadProps) => (
+const Masthead = ({ onExploreContests, statisticsAction }: MastheadProps) => (
   <section className="opus-masthead" aria-label="OPUS 메인 소식">
     <div className="opus-masthead__content">
       <div className="opus-masthead__intro">
@@ -19,9 +21,12 @@ const Masthead = ({ onExploreContests }: MastheadProps) => (
         </QueryWrapper>
       </div>
 
-      <div className="opus-mascot-zone">
-        <CampusNoticeHologram onExploreContests={onExploreContests} />
-        <OpusMascot />
+      <div className="opus-masthead__aside">
+        {statisticsAction}
+        <div className="opus-mascot-zone">
+          <CampusNoticeHologram onExploreContests={onExploreContests} />
+          <OpusMascot />
+        </div>
       </div>
     </div>
 

@@ -28,3 +28,6 @@ tsconfig.tsbuildinfo
 
 # Local visual QA artifacts
 docs/visual-qa/
+
+# Browser QA reports, traces and local tooling caches
+.qa/

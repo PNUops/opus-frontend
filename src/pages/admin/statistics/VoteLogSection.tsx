@@ -30,17 +30,24 @@ const VoteLogList = () => {
     queryFn: () => getVoteLog(contestId, { page: page - 1, size: 20 }),
   });
 
-  if (voteLogs.totalElements === 0) return <NoData className="h-30" />;
+  if (voteLogs.totalElements === 0) return <NoData className="h-30 text-sm font-normal text-neutral-600" />;
 
   return (
     <div className="flex flex-col gap-5">
       {voteLogs.content.map((v) => (
-        <div key={`${v.votedAt}-${v.voterName}`} className="flex border-b last:border-b-0 [&>div]:px-5 [&>div]:py-4">
-          <div className="flex-1/3">{dayjs(v.votedAt).format('YYYY년 MM월 DD일 HH:mm')}</div>
-          <div className="flex-1/6">{v.teamName}</div>
-          <div className="flex-1/6">{v.voterName}</div>
-          <div className="flex-1/3">{v.voterEmail ?? '-'}</div>
-        </div>
+        <dl
+          key={`${v.votedAt}-${v.voterName}-${v.teamName}`}
+          className="grid grid-cols-[5rem_minmax(0,1fr)] gap-x-3 gap-y-2 border-b py-4 text-sm leading-6 last:border-b-0 lg:flex lg:gap-0 lg:[&>dd]:px-5"
+        >
+          <dt className="text-neutral-600 lg:sr-only">투표 시각</dt>
+          <dd className="min-w-0 break-words lg:flex-1/3">{dayjs(v.votedAt).format('YYYY년 MM월 DD일 HH:mm')}</dd>
+          <dt className="text-neutral-600 lg:sr-only">대상 팀</dt>
+          <dd className="min-w-0 break-words lg:flex-1/6">{v.teamName}</dd>
+          <dt className="text-neutral-600 lg:sr-only">투표자</dt>
+          <dd className="min-w-0 break-words lg:flex-1/6">{v.voterName}</dd>
+          <dt className="text-neutral-600 lg:sr-only">이메일</dt>
+          <dd className="min-w-0 break-words lg:flex-1/3">{v.voterEmail ?? '-'}</dd>
+        </dl>
       ))}
 
       <Pagination currentPage={page} onPageChange={(page) => setPage(page)} totalPages={voteLogs.totalPages} />

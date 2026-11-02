@@ -17,6 +17,9 @@ const MainLayout = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isHomeRoute = location.pathname === '/';
+  const isProjectDetailRoute = /^\/contest\/[^/]+\/teams\/view\/[^/]+\/?$/.test(location.pathname);
+  const isAuthRoute = ['/signin', '/signup'].includes(location.pathname.replace(/\/+$/, ''));
+  const shouldFillViewport = isProjectDetailRoute || isAuthRoute;
   useScrollToTop();
 
   if (!isAuthInit) return <></>;
@@ -24,9 +27,15 @@ const MainLayout = () => {
   return (
     <AxiosInterceptorProvider>
       <SidebarProvider>
-        <div className={cn(isAdminRoute ? 'min-w-[1024px]' : 'min-w-[350px]', isHomeRoute && 'min-h-dvh bg-[#06172f]')}>
+        <div
+          className={cn(
+            isAdminRoute ? 'min-w-0' : 'min-w-[350px]',
+            shouldFillViewport && 'flex min-h-svh flex-col',
+            isHomeRoute && 'min-h-dvh bg-[#06172f]',
+          )}
+        >
           <Header />
-          <div>
+          <div className={shouldFillViewport ? 'flex-1' : undefined}>
             <Outlet />
           </div>
           {!isAdminRoute && <Footer />}

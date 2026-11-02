@@ -99,6 +99,15 @@ const CurrentContestSection = () => {
   const hasCurrentContests = currentContests.length > 0;
   const recentContests = [...allContests].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()).slice(0, 3);
 
+  if (!hasCurrentContests && recentContests.length === 0) {
+    return (
+      <section className="opus-contest-region" aria-label="대회 목록">
+        <ContestSectionHeader title="대회" />
+        <p className="opus-contest-region__empty">아직 등록된 대회가 없습니다.</p>
+      </section>
+    );
+  }
+
   if (!hasCurrentContests) {
     return (
       <section id="contest-section" className="opus-contest-region" aria-label={`최근 대회 ${recentContests.length}개`}>

@@ -5,9 +5,11 @@ import useAuth from '@hooks/useAuth';
 import { useImageBlob } from '@hooks/useImageBlob';
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { useToast } from '@hooks/useToast';
-import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
+import { Bell, LogOut, Menu, Settings, UserRound } from 'lucide-react';
 import { PiChalkboardTeacher } from 'react-icons/pi';
 import ContestNavigation from './ContestNavigation';
+import { useSidebar } from './SidebarContext';
+import logoOpusAdmin from './admin/logo-opus-admin.svg';
 import ProfileButton from './ProfileButton';
 import NotificationOverlay from './NotificationOverlay';
 import Button from '@components/Button';
@@ -205,6 +207,7 @@ const Header = () => {
   const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
   const toast = useToast();
   const location = useLocation();
+  const { toggle, isOpen: isSidebarOpen } = useSidebar();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationQuery = useQuery({
     ...notificationOption(),
@@ -233,7 +236,7 @@ const Header = () => {
     <header
       className={`lg:h-header md:h-header xs:h-8 sticky top-0 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
         isAdminRoute
-          ? 'bg-white pl-[272px]'
+          ? 'min-h-16 bg-white lg:pl-[272px]'
           : isHomeRoute
             ? 'border-b border-white/35 bg-[#06172f]/15 text-white backdrop-blur-xs'
             : 'bg-[#f7f8fa]/15 backdrop-blur-xs'
@@ -241,6 +244,27 @@ const Header = () => {
     >
       <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-2 md:gap-8 lg:gap-16 lg:px-10">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4 lg:gap-8">
+          {isAdminRoute && (
+            <div className="flex min-w-0 items-center gap-3 lg:hidden">
+              <Link to="/admin" aria-label="관리자 대시보드로 이동">
+                <img src={logoOpusAdmin} alt="OPUS Admin" className="h-7 w-auto" />
+              </Link>
+              {isAdmin && (
+                <button
+                  id="admin-menu-trigger"
+                  type="button"
+                  aria-label="관리자 메뉴 열기"
+                  aria-expanded={isSidebarOpen}
+                  aria-controls="admin-mobile-navigation"
+                  onClick={toggle}
+                  className="border-lightGray text-mainBlue hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  <Menu className="size-4" aria-hidden />
+                  관리 메뉴
+                </button>
+              )}
+            </div>
+          )}
           {!isAdminRoute && (
             <>
               <Link to="/" viewTransition={!isHomeRoute} className="shrink-0 max-sm:hidden">

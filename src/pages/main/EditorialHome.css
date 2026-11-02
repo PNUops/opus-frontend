@@ -42,6 +42,10 @@ html {
   align-self: center;
 }
 
+.opus-masthead__aside {
+  min-width: 0;
+}
+
 .opus-masthead__eyebrow {
   margin: 0 0 12px;
   color: var(--opus-home-cyan);
@@ -536,6 +540,15 @@ html {
 
 .opus-contest-region {
   position: relative;
+}
+
+.opus-contest-region__empty {
+  margin: 0;
+  padding: 32px clamp(22px, 4.2vw, 64px) 40px;
+  border-bottom: 1px solid var(--opus-home-line);
+  color: var(--opus-home-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .opus-contest-region__header {
@@ -1475,19 +1488,82 @@ html {
   }
 }
 
+@media (min-width: 721px) and (max-width: 1023px) {
+  .opus-masthead__content {
+    grid-template-columns: minmax(0, 1fr) 180px;
+  }
+
+  .opus-contest-grid,
+  .opus-contest-skeleton {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .opus-contest-grid[data-layout='single'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .opus-contest-card__link {
+    padding: 30px;
+  }
+
+  .opus-contest-card__title,
+  .opus-contest-card:not(:first-child) .opus-contest-card__title {
+    max-width: 18ch;
+    margin: 28px 0 24px;
+    font-size: 1.8rem;
+  }
+
+  .opus-contest-card__details {
+    gap: 10px;
+  }
+
+  .opus-contest-card__cta {
+    margin-top: 10px;
+  }
+}
+
 @media (max-width: 720px) {
   .opus-home {
     min-height: calc(100vh - 80px);
   }
 
   .opus-masthead {
-    padding: 28px 22px 24px;
+    min-height: 0;
+    padding: 24px 22px;
   }
 
   .opus-masthead__content {
-    grid-template-columns: minmax(0, 1fr) minmax(110px, 38vw);
-    min-height: 208px;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    gap: 16px;
+  }
+
+  .opus-masthead__aside {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .opus-masthead__rule {
+    margin-top: 16px;
+  }
+
+  .opus-mascot-zone {
+    width: 104px;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .opus-campus-news {
+    top: auto;
+    right: 0;
+    bottom: calc(100% + 8px);
+    width: min(320px, calc(100vw - 44px));
+  }
+
+  .opus-campus-news__error p {
+    word-break: keep-all;
   }
 
   .opus-clock__time {
@@ -1509,7 +1585,7 @@ html {
   .opus-contest-region__header {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
-    padding: 42px 22px 30px;
+    padding: 32px 22px 26px;
   }
 
   .opus-contest-region__header h2 {
@@ -1517,18 +1593,93 @@ html {
   }
 
   .opus-contest-card__link {
-    padding: 32px 24px;
+    padding: 24px;
   }
 
   .opus-contest-card,
   .opus-contest-card:first-child,
-  .opus-contest-grid[data-layout='single'] .opus-contest-card:first-child {
-    min-height: 320px;
+  .opus-contest-grid[data-layout='single'] .opus-contest-card:first-child,
+  .opus-contest-skeleton__item,
+  .opus-contest-skeleton__item:first-child {
+    min-height: 260px;
+  }
+
+  .opus-contest-card__number {
+    font-size: 2.75rem;
+  }
+
+  .opus-contest-card__number::after {
+    width: 32px;
+    margin-top: 14px;
+  }
+
+  .opus-contest-card__title,
+  .opus-contest-card:not(:first-child) .opus-contest-card__title {
+    max-width: 20ch;
+    margin: 22px 0 20px;
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .opus-contest-card__details {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 16px;
+  }
+
+  .opus-contest-card__period,
+  .opus-contest-card__status {
+    grid-column: 1;
+  }
+
+  .opus-contest-card__status {
+    gap: 7px;
+    font-size: 0.8rem;
+  }
+
+  .opus-contest-card__status::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  .opus-contest-card__cta {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: end;
+    margin-top: 0;
+    font-size: 0.82rem;
   }
 
   .opus-contest-card__geometry {
+    top: 24px;
     right: 22px;
     opacity: 0.55;
+  }
+
+  .opus-contest-card__geometry[data-pattern='dots'] {
+    gap: 8px 10px;
+  }
+
+  .opus-contest-card__geometry[data-pattern='lines'] {
+    width: 64px;
+    gap: 7px;
+  }
+
+  .opus-contest-card__geometry[data-pattern='arc'] {
+    top: 24px;
+    right: 22px;
+    bottom: auto;
+    width: 72px;
+    height: 72px;
+  }
+
+  .opus-contest-card__geometry[data-pattern='quarter'] {
+    top: 24px;
+    right: 22px;
+    bottom: auto;
+    width: 60px;
+    height: 60px;
   }
 
   .opus-contest-card__poster,

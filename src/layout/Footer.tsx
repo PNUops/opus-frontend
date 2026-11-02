@@ -13,6 +13,7 @@ const linkClass =
 const Footer = () => {
   const location = useLocation();
   const isHomeRoute = location.pathname === '/';
+  const isAuthRoute = ['/signin', '/signup'].includes(location.pathname.replace(/\/+$/, ''));
   const { isSignedIn } = useAuth();
 
   return (
@@ -21,7 +22,8 @@ const Footer = () => {
         'w-full bg-(--footer-surface) text-(--footer-ink) [&_:focus-visible]:rounded-[4px] [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-4 [&_:focus-visible]:outline-(--footer-accent)',
         isHomeRoute
           ? 'mt-0 border-t border-(--footer-line) [--footer-accent:#45d6ec] [--footer-button:#0a2242] [--footer-ink:#f8f6f0] [--footer-line:rgb(229_240_252/18%)] [--footer-muted:#a9b8c9] [--footer-surface:#06172f]'
-          : 'mt-footer [--footer-accent:#005baa] [--footer-button:#fff] [--footer-ink:#262626] [--footer-line:#e2e6eb] [--footer-muted:#667085] [--footer-surface:#f7f8fa]',
+          : '[--footer-accent:#005baa] [--footer-button:#fff] [--footer-ink:#262626] [--footer-line:#e2e6eb] [--footer-muted:#667085] [--footer-surface:#f7f8fa]',
+        !isHomeRoute && !isAuthRoute && 'mt-footer',
       )}
     >
       <div className="mx-auto max-w-[1448px] px-6 pt-12 pb-4 lg:px-12 lg:pt-14 lg:pb-5">

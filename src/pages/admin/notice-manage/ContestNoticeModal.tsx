@@ -1,3 +1,4 @@
+import { AdminFormError } from '@components/admin/AdminFormError';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DialogContent, DialogTitle } from '@components/ui/dialog';
@@ -47,8 +48,9 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
     closeModal();
   };
 
-  const handleSave = async () => {
-    await upsertMutation.mutateAsync(
+  const handleSave = () => {
+    if (upsertMutation.isPending) return;
+    upsertMutation.mutate(
       { title, description },
       {
         onSuccess: () => {
@@ -59,27 +61,36 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
             queryClient.invalidateQueries({ queryKey: ['contestNoticeDetail', contestId, noticeId] });
           }
           toast(`공지사항이 ${type === 'create' ? '작성' : '수정'} 되었어요.`, 'success');
+          closeModal();
         },
         onError: () => {
           toast(`공지사항 ${type === 'create' ? '작성' : '수정'}에 실패했어요.`, 'error');
         },
       },
     );
-    closeModal();
   };
 
   return (
-    <DialogContent className="w-[500px]">
+    <DialogContent appearance="admin" className="w-[560px]" closeDisabled={upsertMutation.isPending}>
       <DialogTitle className="text-2xl font-bold">{`공지사항 ${type === 'create' ? '추가' : '수정'}`}</DialogTitle>
-      <div className="grid grid-cols-[max-content_1fr] gap-x-8 gap-y-4">
-        <label htmlFor="title" className="m-2">
+      <div className="grid grid-cols-1 gap-2">
+        <label htmlFor="title" className="text-sm font-medium">
           제목
         </label>
-        <Input id="title" placeholder="제목을 입력해주세요" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <label htmlFor="description" className="m-2">
+        <Input
+          appearance="admin"
+          disabled={upsertMutation.isPending}
+          id="title"
+          placeholder="제목을 입력해주세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <label htmlFor="description" className="text-sm font-medium">
           본문
         </label>
         <TextArea
+          appearance="admin"
+          disabled={upsertMutation.isPending}
           id="description"
           placeholder="본문을 입력해주세요"
           className="min-h-48"
@@ -87,12 +98,20 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
-      <div className="flex justify-end gap-4">
-        <AdminActionButton variant={'outline'} size={'lg'} className="rounded-full" onClick={handleClose}>
+      <AdminFormError
+        message={upsertMutation.isError ? '저장에 실패했어요. 입력 내용을 확인하고 다시 시도해주세요.' : undefined}
+      />
+      <div className="flex flex-wrap justify-end gap-3">
+        <AdminActionButton variant={'outline'} size={'lg'} onClick={handleClose} disabled={upsertMutation.isPending}>
           취소
         </AdminActionButton>
-        <AdminActionButton size={'lg'} className="rounded-full" onClick={handleSave}>
-          {type === 'create' ? '추가' : '저장'}
+        <AdminActionButton
+          size={'lg'}
+          onClick={handleSave}
+          disabled={upsertMutation.isPending}
+          aria-busy={upsertMutation.isPending}
+        >
+          {upsertMutation.isPending ? '저장 중…' : type === 'create' ? '추가' : '저장'}
         </AdminActionButton>
       </div>
     </DialogContent>
@@ -118,18 +137,26 @@ export const ContestNoticeDeleteConfirmModal = ({
     mutationFn: (noticeId: number) => deleteContestNotice(contestId, noticeId),
   });
 
-  const onDelete = async () => {
-    await noticeDelete.mutateAsync(noticeId, {
+  const onDelete = () => {
+    if (noticeDelete.isPending) return;
+    noticeDelete.mutate(noticeId, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['contestNotices', contestId] });
         toast('공지사항이 삭제되었어요.', 'success');
+        closeModal();
       },
       onError: () => {
         toast('공지사항 삭제에 실패했어요.', 'error');
       },
     });
-    closeModal();
   };
 
-  return <AdminDeleteConfirmModal title={'공지사항을 삭제하시겠습니까?'} onDelete={onDelete} />;
+  return (
+    <AdminDeleteConfirmModal
+      title={'공지사항을 삭제하시겠습니까?'}
+      onDelete={onDelete}
+      isPending={noticeDelete.isPending}
+      isError={noticeDelete.isError}
+    />
+  );
 };
