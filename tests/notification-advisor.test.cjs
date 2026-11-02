@@ -392,6 +392,30 @@ function activeSubmission(props) {
     .submissions.find((submission) => submission.submissionId === props.selectedSubmissionId);
 }
 
+test('submission details toggle closed and reopen without losing draft text or attachments', () => {
+  const ctx = createAdvisor();
+  assert.equal(ctx.page().selectedSubmissionId, 110);
+  ctx.page().onChangeFeedback(110, 'draft before closing');
+  ctx.page().onAttachFeedbackFiles(110, [localFile]);
+  ctx.page().onSelectSubmission(110);
+  assert.equal(ctx.page().selectedSubmissionId, null, 'the initially selected submission can be collapsed');
+  assert.equal(ctx.page().selectedSubmissionId, null, 'rerendering must not automatically reopen the first item');
+  ctx.page().onSelectSubmission(999);
+  assert.equal(ctx.page().selectedSubmissionId, null, 'invalid selections cannot reopen a panel');
+  ctx.page().onSelectSubmission(110);
+  assert.equal(ctx.page().feedbackDrafts[110], 'draft before closing');
+  assert.ok(activeSubmission(ctx.page()).feedbackFiles.some((file) => file.sourceFile === localFile));
+  ctx.page().onSelectSubmission(111);
+  assert.equal(ctx.page().selectedSubmissionId, 111);
+  ctx.page().onSelectSubmission(111);
+  assert.equal(ctx.page().selectedSubmissionId, null, 'other submissions can also be collapsed');
+  ctx.page().onToggleProject({ teamId: 12 });
+  assert.equal(ctx.page().selectedSubmissionId, 120, 'opening another team retains its default selection');
+  ctx.search = '?teamId=11';
+  ctx.contest = '2';
+  assert.equal(ctx.page().selectedSubmissionId, 110, 'a new route resets the selection');
+});
+
 test('draft text, local files and removals survive submission/team/URL/contest switches independently', () => {
   const ctx = createAdvisor();
   ctx.page().onChangeFeedback(110, 'draft A');

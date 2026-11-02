@@ -1,10 +1,11 @@
-import { useRef, type ChangeEvent } from 'react';
+import { useId, useRef, type ChangeEvent } from 'react';
 import { Paperclip } from 'lucide-react';
 
 import type { AdvisorSubmissionFile } from '../types';
 import { AdvisorFileList } from './AdvisorFileList';
 
 interface AdvisorFeedbackEditorProps {
+  submissionItemName: string;
   value: string;
   files: AdvisorSubmissionFile[];
   isLoading?: boolean;
@@ -17,6 +18,7 @@ interface AdvisorFeedbackEditorProps {
 }
 
 export const AdvisorFeedbackEditor = ({
+  submissionItemName,
   value,
   files,
   isLoading = false,
@@ -30,6 +32,7 @@ export const AdvisorFeedbackEditor = ({
   const canAttach = !isLoading && !isSaving && files.length < 5;
   const canSave = !isLoading && !isSaving && value.trim().length > 0;
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const descriptionId = useId();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files ?? []);
@@ -42,9 +45,9 @@ export const AdvisorFeedbackEditor = ({
   };
 
   return (
-    <div className="mt-4 flex flex-col gap-4 rounded-md bg-white p-1 sm:p-4">
+    <div className="flex min-w-0 flex-col gap-4" aria-busy={isLoading || isSaving}>
       <div className="flex flex-col gap-1">
-        <h4 className="text-mainBlue text-sm font-medium">피드백 작성</h4>
+        <h4 className="text-mainBlue text-sm font-semibold">{submissionItemName} 피드백</h4>
         <p className="text-xs leading-5 text-neutral-600">
           제출물을 확인하고 피드백을 작성해주세요. 작성한 피드백은 팀과 관리자에게 공유됩니다.
         </p>
@@ -61,16 +64,16 @@ export const AdvisorFeedbackEditor = ({
         </div>
       )}
 
-      <label className="sr-only" htmlFor="advisor-feedback-description">
-        피드백 내용
+      <label className="sr-only" htmlFor={descriptionId}>
+        {submissionItemName} 피드백 내용
       </label>
       <textarea
-        id="advisor-feedback-description"
+        id={descriptionId}
         value={value}
         disabled={isLoading || isSaving}
         onChange={(event) => onChange(event.target.value)}
         placeholder={isLoading ? '피드백을 불러오는 중입니다.' : '제출물에 대한 피드백을 작성해주세요.'}
-        className="border-lightGray focus:border-mainBlue disabled:bg-whiteGray h-36 resize-none overflow-y-auto rounded-md border bg-white p-3 text-sm leading-relaxed transition-colors outline-none placeholder:text-neutral-300 disabled:cursor-wait"
+        className="border-lightGray focus:border-mainBlue focus-visible:ring-mainBlue/20 disabled:bg-whiteGray h-36 w-full resize-y overflow-y-auto rounded-md border bg-white p-3 text-sm leading-relaxed transition-colors outline-none placeholder:text-neutral-500 focus-visible:ring-2 disabled:cursor-wait"
       />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

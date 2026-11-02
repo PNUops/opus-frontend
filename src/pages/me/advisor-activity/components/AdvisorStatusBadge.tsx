@@ -14,7 +14,7 @@ export const AdvisorStatusBadge = ({ status }: AdvisorStatusBadgeProps) => {
     <span
       className={cn(
         'inline-flex w-fit items-center rounded-md px-3 py-1 text-xs font-bold',
-        completed ? 'bg-subGreen text-mainGreen' : 'bg-amber-50 text-amber-600',
+        completed ? 'bg-subGreen text-green-800' : 'bg-amber-50 text-amber-800',
       )}
     >
       {getFeedbackStatusLabel(status)}

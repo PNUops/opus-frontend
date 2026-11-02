@@ -59,10 +59,14 @@ export const AdvisorProjectCard = ({
             {getAdvisorRoleLabel(project.roleType)}
           </span>
           <h3 className="min-w-0 text-base leading-6 font-semibold break-words text-neutral-950">
-            {project.projectName}
+            {project.projectName?.trim() || '프로젝트명 미등록'}
           </h3>
-          <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">{project.trackName}</span>
-          <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">{project.teamName}</span>
+          {project.trackName?.trim() && (
+            <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">{project.trackName}</span>
+          )}
+          <span className="bg-whiteGray rounded-full px-3 py-1 text-xs text-neutral-700">
+            {project.teamName?.trim() || '팀명 미등록'}
+          </span>
         </div>
 
         <div className="text-midGray flex items-center gap-2.5 text-xs xl:justify-self-center">
