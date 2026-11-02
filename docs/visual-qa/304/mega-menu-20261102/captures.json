@@ -1,0 +1,99 @@
+{
+  "sourceCommit": "8e2b328f1104f9bf1258f4b679aaebc65596c1ab",
+  "capturedAt": "2026-11-02 Asia/Seoul",
+  "data": "MSW synthetic fixtures",
+  "font": "Noto Sans KR variable, 400/600/700 verified",
+  "productCodeModified": false,
+  "visibleBrokenImages": 0,
+  "browserErrors": [],
+  "captures": [
+    {
+      "file": "contest-desktop-1440.png",
+      "subject": "사이드바 없는 대회 콘텐츠와 고정 헤더",
+      "route": "/contest/1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scrollY": 0,
+      "bytes": 87269
+    },
+    {
+      "file": "mega-menu-desktop-1440.png",
+      "subject": "호버로 펼친 4열 대회 메가 메뉴",
+      "route": "/contest/1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scrollY": 0,
+      "bytes": 129241
+    },
+    {
+      "file": "header-scroll-1440.png",
+      "subject": "스크롤 중 콘텐츠가 비치는 반투명·블러 헤더",
+      "route": "/contest/1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scrollY": 280,
+      "bytes": 44666
+    },
+    {
+      "file": "footer-desktop-1440.png",
+      "subject": "서비스 소개·관련 사이트·의견 보내기를 모은 푸터",
+      "route": "/contest/1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scrollY": 678,
+      "bytes": 41927
+    },
+    {
+      "file": "mega-menu-home-1440.png",
+      "subject": "홈 다크 배경과 다크 메가 메뉴",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scrollY": 0,
+      "bytes": 161900
+    },
+    {
+      "file": "footer-home-1440.png",
+      "subject": "홈 테마에 맞춘 다크 푸터",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "scrollY": 1778,
+      "bytes": 42069
+    },
+    {
+      "file": "mega-menu-mobile-390.png",
+      "subject": "모바일 세로 목록과 내부 스크롤",
+      "route": "/contest/1",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scrollY": 0,
+      "bytes": 50494
+    },
+    {
+      "file": "footer-mobile-390.png",
+      "subject": "모바일 푸터와 사용자 수정 기관 명칭",
+      "route": "/contest/1",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "scrollY": 1279,
+      "bytes": 40105
+    }
+  ]
+}
