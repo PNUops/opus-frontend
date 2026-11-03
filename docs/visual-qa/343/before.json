@@ -1,0 +1,102 @@
+{
+  "checks": [
+    {
+      "name": "submission-normal",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 87,
+        "bottom": 813,
+        "left": 460,
+        "right": 980,
+        "scroll": 0,
+        "viewport": 900,
+        "saveTop": 748,
+        "saveBottom": 784
+      }
+    },
+    {
+      "name": "submission-short",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": -153,
+        "bottom": 573,
+        "left": 460,
+        "right": 980,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 508,
+        "saveBottom": 544
+      }
+    },
+    {
+      "name": "submission-normal",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 149,
+        "bottom": 875,
+        "left": 124,
+        "right": 644,
+        "scroll": 0,
+        "viewport": 1024,
+        "saveTop": 810,
+        "saveBottom": 846
+      }
+    },
+    {
+      "name": "submission-short",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": -153,
+        "bottom": 573,
+        "left": 124,
+        "right": 644,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 508,
+        "saveBottom": 544
+      }
+    },
+    {
+      "name": "submission-normal",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 19,
+        "bottom": 825,
+        "left": 15.6015625,
+        "right": 374.3984375,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 760,
+        "saveBottom": 796
+      }
+    },
+    {
+      "name": "submission-short",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": -193,
+        "bottom": 613,
+        "left": 15.6015625,
+        "right": 374.3984375,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 548,
+        "saveBottom": 584
+      }
+    }
+  ],
+  "cases": [],
+  "failures": []
+}
