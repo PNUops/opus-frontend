@@ -1,4 +1,4 @@
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, type Ref, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import useAuth from '@hooks/useAuth';
@@ -57,6 +57,7 @@ const ProfileMenuButton = ({ icon, children, onClick, rightContent }: ProfileMen
 };
 
 interface HeaderProfileMenuProps {
+  buttonRef: Ref<HTMLButtonElement>;
   username?: string;
   isAdmin: boolean;
   isAdvisor: boolean;
@@ -67,6 +68,7 @@ interface HeaderProfileMenuProps {
 }
 
 const HeaderProfileMenu = ({
+  buttonRef,
   username,
   isAdmin,
   isAdvisor,
@@ -105,6 +107,7 @@ const HeaderProfileMenu = ({
   return (
     <div className="relative" ref={profileMenuRef}>
       <ProfileButton
+        buttonRef={buttonRef}
         username={displayName}
         imageUrl={imageURL}
         isOpen={isOpen}
@@ -119,10 +122,8 @@ const HeaderProfileMenu = ({
         aria-label="프로필 메뉴"
         aria-hidden={!isOpen}
         inert={!isOpen}
-        className={`border-lightGray absolute top-full right-0 z-50 mt-1 w-[250px] origin-top-right rounded-lg border bg-white px-5 py-4 shadow-lg transition duration-150 ease-out md:mt-4 ${
-          isOpen
-            ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
-            : 'pointer-events-none -translate-y-1 scale-95 opacity-0'
+        className={`border-lightGray absolute top-full right-0 z-50 mt-1 w-[250px] rounded-lg border bg-white px-5 py-4 shadow-lg transition-opacity duration-150 ease-out motion-reduce:transition-none md:mt-4 ${
+          isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
         <div className="flex items-center gap-3">
@@ -209,6 +210,7 @@ const Header = () => {
   const location = useLocation();
   const { toggle, isOpen: isSidebarOpen } = useSidebar();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const profileTriggerRef = useRef<HTMLButtonElement>(null);
   const notificationQuery = useQuery({
     ...notificationOption(),
     enabled: isSignedIn,
@@ -288,8 +290,19 @@ const Header = () => {
 
         <div className="relative flex shrink-0 items-center justify-end gap-2 md:gap-4 lg:gap-8">
           {isSignedIn ? (
-            <>
+            <NotificationOverlay
+              isOpen={isNotificationOpen}
+              notifications={notifications}
+              isLoading={notificationQuery.isPending}
+              isError={notificationQuery.isError}
+              onClose={() => setIsNotificationOpen(false)}
+              onCloseAutoFocus={() => profileTriggerRef.current?.focus({ preventScroll: true })}
+              onRetry={() => {
+                void notificationQuery.refetch();
+              }}
+            >
               <HeaderProfileMenu
+                buttonRef={profileTriggerRef}
                 username={user?.name}
                 isAdmin={isAdmin}
                 isAdvisor={isAdvisor}
@@ -298,17 +311,7 @@ const Header = () => {
                 onNotificationClick={handleNotificationOpen}
                 viewTransition={isHomeRoute}
               />
-              <NotificationOverlay
-                isOpen={isNotificationOpen}
-                notifications={notifications}
-                isLoading={notificationQuery.isPending}
-                isError={notificationQuery.isError}
-                onClose={() => setIsNotificationOpen(false)}
-                onRetry={() => {
-                  void notificationQuery.refetch();
-                }}
-              />
-            </>
+            </NotificationOverlay>
           ) : (
             <Button
               onClick={isSignedIn ? handleSignout : () => navigate('/signin', { viewTransition: isHomeRoute })}

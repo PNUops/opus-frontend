@@ -5,7 +5,7 @@ import { contestsOption } from '@queries/contest';
 const useContestName = () => {
   const contestId = useContestId();
   const { data: contests } = useQuery(contestsOption());
-  const contestName = contests?.find((contest) => contest.contestId === Number(contestId))?.contestName;
+  const contestName = contests?.find((contest) => contest.contestId === contestId)?.contestName;
 
   return contestName;
 };

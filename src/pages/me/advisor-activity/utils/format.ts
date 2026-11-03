@@ -1,6 +1,8 @@
 import type { AdvisorFeedbackStatus, AdvisorRoleType } from '../types';
 
 export const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes}B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
   const mb = bytes / 1024 / 1024;
   return mb >= 1024 ? `${(mb / 1024).toFixed(1)}GB` : `${mb.toFixed(1)}MB`;
 };

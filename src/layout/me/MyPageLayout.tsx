@@ -40,7 +40,7 @@ const MyPageLayout = () => {
       <div className="w-full md:w-[272px] md:max-w-[272px] md:min-w-[272px]">
         <LayoutSideBar sections={sidebarSections} />
       </div>
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <FullContainerLayout />
       </div>
     </div>
