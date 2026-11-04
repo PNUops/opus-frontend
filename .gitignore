@@ -29,5 +29,8 @@ tsconfig.tsbuildinfo
 # Local visual QA artifacts
 visual-qa/
 
+# Local performance measurements and reports
+/docs/performance/
+
 # Browser QA reports, traces and local tooling caches
 .qa/
