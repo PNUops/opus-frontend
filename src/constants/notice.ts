@@ -1,0 +1,1 @@
+export const MAX_NOTICE_DESCRIPTION_LENGTH = 3000;
