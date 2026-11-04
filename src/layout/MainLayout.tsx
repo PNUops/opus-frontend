@@ -10,11 +10,13 @@ import useScrollToTop from '@hooks/useScrollToTop';
 import { Toaster } from '@components/Toaster';
 import AxiosInterceptorProvider from '@providers/AxiosInterceptorProvider';
 import { SidebarProvider } from './SidebarContext';
+import { cn } from '@utils/classname';
 
 const MainLayout = () => {
   const { isAuthInit } = useAuthInit();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isHomeRoute = location.pathname === '/';
   const isProjectDetailRoute = /^\/contest\/[^/]+\/teams\/view\/[^/]+\/?$/.test(location.pathname);
   const isAuthRoute = ['/signin', '/signup'].includes(location.pathname.replace(/\/+$/, ''));
   const shouldFillViewport = isProjectDetailRoute || isAuthRoute;
@@ -26,13 +28,11 @@ const MainLayout = () => {
     <AxiosInterceptorProvider>
       <SidebarProvider>
         <div
-          className={
-            isAdminRoute
-              ? 'min-w-[1024px]'
-              : shouldFillViewport
-                ? 'flex min-h-svh min-w-[350px] flex-col'
-                : 'min-w-[350px]'
-          }
+          className={cn(
+            isAdminRoute ? 'min-w-0' : 'min-w-[350px]',
+            shouldFillViewport && 'flex min-h-svh flex-col',
+            isHomeRoute && 'min-h-dvh bg-[#06172f]',
+          )}
         >
           <Header />
           <div className={shouldFillViewport ? 'flex-1' : undefined}>

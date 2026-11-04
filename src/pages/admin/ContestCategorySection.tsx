@@ -46,11 +46,11 @@ const CategoryList = () => {
 
   const { data: categories } = useSuspenseQuery(categoryOption());
 
-  if (categories.length === 0) return <NoData />;
+  if (categories.length === 0) return <NoData className="text-sm font-normal text-neutral-600" />;
 
   return categories.map((category) => (
     <AdminCardRow key={category.categoryId}>
-      <div className="text-midGray font-semibold">{category.categoryName}</div>
+      <div className="min-w-0 flex-1 pr-3 font-medium break-words text-neutral-900">{category.categoryName}</div>
       <AdminPopoverMenu>
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
           <AdminPopoverEditButton onEdit={() => setEditOpen(true)} />

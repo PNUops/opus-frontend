@@ -12,7 +12,7 @@ export const OPS_WIDTH = {
 } as const;
 
 export const OPS_HEIGHT = {
-  header: '104px',
+  header: '80px',
   sidebar: '1120px',
   footer: '470px',
   page: '3351px',

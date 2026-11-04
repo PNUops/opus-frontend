@@ -1,7 +1,9 @@
 import ProfileAvatar from '@components/ProfileAvatar';
+import type { Ref } from 'react';
 
 interface ProfileButtonProps {
   onClick?: () => void;
+  buttonRef?: Ref<HTMLButtonElement>;
   username?: string;
   imageUrl?: string | null;
   isOpen?: boolean;
@@ -11,6 +13,7 @@ interface ProfileButtonProps {
 
 const ProfileButton = ({
   onClick,
+  buttonRef,
   username,
   imageUrl,
   isOpen = false,
@@ -22,6 +25,7 @@ const ProfileButton = ({
 
   return (
     <button
+      ref={buttonRef}
       type="button"
       className="focus-visible:ring-mainGreen relative size-8 rounded-full transition hover:ring-2 hover:ring-gray-200 focus-visible:ring-2 focus-visible:outline-none"
       onClick={onClick}

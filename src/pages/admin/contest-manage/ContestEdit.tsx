@@ -8,7 +8,7 @@ import CategorySelect from '../CategorySelect';
 import { ContestRequestDto } from '@dto/contestsDto';
 import { useContestIdOrRedirect } from '@hooks/useId';
 import QueryWrapper from '@providers/QueryWrapper';
-import { AdminActionButton } from '@components/admin';
+import { AdminActionButton, AdminHeader } from '@components/admin';
 import { getApiErrorMessage } from '@utils/error';
 
 const ContestEdit = () => {
@@ -52,20 +52,22 @@ const ContestEdit = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-2xl font-bold">대회 수정</h2>
+      <AdminHeader title="대회 수정" />
       <div className="flex flex-col gap-7.5">
         <div className="flex items-center gap-2.5">
-          <div className="text-midGray w-[120px] shrink-0">대회 카테고리</div>
+          <div className="w-[120px] shrink-0 text-neutral-600">대회 카테고리</div>
           <QueryWrapper loadingStyle="h-10 rounded-sm w-[250px]" errorStyle="h-50">
             <CategorySelect categoryId={categoryId} onChange={(id) => setCategoryId(id)} />
           </QueryWrapper>
         </div>
         <div className="flex items-center gap-2.5">
-          <div className="text-midGray w-[120px] shrink-0">대회 이름</div>
+          <div className="w-[120px] shrink-0 text-neutral-600">대회 이름</div>
           <Input
+            appearance="admin"
+            aria-label="대회 이름"
             value={contestName}
             onChange={(e) => setContestName(e.target.value)}
-            className="bg-whiteGray w-[250px] rounded-sm px-3 py-2 text-sm focus:outline-1"
+            className="w-[250px] text-sm"
             placeholder="대회 이름을 입력해주세요."
           />
         </div>

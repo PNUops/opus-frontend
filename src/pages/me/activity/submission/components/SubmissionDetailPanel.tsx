@@ -113,25 +113,25 @@ export const SubmissionDetailPanel = ({ contestId, teamId, item }: SubmissionDet
   };
 
   return (
-    <div className="flex flex-col gap-6 rounded-lg p-5">
+    <div className="flex flex-col gap-6 py-4 xl:p-5">
       {/* 제출물 정보 */}
-      <section className="bg-whiteGray flex flex-col gap-4 rounded-xl p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-1">
+      <section className="bg-whiteGray flex flex-col gap-4 rounded-xl p-4 xl:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 basis-40 flex-col gap-1 break-words">
             <h4 className="text-darkGray text-base font-bold">{item.submissionItemName}</h4>
-            <p className="text-midGray text-sm">{item.description}</p>
+            <p className="text-sm leading-6 text-neutral-600">{item.description}</p>
           </div>
           <button
             type="button"
             disabled={!setting || (item.submissionId !== null && !isDetailReady)}
             onClick={() => setUploadOpen(true)}
-            className="border-mainGreen text-mainGreen shrink-0 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="border-mainGreen text-mainGreen focus-visible:outline-mainGreen min-h-11 shrink-0 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-green-50 focus-visible:outline-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {item.submissionId === null ? '제출하기' : '다시 제출하기'}
           </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-3 xl:grid-cols-2">
           <InfoItem
             icon={<CalendarDays size={16} />}
             label="시작일시"
@@ -216,8 +216,8 @@ const InfoItem = ({ icon, label, value }: { icon: ReactNode; label: string; valu
   return (
     <div className="flex items-center gap-2 text-sm">
       <span className="text-midGray shrink-0">{icon}</span>
-      <span className="text-midGray w-24 shrink-0">{label}</span>
-      <span className="text-darkGray">{value}</span>
+      <span className="w-24 shrink-0 whitespace-nowrap text-neutral-600">{label}</span>
+      <span className="min-w-0 break-words text-neutral-900">{value}</span>
     </div>
   );
 };

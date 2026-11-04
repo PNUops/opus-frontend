@@ -1,14 +1,15 @@
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, type Ref, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import useAuth from '@hooks/useAuth';
 import { useImageBlob } from '@hooks/useImageBlob';
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { useToast } from '@hooks/useToast';
-import { HiMenu } from 'react-icons/hi';
-import { Bell, LogOut, Settings, UserRound } from 'lucide-react';
+import { Bell, LogOut, Menu, Settings, UserRound } from 'lucide-react';
 import { PiChalkboardTeacher } from 'react-icons/pi';
+import ContestNavigation from './ContestNavigation';
 import { useSidebar } from './SidebarContext';
+import logoOpusAdmin from './admin/logo-opus-admin.svg';
 import ProfileButton from './ProfileButton';
 import NotificationOverlay from './NotificationOverlay';
 import Button from '@components/Button';
@@ -56,6 +57,7 @@ const ProfileMenuButton = ({ icon, children, onClick, rightContent }: ProfileMen
 };
 
 interface HeaderProfileMenuProps {
+  buttonRef: Ref<HTMLButtonElement>;
   username?: string;
   isAdmin: boolean;
   isAdvisor: boolean;
@@ -66,6 +68,7 @@ interface HeaderProfileMenuProps {
 }
 
 const HeaderProfileMenu = ({
+  buttonRef,
   username,
   isAdmin,
   isAdvisor,
@@ -104,6 +107,7 @@ const HeaderProfileMenu = ({
   return (
     <div className="relative" ref={profileMenuRef}>
       <ProfileButton
+        buttonRef={buttonRef}
         username={displayName}
         imageUrl={imageURL}
         isOpen={isOpen}
@@ -118,10 +122,8 @@ const HeaderProfileMenu = ({
         aria-label="프로필 메뉴"
         aria-hidden={!isOpen}
         inert={!isOpen}
-        className={`border-lightGray absolute top-full right-0 z-50 mt-1 w-[250px] origin-top-right rounded-lg border bg-white px-5 py-4 shadow-lg transition duration-150 ease-out md:mt-4 ${
-          isOpen
-            ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
-            : 'pointer-events-none -translate-y-1 scale-95 opacity-0'
+        className={`border-lightGray absolute top-full right-0 z-50 mt-1 w-[250px] rounded-lg border bg-white px-5 py-4 shadow-lg transition-opacity duration-150 ease-out motion-reduce:transition-none md:mt-4 ${
+          isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
         <div className="flex items-center gap-3">
@@ -206,8 +208,9 @@ const Header = () => {
   const { isSignedIn, signOut, user, isAdmin, isAdvisor } = useAuth();
   const toast = useToast();
   const location = useLocation();
-  const { toggle } = useSidebar();
+  const { toggle, isOpen: isSidebarOpen } = useSidebar();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const profileTriggerRef = useRef<HTMLButtonElement>(null);
   const notificationQuery = useQuery({
     ...notificationOption(),
     enabled: isSignedIn,
@@ -229,44 +232,51 @@ const Header = () => {
   };
 
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const isSidebarRoute = location.pathname === '/' || location.pathname.startsWith('/contest/');
   const isHomeRoute = location.pathname === '/';
 
-  return (
+  const renderHeader = (navigation: ReactNode) => (
     <header
-      className={`lg:h-header md:h-header xs:h-8 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
+      className={`lg:h-header md:h-header xs:h-8 sticky top-0 z-20 flex w-full items-center justify-between px-3 py-2 sm:h-20 ${
         isAdminRoute
-          ? 'bg-white pl-[272px]'
+          ? 'min-h-16 bg-white lg:pl-[272px]'
           : isHomeRoute
-            ? 'border-b border-white/35 bg-[#06172f] text-white'
-            : 'shadow-b-lg bg-white'
+            ? 'border-b border-white/35 bg-[#06172f]/15 text-white backdrop-blur-xs'
+            : 'bg-[#f7f8fa]/15 backdrop-blur-xs'
       }`}
     >
-      <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-4 md:gap-8 lg:gap-16 lg:px-10">
-        <div className="flex items-center gap-2">
-          {isSidebarRoute && !isAdminRoute && (
-            <Button
-              onClick={toggle}
-              className={`flex h-9 w-9 items-center justify-center p-0 lg:hidden ${
-                isHomeRoute
-                  ? 'border border-white/40 bg-white/10 text-white hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-[#45d6ec] focus-visible:outline-none'
-                  : 'text-black'
-              }`}
-              aria-label="메뉴 열기"
-            >
-              <HiMenu className="h-4 w-4" />
-            </Button>
+      <div className="mx-auto flex w-full items-center justify-between gap-4 px-2 sm:px-8 sm:py-2 md:gap-8 lg:gap-16 lg:px-10">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4 lg:gap-8">
+          {isAdminRoute && (
+            <div className="flex min-w-0 items-center gap-3 lg:hidden">
+              <Link to="/admin" aria-label="관리자 대시보드로 이동">
+                <img src={logoOpusAdmin} alt="OPUS Admin" className="h-7 w-auto" />
+              </Link>
+              {isAdmin && (
+                <button
+                  id="admin-menu-trigger"
+                  type="button"
+                  aria-label="관리자 메뉴 열기"
+                  aria-expanded={isSidebarOpen}
+                  aria-controls="admin-mobile-navigation"
+                  onClick={toggle}
+                  className="border-lightGray text-mainBlue hover:bg-whiteGray focus-visible:outline-mainBlue flex min-h-11 items-center gap-1.5 rounded-md border px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+                >
+                  <Menu className="size-4" aria-hidden />
+                  관리 메뉴
+                </button>
+              )}
+            </div>
           )}
           {!isAdminRoute && (
             <>
-              <Link to="/" viewTransition={!isHomeRoute} className="max-sm:hidden">
+              <Link to="/" viewTransition={!isHomeRoute} className="shrink-0 max-sm:hidden">
                 <img
                   className={`w-auto sm:h-6 md:h-7 lg:h-8 ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/Logo.svg"
                   alt="부산대학교 SW프로젝트관리시스템 로고"
                 />
               </Link>
-              <Link to="/" viewTransition={!isHomeRoute} className="items-center sm:hidden">
+              <Link to="/" viewTransition={!isHomeRoute} className="shrink-0 items-center sm:hidden">
                 <img
                   className={`h-7 w-auto ${isHomeRoute ? 'brightness-0 invert' : ''}`}
                   src="/swOpsLogo-sm.png"
@@ -275,12 +285,24 @@ const Header = () => {
               </Link>
             </>
           )}
+          {navigation}
         </div>
 
-        <div className="relative flex items-center justify-end gap-2 md:gap-4 lg:gap-8">
+        <div className="relative flex shrink-0 items-center justify-end gap-2 md:gap-4 lg:gap-8">
           {isSignedIn ? (
-            <>
+            <NotificationOverlay
+              isOpen={isNotificationOpen}
+              notifications={notifications}
+              isLoading={notificationQuery.isPending}
+              isError={notificationQuery.isError}
+              onClose={() => setIsNotificationOpen(false)}
+              onCloseAutoFocus={() => profileTriggerRef.current?.focus({ preventScroll: true })}
+              onRetry={() => {
+                void notificationQuery.refetch();
+              }}
+            >
               <HeaderProfileMenu
+                buttonRef={profileTriggerRef}
                 username={user?.name}
                 isAdmin={isAdmin}
                 isAdvisor={isAdvisor}
@@ -289,17 +311,7 @@ const Header = () => {
                 onNotificationClick={handleNotificationOpen}
                 viewTransition={isHomeRoute}
               />
-              <NotificationOverlay
-                isOpen={isNotificationOpen}
-                notifications={notifications}
-                isLoading={notificationQuery.isPending}
-                isError={notificationQuery.isError}
-                onClose={() => setIsNotificationOpen(false)}
-                onRetry={() => {
-                  void notificationQuery.refetch();
-                }}
-              />
-            </>
+            </NotificationOverlay>
           ) : (
             <Button
               onClick={isSignedIn ? handleSignout : () => navigate('/signin', { viewTransition: isHomeRoute })}
@@ -315,6 +327,12 @@ const Header = () => {
         </div>
       </div>
     </header>
+  );
+
+  return isAdminRoute ? (
+    renderHeader(null)
+  ) : (
+    <ContestNavigation editorial={isHomeRoute}>{renderHeader}</ContestNavigation>
   );
 };
 

@@ -1,7 +1,10 @@
+import { useScrollToTarget } from '@hooks/useScrollToTarget';
+
 import type { AdvisorProject, AdvisorSubmissionFile } from '../types';
 import { AdvisorProjectCard } from './AdvisorProjectCard';
 
 interface AdvisorProjectListProps {
+  notificationTeamId: number | null;
   contestId: number;
   expandedTeamId: number | null;
   feedbackDrafts: Record<number, string>;
@@ -19,6 +22,7 @@ interface AdvisorProjectListProps {
 }
 
 export const AdvisorProjectList = ({
+  notificationTeamId,
   contestId,
   expandedTeamId,
   feedbackDrafts,
@@ -34,6 +38,13 @@ export const AdvisorProjectList = ({
   onSelectSubmission,
   onToggleProject,
 }: AdvisorProjectListProps) => {
+  const targetTeamId = projects.find((project) => project.teamId === notificationTeamId)?.teamId ?? null;
+  const { targetRef } = useScrollToTarget<HTMLElement>({
+    targetId: targetTeamId,
+    enabled: loadingTeamId !== targetTeamId,
+    oncePerNavigation: true,
+  });
+
   if (projects.length === 0) {
     return (
       <section className="border-lightGray text-midGray flex min-h-45 items-center justify-center rounded-lg border bg-white text-sm font-medium">
@@ -48,6 +59,7 @@ export const AdvisorProjectList = ({
       <div className="flex flex-col gap-4">
         {projects.map((project) => (
           <AdvisorProjectCard
+            targetRef={project.teamId === targetTeamId ? targetRef : undefined}
             key={project.teamId}
             contestId={contestId}
             project={project}

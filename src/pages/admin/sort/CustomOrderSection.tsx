@@ -1,6 +1,6 @@
 import { useState, useEffect, Fragment } from 'react';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { PiDotsSixVerticalBold } from 'react-icons/pi';
@@ -19,6 +19,10 @@ const CustomOrderSection = () => {
   const contestId = useContestIdOrRedirect();
   const [localTeams, setLocalTeams] = useState<TeamListItemResponseDto[]>([]);
   const toast = useToast();
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const { data: teamList } = useSuspenseQuery(contestTeamOption(contestId));
   const customSortMutation = useMutation({
@@ -63,11 +67,11 @@ const CustomOrderSection = () => {
       <div className="rounded-lg border-2 px-5 py-4">
         <div className="mb-4 flex items-center gap-3">
           <h2 className="text-xl font-semibold">직접 설정</h2>
-          <span className="text-midGray text-xs font-normal">팀명, 프로젝트명, 수상 정보</span>
+          <span className="text-xs font-normal text-neutral-600">팀명, 프로젝트명, 수상 정보</span>
         </div>
-        <DndContext onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
           <SortableContext items={localTeams.map((t) => t.teamId)}>
-            <div className="grid grid-cols-[max-content_max-content_max-content_150px_auto] gap-4">
+            <div className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-2 gap-y-3 lg:grid-cols-[max-content_minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)_auto] lg:gap-4">
               {localTeams.map((team, index) => (
                 <Fragment key={team.teamId}>
                   <span className="flex items-center justify-center text-center">{index + 1}</span>
@@ -79,10 +83,12 @@ const CustomOrderSection = () => {
         </DndContext>
       </div>
       <div className="ml-auto flex gap-4">
-        <AdminActionButton onClick={handleReset} variant="outline">
+        <AdminActionButton onClick={handleReset} variant="outline" className="max-lg:min-h-11">
           원래대로
         </AdminActionButton>
-        <AdminActionButton onClick={handleSave}>저장하기</AdminActionButton>
+        <AdminActionButton onClick={handleSave} className="max-lg:min-h-11">
+          저장하기
+        </AdminActionButton>
       </div>
     </div>
   );
@@ -94,27 +100,31 @@ const TeamRow = ({ team }: { team: TeamListItemResponseDto }) => {
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
-    <span
+    <div
       ref={setNodeRef}
       style={style}
       className={cn(
-        'group hover:bg-whiteGray col-span-4 grid grid-cols-subgrid items-center gap-10 rounded-md p-3',
-        isDragging ? 'cursor-grabbing' : 'cursor-grab',
+        'group hover:bg-whiteGray grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 rounded-md p-3 lg:col-span-4 lg:grid-cols-subgrid lg:gap-4',
+        isDragging && 'bg-whiteGray',
       )}
-      {...attributes}
-      {...listeners}
     >
-      <span className="break-all">{teamName}</span>
-      <span className="break-all">{projectName}</span>
-      {awards.length > 0 ? (
-        awards.map((award) => (
+      <span className="min-w-0 break-words">{teamName}</span>
+      <span className="col-start-1 min-w-0 text-sm break-words text-neutral-600 lg:col-start-auto">{projectName}</span>
+      <div className="col-start-1 flex min-w-0 flex-wrap gap-2 lg:col-start-auto">
+        {awards.map((award) => (
           <AwardTag key={award.awardName} awardName={award.awardName ?? ''} awardColor={award.awardColor ?? ''} />
-        ))
-      ) : (
-        <span />
-      )}
-      <PiDotsSixVerticalBold className="text-midGray ml-auto text-lg opacity-0 group-hover:opacity-100" />
-    </span>
+        ))}
+      </div>
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        aria-label={`${teamName} 순서 변경`}
+        className="focus-visible:outline-mainBlue col-start-2 row-start-1 row-end-4 flex size-11 touch-none items-center justify-center rounded-md text-neutral-600 hover:bg-neutral-100 focus-visible:outline-2 lg:col-start-auto lg:row-auto"
+      >
+        <PiDotsSixVerticalBold className="text-lg" aria-hidden />
+      </button>
+    </div>
   );
 };
 

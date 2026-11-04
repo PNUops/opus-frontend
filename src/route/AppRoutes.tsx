@@ -10,7 +10,6 @@ import FullContainerLayout from '@layout/FullContainerLayout';
 import AdminLayout from '@layout/admin/AdminLayout';
 import AdminContestLayout from '@layout/admin/contest/AdminContestLayout';
 import FullContainer from '@layout/FullContainer';
-import SidebarLayout from '@layout/SidebarLayout';
 import MyPageLayout from '@layout/me/MyPageLayout';
 
 const lazyPage = (load: () => Promise<{ default: ComponentType }>) => {
@@ -63,15 +62,10 @@ const AppRoutes = () =>
       path: '/',
       element: <MainLayout />,
       children: [
+        { index: true, element: <MainPage /> },
         {
-          element: <SidebarLayout />,
-          children: [
-            { index: true, element: <MainPage /> },
-            {
-              element: <FullContainerLayout />,
-              children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
-            },
-          ],
+          element: <FullContainerLayout />,
+          children: [{ path: 'contest/:contestId', element: <ContestPage /> }],
         },
         {
           element: <AuthLayout />,

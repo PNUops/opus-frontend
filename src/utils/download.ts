@@ -6,13 +6,16 @@ const getFileNameFromContentDisposition = (contentDisposition?: string) => {
     return null;
   }
 
-  const utf8FileName = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
-  if (utf8FileName) {
-    return decodeURIComponent(utf8FileName);
+  const utf8FileName = contentDisposition.match(/filename\*\s*=\s*UTF-8''([^;]+)/i)?.[1]?.trim();
+  const fileName = contentDisposition.match(/(?:^|;)\s*filename\s*=\s*(?:"([^"]*)"|([^;]*))/i);
+  const encodedName = utf8FileName || fileName?.[1] || fileName?.[2]?.trim();
+  if (!encodedName) return null;
+  try {
+    return decodeURIComponent(encodedName);
+  } catch {
+    // 잘못된 헤더가 파일 다운로드와 Object URL 정리를 막지 않게 합니다.
+    return null;
   }
-
-  const fileName = contentDisposition.match(/filename="?([^"]+)"?/i)?.[1];
-  return fileName ? decodeURIComponent(fileName) : null;
 };
 
 /** Blob을 브라우저 다운로드로 트리거 (Content-Disposition 파일명 우선, 없으면 fallback) */
@@ -20,12 +23,15 @@ export const downloadBlob = (blob: Blob, fallbackFileName: string, contentDispos
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
 
-  link.href = url;
-  link.download = getFileNameFromContentDisposition(contentDisposition) ?? fallbackFileName;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+  try {
+    link.href = url;
+    link.download = getFileNameFromContentDisposition(contentDisposition) ?? fallbackFileName;
+    document.body.appendChild(link);
+    link.click();
+  } finally {
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
 };
 
 /** Blob 응답을 Content-Disposition 파일명으로 다운로드 (없으면 fallback) */

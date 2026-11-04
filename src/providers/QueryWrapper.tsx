@@ -3,6 +3,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { cn } from '@components/lib/utils';
 import { AdminActionButton } from '@components/admin';
+import { useAdminUi } from '@components/admin/AdminUiContext';
 
 interface QueryWrapperProps {
   children: ReactNode;
@@ -55,9 +56,12 @@ const LoadingFallback = ({ className }: { className?: string }) => {
 };
 
 const ErrorFallback = ({ resetErrorBoundary, className }: FallbackProps & { className?: string }) => {
+  const isAdminUi = useAdminUi();
   return (
     <div className={cn('flex flex-col flex-wrap items-center justify-center gap-4', className)}>
-      <p className="text-mainRed font-bold">데이터 조회 중 오류가 발생했습니다.</p>
+      <p className={isAdminUi ? 'text-destructive text-sm leading-6' : 'text-mainRed font-bold'}>
+        데이터 조회 중 오류가 발생했습니다.
+      </p>
       <AdminActionButton variant={'outline'} onClick={() => resetErrorBoundary()}>
         다시 시도
       </AdminActionButton>
