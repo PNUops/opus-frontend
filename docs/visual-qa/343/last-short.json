@@ -1,0 +1,55 @@
+{
+  "checks": [
+    {
+      "name": "submission-last",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 50.5,
+        "bottom": 793.5,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 732.5,
+        "saveBottom": 776.5
+      },
+      "scrolling": {
+        "top": 0,
+        "bodyTop": 111.5,
+        "itemTop": 111.5,
+        "active": "DIV"
+      }
+    },
+    {
+      "name": "submission-last-short",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      },
+      "scrolling": {
+        "top": 0,
+        "bodyTop": 77,
+        "itemTop": 77,
+        "active": "DIV"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "width": 390,
+      "case": "last"
+    }
+  ],
+  "failures": []
+}

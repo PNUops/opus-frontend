@@ -1,0 +1,511 @@
+{
+  "checks": [
+    {
+      "name": "submission-normal",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 52.5,
+        "bottom": 847.5,
+        "left": 420,
+        "right": 1020,
+        "scroll": 0,
+        "viewport": 900,
+        "saveTop": 786.5,
+        "saveBottom": 830.5
+      }
+    },
+    {
+      "name": "submission-delete-draft",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 61,
+        "bottom": 839,
+        "left": 420,
+        "right": 1020,
+        "scroll": 0,
+        "viewport": 900,
+        "saveTop": 778,
+        "saveBottom": 822
+      }
+    },
+    {
+      "name": "submission-saving",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 61,
+        "bottom": 839,
+        "left": 420,
+        "right": 1020,
+        "scroll": 0,
+        "viewport": 900,
+        "saveTop": 778,
+        "saveBottom": 822
+      }
+    },
+    {
+      "name": "submission-partial-failure-reopened",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 52.5,
+        "bottom": 847.5,
+        "left": 420,
+        "right": 1020,
+        "scroll": 0,
+        "viewport": 900,
+        "saveTop": 786.5,
+        "saveBottom": 830.5
+      }
+    },
+    {
+      "name": "submission-short",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 420,
+        "right": 1020,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      }
+    },
+    {
+      "name": "submission-short-files",
+      "width": 1440,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 420,
+        "right": 1020,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      }
+    },
+    {
+      "name": "submission-normal",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 114.5,
+        "bottom": 909.5,
+        "left": 84,
+        "right": 684,
+        "scroll": 0,
+        "viewport": 1024,
+        "saveTop": 848.5,
+        "saveBottom": 892.5
+      }
+    },
+    {
+      "name": "submission-delete-draft",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 123,
+        "bottom": 901,
+        "left": 84,
+        "right": 684,
+        "scroll": 0,
+        "viewport": 1024,
+        "saveTop": 840,
+        "saveBottom": 884
+      }
+    },
+    {
+      "name": "submission-saving",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 123,
+        "bottom": 901,
+        "left": 84,
+        "right": 684,
+        "scroll": 0,
+        "viewport": 1024,
+        "saveTop": 840,
+        "saveBottom": 884
+      }
+    },
+    {
+      "name": "submission-partial-failure-reopened",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 114.5,
+        "bottom": 909.5,
+        "left": 84,
+        "right": 684,
+        "scroll": 0,
+        "viewport": 1024,
+        "saveTop": 848.5,
+        "saveBottom": 892.5
+      }
+    },
+    {
+      "name": "submission-short",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 84,
+        "right": 684,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      }
+    },
+    {
+      "name": "submission-short-files",
+      "width": 768,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 84,
+        "right": 684,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      }
+    },
+    {
+      "name": "submission-normal",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-delete-draft",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-saving",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-partial-failure-reopened",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-short",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      }
+    },
+    {
+      "name": "submission-short-files",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 404,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 420,
+        "saveTop": 343,
+        "saveBottom": 387
+      }
+    },
+    {
+      "name": "submission-one",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-last",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 50.5,
+        "bottom": 793.5,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 732.5,
+        "saveBottom": 776.5
+      }
+    },
+    {
+      "name": "submission-long",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-initial",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 73.5,
+        "bottom": 770.5,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 709.5,
+        "saveBottom": 753.5
+      }
+    },
+    {
+      "name": "submission-expired",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-limits",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-addition",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-replacement",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    },
+    {
+      "name": "submission-full-limit",
+      "width": 390,
+      "overflow": 0,
+      "dialogs": 1,
+      "geometry": {
+        "top": 16,
+        "bottom": 828,
+        "left": 16,
+        "right": 374,
+        "scroll": 0,
+        "viewport": 844,
+        "saveTop": 767,
+        "saveBottom": 811
+      }
+    }
+  ],
+  "cases": [
+    {
+      "width": 1440,
+      "case": "cancel, close, Escape, backdrop discard without API"
+    },
+    {
+      "width": 1440,
+      "case": "delete-only; save lock and detail requery"
+    },
+    {
+      "width": 1440,
+      "case": "partial failure refresh, discarded draft, upload before delete"
+    },
+    {
+      "width": 768,
+      "case": "cancel, close, Escape, backdrop discard without API"
+    },
+    {
+      "width": 768,
+      "case": "delete-only; save lock and detail requery"
+    },
+    {
+      "width": 768,
+      "case": "partial failure refresh, discarded draft, upload before delete"
+    },
+    {
+      "width": 390,
+      "case": "cancel, close, Escape, backdrop discard without API"
+    },
+    {
+      "width": 390,
+      "case": "delete-only; save lock and detail requery"
+    },
+    {
+      "width": 390,
+      "case": "partial failure refresh, discarded draft, upload before delete"
+    },
+    {
+      "width": 390,
+      "case": "one"
+    },
+    {
+      "width": 390,
+      "case": "last"
+    },
+    {
+      "width": 390,
+      "case": "long"
+    },
+    {
+      "width": 390,
+      "case": "initial"
+    },
+    {
+      "width": 390,
+      "case": "expired"
+    },
+    {
+      "width": 390,
+      "case": "limits"
+    },
+    {
+      "width": 390,
+      "case": "addition"
+    },
+    {
+      "width": 390,
+      "case": "replacement"
+    },
+    {
+      "width": 390,
+      "case": "full-limit"
+    }
+  ],
+  "failures": []
+}
