@@ -1,4 +1,4 @@
-import { type PointerEvent as ReactPointerEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { lazy, type PointerEvent as ReactPointerEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ListRestart, Search, X } from 'lucide-react';
@@ -6,8 +6,10 @@ import { getGroupedContests } from '@apis/contest';
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@components/ui/popover';
 import { type GroupedContestResponseDto } from '@dto/contestsDto';
 import useAuth from '@hooks/useAuth';
-import SidebarSortEditor from './SidebarSortEditor';
+import DeferredContent from '@components/DeferredContent';
 import { cn } from '@utils/classname';
+
+const SidebarSortEditor = lazy(() => import('./SidebarSortEditor'));
 
 const PREVIEW_COUNT = 5;
 const HOVER_OPEN_DELAY = 120;
@@ -336,14 +338,20 @@ const ContestNavigation = ({
             )}
             {isSorting && isAdmin ? (
               <div className="mx-auto max-w-2xl">
-                <SidebarSortEditor
-                  groups={groups}
-                  expandedCategoryId={sortCategoryId}
-                  onToggleCategory={(id) => setSortCategoryId(sortCategoryId === id ? null : id)}
+                <DeferredContent
+                  loadingMessage="정렬 도구를 불러오는 중입니다."
                   onCancel={closeSortEditor}
-                  onSaved={closeSortEditor}
                   tone={editorial ? 'editorial' : 'default'}
-                />
+                >
+                  <SidebarSortEditor
+                    groups={groups}
+                    expandedCategoryId={sortCategoryId}
+                    onToggleCategory={(id) => setSortCategoryId(sortCategoryId === id ? null : id)}
+                    onCancel={closeSortEditor}
+                    onSaved={closeSortEditor}
+                    tone={editorial ? 'editorial' : 'default'}
+                  />
+                </DeferredContent>
               </div>
             ) : query.isPending ? (
               <div role="status" className={gridClass}>
