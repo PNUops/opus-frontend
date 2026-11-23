@@ -9,6 +9,8 @@ import { useToast } from '@hooks/useToast';
 import { NoticeRequestDto } from '@dto/noticeDto';
 import { AdminActionButton, AdminDeleteConfirmModal } from '@components/admin';
 import { contestNoticeDetailOption } from '@queries/notices';
+import { MAX_NOTICE_DESCRIPTION_LENGTH } from '@constants/notice';
+import { cn } from '@utils/classname';
 
 interface ContestNoticeModalProps {
   type: 'create' | 'edit';
@@ -47,6 +49,9 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
     setDescription(notice?.description || '');
     closeModal();
   };
+
+  // maxLength는 새 입력만 막으므로, 불러온 기존 본문이 제한을 넘으면 저장 버튼을 비활성화한다.
+  const isDescriptionTooLong = description.length > MAX_NOTICE_DESCRIPTION_LENGTH;
 
   const handleSave = () => {
     if (upsertMutation.isPending) return;
@@ -94,12 +99,27 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
           id="description"
           placeholder="본문을 입력해주세요"
           className="min-h-48"
+          maxLength={MAX_NOTICE_DESCRIPTION_LENGTH}
+          aria-describedby="description-count"
+          aria-invalid={isDescriptionTooLong}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <p
+          id="description-count"
+          className={cn('text-right text-sm text-neutral-600', isDescriptionTooLong && 'text-destructive')}
+        >
+          {description.length.toLocaleString()} / {MAX_NOTICE_DESCRIPTION_LENGTH.toLocaleString()}자
+        </p>
       </div>
       <AdminFormError
-        message={upsertMutation.isError ? '저장에 실패했어요. 입력 내용을 확인하고 다시 시도해주세요.' : undefined}
+        message={
+          isDescriptionTooLong
+            ? `본문은 ${MAX_NOTICE_DESCRIPTION_LENGTH.toLocaleString()}자 이하로 입력해주세요.`
+            : upsertMutation.isError
+              ? '저장에 실패했어요. 입력 내용을 확인하고 다시 시도해주세요.'
+              : undefined
+        }
       />
       <div className="flex flex-wrap justify-end gap-3">
         <AdminActionButton variant={'outline'} size={'lg'} onClick={handleClose} disabled={upsertMutation.isPending}>
@@ -108,7 +128,7 @@ export const ContestNoticeModal = ({ type, contestId, noticeId, isOpen, closeMod
         <AdminActionButton
           size={'lg'}
           onClick={handleSave}
-          disabled={upsertMutation.isPending}
+          disabled={upsertMutation.isPending || isDescriptionTooLong}
           aria-busy={upsertMutation.isPending}
         >
           {upsertMutation.isPending ? '저장 중…' : type === 'create' ? '추가' : '저장'}
