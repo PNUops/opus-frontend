@@ -9,10 +9,12 @@ import { meHandlers } from './me';
 import { memberHandlers } from './member';
 import { teamCommentsHandlers } from './teamComments';
 import { notificationScenarioHandlers } from './notificationScenario';
+import { quickActionsHandlers } from './quickActions';
 import { http, HttpResponse } from 'msw';
 import { API_BASE_URL } from '../../constants/env';
 
 export const handlers = [
+  ...(import.meta.env.MODE === 'mock' ? quickActionsHandlers : []),
   ...notificationScenarioHandlers,
   ...contestsHandler,
   ...noticesHandler,
