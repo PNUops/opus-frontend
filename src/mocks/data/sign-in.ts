@@ -25,6 +25,13 @@ export const mockMentorSignInResponse: SignInResponseDto = {
 };
 
 export const mockSignInResponsesByEmail: Record<string, SignInResponseDto> = {
+  'admin@pusan.ac.kr': {
+    memberId: 1,
+    name: '관리자',
+    token:
+      'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxIiwibmFtZSI6Iuq0gOumrOyekCIsInJvbGVzIjpbIlJPTEVf6rSA66as7J6QIl19.mock',
+    types: ['ROLE_관리자'],
+  },
   'test@pusan.ac.kr': mockSignInResponse,
   'professor@pusan.ac.kr': mockProfessorSignInResponse,
   'mentor@pusan.ac.kr': mockMentorSignInResponse,
