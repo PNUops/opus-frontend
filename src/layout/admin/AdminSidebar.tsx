@@ -1,7 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState, type SVGProps } from 'react';
+import { Link, NavLink, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { ChevronDown, Home, LayoutGrid, MessageSquareShare, X } from 'lucide-react';
+import {
+  ChevronDown,
+  Info,
+  Home,
+  LayoutGrid,
+  List,
+  Megaphone,
+  MessageSquareShare,
+  Network,
+  UserCog,
+  X,
+} from 'lucide-react';
 import { useMediaQuery } from '@react-hookz/web';
 import { useSidebar } from '@layout/SidebarContext';
 import { Sheet, SheetClose, SheetContent, SheetTitle } from '@components/ui/sheet';
@@ -26,6 +37,15 @@ type AdminSidebarSection = {
   title: string;
   links: AdminSidebarLink[];
 };
+
+const TemporaryAccountIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M10 15H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <circle cx="18" cy="17" r="4" />
+    <path d="M18 15v2h2" />
+  </svg>
+);
 
 const adminSidebarSections: AdminSidebarSection[] = [
   {
@@ -59,10 +79,6 @@ const adminSidebarSections: AdminSidebarSection[] = [
     ],
   },
   {
-    title: '평가',
-    links: [{ label: '평가 설정', disabled: true }],
-  },
-  {
     title: '투표/결과',
     links: [
       { to: 'votes', label: '투표 설정' },
@@ -88,10 +104,8 @@ const getActiveSectionTitle = (pathname: string, contestId?: string) => {
 
 const dashboardLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'relative flex min-h-11 items-center gap-3 border-l-[3px] px-5 text-[15px] font-semibold transition-colors lg:min-h-10',
-    isActive
-      ? 'border-l-mainBlue bg-mainBlue/8 text-gray-950'
-      : 'border-l-transparent text-gray-800 hover:bg-mainBlue/5',
+    'mx-4 flex min-h-11 items-center gap-3 rounded-md px-4 text-[14px] font-semibold transition-colors focus-visible:outline-mainBlue focus-visible:outline-2 lg:min-h-10',
+    isActive ? 'bg-[#e8f2f7] text-gray-950' : 'text-gray-800 hover:bg-mainBlue/5',
   );
 
 const contestLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -154,6 +168,9 @@ const AdminSidebar = () => {
 
 const AdminSidebarContent = () => {
   const { close } = useSidebar();
+  const location = useLocation();
+  const isDashboard = location.pathname === '/admin';
+  const isContest = !!useMatch('/admin/contest/:contestId/*');
   return (
     <>
       <div className="h-header flex items-center justify-center px-6">
@@ -174,14 +191,82 @@ const AdminSidebarContent = () => {
           if ((event.target as HTMLElement).closest('a[href]')) close();
         }}
       >
-        <NavLink to="/admin" end className={dashboardLinkClass} replace>
-          <LayoutGrid className="h-5 w-5 text-gray-500" strokeWidth={1.8} />
+        <Link
+          to="/admin"
+          className={dashboardLinkClass({ isActive: isDashboard && !location.hash })}
+          aria-current={isDashboard && !location.hash ? 'page' : undefined}
+        >
+          <LayoutGrid
+            className={cn('h-5 w-5', isDashboard && !location.hash ? 'text-mainBlue' : 'text-gray-500')}
+            strokeWidth={1.8}
+            aria-hidden
+          />
           <span>대시보드</span>
-        </NavLink>
+        </Link>
 
-        <QueryWrapper loadingStyle="mx-5 mt-6 h-[520px]" errorStyle="mx-5 mt-6 min-h-40 text-sm">
-          <AdminContestSidebarContent />
-        </QueryWrapper>
+        {[
+          {
+            title: '대회 관리',
+            links: [
+              { label: '대회 목록', hash: '#contests', icon: List },
+              { label: '대회 카테고리', hash: '#contest-categories', icon: Network },
+            ],
+          },
+          {
+            title: '사용자 및 권한',
+            links: [
+              { label: '계정 관리', hash: undefined, icon: UserCog },
+              { label: '임시 계정 설정', hash: undefined, icon: TemporaryAccountIcon },
+            ],
+          },
+          {
+            title: '서비스',
+            links: [
+              { label: '전체 공지사항', hash: '#notices', icon: Megaphone },
+              { label: '서비스 정보', hash: '#service-info', icon: Info },
+            ],
+          },
+        ].map(({ title, links }) => (
+          <section key={title} className="mt-6">
+            <h2 className="mx-4 mb-2 text-xs font-normal text-gray-500">{title}</h2>
+            {links.map(({ label, hash, icon: Icon }) => {
+              if (!hash) {
+                return (
+                  <div
+                    key={label}
+                    className="mx-4 flex min-h-11 items-center gap-3 rounded-md px-4 text-[14px] font-semibold text-gray-500 lg:min-h-10"
+                  >
+                    <Icon className="h-5 w-5 shrink-0" strokeWidth={1.8} aria-hidden />
+                    <span>{label}</span>
+                    <span className="ml-auto text-xs font-normal">준비 중</span>
+                  </div>
+                );
+              }
+              const isActive = isDashboard && location.hash === hash;
+              return (
+                <Link
+                  key={hash}
+                  to={`/admin${hash}`}
+                  className={dashboardLinkClass({ isActive })}
+                  aria-current={isActive ? 'location' : undefined}
+                >
+                  <Icon
+                    className={cn('h-5 w-5', isActive ? 'text-mainBlue' : 'text-gray-500')}
+                    strokeWidth={1.8}
+                    aria-hidden
+                  />
+                  <span>{label}</span>
+                </Link>
+              );
+            })}
+          </section>
+        ))}
+
+        {isContest && (
+          <QueryWrapper loadingStyle="mx-5 mt-6 h-[520px]" errorStyle="mx-5 mt-6 min-h-40 text-sm">
+            <AdminContestSidebarContent />
+          </QueryWrapper>
+        )}
       </nav>
 
       <div className="mt-auto py-5">
