@@ -35,6 +35,8 @@ interface SubmissionFormModalProps {
   onClose: () => void;
   isPending: boolean;
   isError: boolean;
+  contestName?: string;
+  onDirtyChange?: () => void;
 }
 
 const createDefaultValues = (): SubmissionFormValues => ({
@@ -72,11 +74,14 @@ export const SubmissionFormModal = ({
   onClose,
   isPending,
   isError,
+  contestName,
+  onDirtyChange,
 }: SubmissionFormModalProps) => {
   const toast = useToast();
   const [values, setValues] = useState<SubmissionFormValues>(initialValues ?? createDefaultValues());
 
   const update = <K extends keyof SubmissionFormValues>(key: K, value: SubmissionFormValues[K]) => {
+    onDirtyChange?.();
     setValues((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -104,6 +109,11 @@ export const SubmissionFormModal = ({
           {mode === 'create' ? '제출 항목 추가' : '제출 항목 수정'}
         </DialogTitle>
         <p className="text-sm text-neutral-600">대회에서 제출받을 자료의 종류와 제출 정책을 설정할 수 있어요.</p>
+        {contestName && (
+          <p className="mt-2 rounded-md bg-blue-50 px-3 py-2 text-sm font-medium text-neutral-800">
+            대상 대회: {contestName}
+          </p>
+        )}
       </div>
 
       <fieldset disabled={isPending} className="flex min-w-0 flex-col gap-4">
