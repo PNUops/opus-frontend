@@ -133,7 +133,12 @@ const ContestTeamSetting = ({
       )}
       <a href="/PNUOps_관리자페이지_팀등록_템플릿파일.xlsx" className="group flex items-center gap-1">
         <PiMicrosoftExcelLogo size={24} className="fill-mainGreen mt-0.75 shrink-0" />
-        <span className="group-hover:text-mainGreen min-w-0 text-lg [overflow-wrap:anywhere] group-hover:underline">
+        <span
+          className={cn(
+            'group-hover:text-mainGreen min-w-0 [overflow-wrap:anywhere] group-hover:underline',
+            onComplete ? 'text-sm' : 'text-lg',
+          )}
+        >
           PNUOps_관리자페이지_팀등록_템플릿파일.xlsx
         </span>
       </a>
